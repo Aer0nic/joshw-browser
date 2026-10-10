@@ -1,0 +1,4067 @@
+{
+  "entries": [
+    {
+      "name": "0-9",
+      "raw_name": "0-9",
+      "date": "",
+      "url": "http://wiiu.joshw.info/0-9/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "a",
+      "raw_name": "a",
+      "date": "",
+      "url": "http://wiiu.joshw.info/a/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "b",
+      "raw_name": "b",
+      "date": "",
+      "url": "http://wiiu.joshw.info/b/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "c",
+      "raw_name": "c",
+      "date": "",
+      "url": "http://wiiu.joshw.info/c/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "d",
+      "raw_name": "d",
+      "date": "",
+      "url": "http://wiiu.joshw.info/d/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "e",
+      "raw_name": "e",
+      "date": "",
+      "url": "http://wiiu.joshw.info/e/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "f",
+      "raw_name": "f",
+      "date": "",
+      "url": "http://wiiu.joshw.info/f/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "g",
+      "raw_name": "g",
+      "date": "",
+      "url": "http://wiiu.joshw.info/g/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "h",
+      "raw_name": "h",
+      "date": "",
+      "url": "http://wiiu.joshw.info/h/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "i",
+      "raw_name": "i",
+      "date": "",
+      "url": "http://wiiu.joshw.info/i/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "j",
+      "raw_name": "j",
+      "date": "",
+      "url": "http://wiiu.joshw.info/j/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "k",
+      "raw_name": "k",
+      "date": "",
+      "url": "http://wiiu.joshw.info/k/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "l",
+      "raw_name": "l",
+      "date": "",
+      "url": "http://wiiu.joshw.info/l/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "m",
+      "raw_name": "m",
+      "date": "",
+      "url": "http://wiiu.joshw.info/m/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "n",
+      "raw_name": "n",
+      "date": "",
+      "url": "http://wiiu.joshw.info/n/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "o",
+      "raw_name": "o",
+      "date": "",
+      "url": "http://wiiu.joshw.info/o/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "p",
+      "raw_name": "p",
+      "date": "",
+      "url": "http://wiiu.joshw.info/p/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "q",
+      "raw_name": "q",
+      "date": "",
+      "url": "http://wiiu.joshw.info/q/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "r",
+      "raw_name": "r",
+      "date": "",
+      "url": "http://wiiu.joshw.info/r/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "s",
+      "raw_name": "s",
+      "date": "",
+      "url": "http://wiiu.joshw.info/s/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "t",
+      "raw_name": "t",
+      "date": "",
+      "url": "http://wiiu.joshw.info/t/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "u",
+      "raw_name": "u",
+      "date": "",
+      "url": "http://wiiu.joshw.info/u/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "v",
+      "raw_name": "v",
+      "date": "",
+      "url": "http://wiiu.joshw.info/v/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "w",
+      "raw_name": "w",
+      "date": "",
+      "url": "http://wiiu.joshw.info/w/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "x",
+      "raw_name": "x",
+      "date": "",
+      "url": "http://wiiu.joshw.info/x/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "y",
+      "raw_name": "y",
+      "date": "",
+      "url": "http://wiiu.joshw.info/y/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "z",
+      "raw_name": "z",
+      "date": "",
+      "url": "http://wiiu.joshw.info/z/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "robots.txt",
+      "raw_name": "robots.txt",
+      "date": "",
+      "url": "http://wiiu.joshw.info/robots.txt",
+      "directory": false,
+      "size": 26
+    },
+    {
+      "name": "1001 Spikes",
+      "raw_name": "1001 Spikes (2014-06-03)(Nicalis)[WiiU].7z",
+      "date": "2014-06-03",
+      "url": "http://wiiu.joshw.info/0-9/1001%20Spikes%20(2014-06-03)(Nicalis)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 149533937
+    },
+    {
+      "name": "360 Breakout",
+      "raw_name": "360 Breakout (2016-08-11)(nuGAME)[WiiU].7z",
+      "date": "2016-08-11",
+      "url": "http://wiiu.joshw.info/0-9/360%20Breakout%20(2016-08-11)(nuGAME)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 38878407
+    },
+    {
+      "name": "3Souls",
+      "raw_name": "3Souls (2016-07-28)(Red Column)[WiiU].7z",
+      "date": "2016-07-28",
+      "url": "http://wiiu.joshw.info/0-9/3Souls%20(2016-07-28)(Red%20Column)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 22971253
+    },
+    {
+      "name": "6180 the moon",
+      "raw_name": "6180 the moon (2016-02-25)(Turtle Cream)[WiiU].7z",
+      "date": "2016-02-25",
+      "url": "http://wiiu.joshw.info/0-9/6180%20the%20moon%20(2016-02-25)(Turtle%20Cream)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 120584891
+    },
+    {
+      "name": "8Bit Hero",
+      "raw_name": "8Bit Hero (2016-05-12)(Sean Garland)(RighteousWeasel)[WiiU].7z",
+      "date": "2016-05-12",
+      "url": "http://wiiu.joshw.info/0-9/8Bit%20Hero%20(2016-05-12)(Sean%20Garland)(RighteousWeasel)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 18394218
+    },
+    {
+      "name": "99Moves",
+      "raw_name": "99Moves (2014-12-18)(EnjoyUp)[WiiU].7z",
+      "date": "2014-12-18",
+      "url": "http://wiiu.joshw.info/0-9/99Moves%20(2014-12-18)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 51709129
+    },
+    {
+      "name": "99Seconds",
+      "raw_name": "99Seconds (2014-10-02)(EnjoyUp)[WiiU].7z",
+      "date": "2014-10-02",
+      "url": "http://wiiu.joshw.info/0-9/99Seconds%20(2014-10-02)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 34512426
+    },
+    {
+      "name": "A.C.E.",
+      "raw_name": "A.C.E. (2017-03-16)(Nitrolic)[WiiU].7z",
+      "date": "2017-03-16",
+      "url": "http://wiiu.joshw.info/a/A.C.E.%20(2017-03-16)(Nitrolic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 16299488
+    },
+    {
+      "name": "ABC Wipeout - Create and Crash",
+      "raw_name": "ABC Wipeout - Create and Crash (2013-10-15)(Behaviour)(Activision)[WiiU].7z",
+      "date": "2013-10-15",
+      "url": "http://wiiu.joshw.info/a/ABC%20Wipeout%20-%20Create%20and%20Crash%20(2013-10-15)(Behaviour)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 138657572
+    },
+    {
+      "name": "ABC Wipeout 3",
+      "raw_name": "ABC Wipeout 3 (2012-11-18)(Behaviour)(Activision)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/a/ABC%20Wipeout%203%20(2012-11-18)(Behaviour)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 221456223
+    },
+    {
+      "name": "Absolutely Unstoppable MineRun",
+      "raw_name": "Absolutely Unstoppable MineRun (2017-04-27)(Shy Egg)[WiiU].7z",
+      "date": "2017-04-27",
+      "url": "http://wiiu.joshw.info/a/Absolutely%20Unstoppable%20MineRun%20(2017-04-27)(Shy%20Egg)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 5680927
+    },
+    {
+      "name": "Abyss",
+      "raw_name": "Abyss (2014-05-01)(EnjoyUp)[WiiU].7z",
+      "date": "2014-05-01",
+      "url": "http://wiiu.joshw.info/a/Abyss%20(2014-05-01)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 15510538
+    },
+    {
+      "name": "ACT IT OUT! A Game of Charades",
+      "raw_name": "ACT IT OUT! A Game of Charades (2016-10-10)(Snap Finger Click)[WiiU].7z",
+      "date": "2016-10-10",
+      "url": "http://wiiu.joshw.info/a/ACT%20IT%20OUT!%20A%20Game%20of%20Charades%20(2016-10-10)(Snap%20Finger%20Click)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11987888
+    },
+    {
+      "name": "Adventure Time - Explore the Dungeon Because I Don't Know!",
+      "raw_name": "Adventure Time - Explore the Dungeon Because I Don't Know! (2013-11-19)(WayForward)(D3 Publisher)[WiiU].7z",
+      "date": "2013-11-19",
+      "url": "http://wiiu.joshw.info/a/Adventure%20Time%20-%20Explore%20the%20Dungeon%20Because%20I%20Don't%20Know!%20(2013-11-19)(WayForward)(D3%20Publisher)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 129484087
+    },
+    {
+      "name": "Adventures of Pip",
+      "raw_name": "Adventures of Pip (2015-06-04)(TicToc)[WiiU].7z",
+      "date": "2015-06-04",
+      "url": "http://wiiu.joshw.info/a/Adventures%20of%20Pip%20(2015-06-04)(TicToc)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 117947724
+    },
+    {
+      "name": "Aenigma Os",
+      "raw_name": "Aenigma Os (2016-09-15)(Akies)[WiiU].7z",
+      "date": "2016-09-15",
+      "url": "http://wiiu.joshw.info/a/Aenigma%20Os%20(2016-09-15)(Akies)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 29431947
+    },
+    {
+      "name": "Alice in Wonderland",
+      "raw_name": "Alice in Wonderland (2016-09-01)(Brave Rock)[WiiU].7z",
+      "date": "2016-09-01",
+      "url": "http://wiiu.joshw.info/a/Alice%20in%20Wonderland%20(2016-09-01)(Brave%20Rock)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 78044206
+    },
+    {
+      "name": "ALPHADIA GENESIS",
+      "raw_name": "ALPHADIA GENESIS (2014-11-20)(KEMCO, Exe Create)(Natsume)[WiiU].7z",
+      "date": "2014-11-20",
+      "url": "http://wiiu.joshw.info/a/ALPHADIA%20GENESIS%20(2014-11-20)(KEMCO,%20Exe%20Create)(Natsume)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 34185986
+    },
+    {
+      "name": "amiibo Settings",
+      "raw_name": "amiibo Settings (2014-11-10)(Nintendo)[WiiU].7z",
+      "date": "2014-11-10",
+      "url": "http://wiiu.joshw.info/a/amiibo%20Settings%20(2014-11-10)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1851237
+    },
+    {
+      "name": "amiibo Tap - Nintendo's Greatest Bits [Touch! amiibo - Ikanari Famicom Meishin] [amiibo Touch & Play - Nintendo Classics Highlights]",
+      "raw_name": "amiibo Tap - Nintendo's Greatest Bits [Touch! amiibo - Ikanari Famicom Meishin] [amiibo Touch & Play - Nintendo Classics Highlights] (2015-04-23)(Nintendo)[WiiU].7z",
+      "date": "2015-04-23",
+      "url": "http://wiiu.joshw.info/a/amiibo%20Tap%20-%20Nintendo's%20Greatest%20Bits%20%5bTouch!%20amiibo%20-%20Ikanari%20Famicom%20Meishin%5d%20%5bamiibo%20Touch%20&%20Play%20-%20Nintendo%20Classics%20Highlights%5d%20(2015-04-23)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2439054
+    },
+    {
+      "name": "Angry Birds Star Wars",
+      "raw_name": "Angry Birds Star Wars (2013-09-29)(Rovio)(Exient)(Activision)[WiiU].7z",
+      "date": "2013-09-29",
+      "url": "http://wiiu.joshw.info/a/Angry%20Birds%20Star%20Wars%20(2013-09-29)(Rovio)(Exient)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 93804002
+    },
+    {
+      "name": "Angry Bunnies Colossal Carrot Crusade",
+      "raw_name": "Angry Bunnies Colossal Carrot Crusade (2014-09-25)(Cypronia)[WiiU].7z",
+      "date": "2014-09-25",
+      "url": "http://wiiu.joshw.info/a/Angry%20Bunnies%20Colossal%20Carrot%20Crusade%20(2014-09-25)(Cypronia)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2172826
+    },
+    {
+      "name": "Angry Video Game Nerd Adventures",
+      "raw_name": "Angry Video Game Nerd Adventures (2015-04-02)(ScrewAttack)(FreakZone)[WiiU].7z",
+      "date": "2015-04-02",
+      "url": "http://wiiu.joshw.info/a/Angry%20Video%20Game%20Nerd%20Adventures%20(2015-04-02)(ScrewAttack)(FreakZone)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 23043890
+    },
+    {
+      "name": "Animal Crossing - Amiibo Festival",
+      "raw_name": "Animal Crossing - Amiibo Festival (2015-11-13)(Nintendo EPD, NDcube)(Nintendo)[WiiU].7z",
+      "date": "2015-11-13",
+      "url": "http://wiiu.joshw.info/a/Animal%20Crossing%20-%20Amiibo%20Festival%20(2015-11-13)(Nintendo%20EPD,%20NDcube)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 160623118
+    },
+    {
+      "name": "Animal Crossing Plaza [Doubutsu no Mori - Komorebi Hiroba]",
+      "raw_name": "Animal Crossing Plaza [Doubutsu no Mori - Komorebi Hiroba] (2013-08-07)(Nintendo)[WiiU].7z",
+      "date": "2013-08-07",
+      "url": "http://wiiu.joshw.info/a/Animal%20Crossing%20Plaza%20%5bDoubutsu%20no%20Mori%20-%20Komorebi%20Hiroba%5d%20(2013-08-07)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 6459662
+    },
+    {
+      "name": "Animal Gods",
+      "raw_name": "Animal Gods (2017-04-06)(Still)[WiiU].7z",
+      "date": "2017-04-06",
+      "url": "http://wiiu.joshw.info/a/Animal%20Gods%20(2017-04-06)(Still)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 64819755
+    },
+    {
+      "name": "Annihilation",
+      "raw_name": "Annihilation (2017-08-31)(TreeFall)[WiiU].7z",
+      "date": "2017-08-31",
+      "url": "http://wiiu.joshw.info/a/Annihilation%20(2017-08-31)(TreeFall)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 21372967
+    },
+    {
+      "name": "Aperion Cyberstorm",
+      "raw_name": "Aperion Cyberstorm (2018-02-08)(aPriori Digital)[WiiU].7z",
+      "date": "2018-02-08",
+      "url": "http://wiiu.joshw.info/a/Aperion%20Cyberstorm%20(2018-02-08)(aPriori%20Digital)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 124750203
+    },
+    {
+      "name": "Aqua Moto Racing Utopia",
+      "raw_name": "Aqua Moto Racing Utopia (2018-04-19)(Zordix)[WiiU].7z",
+      "date": "2018-04-19",
+      "url": "http://wiiu.joshw.info/a/Aqua%20Moto%20Racing%20Utopia%20(2018-04-19)(Zordix)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 159532465
+    },
+    {
+      "name": "Aqua TV",
+      "raw_name": "Aqua TV (2017-03-23)(Extra Mile)[WiiU].7z",
+      "date": "2017-03-23",
+      "url": "http://wiiu.joshw.info/a/Aqua%20TV%20(2017-03-23)(Extra%20Mile)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 27134775
+    },
+    {
+      "name": "Armikrog",
+      "raw_name": "Armikrog (2016-08-23)(Pencil Test)(Versus Evil)[WiiU].7z",
+      "date": "2016-08-23",
+      "url": "http://wiiu.joshw.info/a/Armikrog%20(2016-08-23)(Pencil%20Test)(Versus%20Evil)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 220549081
+    },
+    {
+      "name": "Armored ACORNs - Action Squirrel Squad",
+      "raw_name": "Armored ACORNs - Action Squirrel Squad (2017-03-23)(Nexcra)[WiiU].7z",
+      "date": "2017-03-23",
+      "url": "http://wiiu.joshw.info/a/Armored%20ACORNs%20-%20Action%20Squirrel%20Squad%20(2017-03-23)(Nexcra)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 33951957
+    },
+    {
+      "name": "Art Academy - Home Studio",
+      "raw_name": "Art Academy - Home Studio (2015-06-25)(Headstrong)(Nintendo)[WiiU].7z",
+      "date": "2015-06-25",
+      "url": "http://wiiu.joshw.info/a/Art%20Academy%20-%20Home%20Studio%20(2015-06-25)(Headstrong)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 157625225
+    },
+    {
+      "name": "Art Academy - SketchPad",
+      "raw_name": "Art Academy - SketchPad (2013-08-09)(Headstrong)(Nintendo)[WiiU].7z",
+      "date": "2013-08-09",
+      "url": "http://wiiu.joshw.info/a/Art%20Academy%20-%20SketchPad%20(2013-08-09)(Headstrong)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 22822496
+    },
+    {
+      "name": "Art of Balance",
+      "raw_name": "Art of Balance (2014-10-09)(Shin'en)[WiiU].7z",
+      "date": "2014-10-09",
+      "url": "http://wiiu.joshw.info/a/Art%20of%20Balance%20(2014-10-09)(Shin'en)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 14406679
+    },
+    {
+      "name": "Ascent of Kings",
+      "raw_name": "Ascent of Kings (2015-10-22)(Nostatic)[WiiU].7z",
+      "date": "2015-10-22",
+      "url": "http://wiiu.joshw.info/a/Ascent%20of%20Kings%20(2015-10-22)(Nostatic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7430990
+    },
+    {
+      "name": "Asdivine Hearts",
+      "raw_name": "Asdivine Hearts (2016-04-14)(Exe Create)(KEMCO)[WiiU].7z",
+      "date": "2016-04-14",
+      "url": "http://wiiu.joshw.info/a/Asdivine%20Hearts%20(2016-04-14)(Exe%20Create)(KEMCO)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 33583524
+    },
+    {
+      "name": "AVOIDER",
+      "raw_name": "AVOIDER (2016-01-07)(RCMADIAX)[WiiU].7z",
+      "date": "2016-01-07",
+      "url": "http://wiiu.joshw.info/a/AVOIDER%20(2016-01-07)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4383301
+    },
+    {
+      "name": "B3 Game Expo For Bees",
+      "raw_name": "B3 Game Expo For Bees (2016-06-02)(Famous Gamous)[WiiU].7z",
+      "date": "2016-06-02",
+      "url": "http://wiiu.joshw.info/b/B3%20Game%20Expo%20For%20Bees%20(2016-06-02)(Famous%20Gamous)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 31480944
+    },
+    {
+      "name": "Back to Bed",
+      "raw_name": "Back to Bed (2017-02-16)(Bedtime Digital)[WiiU].7z",
+      "date": "2017-02-16",
+      "url": "http://wiiu.joshw.info/b/Back%20to%20Bed%20(2017-02-16)(Bedtime%20Digital)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 26195953
+    },
+    {
+      "name": "BADLAND - Game of the Year Edition",
+      "raw_name": "BADLAND - Game of the Year Edition (2015-07-30)(Frogmind, Frozenbyte, Blitworks)[WiiU].7z",
+      "date": "2015-07-30",
+      "url": "http://wiiu.joshw.info/b/BADLAND%20-%20Game%20of%20the%20Year%20Edition%20(2015-07-30)(Frogmind,%20Frozenbyte,%20Blitworks)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11969338
+    },
+    {
+      "name": "Baila Latino",
+      "raw_name": "Baila Latino (2015-02-20)(Oxygene)[WiiU].7z",
+      "date": "2015-02-20",
+      "url": "http://wiiu.joshw.info/b/Baila%20Latino%20(2015-02-20)(Oxygene)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 74927580
+    },
+    {
+      "name": "Ballpoint Universe - Infinite",
+      "raw_name": "Ballpoint Universe - Infinite (2014-10-16)(Arachnid)[WiiU].7z",
+      "date": "2014-10-16",
+      "url": "http://wiiu.joshw.info/b/Ballpoint%20Universe%20-%20Infinite%20(2014-10-16)(Arachnid)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 103688799
+    },
+    {
+      "name": "Bayonetta",
+      "raw_name": "Bayonetta (2014-09-20)(Platinum)(Nintendo)[WiiU].7z",
+      "date": "2014-09-20",
+      "url": "http://wiiu.joshw.info/b/Bayonetta%20(2014-09-20)(Platinum)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1648945163
+    },
+    {
+      "name": "Bayonetta 2",
+      "raw_name": "Bayonetta 2 (2014-09-20)(Platinum)(Nintendo)[WiiU].7z",
+      "date": "2014-09-20",
+      "url": "http://wiiu.joshw.info/b/Bayonetta%202%20(2014-09-20)(Platinum)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 541978829
+    },
+    {
+      "name": "Beatbuddy",
+      "raw_name": "Beatbuddy (2015-09-24)(Threaks)[WiiU].7z",
+      "date": "2015-09-24",
+      "url": "http://wiiu.joshw.info/b/Beatbuddy%20(2015-09-24)(Threaks)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 342972875
+    },
+    {
+      "name": "Beggar's Ride, The",
+      "raw_name": "Beggar's Ride, The (2016-05-05)(Bad Seed)[WiiU].7z",
+      "date": "2016-05-05",
+      "url": "http://wiiu.joshw.info/b/Beggar's%20Ride,%20The%20(2016-05-05)(Bad%20Seed)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 27737044
+    },
+    {
+      "name": "Bike Rider UltraDX - WORLD TOUR",
+      "raw_name": "Bike Rider UltraDX - WORLD TOUR (2015-05-11)(Spicysoft)[WiiU].7z",
+      "date": "2015-05-11",
+      "url": "http://wiiu.joshw.info/b/Bike%20Rider%20UltraDX%20-%20WORLD%20TOUR%20(2015-05-11)(Spicysoft)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 28857721
+    },
+    {
+      "name": "Bird Mania Party",
+      "raw_name": "Bird Mania Party (2016-03-17)(Teyon)[WiiU].7z",
+      "date": "2016-03-17",
+      "url": "http://wiiu.joshw.info/b/Bird%20Mania%20Party%20(2016-03-17)(Teyon)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 9387629
+    },
+    {
+      "name": "Bit Dungeon+",
+      "raw_name": "Bit Dungeon+ (2016-10-13)(Dolores)[WiiU].7z",
+      "date": "2016-10-13",
+      "url": "http://wiiu.joshw.info/b/Bit%20Dungeon+%20(2016-10-13)(Dolores)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 65361359
+    },
+    {
+      "name": "Blasting Agent - Ultimate Edition",
+      "raw_name": "Blasting Agent - Ultimate Edition (2016-08-18)(Ratalaika)[WiiU].7z",
+      "date": "2016-08-18",
+      "url": "http://wiiu.joshw.info/b/Blasting%20Agent%20-%20Ultimate%20Edition%20(2016-08-18)(Ratalaika)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 26273367
+    },
+    {
+      "name": "Blek",
+      "raw_name": "Blek (2015-02-12)(kunabi brother, Broken Rules)[WiiU].7z",
+      "date": "2015-02-12",
+      "url": "http://wiiu.joshw.info/b/Blek%20(2015-02-12)(kunabi%20brother,%20Broken%20Rules)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2817719
+    },
+    {
+      "name": "BLOC",
+      "raw_name": "BLOC (2016-07-28)(Calvin Tham, Perry Burkum)(Cragworks)[WiiU].7z",
+      "date": "2016-07-28",
+      "url": "http://wiiu.joshw.info/b/BLOC%20(2016-07-28)(Calvin%20Tham,%20Perry%20Burkum)(Cragworks)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 13314777
+    },
+    {
+      "name": "Block Zombies!",
+      "raw_name": "Block Zombies! (2017-05-25)(Nostatic)[WiiU].7z",
+      "date": "2017-05-25",
+      "url": "http://wiiu.joshw.info/b/Block%20Zombies!%20(2017-05-25)(Nostatic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 5223369
+    },
+    {
+      "name": "Blocky Bot",
+      "raw_name": "Blocky Bot (2015-05-21)(Mobot)[WiiU].7z",
+      "date": "2015-05-21",
+      "url": "http://wiiu.joshw.info/b/Blocky%20Bot%20(2015-05-21)(Mobot)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 28107143
+    },
+    {
+      "name": "BLOK DROP U",
+      "raw_name": "BLOK DROP U (2014-03-06)(RCMADIAX)[WiiU].7z",
+      "date": "2014-03-06",
+      "url": "http://wiiu.joshw.info/b/BLOK%20DROP%20U%20(2014-03-06)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2507547
+    },
+    {
+      "name": "BLOK DROP X TWISTED FUSION",
+      "raw_name": "BLOK DROP X TWISTED FUSION (2014-12-18)(RCMADIAX, Leuvsion)[WiiU].7z",
+      "date": "2014-12-18",
+      "url": "http://wiiu.joshw.info/b/BLOK%20DROP%20X%20TWISTED%20FUSION%20(2014-12-18)(RCMADIAX,%20Leuvsion)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 3799520
+    },
+    {
+      "name": "Bombing Bastards",
+      "raw_name": "Bombing Bastards (2014-07-03)(Sanuk)[WiiU].7z",
+      "date": "2014-07-03",
+      "url": "http://wiiu.joshw.info/b/Bombing%20Bastards%20(2014-07-03)(Sanuk)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 35872937
+    },
+    {
+      "name": "BOX UP",
+      "raw_name": "BOX UP (2017-07-13)(RCMADIAX)[WiiU].7z",
+      "date": "2017-07-13",
+      "url": "http://wiiu.joshw.info/b/BOX%20UP%20(2017-07-13)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 3906475
+    },
+    {
+      "name": "Brave Tank Hero",
+      "raw_name": "Brave Tank Hero (2015-08-27)(Arc System Works)(Natsume)[WiiU].7z",
+      "date": "2015-08-27",
+      "url": "http://wiiu.joshw.info/b/Brave%20Tank%20Hero%20(2015-08-27)(Arc%20System%20Works)(Natsume)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 28992390
+    },
+    {
+      "name": "Breakout Defense 2",
+      "raw_name": "Breakout Defense 2 (2017-11-23)(nuGAME)[WiiU].7z",
+      "date": "2017-11-23",
+      "url": "http://wiiu.joshw.info/b/Breakout%20Defense%202%20(2017-11-23)(nuGAME)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 27313424
+    },
+    {
+      "name": "Brick Breaker",
+      "raw_name": "Brick Breaker (2016-09-15)(Sanuk)[WiiU].7z",
+      "date": "2016-09-15",
+      "url": "http://wiiu.joshw.info/b/Brick%20Breaker%20(2016-09-15)(Sanuk)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 13671458
+    },
+    {
+      "name": "BRICK RACE",
+      "raw_name": "BRICK RACE (2017-02-09)(RCMADIAX)[WiiU].7z",
+      "date": "2017-02-09",
+      "url": "http://wiiu.joshw.info/b/BRICK%20RACE%20(2017-02-09)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4892577
+    },
+    {
+      "name": "Bridge Constructor Playground",
+      "raw_name": "Bridge Constructor Playground (2016-12-06)(Joindots)[WiiU].7z",
+      "date": "2016-12-06",
+      "url": "http://wiiu.joshw.info/b/Bridge%20Constructor%20Playground%20(2016-12-06)(Joindots)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 6367686
+    },
+    {
+      "name": "Bridge, The",
+      "raw_name": "Bridge, The (2015-08-20)(The Quantum Astrophysicists Guild)[WiiU].7z",
+      "date": "2015-08-20",
+      "url": "http://wiiu.joshw.info/b/Bridge,%20The%20(2015-08-20)(The%20Quantum%20Astrophysicists%20Guild)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 69958792
+    },
+    {
+      "name": "Bubble Gum Popper",
+      "raw_name": "Bubble Gum Popper (2015-04-02)(Justin Sargent)(Skunk)[WiiU].7z",
+      "date": "2015-04-02",
+      "url": "http://wiiu.joshw.info/b/Bubble%20Gum%20Popper%20(2015-04-02)(Justin%20Sargent)(Skunk)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 15761856
+    },
+    {
+      "name": "Buddy & Me - Dream Edition",
+      "raw_name": "Buddy & Me - Dream Edition (2016-07-21)(Sunbreak)[WiiU].7z",
+      "date": "2016-07-21",
+      "url": "http://wiiu.joshw.info/b/Buddy%20&%20Me%20-%20Dream%20Edition%20(2016-07-21)(Sunbreak)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 16871564
+    },
+    {
+      "name": "Cake Ninja 3 - The Legend Continues",
+      "raw_name": "Cake Ninja 3 - The Legend Continues (2014-12-18)(Cypronia)[WiiU].7z",
+      "date": "2014-12-18",
+      "url": "http://wiiu.joshw.info/c/Cake%20Ninja%203%20-%20The%20Legend%20Continues%20(2014-12-18)(Cypronia)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 13616384
+    },
+    {
+      "name": "Candy Hoarder",
+      "raw_name": "Candy Hoarder (2017-03-09)(Nitrolic)[WiiU].7z",
+      "date": "2017-03-09",
+      "url": "http://wiiu.joshw.info/c/Candy%20Hoarder%20(2017-03-09)(Nitrolic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 22352178
+    },
+    {
+      "name": "Canvaleon",
+      "raw_name": "Canvaleon (2015-07-23)(OXiAB)[WiiU].7z",
+      "date": "2015-07-23",
+      "url": "http://wiiu.joshw.info/c/Canvaleon%20(2015-07-23)(OXiAB)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 193118839
+    },
+    {
+      "name": "Captain Toad - Treasure Tracker [Susume! Kinopio Taichou]",
+      "raw_name": "Captain Toad - Treasure Tracker [Susume! Kinopio Taichou] (2014-11-13)(Nintendo EAD Tokyo)(Nintendo)[WiiU].7z",
+      "date": "2014-11-13",
+      "url": "http://wiiu.joshw.info/c/Captain%20Toad%20-%20Treasure%20Tracker%20%5bSusume!%20Kinopio%20Taichou%5d%20(2014-11-13)(Nintendo%20EAD%20Tokyo)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 123987374
+    },
+    {
+      "name": "Cave, The",
+      "raw_name": "Cave, The (2013-01-22)(Double Fine)(SEGA)[WiiU].7z",
+      "date": "2013-01-22",
+      "url": "http://wiiu.joshw.info/c/Cave,%20The%20(2013-01-22)(Double%20Fine)(SEGA)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 104608341
+    },
+    {
+      "name": "Chariot",
+      "raw_name": "Chariot (2015-01-08)(Frima)[WiiU].7z",
+      "date": "2015-01-08",
+      "url": "http://wiiu.joshw.info/c/Chariot%20(2015-01-08)(Frima)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 73609111
+    },
+    {
+      "name": "Chasing Aurora",
+      "raw_name": "Chasing Aurora (2012-11-12)(Broken Rules)[WiiU].7z",
+      "date": "2012-11-12",
+      "url": "http://wiiu.joshw.info/c/Chasing%20Aurora%20(2012-11-12)(Broken%20Rules)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 35690120
+    },
+    {
+      "name": "Chasing Dead",
+      "raw_name": "Chasing Dead (2016-03-03)(2020 Venture)[WiiU].7z",
+      "date": "2016-03-03",
+      "url": "http://wiiu.joshw.info/c/Chasing%20Dead%20(2016-03-03)(2020%20Venture)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 72920057
+    },
+    {
+      "name": "Chimpuzzle Pro",
+      "raw_name": "Chimpuzzle Pro (2014-09-18)(CW)[WiiU].7z",
+      "date": "2014-09-18",
+      "url": "http://wiiu.joshw.info/c/Chimpuzzle%20Pro%20(2014-09-18)(CW)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 15306865
+    },
+    {
+      "name": "Chompy Chomp Chomp Party",
+      "raw_name": "Chompy Chomp Chomp Party (2016-05-19)(Utopian World of Sandwiches)[WiiU].7z",
+      "date": "2016-05-19",
+      "url": "http://wiiu.joshw.info/c/Chompy%20Chomp%20Chomp%20Party%20(2016-05-19)(Utopian%20World%20of%20Sandwiches)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 70895226
+    },
+    {
+      "name": "Christmas Adventure of Rocket Penguin",
+      "raw_name": "Christmas Adventure of Rocket Penguin (2015-11-05)(Petite)[WiiU].7z",
+      "date": "2015-11-05",
+      "url": "http://wiiu.joshw.info/c/Christmas%20Adventure%20of%20Rocket%20Penguin%20(2015-11-05)(Petite)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 3183494
+    },
+    {
+      "name": "Chroma Blast",
+      "raw_name": "Chroma Blast (2016-07-14)(WizByte)[WiiU].7z",
+      "date": "2016-07-14",
+      "url": "http://wiiu.joshw.info/c/Chroma%20Blast%20(2016-07-14)(WizByte)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 13034937
+    },
+    {
+      "name": "Chronicles of Teddy - Harmony of Exidus",
+      "raw_name": "Chronicles of Teddy - Harmony of Exidus (2016-03-31)(LookAtMyGame)(Aksys)[WiiU].7z",
+      "date": "2016-03-31",
+      "url": "http://wiiu.joshw.info/c/Chronicles%20of%20Teddy%20-%20Harmony%20of%20Exidus%20(2016-03-31)(LookAtMyGame)(Aksys)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 172829337
+    },
+    {
+      "name": "Citadale",
+      "raw_name": "Citadale (2016-11-24)(Nitrolic)[WiiU].7z",
+      "date": "2016-11-24",
+      "url": "http://wiiu.joshw.info/c/Citadale%20(2016-11-24)(Nitrolic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 44246103
+    },
+    {
+      "name": "Citadale - The Legends Trilogy",
+      "raw_name": "Citadale - The Legends Trilogy (2017-05-04)(Nitrolic)[WiiU].7z",
+      "date": "2017-05-04",
+      "url": "http://wiiu.joshw.info/c/Citadale%20-%20The%20Legends%20Trilogy%20(2017-05-04)(Nitrolic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 40084128
+    },
+    {
+      "name": "Cloudberry Kingdom",
+      "raw_name": "Cloudberry Kingdom (2013-08-01)(Pwnee)(Ubisoft)[WiiU].7z",
+      "date": "2013-08-01",
+      "url": "http://wiiu.joshw.info/c/Cloudberry%20Kingdom%20(2013-08-01)(Pwnee)(Ubisoft)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 62898961
+    },
+    {
+      "name": "Cocoto Magic Circus 2",
+      "raw_name": "Cocoto Magic Circus 2 (2014-01-09)(Neko Entertainment)(Bigben Interactive)[WiiU].7z",
+      "date": "2014-01-09",
+      "url": "http://wiiu.joshw.info/c/Cocoto%20Magic%20Circus%202%20(2014-01-09)(Neko%20Entertainment)(Bigben%20Interactive)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 43207213
+    },
+    {
+      "name": "Collateral Thinking",
+      "raw_name": "Collateral Thinking (2016-08-18)(Astrosaurus)[WiiU].7z",
+      "date": "2016-08-18",
+      "url": "http://wiiu.joshw.info/c/Collateral%20Thinking%20(2016-08-18)(Astrosaurus)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7046634
+    },
+    {
+      "name": "COLOR BOMBS",
+      "raw_name": "COLOR BOMBS (2015-10-22)(RCMADIAX)[WiiU].7z",
+      "date": "2015-10-22",
+      "url": "http://wiiu.joshw.info/c/COLOR%20BOMBS%20(2015-10-22)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2953300
+    },
+    {
+      "name": "COLOR CUBES",
+      "raw_name": "COLOR CUBES (2017-02-16)(RCMADIAX)[WiiU].7z",
+      "date": "2017-02-16",
+      "url": "http://wiiu.joshw.info/c/COLOR%20CUBES%20(2017-02-16)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 3913624
+    },
+    {
+      "name": "Color Symphony 2",
+      "raw_name": "Color Symphony 2 (2016-05-12)(REMIMORY)[WiiU].7z",
+      "date": "2016-05-12",
+      "url": "http://wiiu.joshw.info/c/Color%20Symphony%202%20(2016-05-12)(REMIMORY)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 24623631
+    },
+    {
+      "name": "Color Zen",
+      "raw_name": "Color Zen (2014-05-15)(Cypronia, Large Animal)[WiiU].7z",
+      "date": "2014-05-15",
+      "url": "http://wiiu.joshw.info/c/Color%20Zen%20(2014-05-15)(Cypronia,%20Large%20Animal)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 29118616
+    },
+    {
+      "name": "Color Zen Kids",
+      "raw_name": "Color Zen Kids (2014-06-19)(Cypronia)[WiiU].7z",
+      "date": "2014-06-19",
+      "url": "http://wiiu.joshw.info/c/Color%20Zen%20Kids%20(2014-06-19)(Cypronia)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 10029483
+    },
+    {
+      "name": "Cosmophony",
+      "raw_name": "Cosmophony (2014-10-30)(Moving Player, Bento)[WiiU].7z",
+      "date": "2014-10-30",
+      "url": "http://wiiu.joshw.info/c/Cosmophony%20(2014-10-30)(Moving%20Player,%20Bento)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 35902340
+    },
+    {
+      "name": "Costume Quest 2",
+      "raw_name": "Costume Quest 2 (2014-10-30)(Double Fine)(Midnight City)[WiiU].7z",
+      "date": "2014-10-30",
+      "url": "http://wiiu.joshw.info/c/Costume%20Quest%202%20(2014-10-30)(Double%20Fine)(Midnight%20City)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 108357904
+    },
+    {
+      "name": "Cube Life - Island Survival",
+      "raw_name": "Cube Life - Island Survival (2015-06-04)(Cypronia)[WiiU].7z",
+      "date": "2015-06-04",
+      "url": "http://wiiu.joshw.info/c/Cube%20Life%20-%20Island%20Survival%20(2015-06-04)(Cypronia)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 25799628
+    },
+    {
+      "name": "Cube Life - Pixel Action Heroes",
+      "raw_name": "Cube Life - Pixel Action Heroes (2017-03-30)(Cypronia)[WiiU].7z",
+      "date": "2017-03-30",
+      "url": "http://wiiu.joshw.info/c/Cube%20Life%20-%20Pixel%20Action%20Heroes%20(2017-03-30)(Cypronia)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 36410290
+    },
+    {
+      "name": "Cubemen 2",
+      "raw_name": "Cubemen 2 (2014-09-04)(3 Sprockets)(Nnooo)[WiiU].7z",
+      "date": "2014-09-04",
+      "url": "http://wiiu.joshw.info/c/Cubemen%202%20(2014-09-04)(3%20Sprockets)(Nnooo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 35273530
+    },
+    {
+      "name": "Cubit The Hardcore Platformer Robot HD",
+      "raw_name": "Cubit The Hardcore Platformer Robot HD (2017-06-08)(CoderChild)[WiiU].7z",
+      "date": "2017-06-08",
+      "url": "http://wiiu.joshw.info/c/Cubit%20The%20Hardcore%20Platformer%20Robot%20HD%20(2017-06-08)(CoderChild)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11096974
+    },
+    {
+      "name": "CUP CRITTERS",
+      "raw_name": "CUP CRITTERS (2017-01-05)(RCMADIAX)[WiiU].7z",
+      "date": "2017-01-05",
+      "url": "http://wiiu.joshw.info/c/CUP%20CRITTERS%20(2017-01-05)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4957405
+    },
+    {
+      "name": "Cycle of Eternity - Space Anomaly",
+      "raw_name": "Cycle of Eternity - Space Anomaly (2018-05-24)(RandomSpin)[WiiU].7z",
+      "date": "2018-05-24",
+      "url": "http://wiiu.joshw.info/c/Cycle%20of%20Eternity%20-%20Space%20Anomaly%20(2018-05-24)(RandomSpin)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 21864401
+    },
+    {
+      "name": "Daikon Set",
+      "raw_name": "Daikon Set (2017-06-22)(Butterfly)(Batafurai)[WiiU].7z",
+      "date": "2017-06-22",
+      "url": "http://wiiu.joshw.info/d/Daikon%20Set%20(2017-06-22)(Butterfly)(Batafurai)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 34387524
+    },
+    {
+      "name": "Darts Up",
+      "raw_name": "Darts Up (2014-09-25)(EnjoyUp)[WiiU].7z",
+      "date": "2014-09-25",
+      "url": "http://wiiu.joshw.info/d/Darts%20Up%20(2014-09-25)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 6908787
+    },
+    {
+      "name": "Deer God, The",
+      "raw_name": "Deer God, The (2016-04-28)(Mobot)[WiiU].7z",
+      "date": "2016-04-28",
+      "url": "http://wiiu.joshw.info/d/Deer%20God,%20The%20(2016-04-28)(Mobot)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 112363787
+    },
+    {
+      "name": "Defend your Crypt",
+      "raw_name": "Defend your Crypt (2016-07-21)(Ratalaika)[WiiU].7z",
+      "date": "2016-07-21",
+      "url": "http://wiiu.joshw.info/d/Defend%20your%20Crypt%20(2016-07-21)(Ratalaika)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 9011101
+    },
+    {
+      "name": "Defense Dome",
+      "raw_name": "Defense Dome (2015-09-17)(HullBreach)[WiiU].7z",
+      "date": "2015-09-17",
+      "url": "http://wiiu.joshw.info/d/Defense%20Dome%20(2015-09-17)(HullBreach)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4439508
+    },
+    {
+      "name": "Demonic Karma Summoner",
+      "raw_name": "Demonic Karma Summoner (2016-10-27)(GNOBSOFTWARE)[WiiU].7z",
+      "date": "2016-10-27",
+      "url": "http://wiiu.joshw.info/d/Demonic%20Karma%20Summoner%20(2016-10-27)(GNOBSOFTWARE)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7872662
+    },
+    {
+      "name": "Devil's Third",
+      "raw_name": "Devil's Third (2015-12-11)(Valhalla, Nintendo SPD)(Nintendo)[WiiU].7z",
+      "date": "2015-12-11",
+      "url": "http://wiiu.joshw.info/d/Devil's%20Third%20(2015-12-11)(Valhalla,%20Nintendo%20SPD)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 396052864
+    },
+    {
+      "name": "Digital Wii Games",
+      "raw_name": "Digital Wii Games (2015-01-14)(Nintendo)[WiiU].7z",
+      "date": "2015-01-14",
+      "url": "http://wiiu.joshw.info/d/Digital%20Wii%20Games%20(2015-01-14)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 972756
+    },
+    {
+      "name": "Dinox",
+      "raw_name": "Dinox (2015-12-10)(Engine)[WiiU].7z",
+      "date": "2015-12-10",
+      "url": "http://wiiu.joshw.info/d/Dinox%20(2015-12-10)(Engine)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4781033
+    },
+    {
+      "name": "Disney Infinity",
+      "raw_name": "Disney Infinity (2013-08-18)(Avalanche Software, Heavy Iron Studios)(Disney)[WiiU].7z",
+      "date": "2013-08-18",
+      "url": "http://wiiu.joshw.info/d/Disney%20Infinity%20(2013-08-18)(Avalanche%20Software,%20Heavy%20Iron%20Studios)(Disney)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 475753126
+    },
+    {
+      "name": "Dolphin Up",
+      "raw_name": "Dolphin Up (2015-02-05)(Rawkins)[WiiU].7z",
+      "date": "2015-02-05",
+      "url": "http://wiiu.joshw.info/d/Dolphin%20Up%20(2015-02-05)(Rawkins)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 61395003
+    },
+    {
+      "name": "Donkey Kong Country - Tropical Freeze [Donkey Kong - Tropical Freeze]",
+      "raw_name": "Donkey Kong Country - Tropical Freeze [Donkey Kong - Tropical Freeze] (2014-02-13)(Retro)(Nintendo)[WiiU].7z",
+      "date": "2014-02-13",
+      "url": "http://wiiu.joshw.info/d/Donkey%20Kong%20Country%20-%20Tropical%20Freeze%20%5bDonkey%20Kong%20-%20Tropical%20Freeze%5d%20(2014-02-13)(Retro)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 403565215
+    },
+    {
+      "name": "Double Breakout",
+      "raw_name": "Double Breakout (2016-09-22)(nuGAME)[WiiU].7z",
+      "date": "2016-09-22",
+      "url": "http://wiiu.joshw.info/d/Double%20Breakout%20(2016-09-22)(nuGAME)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 43029305
+    },
+    {
+      "name": "Double Breakout II",
+      "raw_name": "Double Breakout II (2017-03-16)(nuGAME)[WiiU].7z",
+      "date": "2017-03-16",
+      "url": "http://wiiu.joshw.info/d/Double%20Breakout%20II%20(2017-03-16)(nuGAME)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 20768215
+    },
+    {
+      "name": "Download Assistants",
+      "raw_name": "Download Assistants (2012-11-18)(Nintendo)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/d/Download%20Assistants%20(2012-11-18)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2800269
+    },
+    {
+      "name": "Dr. Luigi",
+      "raw_name": "Dr. Luigi (2013-12-31)(Arika)(Nintendo)[WiiU].7z",
+      "date": "2013-12-31",
+      "url": "http://wiiu.joshw.info/d/Dr.%20Luigi%20(2013-12-31)(Arika)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 67667942
+    },
+    {
+      "name": "Dragon Quest X",
+      "raw_name": "Dragon Quest X (2013-03-30)(Square Enix)[WiiU].7z",
+      "date": "2013-03-30",
+      "url": "http://wiiu.joshw.info/d/Dragon%20Quest%20X%20(2013-03-30)(Square%20Enix)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 402508810
+    },
+    {
+      "name": "Dragon Quest X Beta test",
+      "raw_name": "Dragon Quest X Beta test (2013-03-06)(Square Enix)[WiiU].7z",
+      "date": "2013-03-06",
+      "url": "http://wiiu.joshw.info/d/Dragon%20Quest%20X%20Beta%20test%20(2013-03-06)(Square%20Enix)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 260471307
+    },
+    {
+      "name": "Dragon Skills",
+      "raw_name": "Dragon Skills (2016-08-04)(StarGush)(Joindots)[WiiU].7z",
+      "date": "2016-08-04",
+      "url": "http://wiiu.joshw.info/d/Dragon%20Skills%20(2016-08-04)(StarGush)(Joindots)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 91815854
+    },
+    {
+      "name": "Draw 2 Survive",
+      "raw_name": "Draw 2 Survive (2016-04-14)(Unit DTH, Christian Sanders)[WiiU].7z",
+      "date": "2016-04-14",
+      "url": "http://wiiu.joshw.info/d/Draw%202%20Survive%20(2016-04-14)(Unit%20DTH,%20Christian%20Sanders)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7207581
+    },
+    {
+      "name": "Draw a Stickman - EPIC 2",
+      "raw_name": "Draw a Stickman - EPIC 2 (2017-11-30)(Hitcents)[WiiU].7z",
+      "date": "2017-11-30",
+      "url": "http://wiiu.joshw.info/d/Draw%20a%20Stickman%20-%20EPIC%202%20(2017-11-30)(Hitcents)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 66475263
+    },
+    {
+      "name": "Drawing's Journey, A",
+      "raw_name": "Drawing's Journey, A (2017-06-01)(M. R.)[WiiU].7z",
+      "date": "2017-06-01",
+      "url": "http://wiiu.joshw.info/d/Drawing's%20Journey,%20A%20(2017-06-01)(M.%20R.)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 33550533
+    },
+    {
+      "name": "Dreamals",
+      "raw_name": "Dreamals (2016-04-21)(XINESS)[WiiU].7z",
+      "date": "2016-04-21",
+      "url": "http://wiiu.joshw.info/d/Dreamals%20(2016-04-21)(XINESS)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 58044776
+    },
+    {
+      "name": "Dreamals - Dream Quest",
+      "raw_name": "Dreamals - Dream Quest (2016-09-29)(XINESS)[WiiU].7z",
+      "date": "2016-09-29",
+      "url": "http://wiiu.joshw.info/d/Dreamals%20-%20Dream%20Quest%20(2016-09-29)(XINESS)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 77630788
+    },
+    {
+      "name": "DuckTales Remastered",
+      "raw_name": "DuckTales Remastered (2013-11-12)(WayForward)(Disney)[WiiU].7z",
+      "date": "2013-11-12",
+      "url": "http://wiiu.joshw.info/d/DuckTales%20Remastered%20(2013-11-12)(WayForward)(Disney)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 177117697
+    },
+    {
+      "name": "EARTHLOCK - Festival of Magic",
+      "raw_name": "EARTHLOCK - Festival of Magic (2017-09-14)(Snowcastle)[WiiU].7z",
+      "date": "2017-09-14",
+      "url": "http://wiiu.joshw.info/e/EARTHLOCK%20-%20Festival%20of%20Magic%20(2017-09-14)(Snowcastle)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 196473561
+    },
+    {
+      "name": "Eba & Egg - A Hatch Trip",
+      "raw_name": "Eba & Egg - A Hatch Trip (2017-07-20)(Agile Drill)(Daniel Morais)[WiiU].7z",
+      "date": "2017-07-20",
+      "url": "http://wiiu.joshw.info/e/Eba%20&%20Egg%20-%20A%20Hatch%20Trip%20(2017-07-20)(Agile%20Drill)(Daniel%20Morais)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 21768253
+    },
+    {
+      "name": "ECTOPLAZA",
+      "raw_name": "ECTOPLAZA (2016-10-27)(Syndicate Atomic)[WiiU].7z",
+      "date": "2016-10-27",
+      "url": "http://wiiu.joshw.info/e/ECTOPLAZA%20(2016-10-27)(Syndicate%20Atomic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 27932804
+    },
+    {
+      "name": "EDGE",
+      "raw_name": "EDGE (2013-11-21)(Two Tribes)[WiiU].7z",
+      "date": "2013-11-21",
+      "url": "http://wiiu.joshw.info/e/EDGE%20(2013-11-21)(Two%20Tribes)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 78197329
+    },
+    {
+      "name": "Electronic Super Joy",
+      "raw_name": "Electronic Super Joy (2015-11-05)(Michael Todd, Broken Rules)[WiiU].7z",
+      "date": "2015-11-05",
+      "url": "http://wiiu.joshw.info/e/Electronic%20Super%20Joy%20(2015-11-05)(Michael%20Todd,%20Broken%20Rules)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 235660967
+    },
+    {
+      "name": "Electronic Super Joy - Groove City",
+      "raw_name": "Electronic Super Joy - Groove City (2015-01-15)(Yazar)[WiiU].7z",
+      "date": "2015-01-15",
+      "url": "http://wiiu.joshw.info/e/Electronic%20Super%20Joy%20-%20Groove%20City%20(2015-01-15)(Yazar)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 118495107
+    },
+    {
+      "name": "Elliot Quest",
+      "raw_name": "Elliot Quest (2015-03-19)(Ansimuz)(PlayEveryWare)[WiiU].7z",
+      "date": "2015-03-19",
+      "url": "http://wiiu.joshw.info/e/Elliot%20Quest%20(2015-03-19)(Ansimuz)(PlayEveryWare)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 16317733
+    },
+    {
+      "name": "Epic Dumpster Bear",
+      "raw_name": "Epic Dumpster Bear (2016-04-07)(Log)[WiiU].7z",
+      "date": "2016-04-07",
+      "url": "http://wiiu.joshw.info/e/Epic%20Dumpster%20Bear%20(2016-04-07)(Log)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 57983960
+    },
+    {
+      "name": "Escape From Flare Industries",
+      "raw_name": "Escape From Flare Industries (2016-05-05)(Team Alpha)(Helix)[WiiU].7z",
+      "date": "2016-05-05",
+      "url": "http://wiiu.joshw.info/e/Escape%20From%20Flare%20Industries%20(2016-05-05)(Team%20Alpha)(Helix)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 10698435
+    },
+    {
+      "name": "ESPN Sports Connection",
+      "raw_name": "ESPN Sports Connection (2012-11-18)(Ubisoft)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/e/ESPN%20Sports%20Connection%20(2012-11-18)(Ubisoft)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 190065855
+    },
+    {
+      "name": "EvoFish",
+      "raw_name": "EvoFish (2014-04-03)(Moving Player)[WiiU].7z",
+      "date": "2014-04-03",
+      "url": "http://wiiu.joshw.info/e/EvoFish%20(2014-04-03)(Moving%20Player)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 3427505
+    },
+    {
+      "name": "Exile's End",
+      "raw_name": "Exile's End (2016-11-22)(Magnetic Realms)(Marvelous, XSEED)[WiiU].7z",
+      "date": "2016-11-22",
+      "url": "http://wiiu.joshw.info/e/Exile's%20End%20(2016-11-22)(Magnetic%20Realms)(Marvelous,%20XSEED)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 38779810
+    },
+    {
+      "name": "Explody Bomb",
+      "raw_name": "Explody Bomb (2015-09-10)(Alkterios)[WiiU].7z",
+      "date": "2015-09-10",
+      "url": "http://wiiu.joshw.info/e/Explody%20Bomb%20(2015-09-10)(Alkterios)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4650842
+    },
+    {
+      "name": "Extreme Exorcism",
+      "raw_name": "Extreme Exorcism (2015-09-23)(Golden Ruby)(Ripstone)[WiiU].7z",
+      "date": "2015-09-23",
+      "url": "http://wiiu.joshw.info/e/Extreme%20Exorcism%20(2015-09-23)(Golden%20Ruby)(Ripstone)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 25434820
+    },
+    {
+      "name": "Fall, The",
+      "raw_name": "Fall, The (2014-08-26)(Over the Moon)[WiiU].7z",
+      "date": "2014-08-26",
+      "url": "http://wiiu.joshw.info/f/Fall,%20The%20(2014-08-26)(Over%20the%20Moon)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 112138865
+    },
+    {
+      "name": "Family Party - 30 Great Games Obstacle Arcade [Simple Series for Wii U Vol. 1 - The Family Party]",
+      "raw_name": "Family Party - 30 Great Games Obstacle Arcade [Simple Series for Wii U Vol. 1 - The Family Party] (2012-11-30)(Art)(D3)[WiiU].7z",
+      "date": "2012-11-30",
+      "url": "http://wiiu.joshw.info/f/Family%20Party%20-%2030%20Great%20Games%20Obstacle%20Arcade%20%5bSimple%20Series%20for%20Wii%20U%20Vol.%201%20-%20The%20Family%20Party%5d%20(2012-11-30)(Art)(D3)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 28832261
+    },
+    {
+      "name": "FAST Racing NEO",
+      "raw_name": "FAST Racing NEO (2015-12-10)(Shin'en)[WiiU].7z",
+      "date": "2015-12-10",
+      "url": "http://wiiu.joshw.info/f/FAST%20Racing%20NEO%20(2015-12-10)(Shin'en)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 39962382
+    },
+    {
+      "name": "Fat Dragons",
+      "raw_name": "Fat Dragons (2018-02-22)(Nostatic)[WiiU].7z",
+      "date": "2018-02-22",
+      "url": "http://wiiu.joshw.info/f/Fat%20Dragons%20(2018-02-22)(Nostatic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2659768
+    },
+    {
+      "name": "Fire - Ungh's Quest",
+      "raw_name": "Fire - Ungh's Quest (2016-10-20)(Daedalic)[WiiU].7z",
+      "date": "2016-10-20",
+      "url": "http://wiiu.joshw.info/f/Fire%20-%20Ungh's%20Quest%20(2016-10-20)(Daedalic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 229840874
+    },
+    {
+      "name": "First Skunk Bundle, The",
+      "raw_name": "First Skunk Bundle, The (2016-09-01)(Skunk)[WiiU].7z",
+      "date": "2016-09-01",
+      "url": "http://wiiu.joshw.info/f/First%20Skunk%20Bundle,%20The%20(2016-09-01)(Skunk)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 353717526
+    },
+    {
+      "name": "Flight of Light",
+      "raw_name": "Flight of Light (2017-08-03)(Crystalline Green)[WiiU].7z",
+      "date": "2017-08-03",
+      "url": "http://wiiu.joshw.info/f/Flight%20of%20Light%20(2017-08-03)(Crystalline%20Green)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 516286692
+    },
+    {
+      "name": "Flowerworks HD - Follie's Adventure",
+      "raw_name": "Flowerworks HD - Follie's Adventure (2014-04-17)(Nocturnal)[WiiU].7z",
+      "date": "2014-04-17",
+      "url": "http://wiiu.joshw.info/f/Flowerworks%20HD%20-%20Follie's%20Adventure%20(2014-04-17)(Nocturnal)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 16278332
+    },
+    {
+      "name": "forma.8",
+      "raw_name": "forma.8 (2017-02-23)(MixedBag)[WiiU].7z",
+      "date": "2017-02-23",
+      "url": "http://wiiu.joshw.info/f/forma.8%20(2017-02-23)(MixedBag)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 597624383
+    },
+    {
+      "name": "Frederic - Resurrection of Music",
+      "raw_name": "Frederic - Resurrection of Music (2014-07-31)(Forever)[WiiU].7z",
+      "date": "2014-07-31",
+      "url": "http://wiiu.joshw.info/f/Frederic%20-%20Resurrection%20of%20Music%20(2014-07-31)(Forever)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 133434296
+    },
+    {
+      "name": "Free Balling",
+      "raw_name": "Free Balling (2016-09-01)(Skunk)[WiiU].7z",
+      "date": "2016-09-01",
+      "url": "http://wiiu.joshw.info/f/Free%20Balling%20(2016-09-01)(Skunk)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 22970484
+    },
+    {
+      "name": "FreezeME",
+      "raw_name": "FreezeME (2016-02-04)(Rainy Night Creations)[WiiU].7z",
+      "date": "2016-02-04",
+      "url": "http://wiiu.joshw.info/f/FreezeME%20(2016-02-04)(Rainy%20Night%20Creations)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 71867916
+    },
+    {
+      "name": "Frenchy Bird",
+      "raw_name": "Frenchy Bird (2015-01-29)(Jérôme LABBE, Rémy PILLOT)(Carbon Fire)[WiiU].7z",
+      "date": "2015-01-29",
+      "url": "http://wiiu.joshw.info/f/Frenchy%20Bird%20(2015-01-29)(J%c3%a9r%c3%b4me%20LABBE,%20R%c3%a9my%20PILLOT)(Carbon%20Fire)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 8229574
+    },
+    {
+      "name": "Fujiko F. Fujio Characters Daishuugou! SF Dotabata Party!!",
+      "raw_name": "Fujiko F. Fujio Characters Daishuugou! SF Dotabata Party!! (2014-11-20)(Bandai Namco)[WiiU].7z",
+      "date": "2014-11-20",
+      "url": "http://wiiu.joshw.info/f/Fujiko%20F.%20Fujio%20Characters%20Daishuugou!%20SF%20Dotabata%20Party!!%20(2014-11-20)(Bandai%20Namco)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 94179224
+    },
+    {
+      "name": "Funk of Titans",
+      "raw_name": "Funk of Titans (2015-05-14)(EnjoyUp)[WiiU].7z",
+      "date": "2015-05-14",
+      "url": "http://wiiu.joshw.info/f/Funk%20of%20Titans%20(2015-05-14)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 67303814
+    },
+    {
+      "name": "Funky Physics",
+      "raw_name": "Funky Physics (2015-09-10)(Petite)[WiiU].7z",
+      "date": "2015-09-10",
+      "url": "http://wiiu.joshw.info/f/Funky%20Physics%20(2015-09-10)(Petite)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7443364
+    },
+    {
+      "name": "Futuridium EP Deluxe",
+      "raw_name": "Futuridium EP Deluxe (2016-05-26)(MixedBag)(Playism)[WiiU].7z",
+      "date": "2016-05-26",
+      "url": "http://wiiu.joshw.info/f/Futuridium%20EP%20Deluxe%20(2016-05-26)(MixedBag)(Playism)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 178724321
+    },
+    {
+      "name": "GAIABREAKER",
+      "raw_name": "GAIABREAKER (2014-08-14)(UBIQUITOUS)[WiiU].7z",
+      "date": "2014-08-14",
+      "url": "http://wiiu.joshw.info/g/GAIABREAKER%20(2014-08-14)(UBIQUITOUS)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 18241401
+    },
+    {
+      "name": "GALAXY BLASTER",
+      "raw_name": "GALAXY BLASTER (2017-07-20)(RCMADIAX)[WiiU].7z",
+      "date": "2017-07-20",
+      "url": "http://wiiu.joshw.info/g/GALAXY%20BLASTER%20(2017-07-20)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2331668
+    },
+    {
+      "name": "Game & Wario",
+      "raw_name": "Game & Wario (2013-03-28)(Intelligent Systems)(Nintendo)[WiiU].7z",
+      "date": "2013-03-28",
+      "url": "http://wiiu.joshw.info/g/Game%20&%20Wario%20(2013-03-28)(Intelligent%20Systems)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 494391189
+    },
+    {
+      "name": "Gear Gauntlet",
+      "raw_name": "Gear Gauntlet (2016-09-15)(Drop Dead)(Crystalline Green)[WiiU].7z",
+      "date": "2016-09-15",
+      "url": "http://wiiu.joshw.info/g/Gear%20Gauntlet%20(2016-09-15)(Drop%20Dead)(Crystalline%20Green)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 27667447
+    },
+    {
+      "name": "Gem Collector, The",
+      "raw_name": "Gem Collector, The (2016-09-08)(TreeFall)[WiiU].7z",
+      "date": "2016-09-08",
+      "url": "http://wiiu.joshw.info/g/Gem%20Collector,%20The%20(2016-09-08)(TreeFall)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 71804172
+    },
+    {
+      "name": "GEOM",
+      "raw_name": "GEOM (2014-06-19)(Pablo R. Millan)(Andraconus)[WiiU].7z",
+      "date": "2014-06-19",
+      "url": "http://wiiu.joshw.info/g/GEOM%20(2014-06-19)(Pablo%20R.%20Millan)(Andraconus)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11194247
+    },
+    {
+      "name": "GetClose - A game for RIVALS",
+      "raw_name": "GetClose - A game for RIVALS (2014-11-27)(Wombat Source)(JH Specialty)[WiiU].7z",
+      "date": "2014-11-27",
+      "url": "http://wiiu.joshw.info/g/GetClose%20-%20A%20game%20for%20RIVALS%20(2014-11-27)(Wombat%20Source)(JH%20Specialty)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 40354525
+    },
+    {
+      "name": "Giana Sisters - Twisted Dreams",
+      "raw_name": "Giana Sisters - Twisted Dreams (2013-08-22)(Black Forest)[WiiU].7z",
+      "date": "2013-08-22",
+      "url": "http://wiiu.joshw.info/g/Giana%20Sisters%20-%20Twisted%20Dreams%20(2013-08-22)(Black%20Forest)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 123536984
+    },
+    {
+      "name": "Girl and the Robot, The",
+      "raw_name": "Girl and the Robot, The (2017-05-25)(Flying Carpets)[WiiU].7z",
+      "date": "2017-05-25",
+      "url": "http://wiiu.joshw.info/g/Girl%20and%20the%20Robot,%20The%20(2017-05-25)(Flying%20Carpets)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 72637484
+    },
+    {
+      "name": "Girls Like Robots",
+      "raw_name": "Girls Like Robots (2015-11-12)(Popcannibal)[WiiU].7z",
+      "date": "2015-11-12",
+      "url": "http://wiiu.joshw.info/g/Girls%20Like%20Robots%20(2015-11-12)(Popcannibal)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 58453974
+    },
+    {
+      "name": "Gotouchi Tetsudou - Gotouchi Kyara to Nihon Zenkoku no Tabi",
+      "raw_name": "Gotouchi Tetsudou - Gotouchi Kyara to Nihon Zenkoku no Tabi (2014-11-27)(B.B. Studio, Design Act, Grounding)(Namco Bandai)[WiiU].7z",
+      "date": "2014-11-27",
+      "url": "http://wiiu.joshw.info/g/Gotouchi%20Tetsudou%20-%20Gotouchi%20Kyara%20to%20Nihon%20Zenkoku%20no%20Tabi%20(2014-11-27)(B.B.%20Studio,%20Design%20Act,%20Grounding)(Namco%20Bandai)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 23336922
+    },
+    {
+      "name": "Grand Prix Rock 'N Racing",
+      "raw_name": "Grand Prix Rock 'N Racing (2016-09-15)(EnjoyUp)[WiiU].7z",
+      "date": "2016-09-15",
+      "url": "http://wiiu.joshw.info/g/Grand%20Prix%20Rock%20'N%20Racing%20(2016-09-15)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 43679433
+    },
+    {
+      "name": "Gravity Badgers",
+      "raw_name": "Gravity Badgers (2014-05-29)(Wales)[WiiU].7z",
+      "date": "2014-05-29",
+      "url": "http://wiiu.joshw.info/g/Gravity%20Badgers%20(2014-05-29)(Wales)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11685143
+    },
+    {
+      "name": "Gravity+",
+      "raw_name": "Gravity+ (2016-11-03)(Nitrolic)[WiiU].7z",
+      "date": "2016-11-03",
+      "url": "http://wiiu.joshw.info/g/Gravity+%20(2016-11-03)(Nitrolic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 17431742
+    },
+    {
+      "name": "Grumpy Reaper",
+      "raw_name": "Grumpy Reaper (2016-03-10)(EnjoyUp)[WiiU].7z",
+      "date": "2016-03-10",
+      "url": "http://wiiu.joshw.info/g/Grumpy%20Reaper%20(2016-03-10)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 42568804
+    },
+    {
+      "name": "Guac' a Mole",
+      "raw_name": "Guac' a Mole (2015-04-09)(Madskull)[WiiU].7z",
+      "date": "2015-04-09",
+      "url": "http://wiiu.joshw.info/g/Guac'%20a%20Mole%20(2015-04-09)(Madskull)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 34154665
+    },
+    {
+      "name": "Gunman Clive HD Collection",
+      "raw_name": "Gunman Clive HD Collection (2015-09-03)(Hörberg)[WiiU].7z",
+      "date": "2015-09-03",
+      "url": "http://wiiu.joshw.info/g/Gunman%20Clive%20HD%20Collection%20(2015-09-03)(H%c3%b6rberg)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 65486151
+    },
+    {
+      "name": "Hello Kitty Kruisers",
+      "raw_name": "Hello Kitty Kruisers (2014-03-21)(Scarab)(Bergsala Lightweight)[WiiU].7z",
+      "date": "2014-03-21",
+      "url": "http://wiiu.joshw.info/h/Hello%20Kitty%20Kruisers%20(2014-03-21)(Scarab)(Bergsala%20Lightweight)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 28277615
+    },
+    {
+      "name": "High Strangeness",
+      "raw_name": "High Strangeness (2015-05-06)(Barnyard Intelligence)(Midnight City)[WiiU].7z",
+      "date": "2015-05-06",
+      "url": "http://wiiu.joshw.info/h/High%20Strangeness%20(2015-05-06)(Barnyard%20Intelligence)(Midnight%20City)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 149434623
+    },
+    {
+      "name": "HIVE JUMP",
+      "raw_name": "HIVE JUMP (2017-09-28)(Graphite)[WiiU].7z",
+      "date": "2017-09-28",
+      "url": "http://wiiu.joshw.info/h/HIVE%20JUMP%20(2017-09-28)(Graphite)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 146772159
+    },
+    {
+      "name": "Hold Your Fire - A Game About Responsibility",
+      "raw_name": "Hold Your Fire - A Game About Responsibility (2015-09-24)(Alkterios)[WiiU].7z",
+      "date": "2015-09-24",
+      "url": "http://wiiu.joshw.info/h/Hold%20Your%20Fire%20-%20A%20Game%20About%20Responsibility%20(2015-09-24)(Alkterios)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11967939
+    },
+    {
+      "name": "Hot Rod Racer",
+      "raw_name": "Hot Rod Racer (2016-07-21)(ZeNfA)[WiiU].7z",
+      "date": "2016-07-21",
+      "url": "http://wiiu.joshw.info/h/Hot%20Rod%20Racer%20(2016-07-21)(ZeNfA)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 5953314
+    },
+    {
+      "name": "Hot Wheels - World's Best Driver",
+      "raw_name": "Hot Wheels - World's Best Driver (2013-09-17)(Firebrand)(Warner Bros.)[WiiU].7z",
+      "date": "2013-09-17",
+      "url": "http://wiiu.joshw.info/h/Hot%20Wheels%20-%20World's%20Best%20Driver%20(2013-09-17)(Firebrand)(Warner%20Bros.)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 106365464
+    },
+    {
+      "name": "Humanitarian Helicopter",
+      "raw_name": "Humanitarian Helicopter (2016-07-21)(Peaceful)[WiiU].7z",
+      "date": "2016-07-21",
+      "url": "http://wiiu.joshw.info/h/Humanitarian%20Helicopter%20(2016-07-21)(Peaceful)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 53409162
+    },
+    {
+      "name": "Hunter's Trophy 2 - Europa",
+      "raw_name": "Hunter's Trophy 2 - Europa (2013-12-12)(Kylotonn)(Bigben Interactive)[WiiU].7z",
+      "date": "2013-12-12",
+      "url": "http://wiiu.joshw.info/h/Hunter's%20Trophy%202%20-%20Europa%20(2013-12-12)(Kylotonn)(Bigben%20Interactive)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 14101867
+    },
+    {
+      "name": "Hurry Up! Bird Hunter",
+      "raw_name": "Hurry Up! Bird Hunter (2016-10-06)(EnjoyUp)[WiiU].7z",
+      "date": "2016-10-06",
+      "url": "http://wiiu.joshw.info/h/Hurry%20Up!%20Bird%20Hunter%20(2016-10-06)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 8624586
+    },
+    {
+      "name": "Hyrule Warriors [Zelda Musou]",
+      "raw_name": "Hyrule Warriors [Zelda Musou] (2014-08-14)(Omega Force)(Nintendo)[WiiU].7z",
+      "date": "2014-08-14",
+      "url": "http://wiiu.joshw.info/h/Hyrule%20Warriors%20%5bZelda%20Musou%5d%20(2014-08-14)(Omega%20Force)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1089673512
+    },
+    {
+      "name": "I C REDD",
+      "raw_name": "I C REDD (2017-02-02)(RCMADIAX)[WiiU].7z",
+      "date": "2017-02-02",
+      "url": "http://wiiu.joshw.info/i/I%20C%20REDD%20(2017-02-02)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4694804
+    },
+    {
+      "name": "I've Got to Run!",
+      "raw_name": "I've Got to Run! (2014-06-05)(4 Corner)[WiiU].7z",
+      "date": "2014-06-05",
+      "url": "http://wiiu.joshw.info/i/I've%20Got%20to%20Run!%20(2014-06-05)(4%20Corner)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 6478913
+    },
+    {
+      "name": "Ice Cream Surfer",
+      "raw_name": "Ice Cream Surfer (2014-09-04)(Dolores)[WiiU].7z",
+      "date": "2014-09-04",
+      "url": "http://wiiu.joshw.info/i/Ice%20Cream%20Surfer%20(2014-09-04)(Dolores)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 29405166
+    },
+    {
+      "name": "Infinity Runner",
+      "raw_name": "Infinity Runner (2016-03-15)(Wales)[WiiU].7z",
+      "date": "2016-03-15",
+      "url": "http://wiiu.joshw.info/i/Infinity%20Runner%20(2016-03-15)(Wales)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 52834813
+    },
+    {
+      "name": "INVANOID",
+      "raw_name": "INVANOID (2016-06-30)(RCMADIAX)[WiiU].7z",
+      "date": "2016-06-30",
+      "url": "http://wiiu.joshw.info/i/INVANOID%20(2016-06-30)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7592131
+    },
+    {
+      "name": "IQ Test",
+      "raw_name": "IQ Test (2014-07-31)(Jordan Schuetz)(Ninja Pig)[WiiU].7z",
+      "date": "2014-07-31",
+      "url": "http://wiiu.joshw.info/i/IQ%20Test%20(2014-07-31)(Jordan%20Schuetz)(Ninja%20Pig)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 5414270
+    },
+    {
+      "name": "Island Flight Simulator",
+      "raw_name": "Island Flight Simulator (2015-12-17)(Caipirinha Games, Silent Future, Joindots)[WiiU].7z",
+      "date": "2015-12-17",
+      "url": "http://wiiu.joshw.info/i/Island%20Flight%20Simulator%20(2015-12-17)(Caipirinha%20Games,%20Silent%20Future,%20Joindots)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 21865270
+    },
+    {
+      "name": "Ittle Dew",
+      "raw_name": "Ittle Dew (2014-05-29)(Ludosity)[WiiU].7z",
+      "date": "2014-05-29",
+      "url": "http://wiiu.joshw.info/i/Ittle%20Dew%20(2014-05-29)(Ludosity)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 96350922
+    },
+    {
+      "name": "JACKPOT 777",
+      "raw_name": "JACKPOT 777 (2016-07-14)(RCMADIAX)[WiiU].7z",
+      "date": "2016-07-14",
+      "url": "http://wiiu.joshw.info/j/JACKPOT%20777%20(2016-07-14)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7150011
+    },
+    {
+      "name": "Jett Tailfin",
+      "raw_name": "Jett Tailfin (2014-08-07)(Hoplite Research, Ilusis Interactive Graphics)(Funbox Media)[WiiU].7z",
+      "date": "2014-08-07",
+      "url": "http://wiiu.joshw.info/j/Jett%20Tailfin%20(2014-08-07)(Hoplite%20Research,%20Ilusis%20Interactive%20Graphics)(Funbox%20Media)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 48205283
+    },
+    {
+      "name": "Jewel Quest",
+      "raw_name": "Jewel Quest (2016-03-10)(PlayEveryWare)(iWin)[WiiU].7z",
+      "date": "2016-03-10",
+      "url": "http://wiiu.joshw.info/j/Jewel%20Quest%20(2016-03-10)(PlayEveryWare)(iWin)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 67631594
+    },
+    {
+      "name": "Job the Leprechaun",
+      "raw_name": "Job the Leprechaun (2015-09-23)(Herrero)[WiiU].7z",
+      "date": "2015-09-23",
+      "url": "http://wiiu.joshw.info/j/Job%20the%20Leprechaun%20(2015-09-23)(Herrero)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 8333868
+    },
+    {
+      "name": "Joe's Diner",
+      "raw_name": "Joe's Diner (2016-01-28)(VIS, Silent Future, Joindots)[WiiU].7z",
+      "date": "2016-01-28",
+      "url": "http://wiiu.joshw.info/j/Joe's%20Diner%20(2016-01-28)(VIS,%20Silent%20Future,%20Joindots)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 63691236
+    },
+    {
+      "name": "Jones on Fire",
+      "raw_name": "Jones on Fire (2015-12-10)(Glass Bottom Games, Silent Future, Joindots)[WiiU].7z",
+      "date": "2015-12-10",
+      "url": "http://wiiu.joshw.info/j/Jones%20on%20Fire%20(2015-12-10)(Glass%20Bottom%20Games,%20Silent%20Future,%20Joindots)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 15561019
+    },
+    {
+      "name": "Jotun - Valhalla Edition",
+      "raw_name": "Jotun - Valhalla Edition (2016-09-08)(Thunder Lotus)[WiiU].7z",
+      "date": "2016-09-08",
+      "url": "http://wiiu.joshw.info/j/Jotun%20-%20Valhalla%20Edition%20(2016-09-08)(Thunder%20Lotus)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 80628323
+    },
+    {
+      "name": "Journey of a Special Average Balloon",
+      "raw_name": "Journey of a Special Average Balloon (2015-05-21)(TreeFall, Eli Brewer)[WiiU].7z",
+      "date": "2015-05-21",
+      "url": "http://wiiu.joshw.info/j/Journey%20of%20a%20Special%20Average%20Balloon%20(2015-05-21)(TreeFall,%20Eli%20Brewer)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 59202516
+    },
+    {
+      "name": "Just Dance 2016",
+      "raw_name": "Just Dance 2016 (2015-10-20)(Ubisoft)[WiiU].7z",
+      "date": "2015-10-20",
+      "url": "http://wiiu.joshw.info/j/Just%20Dance%202016%20(2015-10-20)(Ubisoft)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 423527242
+    },
+    {
+      "name": "Just Dance 4",
+      "raw_name": "Just Dance 4 (2012-11-18)(Ubisoft Bucharest, Ubisoft Milan, Ubisoft Paris, Ubisoft Pune, Ubisoft Reflections)(Ubisoft)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/j/Just%20Dance%204%20(2012-11-18)(Ubisoft%20Bucharest,%20Ubisoft%20Milan,%20Ubisoft%20Paris,%20Ubisoft%20Pune,%20Ubisoft%20Reflections)(Ubisoft)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 560325031
+    },
+    {
+      "name": "Just Dance Kids 2014",
+      "raw_name": "Just Dance Kids 2014 (2013-10-22)(Ubisoft Osaka)(Ubisoft)[WiiU].7z",
+      "date": "2013-10-22",
+      "url": "http://wiiu.joshw.info/j/Just%20Dance%20Kids%202014%20(2013-10-22)(Ubisoft%20Osaka)(Ubisoft)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 134113315
+    },
+    {
+      "name": "Just Dance Wii U",
+      "raw_name": "Just Dance Wii U (2014-04-03)(Ubisoft Bucharest, Ubisoft Milan, Ubisoft Montpellier, Ubisoft Paris, Ubisoft Pune, Ubisoft Reflections)(Nintendo)[WiiU].7z",
+      "date": "2014-04-03",
+      "url": "http://wiiu.joshw.info/j/Just%20Dance%20Wii%20U%20(2014-04-03)(Ubisoft%20Bucharest,%20Ubisoft%20Milan,%20Ubisoft%20Montpellier,%20Ubisoft%20Paris,%20Ubisoft%20Pune,%20Ubisoft%20Reflections)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 309379188
+    },
+    {
+      "name": "KAMEN RIDER - BATTRIDE WAR II",
+      "raw_name": "KAMEN RIDER - BATTRIDE WAR II (2014-06-26)(Eighting)(Bandai Namco)[WiiU].7z",
+      "date": "2014-06-26",
+      "url": "http://wiiu.joshw.info/k/KAMEN%20RIDER%20-%20BATTRIDE%20WAR%20II%20(2014-06-26)(Eighting)(Bandai%20Namco)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 172353730
+    },
+    {
+      "name": "KEYTARI 8-bit Music Maker",
+      "raw_name": "KEYTARI 8-bit Music Maker (2015-07-09)(Famous Gamous)[WiiU].7z",
+      "date": "2015-07-09",
+      "url": "http://wiiu.joshw.info/k/KEYTARI%208-bit%20Music%20Maker%20(2015-07-09)(Famous%20Gamous)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 141223752
+    },
+    {
+      "name": "Kick & Fennick",
+      "raw_name": "Kick & Fennick (2016-06-02)(Jaywalkers, Abstraction)[WiiU].7z",
+      "date": "2016-06-02",
+      "url": "http://wiiu.joshw.info/k/Kick%20&%20Fennick%20(2016-06-02)(Jaywalkers,%20Abstraction)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 107353386
+    },
+    {
+      "name": "Kirby and the Rainbow Curse [Touch! Kirby Super Rainbow] [Kirby and the Rainbow Paintbrush]",
+      "raw_name": "Kirby and the Rainbow Curse [Touch! Kirby Super Rainbow] [Kirby and the Rainbow Paintbrush] (2015-01-22)(HAL Laboratory)(Nintendo)[WiiU].7z",
+      "date": "2015-01-22",
+      "url": "http://wiiu.joshw.info/k/Kirby%20and%20the%20Rainbow%20Curse%20%5bTouch!%20Kirby%20Super%20Rainbow%5d%20%5bKirby%20and%20the%20Rainbow%20Paintbrush%5d%20(2015-01-22)(HAL%20Laboratory)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 361590111
+    },
+    {
+      "name": "Koi DX",
+      "raw_name": "Koi DX (2017-01-19)(Dotoyou)(CIRCLE)[WiiU].7z",
+      "date": "2017-01-19",
+      "url": "http://wiiu.joshw.info/k/Koi%20DX%20(2017-01-19)(Dotoyou)(CIRCLE)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 112049754
+    },
+    {
+      "name": "Kung Fu FIGHT!",
+      "raw_name": "Kung Fu FIGHT! (2015-08-06)(Nostatic)[WiiU].7z",
+      "date": "2015-08-06",
+      "url": "http://wiiu.joshw.info/k/Kung%20Fu%20FIGHT!%20(2015-08-06)(Nostatic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4921297
+    },
+    {
+      "name": "Kung Fu Rabbit",
+      "raw_name": "Kung Fu Rabbit (2013-05-02)(Neko)[WiiU].7z",
+      "date": "2013-05-02",
+      "url": "http://wiiu.joshw.info/k/Kung%20Fu%20Rabbit%20(2013-05-02)(Neko)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 24708200
+    },
+    {
+      "name": "Laser Blaster",
+      "raw_name": "Laser Blaster (2016-09-22)(Petite)[WiiU].7z",
+      "date": "2016-09-22",
+      "url": "http://wiiu.joshw.info/l/Laser%20Blaster%20(2016-09-22)(Petite)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4266294
+    },
+    {
+      "name": "Legend of Zelda, The - Breath of the Wild [Zelda no Densetsu - Breath of the Wild]",
+      "raw_name": "Legend of Zelda, The - Breath of the Wild [Zelda no Densetsu - Breath of the Wild] (2017-03-03)(Nintendo)[WiiU].7z",
+      "date": "2017-03-03",
+      "url": "http://wiiu.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Breath%20of%20the%20Wild%20%5bZelda%20no%20Densetsu%20-%20Breath%20of%20the%20Wild%5d%20(2017-03-03)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1551032908
+    },
+    {
+      "name": "Legend of Zelda, The - The Wind Waker HD [Zelda no Densetsu - Kaze no Takuto HD]",
+      "raw_name": "Legend of Zelda, The - The Wind Waker HD [Zelda no Densetsu - Kaze no Takuto HD] (2013-09-20)(Hexadrive)(Nintendo)[WiiU].7z",
+      "date": "2013-09-20",
+      "url": "http://wiiu.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20The%20Wind%20Waker%20HD%20%5bZelda%20no%20Densetsu%20-%20Kaze%20no%20Takuto%20HD%5d%20(2013-09-20)(Hexadrive)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 217740624
+    },
+    {
+      "name": "LEGO Dimensions",
+      "raw_name": "LEGO Dimensions (2015-09-27)(TT Games)(Warner Bros. Interactive Entertainment)[WiiU].7z",
+      "date": "2015-09-27",
+      "url": "http://wiiu.joshw.info/l/LEGO%20Dimensions%20(2015-09-27)(TT%20Games)(Warner%20Bros.%20Interactive%20Entertainment)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1016090277
+    },
+    {
+      "name": "LEGO Dimensions (DLC)",
+      "raw_name": "LEGO Dimensions (DLC) (2015-09-27)(TT Games)(Warner Bros. Interactive Entertainment)[WiiU].7z",
+      "date": "2015-09-27",
+      "url": "http://wiiu.joshw.info/l/LEGO%20Dimensions%20(DLC)%20(2015-09-27)(TT%20Games)(Warner%20Bros.%20Interactive%20Entertainment)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1009879181
+    },
+    {
+      "name": "LEGO Star Wars - The Force Awakens",
+      "raw_name": "LEGO Star Wars - The Force Awakens (2016-06-28)(TT Fusion)(Warner Bros.)[WiiU].7z",
+      "date": "2016-06-28",
+      "url": "http://wiiu.joshw.info/l/LEGO%20Star%20Wars%20-%20The%20Force%20Awakens%20(2016-06-28)(TT%20Fusion)(Warner%20Bros.)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 566477013
+    },
+    {
+      "name": "Letter Quest - Remastered",
+      "raw_name": "Letter Quest - Remastered (2016-09-08)(Bacon Bandit, Saturnine)(Digerati)[WiiU].7z",
+      "date": "2016-09-08",
+      "url": "http://wiiu.joshw.info/l/Letter%20Quest%20-%20Remastered%20(2016-09-08)(Bacon%20Bandit,%20Saturnine)(Digerati)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 96230305
+    },
+    {
+      "name": "Letter, The",
+      "raw_name": "Letter, The (2014-07-10)(TreeFall, Eli Brewer)[WiiU].7z",
+      "date": "2014-07-10",
+      "url": "http://wiiu.joshw.info/l/Letter,%20The%20(2014-07-10)(TreeFall,%20Eli%20Brewer)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 27847178
+    },
+    {
+      "name": "Level 22",
+      "raw_name": "Level 22 (2016-01-28)(Moving Player)[WiiU].7z",
+      "date": "2016-01-28",
+      "url": "http://wiiu.joshw.info/l/Level%2022%20(2016-01-28)(Moving%20Player)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 6900906
+    },
+    {
+      "name": "Life of Pixel",
+      "raw_name": "Life of Pixel (2015-06-18)(Super Icon)[WiiU].7z",
+      "date": "2015-06-18",
+      "url": "http://wiiu.joshw.info/l/Life%20of%20Pixel%20(2015-06-18)(Super%20Icon)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 104245224
+    },
+    {
+      "name": "Lone Survivor - The Director's Cut",
+      "raw_name": "Lone Survivor - The Director's Cut (2014-10-16)(Curve, Superflat)[WiiU].7z",
+      "date": "2014-10-16",
+      "url": "http://wiiu.joshw.info/l/Lone%20Survivor%20-%20The%20Director's%20Cut%20(2014-10-16)(Curve,%20Superflat)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 56160638
+    },
+    {
+      "name": "LOST REAVERS",
+      "raw_name": "LOST REAVERS (2016-04-28)(Bandai Namco)[WiiU].7z",
+      "date": "2016-04-28",
+      "url": "http://wiiu.joshw.info/l/LOST%20REAVERS%20(2016-04-28)(Bandai%20Namco)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 48433111
+    },
+    {
+      "name": "Lovely Planet",
+      "raw_name": "Lovely Planet (2016-04-05)(QUICKTEQUILA)(tinyBuild)[WiiU].7z",
+      "date": "2016-04-05",
+      "url": "http://wiiu.joshw.info/l/Lovely%20Planet%20(2016-04-05)(QUICKTEQUILA)(tinyBuild)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 38687872
+    },
+    {
+      "name": "Lucadian Chronicles",
+      "raw_name": "Lucadian Chronicles (2014-12-11)(Dark Roast)[WiiU].7z",
+      "date": "2014-12-11",
+      "url": "http://wiiu.joshw.info/l/Lucadian%20Chronicles%20(2014-12-11)(Dark%20Roast)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 463140771
+    },
+    {
+      "name": "Luv Me Buddies Wonderland",
+      "raw_name": "Luv Me Buddies Wonderland (2014-05-29)(Oxygene)[WiiU].7z",
+      "date": "2014-05-29",
+      "url": "http://wiiu.joshw.info/l/Luv%20Me%20Buddies%20Wonderland%20(2014-05-29)(Oxygene)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 18163018
+    },
+    {
+      "name": "Mahjong",
+      "raw_name": "Mahjong (2016-10-13)(Sanuk)[WiiU].7z",
+      "date": "2016-10-13",
+      "url": "http://wiiu.joshw.info/m/Mahjong%20(2016-10-13)(Sanuk)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 12574594
+    },
+    {
+      "name": "Mario & Sonic at the Rio 2016 Olympic Games",
+      "raw_name": "Mario & Sonic at the Rio 2016 Olympic Games (2016-06-23)(Sega Sports R&D)(Nintendo)[WiiU].7z",
+      "date": "2016-06-23",
+      "url": "http://wiiu.joshw.info/m/Mario%20&%20Sonic%20at%20the%20Rio%202016%20Olympic%20Games%20(2016-06-23)(Sega%20Sports%20R&D)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 436151779
+    },
+    {
+      "name": "Mario & Sonic at the Sochi 2014 Olympic Winter Games",
+      "raw_name": "Mario & Sonic at the Sochi 2014 Olympic Winter Games (2013-11-08)(Sega Sports R&D)(Nintendo)[WiiU].7z",
+      "date": "2013-11-08",
+      "url": "http://wiiu.joshw.info/m/Mario%20&%20Sonic%20at%20the%20Sochi%202014%20Olympic%20Winter%20Games%20(2013-11-08)(Sega%20Sports%20R&D)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1369580019
+    },
+    {
+      "name": "Mario Kart 8",
+      "raw_name": "Mario Kart 8 (2014-05-29)(Nintendo)[WiiU].7z",
+      "date": "2014-05-29",
+      "url": "http://wiiu.joshw.info/m/Mario%20Kart%208%20(2014-05-29)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 404688695
+    },
+    {
+      "name": "Mario Party 10",
+      "raw_name": "Mario Party 10 (2015-03-12)(NdCUBE)(Nintendo)[WiiU].7z",
+      "date": "2015-03-12",
+      "url": "http://wiiu.joshw.info/m/Mario%20Party%2010%20(2015-03-12)(NdCUBE)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 380280473
+    },
+    {
+      "name": "Mario Tennis - Ultra Smash",
+      "raw_name": "Mario Tennis - Ultra Smash (2015-11-20)(Camelot)(Nintendo)[WiiU].7z",
+      "date": "2015-11-20",
+      "url": "http://wiiu.joshw.info/m/Mario%20Tennis%20-%20Ultra%20Smash%20(2015-11-20)(Camelot)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 58906964
+    },
+    {
+      "name": "Mario vs. Donkey Kong Tipping Stars",
+      "raw_name": "Mario vs. Donkey Kong Tipping Stars (2015-03-05)(Nintendo)[WiiU].7z",
+      "date": "2015-03-05",
+      "url": "http://wiiu.joshw.info/m/Mario%20vs.%20Donkey%20Kong%20Tipping%20Stars%20(2015-03-05)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 99825128
+    },
+    {
+      "name": "MARIOKART 8 Campaign Soft [Campaign Obo-yo Soft]",
+      "raw_name": "MARIOKART 8 Campaign Soft [Campaign Obo-yo Soft] (2014-05-29)(Nintendo)[WiiU].7z",
+      "date": "2014-05-29",
+      "url": "http://wiiu.joshw.info/m/MARIOKART%208%20Campaign%20Soft%20%5bCampaign%20Obo-yo%20Soft%5d%20(2014-05-29)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2778284
+    },
+    {
+      "name": "Masked Forces",
+      "raw_name": "Masked Forces (2018-05-31)(R.G.B.)[WiiU].7z",
+      "date": "2018-05-31",
+      "url": "http://wiiu.joshw.info/m/Masked%20Forces%20(2018-05-31)(R.G.B.)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7222363
+    },
+    {
+      "name": "Maze",
+      "raw_name": "Maze (2015-01-08)(TreeFall, Eli Brewer)[WiiU].7z",
+      "date": "2015-01-08",
+      "url": "http://wiiu.joshw.info/m/Maze%20(2015-01-08)(TreeFall,%20Eli%20Brewer)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 136297576
+    },
+    {
+      "name": "Maze Break",
+      "raw_name": "Maze Break (2017-02-23)(nuGAME)[WiiU].7z",
+      "date": "2017-02-23",
+      "url": "http://wiiu.joshw.info/m/Maze%20Break%20(2017-02-23)(nuGAME)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 25538782
+    },
+    {
+      "name": "Meme Run",
+      "raw_name": "Meme Run (2014-12-14)(Ninja Pig Studios)[WiiU].7z",
+      "date": "2014-12-14",
+      "url": "http://wiiu.joshw.info/m/Meme%20Run%20(2014-12-14)(Ninja%20Pig%20Studios)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7980946
+    },
+    {
+      "name": "Midnight 2",
+      "raw_name": "Midnight 2 (2016-05-05)(Petite)[WiiU].7z",
+      "date": "2016-05-05",
+      "url": "http://wiiu.joshw.info/m/Midnight%202%20(2016-05-05)(Petite)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 6763269
+    },
+    {
+      "name": "Midtown Crazy Race",
+      "raw_name": "Midtown Crazy Race (2014-08-21)(Jose Varela)[WiiU].7z",
+      "date": "2014-08-21",
+      "url": "http://wiiu.joshw.info/m/Midtown%20Crazy%20Race%20(2014-08-21)(Jose%20Varela)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 25174491
+    },
+    {
+      "name": "Mighty Switch Force! 2",
+      "raw_name": "Mighty Switch Force! 2 (2013-10-17)(WayForward)[WiiU].7z",
+      "date": "2013-10-17",
+      "url": "http://wiiu.joshw.info/m/Mighty%20Switch%20Force!%202%20(2013-10-17)(WayForward)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 23180800
+    },
+    {
+      "name": "Mighty Switch Force! Hyper Drive Edition",
+      "raw_name": "Mighty Switch Force! Hyper Drive Edition (2012-11-18)(WayForward)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/m/Mighty%20Switch%20Force!%20Hyper%20Drive%20Edition%20(2012-11-18)(WayForward)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 37735720
+    },
+    {
+      "name": "Mii Maker",
+      "raw_name": "Mii Maker (2012-11-18)(Nintendo)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/m/Mii%20Maker%20(2012-11-18)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 14675801
+    },
+    {
+      "name": "Miiverse",
+      "raw_name": "Miiverse (2012-11-18)(Hatena)(Nintendo)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/m/Miiverse%20(2012-11-18)(Hatena)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 5593173
+    },
+    {
+      "name": "MikroGame - Rotator",
+      "raw_name": "MikroGame - Rotator (2016-08-18)(Studio de la Torre)[WiiU].7z",
+      "date": "2016-08-18",
+      "url": "http://wiiu.joshw.info/m/MikroGame%20-%20Rotator%20(2016-08-18)(Studio%20de%20la%20Torre)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 14296061
+    },
+    {
+      "name": "Mini Mario & Friends - amiibo Challenge",
+      "raw_name": "Mini Mario & Friends - amiibo Challenge (2016-04-28)(Nintendo)[WiiU].7z",
+      "date": "2016-04-28",
+      "url": "http://wiiu.joshw.info/m/Mini%20Mario%20&%20Friends%20-%20amiibo%20Challenge%20(2016-04-28)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 41433463
+    },
+    {
+      "name": "MINI-GAMES MADNESS VOLUME #1 - HELLO WORLD!",
+      "raw_name": "MINI-GAMES MADNESS VOLUME #1 - HELLO WORLD! (2016-01-28)(Skunk)[WiiU].7z",
+      "date": "2016-01-28",
+      "url": "http://wiiu.joshw.info/m/MINI-GAMES%20MADNESS%20VOLUME%20%231%20-%20HELLO%20WORLD!%20(2016-01-28)(Skunk)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": null
+    },
+    {
+      "name": "Monkey Pirates",
+      "raw_name": "Monkey Pirates (2014-06-26)(Henchmen)[WiiU].7z",
+      "date": "2014-06-26",
+      "url": "http://wiiu.joshw.info/m/Monkey%20Pirates%20(2014-06-26)(Henchmen)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 27554318
+    },
+    {
+      "name": "Monster High - 13 Wishes",
+      "raw_name": "Monster High - 13 Wishes (2013-10-29)(Game Machine)(Little Orbit)[WiiU].7z",
+      "date": "2013-10-29",
+      "url": "http://wiiu.joshw.info/m/Monster%20High%20-%2013%20Wishes%20(2013-10-29)(Game%20Machine)(Little%20Orbit)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 32644205
+    },
+    {
+      "name": "Monster Hunter 3 Ultimate [Monster Hunter Tri]",
+      "raw_name": "Monster Hunter 3 Ultimate [Monster Hunter Tri] (2013-03-19)(Capcom)[WiiU].7z",
+      "date": "2013-03-19",
+      "url": "http://wiiu.joshw.info/m/Monster%20Hunter%203%20Ultimate%20%5bMonster%20Hunter%20Tri%5d%20(2013-03-19)(Capcom)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 837456155
+    },
+    {
+      "name": "Mortar Melon",
+      "raw_name": "Mortar Melon (2015-08-20)(Mudvark, Nitrolic)[WiiU].7z",
+      "date": "2015-08-20",
+      "url": "http://wiiu.joshw.info/m/Mortar%20Melon%20(2015-08-20)(Mudvark,%20Nitrolic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 6357518
+    },
+    {
+      "name": "Mr. Pumpkin Adventure",
+      "raw_name": "Mr. Pumpkin Adventure (2016-10-20)(CottonGame)(CIRCLE)[WiiU].7z",
+      "date": "2016-10-20",
+      "url": "http://wiiu.joshw.info/m/Mr.%20Pumpkin%20Adventure%20(2016-10-20)(CottonGame)(CIRCLE)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 40322205
+    },
+    {
+      "name": "Mutant Alien Moles of the Dead",
+      "raw_name": "Mutant Alien Moles of the Dead (2017-06-15)(EnjoyUp)[WiiU].7z",
+      "date": "2017-06-15",
+      "url": "http://wiiu.joshw.info/m/Mutant%20Alien%20Moles%20of%20the%20Dead%20(2017-06-15)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 25843700
+    },
+    {
+      "name": "My Farm",
+      "raw_name": "My Farm (2014-02-27)(BiP)[WiiU].7z",
+      "date": "2014-02-27",
+      "url": "http://wiiu.joshw.info/m/My%20Farm%20(2014-02-27)(BiP)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 8015201
+    },
+    {
+      "name": "My First Songs",
+      "raw_name": "My First Songs (2014-04-17)(RingZero)[WiiU].7z",
+      "date": "2014-04-17",
+      "url": "http://wiiu.joshw.info/m/My%20First%20Songs%20(2014-04-17)(RingZero)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 49812831
+    },
+    {
+      "name": "My Style Studio - Hair Salon",
+      "raw_name": "My Style Studio - Hair Salon (2014-03-27)(Cypronia)[WiiU].7z",
+      "date": "2014-03-27",
+      "url": "http://wiiu.joshw.info/m/My%20Style%20Studio%20-%20Hair%20Salon%20(2014-03-27)(Cypronia)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 6155921
+    },
+    {
+      "name": "My Style Studio - Notebook",
+      "raw_name": "My Style Studio - Notebook (2015-03-12)(Cypronia)[WiiU].7z",
+      "date": "2015-03-12",
+      "url": "http://wiiu.joshw.info/m/My%20Style%20Studio%20-%20Notebook%20(2015-03-12)(Cypronia)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 8144139
+    },
+    {
+      "name": "Mysterious Cities of Gold - Secret Paths, The",
+      "raw_name": "Mysterious Cities of Gold - Secret Paths, The (2013-11-21)(Neko)(Ynnis)[WiiU].7z",
+      "date": "2013-11-21",
+      "url": "http://wiiu.joshw.info/m/Mysterious%20Cities%20of%20Gold%20-%20Secret%20Paths,%20The%20(2013-11-21)(Neko)(Ynnis)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 107970992
+    },
+    {
+      "name": "Nano Assault Neo",
+      "raw_name": "Nano Assault Neo (2012-11-18)(Shin'en)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/n/Nano%20Assault%20Neo%20(2012-11-18)(Shin'en)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 13808053
+    },
+    {
+      "name": "Neon Battle",
+      "raw_name": "Neon Battle (2015-07-09)(Bailey Earley, Ari Markowitz, Xander Wall)(Helix)[WiiU].7z",
+      "date": "2015-07-09",
+      "url": "http://wiiu.joshw.info/n/Neon%20Battle%20(2015-07-09)(Bailey%20Earley,%20Ari%20Markowitz,%20Xander%20Wall)(Helix)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 36282856
+    },
+    {
+      "name": "NES Remix 2 [Famicom Remix 2]",
+      "raw_name": "NES Remix 2 [Famicom Remix 2] (2014-04-25)(Indies Zero)(Nintendo)[WiiU].7z",
+      "date": "2014-04-25",
+      "url": "http://wiiu.joshw.info/n/NES%20Remix%202%20%5bFamicom%20Remix%202%5d%20(2014-04-25)(Indies%20Zero)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 33562914
+    },
+    {
+      "name": "NES Remix [Famicom Remix]",
+      "raw_name": "NES Remix [Famicom Remix] (2013-12-18)(Indies Zero)(Nintendo)[WiiU].7z",
+      "date": "2013-12-18",
+      "url": "http://wiiu.joshw.info/n/NES%20Remix%20%5bFamicom%20Remix%5d%20(2013-12-18)(Indies%20Zero)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 22647665
+    },
+    {
+      "name": "NES Remix Pack [Famicom Remix 1 + 2]",
+      "raw_name": "NES Remix Pack [Famicom Remix 1 + 2] (2014-04-24)(Indies Zero)(Nintendo)[WiiU].7z",
+      "date": "2014-04-24",
+      "url": "http://wiiu.joshw.info/n/NES%20Remix%20Pack%20%5bFamicom%20Remix%201%20+%202%5d%20(2014-04-24)(Indies%20Zero)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 832047
+    },
+    {
+      "name": "Never Alone (Kisima Ingitchuna)",
+      "raw_name": "Never Alone (Kisima Ingitchuna) (2015-06-25)(Upper One, E-Line)[WiiU].7z",
+      "date": "2015-06-25",
+      "url": "http://wiiu.joshw.info/n/Never%20Alone%20(Kisima%20Ingitchuna)%20(2015-06-25)(Upper%20One,%20E-Line)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 263687549
+    },
+    {
+      "name": "New Super Mario Bros. U",
+      "raw_name": "New Super Mario Bros. U (2012-11-18)(Nintendo)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/n/New%20Super%20Mario%20Bros.%20U%20(2012-11-18)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 174093282
+    },
+    {
+      "name": "Nihilumbra",
+      "raw_name": "Nihilumbra (2015-05-14)(Beautifun)[WiiU].7z",
+      "date": "2015-05-14",
+      "url": "http://wiiu.joshw.info/n/Nihilumbra%20(2015-05-14)(Beautifun)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 58697399
+    },
+    {
+      "name": "Ninja Gaiden 3 - Razor's Edge",
+      "raw_name": "Ninja Gaiden 3 - Razor's Edge (2012-11-18)(Tecmo Koei)(Nintendo)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/n/Ninja%20Gaiden%203%20-%20Razor's%20Edge%20(2012-11-18)(Tecmo%20Koei)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 727377276
+    },
+    {
+      "name": "Ninja Pizza Girl",
+      "raw_name": "Ninja Pizza Girl (2016-10-06)(Disparity)[WiiU].7z",
+      "date": "2016-10-06",
+      "url": "http://wiiu.joshw.info/n/Ninja%20Pizza%20Girl%20(2016-10-06)(Disparity)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 111107806
+    },
+    {
+      "name": "Ninja Strike Dangerous Dash",
+      "raw_name": "Ninja Strike Dangerous Dash (2015-10-15)(Natsume)[WiiU].7z",
+      "date": "2015-10-15",
+      "url": "http://wiiu.joshw.info/n/Ninja%20Strike%20Dangerous%20Dash%20(2015-10-15)(Natsume)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 23523452
+    },
+    {
+      "name": "Nintendo eShop",
+      "raw_name": "Nintendo eShop (2012-11-18)(Nintendo)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/n/Nintendo%20eShop%20(2012-11-18)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 5967915
+    },
+    {
+      "name": "Nintendo Game Seminar 2013 Student Works",
+      "raw_name": "Nintendo Game Seminar 2013 Student Works (2014-06-19)(Nintendo)[WiiU].7z",
+      "date": "2014-06-19",
+      "url": "http://wiiu.joshw.info/n/Nintendo%20Game%20Seminar%202013%20Student%20Works%20(2014-06-19)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 147899983
+    },
+    {
+      "name": "Nintendo Game Seminar 2014 Doki Doki Letter Relay",
+      "raw_name": "Nintendo Game Seminar 2014 Doki Doki Letter Relay (2015-06-24)(Nintendo)[WiiU].7z",
+      "date": "2015-06-24",
+      "url": "http://wiiu.joshw.info/n/Nintendo%20Game%20Seminar%202014%20Doki%20Doki%20Letter%20Relay%20(2015-06-24)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 17226629
+    },
+    {
+      "name": "Nintendo Land",
+      "raw_name": "Nintendo Land (2012-11-18)(Nintendo)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/n/Nintendo%20Land%20(2012-11-18)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 790167849
+    },
+    {
+      "name": "Nintendo×JOYSOUND Wii Karaoke U",
+      "raw_name": "Nintendo×JOYSOUND Wii Karaoke U (2012-12-08)(Nintendo)[WiiU].7z",
+      "date": "2012-12-08",
+      "url": "http://wiiu.joshw.info/n/Nintendo%c3%97JOYSOUND%20Wii%20Karaoke%20U%20(2012-12-08)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 46015183
+    },
+    {
+      "name": "Noitu Love Devolution",
+      "raw_name": "Noitu Love Devolution (2016-09-15)(Joakim Sandberg, MP2)[WiiU].7z",
+      "date": "2016-09-15",
+      "url": "http://wiiu.joshw.info/n/Noitu%20Love%20Devolution%20(2016-09-15)(Joakim%20Sandberg,%20MP2)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 25973985
+    },
+    {
+      "name": "Nova-111",
+      "raw_name": "Nova-111 (2015-09-24)(Carbon, Funktronic Labs)(Curve Digital)[WiiU].7z",
+      "date": "2015-09-24",
+      "url": "http://wiiu.joshw.info/n/Nova-111%20(2015-09-24)(Carbon,%20Funktronic%20Labs)(Curve%20Digital)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 59286140
+    },
+    {
+      "name": "Octocopter - Super Sub Squid Escape",
+      "raw_name": "Octocopter - Super Sub Squid Escape (2016-11-24)(TACS)[WiiU].7z",
+      "date": "2016-11-24",
+      "url": "http://wiiu.joshw.info/o/Octocopter%20-%20Super%20Sub%20Squid%20Escape%20(2016-11-24)(TACS)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 36103297
+    },
+    {
+      "name": "Ohayou! Beginner's Japanese",
+      "raw_name": "Ohayou! Beginner's Japanese (2016-11-17)(Finger Gun)[WiiU].7z",
+      "date": "2016-11-17",
+      "url": "http://wiiu.joshw.info/o/Ohayou!%20Beginner's%20Japanese%20(2016-11-17)(Finger%20Gun)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11936601
+    },
+    {
+      "name": "OlliOlli",
+      "raw_name": "OlliOlli (2015-03-05)(Carbon, Roll7)(Curve)[WiiU].7z",
+      "date": "2015-03-05",
+      "url": "http://wiiu.joshw.info/o/OlliOlli%20(2015-03-05)(Carbon,%20Roll7)(Curve)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 42822305
+    },
+    {
+      "name": "Olympia Rising",
+      "raw_name": "Olympia Rising (2016-06-09)(Paleozoic)(PlayEveryWare)[WiiU].7z",
+      "date": "2016-06-09",
+      "url": "http://wiiu.joshw.info/o/Olympia%20Rising%20(2016-06-09)(Paleozoic)(PlayEveryWare)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 16018391
+    },
+    {
+      "name": "ORBIT",
+      "raw_name": "ORBIT (2017-04-20)(RCMADIAX)[WiiU].7z",
+      "date": "2017-04-20",
+      "url": "http://wiiu.joshw.info/o/ORBIT%20(2017-04-20)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4249188
+    },
+    {
+      "name": "Outside the Realm",
+      "raw_name": "Outside the Realm (2016-02-11)(TreeFall)[WiiU].7z",
+      "date": "2016-02-11",
+      "url": "http://wiiu.joshw.info/o/Outside%20the%20Realm%20(2016-02-11)(TreeFall)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 22951009
+    },
+    {
+      "name": "PANDA LOVE",
+      "raw_name": "PANDA LOVE (2016-09-01)(RCMADIAX)[WiiU].7z",
+      "date": "2016-09-01",
+      "url": "http://wiiu.joshw.info/p/PANDA%20LOVE%20(2016-09-01)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2277874
+    },
+    {
+      "name": "Paparazzi",
+      "raw_name": "Paparazzi (2015-02-17)(Pringo Dingo)[WiiU].7z",
+      "date": "2015-02-17",
+      "url": "http://wiiu.joshw.info/p/Paparazzi%20(2015-02-17)(Pringo%20Dingo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 19072307
+    },
+    {
+      "name": "Paper Mario - Color Splash",
+      "raw_name": "Paper Mario - Color Splash (2016-10-07)(Intelligent Systems)(Nintendo)[WiiU].7z",
+      "date": "2016-10-07",
+      "url": "http://wiiu.joshw.info/p/Paper%20Mario%20-%20Color%20Splash%20(2016-10-07)(Intelligent%20Systems)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 360555103
+    },
+    {
+      "name": "Paper Monsters Recut",
+      "raw_name": "Paper Monsters Recut (2014-10-16)(Mobot)[WiiU].7z",
+      "date": "2014-10-16",
+      "url": "http://wiiu.joshw.info/p/Paper%20Monsters%20Recut%20(2014-10-16)(Mobot)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 77856255
+    },
+    {
+      "name": "Peanuts Movie - Snoopy's Grand Adventure, The",
+      "raw_name": "Peanuts Movie - Snoopy's Grand Adventure, The (2015-11-03)(Behaviour)(Activision)[WiiU].7z",
+      "date": "2015-11-03",
+      "url": "http://wiiu.joshw.info/p/Peanuts%20Movie%20-%20Snoopy's%20Grand%20Adventure,%20The%20(2015-11-03)(Behaviour)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 58287071
+    },
+    {
+      "name": "PEG SOLITAIRE",
+      "raw_name": "PEG SOLITAIRE (2016-02-04)(RCMADIAX)[WiiU].7z",
+      "date": "2016-02-04",
+      "url": "http://wiiu.joshw.info/p/PEG%20SOLITAIRE%20(2016-02-04)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4053684
+    },
+    {
+      "name": "PENTAPUZZLE",
+      "raw_name": "PENTAPUZZLE (2015-03-19)(RCMADIAX)[WiiU].7z",
+      "date": "2015-03-19",
+      "url": "http://wiiu.joshw.info/p/PENTAPUZZLE%20(2015-03-19)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 5221431
+    },
+    {
+      "name": "Pic-a-Pix Color",
+      "raw_name": "Pic-a-Pix Color (2017-04-13)(Lightwood)[WiiU].7z",
+      "date": "2017-04-13",
+      "url": "http://wiiu.joshw.info/p/Pic-a-Pix%20Color%20(2017-04-13)(Lightwood)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4223521
+    },
+    {
+      "name": "PictoParty",
+      "raw_name": "PictoParty (2015-10-29)(Retroid)[WiiU].7z",
+      "date": "2015-10-29",
+      "url": "http://wiiu.joshw.info/p/PictoParty%20(2015-10-29)(Retroid)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4123617
+    },
+    {
+      "name": "Pig Medal",
+      "raw_name": "Pig Medal (2014-07-22)(Nintendo)[WiiU].7z",
+      "date": "2014-07-22",
+      "url": "http://wiiu.joshw.info/p/Pig%20Medal%20(2014-07-22)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 28622737
+    },
+    {
+      "name": "Pikmin 3",
+      "raw_name": "Pikmin 3 (2013-07-13)(Nintendo)[WiiU].7z",
+      "date": "2013-07-13",
+      "url": "http://wiiu.joshw.info/p/Pikmin%203%20(2013-07-13)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 381109375
+    },
+    {
+      "name": "Pinball Breakout",
+      "raw_name": "Pinball Breakout (2016-11-03)(nuGAME)[WiiU].7z",
+      "date": "2016-11-03",
+      "url": "http://wiiu.joshw.info/p/Pinball%20Breakout%20(2016-11-03)(nuGAME)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 32984657
+    },
+    {
+      "name": "PING 1.5+",
+      "raw_name": "PING 1.5+ (2014-10-16)Nami Tentou Mushi)[WiiU].7z",
+      "date": "2014-10-16",
+      "url": "http://wiiu.joshw.info/p/PING%201.5+%20(2014-10-16)Nami%20Tentou%20Mushi)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 148344816
+    },
+    {
+      "name": "Pirate Pop Plus",
+      "raw_name": "Pirate Pop Plus (2016-10-20)(dadako)(13AM)[WiiU].7z",
+      "date": "2016-10-20",
+      "url": "http://wiiu.joshw.info/p/Pirate%20Pop%20Plus%20(2016-10-20)(dadako)(13AM)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 34181810
+    },
+    {
+      "name": "Pixel Paint",
+      "raw_name": "Pixel Paint (2014-10-30)(Aury Glenz, Two Kernel Connection)[WiiU].7z",
+      "date": "2014-10-30",
+      "url": "http://wiiu.joshw.info/p/Pixel%20Paint%20(2014-10-30)(Aury%20Glenz,%20Two%20Kernel%20Connection)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 21541980
+    },
+    {
+      "name": "PIXEL SLIME U",
+      "raw_name": "PIXEL SLIME U (2015-08-27)(RCMADIAX)[WiiU].7z",
+      "date": "2015-08-27",
+      "url": "http://wiiu.joshw.info/p/PIXEL%20SLIME%20U%20(2015-08-27)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 3200680
+    },
+    {
+      "name": "Planes",
+      "raw_name": "Planes (2013-08-06)(Behaviour)(Disney)[WiiU].7z",
+      "date": "2013-08-06",
+      "url": "http://wiiu.joshw.info/p/Planes%20(2013-08-06)(Behaviour)(Disney)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 472664063
+    },
+    {
+      "name": "Planes - Fire & Rescue",
+      "raw_name": "Planes - Fire & Rescue (2014-11-04)(Game Machine)(Little Orbit)[WiiU].7z",
+      "date": "2014-11-04",
+      "url": "http://wiiu.joshw.info/p/Planes%20-%20Fire%20&%20Rescue%20(2014-11-04)(Game%20Machine)(Little%20Orbit)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 28651641
+    },
+    {
+      "name": "Plantera",
+      "raw_name": "Plantera (2017-02-09)(Ratalaika)[WiiU].7z",
+      "date": "2017-02-09",
+      "url": "http://wiiu.joshw.info/p/Plantera%20(2017-02-09)(Ratalaika)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 9515294
+    },
+    {
+      "name": "Plenty of Fishies",
+      "raw_name": "Plenty of Fishies (2014-12-18)(Nitrolic, Matthew Flewelling)[WiiU].7z",
+      "date": "2014-12-18",
+      "url": "http://wiiu.joshw.info/p/Plenty%20of%20Fishies%20(2014-12-18)(Nitrolic,%20Matthew%20Flewelling)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 25670982
+    },
+    {
+      "name": "Pokemon Rumble U",
+      "raw_name": "Pokemon Rumble U (2013-08-29)(Ambrella)(The Pokemon Company)[WiiU].7z",
+      "date": "2013-08-29",
+      "url": "http://wiiu.joshw.info/p/Pokemon%20Rumble%20U%20(2013-08-29)(Ambrella)(The%20Pokemon%20Company)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 191352842
+    },
+    {
+      "name": "Pokken Tournament",
+      "raw_name": "Pokken Tournament (2016-03-18)(Bandai Namco)(Nintendo)[WiiU].7z",
+      "date": "2016-03-18",
+      "url": "http://wiiu.joshw.info/p/Pokken%20Tournament%20(2016-03-18)(Bandai%20Namco)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 211869713
+    },
+    {
+      "name": "PONCHO",
+      "raw_name": "PONCHO (2016-08-18)(Delve)(Rising Star)[WiiU].7z",
+      "date": "2016-08-18",
+      "url": "http://wiiu.joshw.info/p/PONCHO%20(2016-08-18)(Delve)(Rising%20Star)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 89019796
+    },
+    {
+      "name": "PSIBO",
+      "raw_name": "PSIBO (2016-10-06)(Nami Tentou)[WiiU].7z",
+      "date": "2016-10-06",
+      "url": "http://wiiu.joshw.info/p/PSIBO%20(2016-10-06)(Nami%20Tentou)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 17586675
+    },
+    {
+      "name": "psyscrolr",
+      "raw_name": "psyscrolr (2015-04-02)(Jonathan Meyer, Scott Hitchcock, Jared Cohen)(Actos)[WiiU].7z",
+      "date": "2015-04-02",
+      "url": "http://wiiu.joshw.info/p/psyscrolr%20(2015-04-02)(Jonathan%20Meyer,%20Scott%20Hitchcock,%20Jared%20Cohen)(Actos)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 62948022
+    },
+    {
+      "name": "Puddle",
+      "raw_name": "Puddle (2013-01-31)(Neko)[WiiU].7z",
+      "date": "2013-01-31",
+      "url": "http://wiiu.joshw.info/p/Puddle%20(2013-01-31)(Neko)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 237970667
+    },
+    {
+      "name": "Pumped BMX +",
+      "raw_name": "Pumped BMX + (2015-10-01)(Carbon, Yeah Us!)(Curve Digital)[WiiU].7z",
+      "date": "2015-10-01",
+      "url": "http://wiiu.joshw.info/p/Pumped%20BMX%20+%20(2015-10-01)(Carbon,%20Yeah%20Us!)(Curve%20Digital)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 152307644
+    },
+    {
+      "name": "Pushmo World [Hikuosu World] [Pullblox World]",
+      "raw_name": "Pushmo World [Hikuosu World] [Pullblox World] (2014-06-19)(Intelligent Systems)(Nintendo)[WiiU].7z",
+      "date": "2014-06-19",
+      "url": "http://wiiu.joshw.info/p/Pushmo%20World%20%5bHikuosu%20World%5d%20%5bPullblox%20World%5d%20(2014-06-19)(Intelligent%20Systems)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 76610857
+    },
+    {
+      "name": "Puyo Puyo Tetris",
+      "raw_name": "Puyo Puyo Tetris (2014-12-06)(Sonic Team)(SEGA)[WiiU].7z",
+      "date": "2014-12-06",
+      "url": "http://wiiu.joshw.info/p/Puyo%20Puyo%20Tetris%20(2014-12-06)(Sonic%20Team)(SEGA)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 143652808
+    },
+    {
+      "name": "Puzzle Monkeys",
+      "raw_name": "Puzzle Monkeys (2015-02-05)(Log)[WiiU].7z",
+      "date": "2015-02-05",
+      "url": "http://wiiu.joshw.info/p/Puzzle%20Monkeys%20(2015-02-05)(Log)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 24548096
+    },
+    {
+      "name": "Queen's Garden",
+      "raw_name": "Queen's Garden (2016-05-12)(Seven Sails, Joindots)[WiiU].7z",
+      "date": "2016-05-12",
+      "url": "http://wiiu.joshw.info/q/Queen's%20Garden%20(2016-05-12)(Seven%20Sails,%20Joindots)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 30346904
+    },
+    {
+      "name": "Quest of Dungeons",
+      "raw_name": "Quest of Dungeons (2016-09-29)(Upfall)[WiiU].7z",
+      "date": "2016-09-29",
+      "url": "http://wiiu.joshw.info/q/Quest%20of%20Dungeons%20(2016-09-29)(Upfall)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 18884373
+    },
+    {
+      "name": "Quiet Collection, The",
+      "raw_name": "Quiet Collection, The (2015-07-23)(Nostatic)[WiiU].7z",
+      "date": "2015-07-23",
+      "url": "http://wiiu.joshw.info/q/Quiet%20Collection,%20The%20(2015-07-23)(Nostatic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 8530774
+    },
+    {
+      "name": "RACE THE SUN",
+      "raw_name": "RACE THE SUN (2015-10-08)(Flippfly)[WiiU].7z",
+      "date": "2015-10-08",
+      "url": "http://wiiu.joshw.info/r/RACE%20THE%20SUN%20(2015-10-08)(Flippfly)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 12822517
+    },
+    {
+      "name": "RADIANTFLUX - HYPERFRACTAL",
+      "raw_name": "RADIANTFLUX - HYPERFRACTAL (2016-12-22)(TACS)[WiiU].7z",
+      "date": "2016-12-22",
+      "url": "http://wiiu.joshw.info/r/RADIANTFLUX%20-%20HYPERFRACTAL%20(2016-12-22)(TACS)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 19348468
+    },
+    {
+      "name": "Rakoo & Friends",
+      "raw_name": "Rakoo & Friends (2015-10-15)(Moving Player, Old Skull)[WiiU].7z",
+      "date": "2015-10-15",
+      "url": "http://wiiu.joshw.info/r/Rakoo%20&%20Friends%20(2015-10-15)(Moving%20Player,%20Old%20Skull)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 56953352
+    },
+    {
+      "name": "Rayman Legends",
+      "raw_name": "Rayman Legends (2013-08-29)(Ubisoft Montpellier)(Ubisoft)[WiiU].7z",
+      "date": "2013-08-29",
+      "url": "http://wiiu.joshw.info/r/Rayman%20Legends%20(2013-08-29)(Ubisoft%20Montpellier)(Ubisoft)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 600302707
+    },
+    {
+      "name": "Red Riding Hood",
+      "raw_name": "Red Riding Hood (2014-10-02)(Brave Rock)[WiiU].7z",
+      "date": "2014-10-02",
+      "url": "http://wiiu.joshw.info/r/Red%20Riding%20Hood%20(2014-10-02)(Brave%20Rock)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7805299
+    },
+    {
+      "name": "REPLAY - VHS is not dead",
+      "raw_name": "REPLAY - VHS is not dead (2016-02-25)(Neko)[WiiU].7z",
+      "date": "2016-02-25",
+      "url": "http://wiiu.joshw.info/r/REPLAY%20-%20VHS%20is%20not%20dead%20(2016-02-25)(Neko)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 43546959
+    },
+    {
+      "name": "Reptilian Rebellion",
+      "raw_name": "Reptilian Rebellion (2016-07-14)(Herrero)[WiiU].7z",
+      "date": "2016-07-14",
+      "url": "http://wiiu.joshw.info/r/Reptilian%20Rebellion%20(2016-07-14)(Herrero)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 13970340
+    },
+    {
+      "name": "Retro Road Rumble",
+      "raw_name": "Retro Road Rumble (2016-10-20)(Sketchy Coyote)[WiiU].7z",
+      "date": "2016-10-20",
+      "url": "http://wiiu.joshw.info/r/Retro%20Road%20Rumble%20(2016-10-20)(Sketchy%20Coyote)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 90220225
+    },
+    {
+      "name": "Rivers of Alice - Extended Version, The",
+      "raw_name": "Rivers of Alice - Extended Version, The (2015-10-01)(Delirium)[WiiU].7z",
+      "date": "2015-10-01",
+      "url": "http://wiiu.joshw.info/r/Rivers%20of%20Alice%20-%20Extended%20Version,%20The%20(2015-10-01)(Delirium)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 233674015
+    },
+    {
+      "name": "Rock 'N Racing Off Road DX",
+      "raw_name": "Rock 'N Racing Off Road DX (2015-09-17)(EnjoyUp)[WiiU].7z",
+      "date": "2015-09-17",
+      "url": "http://wiiu.joshw.info/r/Rock%20'N%20Racing%20Off%20Road%20DX%20(2015-09-17)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 48070148
+    },
+    {
+      "name": "Rock Zombie",
+      "raw_name": "Rock Zombie (2014-10-30)(EnjoyUp)[WiiU].7z",
+      "date": "2014-10-30",
+      "url": "http://wiiu.joshw.info/r/Rock%20Zombie%20(2014-10-30)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 124228237
+    },
+    {
+      "name": "Rodea the Sky Soldier [Tenkuu no Kishi Rodea]",
+      "raw_name": "Rodea the Sky Soldier [Tenkuu no Kishi Rodea] (2015-11-10)(Prope, Kadokawa)(NIS America)[WiiU].7z",
+      "date": "2015-11-10",
+      "url": "http://wiiu.joshw.info/r/Rodea%20the%20Sky%20Soldier%20%5bTenkuu%20no%20Kishi%20Rodea%5d%20(2015-11-10)(Prope,%20Kadokawa)(NIS%20America)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 268086669
+    },
+    {
+      "name": "Romance of the Three Kingdoms 12 [Sangokushi 12]",
+      "raw_name": "Romance of the Three Kingdoms 12 [Sangokushi 12] (2012-12-13)(Koei Tecmo)[WiiU].7z",
+      "date": "2012-12-13",
+      "url": "http://wiiu.joshw.info/r/Romance%20of%20the%20Three%20Kingdoms%2012%20%5bSangokushi%2012%5d%20(2012-12-13)(Koei%20Tecmo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 218367873
+    },
+    {
+      "name": "Rorrim",
+      "raw_name": "Rorrim (2016-09-08)(Nitrolic, Matthew Flewelling, Ezekiel Rage)[WiiU].7z",
+      "date": "2016-09-08",
+      "url": "http://wiiu.joshw.info/r/Rorrim%20(2016-09-08)(Nitrolic,%20Matthew%20Flewelling,%20Ezekiel%20Rage)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 9748119
+    },
+    {
+      "name": "Roving Rogue",
+      "raw_name": "Roving Rogue (2015-07-02)(PadaOne)[WiiU].7z",
+      "date": "2015-07-02",
+      "url": "http://wiiu.joshw.info/r/Roving%20Rogue%20(2015-07-02)(PadaOne)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 44171376
+    },
+    {
+      "name": "Rubik's Cube",
+      "raw_name": "Rubik's Cube (2016-06-23)(Cypronia)[WiiU].7z",
+      "date": "2016-06-23",
+      "url": "http://wiiu.joshw.info/r/Rubik's%20Cube%20(2016-06-23)(Cypronia)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 31211675
+    },
+    {
+      "name": "Run Run and Die",
+      "raw_name": "Run Run and Die (2016-06-16)(EnjoyUp)[WiiU].7z",
+      "date": "2016-06-16",
+      "url": "http://wiiu.joshw.info/r/Run%20Run%20and%20Die%20(2016-06-16)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7977513
+    },
+    {
+      "name": "Runbow",
+      "raw_name": "Runbow (2015-09-27)(13AM)[WiiU].7z",
+      "date": "2015-09-27",
+      "url": "http://wiiu.joshw.info/r/Runbow%20(2015-09-27)(13AM)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 109048945
+    },
+    {
+      "name": "RUSH",
+      "raw_name": "RUSH (2013-12-12)(Two Tribes)[WiiU].7z",
+      "date": "2013-12-12",
+      "url": "http://wiiu.joshw.info/r/RUSH%20(2013-12-12)(Two%20Tribes)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 64281489
+    },
+    {
+      "name": "Ryu Ga Gotoku 1&2 HD for Wii U [Yakuza 1&2 HD for Wii U]",
+      "raw_name": "Ryu Ga Gotoku 1&2 HD for Wii U [Yakuza 1&2 HD for Wii U] (2013-08-08)(SEGA)[WiiU].7z",
+      "date": "2013-08-08",
+      "url": "http://wiiu.joshw.info/r/Ryu%20Ga%20Gotoku%201&2%20HD%20for%20Wii%20U%20%5bYakuza%201&2%20HD%20for%20Wii%20U%5d%20(2013-08-08)(SEGA)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1316432552
+    },
+    {
+      "name": "Sanatory Hallways",
+      "raw_name": "Sanatory Hallways (2015-09-06)(Wegenbartho)[WiiU].7z",
+      "date": "2015-09-06",
+      "url": "http://wiiu.joshw.info/s/Sanatory%20Hallways%20(2015-09-06)(Wegenbartho)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 36687509
+    },
+    {
+      "name": "Scram Kitty and his Buddy on Rails",
+      "raw_name": "Scram Kitty and his Buddy on Rails (2014-05-15)(Dakko Dakko)[WiiU].7z",
+      "date": "2014-05-15",
+      "url": "http://wiiu.joshw.info/s/Scram%20Kitty%20and%20his%20Buddy%20on%20Rails%20(2014-05-15)(Dakko%20Dakko)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 43070132
+    },
+    {
+      "name": "Scribble",
+      "raw_name": "Scribble (2016-12-15)(Bear Box)[WiiU].7z",
+      "date": "2016-12-15",
+      "url": "http://wiiu.joshw.info/s/Scribble%20(2016-12-15)(Bear%20Box)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4085050
+    },
+    {
+      "name": "SDK Paint",
+      "raw_name": "SDK Paint (2014-11-06)(HullBreach)[WiiU].7z",
+      "date": "2014-11-06",
+      "url": "http://wiiu.joshw.info/s/SDK%20Paint%20(2014-11-06)(HullBreach)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 33095731
+    },
+    {
+      "name": "SDK Spriter",
+      "raw_name": "SDK Spriter (2016-12-15)(HullBreach)[WiiU].7z",
+      "date": "2016-12-15",
+      "url": "http://wiiu.joshw.info/s/SDK%20Spriter%20(2016-12-15)(HullBreach)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 46780573
+    },
+    {
+      "name": "Severed",
+      "raw_name": "Severed (2016-04-26)(Drinkbox)[WiiU].7z",
+      "date": "2016-04-26",
+      "url": "http://wiiu.joshw.info/s/Severed%20(2016-04-26)(Drinkbox)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 76776087
+    },
+    {
+      "name": "Shadow Archery",
+      "raw_name": "Shadow Archery (2018-04-12)(Ultra Dolphin)[WiiU].7z",
+      "date": "2018-04-12",
+      "url": "http://wiiu.joshw.info/s/Shadow%20Archery%20(2018-04-12)(Ultra%20Dolphin)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11431530
+    },
+    {
+      "name": "Shadow Puppeteer",
+      "raw_name": "Shadow Puppeteer (2016-01-28)(Sarepta)(Snow Cannon)[WiiU].7z",
+      "date": "2016-01-28",
+      "url": "http://wiiu.joshw.info/s/Shadow%20Puppeteer%20(2016-01-28)(Sarepta)(Snow%20Cannon)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 75835433
+    },
+    {
+      "name": "Shantae - Half Genie Hero",
+      "raw_name": "Shantae - Half Genie Hero (2016-12-20)(WayForward)[WiiU].7z",
+      "date": "2016-12-20",
+      "url": "http://wiiu.joshw.info/s/Shantae%20-%20Half%20Genie%20Hero%20(2016-12-20)(WayForward)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 343749037
+    },
+    {
+      "name": "Shantae - Risky's Revenge - Director's Cut",
+      "raw_name": "Shantae - Risky's Revenge - Director's Cut (2016-03-24)(WayForward)[WiiU].7z",
+      "date": "2016-03-24",
+      "url": "http://wiiu.joshw.info/s/Shantae%20-%20Risky's%20Revenge%20-%20Director's%20Cut%20(2016-03-24)(WayForward)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 109227926
+    },
+    {
+      "name": "Shantae and the Pirate's Curse",
+      "raw_name": "Shantae and the Pirate's Curse (2014-12-25)(WayForward)[WiiU].7z",
+      "date": "2014-12-25",
+      "url": "http://wiiu.joshw.info/s/Shantae%20and%20the%20Pirate's%20Curse%20(2014-12-25)(WayForward)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 58575859
+    },
+    {
+      "name": "Shiny The Firefly",
+      "raw_name": "Shiny The Firefly (2014-11-27)(PadaOne, Stage Clear)[WiiU].7z",
+      "date": "2014-11-27",
+      "url": "http://wiiu.joshw.info/s/Shiny%20The%20Firefly%20(2014-11-27)(PadaOne,%20Stage%20Clear)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 12372480
+    },
+    {
+      "name": "Shmup Collection",
+      "raw_name": "Shmup Collection (2020-06-03)(Astro Port)(Pixel Heart)[WiiU].7z",
+      "date": "2020-06-03",
+      "url": "http://wiiu.joshw.info/s/Shmup%20Collection%20(2020-06-03)(Astro%20Port)(Pixel%20Heart)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 321062431
+    },
+    {
+      "name": "SHOOT THE BALL",
+      "raw_name": "SHOOT THE BALL (2016-12-01)(RCMADIAX)[WiiU].7z",
+      "date": "2016-12-01",
+      "url": "http://wiiu.joshw.info/s/SHOOT%20THE%20BALL%20(2016-12-01)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2973508
+    },
+    {
+      "name": "SHOOTY SPACE",
+      "raw_name": "SHOOTY SPACE (2016-09-15)(RCMADIAX)[WiiU].7z",
+      "date": "2016-09-15",
+      "url": "http://wiiu.joshw.info/s/SHOOTY%20SPACE%20(2016-09-15)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2718481
+    },
+    {
+      "name": "Shovel Knight",
+      "raw_name": "Shovel Knight (2014-06-26)(Yacht Club)[WiiU].7z",
+      "date": "2014-06-26",
+      "url": "http://wiiu.joshw.info/s/Shovel%20Knight%20(2014-06-26)(Yacht%20Club)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 114177224
+    },
+    {
+      "name": "Shovel Knight - Plague of Shadows",
+      "raw_name": "Shovel Knight - Plague of Shadows (2015-09-17)(Yacht Club)[WiiU].7z",
+      "date": "2015-09-17",
+      "url": "http://wiiu.joshw.info/s/Shovel%20Knight%20-%20Plague%20of%20Shadows%20(2015-09-17)(Yacht%20Club)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 21978939
+    },
+    {
+      "name": "Shovel Knight - Specter of Torment",
+      "raw_name": "Shovel Knight - Specter of Torment (2017-04-21)(Yacht Club)[WiiU].7z",
+      "date": "2017-04-21",
+      "url": "http://wiiu.joshw.info/s/Shovel%20Knight%20-%20Specter%20of%20Torment%20(2017-04-21)(Yacht%20Club)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 57152005
+    },
+    {
+      "name": "Shut the Box",
+      "raw_name": "Shut the Box (2014-08-07)(RCMADIAX)[WiiU].7z",
+      "date": "2014-08-07",
+      "url": "http://wiiu.joshw.info/s/Shut%20the%20Box%20(2014-08-07)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2134336
+    },
+    {
+      "name": "Shutshimi",
+      "raw_name": "Shutshimi (2016-02-04)(Neon Deity)(Choice)[WiiU].7z",
+      "date": "2016-02-04",
+      "url": "http://wiiu.joshw.info/s/Shutshimi%20(2016-02-04)(Neon%20Deity)(Choice)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 32246502
+    },
+    {
+      "name": "Shuttle Rush",
+      "raw_name": "Shuttle Rush (2014-11-06)(Takusan)[WiiU].7z",
+      "date": "2014-11-06",
+      "url": "http://wiiu.joshw.info/s/Shuttle%20Rush%20(2014-11-06)(Takusan)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 82138963
+    },
+    {
+      "name": "Sing Party",
+      "raw_name": "Sing Party (2012-11-18)(Nintendo SPD, FreeStyleGames)(Nintendo)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/s/Sing%20Party%20(2012-11-18)(Nintendo%20SPD,%20FreeStyleGames)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 582494220
+    },
+    {
+      "name": "Six Sides of the World",
+      "raw_name": "Six Sides of the World (2017-03-23)(Dolores)[WiiU].7z",
+      "date": "2017-03-23",
+      "url": "http://wiiu.joshw.info/s/Six%20Sides%20of%20the%20World%20(2017-03-23)(Dolores)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 28315691
+    },
+    {
+      "name": "SKEASY",
+      "raw_name": "SKEASY (2016-01-21)(RCMADIAX)[WiiU].7z",
+      "date": "2016-01-21",
+      "url": "http://wiiu.joshw.info/s/SKEASY%20(2016-01-21)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 3536792
+    },
+    {
+      "name": "Sky Force Anniversary",
+      "raw_name": "Sky Force Anniversary (2017-03-16)(Infinite Dreams)[WiiU].7z",
+      "date": "2017-03-16",
+      "url": "http://wiiu.joshw.info/s/Sky%20Force%20Anniversary%20(2017-03-16)(Infinite%20Dreams)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 97235877
+    },
+    {
+      "name": "Skylanders - Spyro's Adventure",
+      "raw_name": "Skylanders - Spyro's Adventure (2013-07-12)(Toys for Bob)(Activision)[WiiU].7z",
+      "date": "2013-07-12",
+      "url": "http://wiiu.joshw.info/s/Skylanders%20-%20Spyro's%20Adventure%20(2013-07-12)(Toys%20for%20Bob)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 353700274
+    },
+    {
+      "name": "Skylanders Giants",
+      "raw_name": "Skylanders Giants (2012-11-18)(Toys for Bob, Vicarious Visions)(Activision)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/s/Skylanders%20Giants%20(2012-11-18)(Toys%20for%20Bob,%20Vicarious%20Visions)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 736302292
+    },
+    {
+      "name": "Skylanders SuperChargers",
+      "raw_name": "Skylanders SuperChargers (2015-09-20)(Vicarious Visions)(Activision)[WiiU].7z",
+      "date": "2015-09-20",
+      "url": "http://wiiu.joshw.info/s/Skylanders%20SuperChargers%20(2015-09-20)(Vicarious%20Visions)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1229508708
+    },
+    {
+      "name": "Skylanders SWAP Force",
+      "raw_name": "Skylanders SWAP Force (2013-10-13)(Vicarious Visions)(Activision)[WiiU].7z",
+      "date": "2013-10-13",
+      "url": "http://wiiu.joshw.info/s/Skylanders%20SWAP%20Force%20(2013-10-13)(Vicarious%20Visions)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1129233871
+    },
+    {
+      "name": "Skylanders Trap Team",
+      "raw_name": "Skylanders Trap Team (2014-10-05)(Toys for Bob, Beenox)(Activision)[WiiU].7z",
+      "date": "2014-10-05",
+      "url": "http://wiiu.joshw.info/s/Skylanders%20Trap%20Team%20(2014-10-05)(Toys%20for%20Bob,%20Beenox)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 769814979
+    },
+    {
+      "name": "Slots - Pharaoh's Riches",
+      "raw_name": "Slots - Pharaoh's Riches (2016-04-14)(Skunk)[WiiU].7z",
+      "date": "2016-04-14",
+      "url": "http://wiiu.joshw.info/s/Slots%20-%20Pharaoh's%20Riches%20(2016-04-14)(Skunk)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 23553010
+    },
+    {
+      "name": "Smurfs 2, The",
+      "raw_name": "Smurfs 2, The (2013-07-23)(Wayforward)(Ubisoft)[WiiU].7z",
+      "date": "2013-07-23",
+      "url": "http://wiiu.joshw.info/s/Smurfs%202,%20The%20(2013-07-23)(Wayforward)(Ubisoft)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 77543480
+    },
+    {
+      "name": "Sonic & All-Stars Racing Transformed",
+      "raw_name": "Sonic & All-Stars Racing Transformed (2012-11-18)(Sumo Digital)(SEGA)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/s/Sonic%20&%20All-Stars%20Racing%20Transformed%20(2012-11-18)(Sumo%20Digital)(SEGA)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 189794872
+    },
+    {
+      "name": "Sonic - Lost World",
+      "raw_name": "Sonic - Lost World (2013-10-18)(Sonic Team)(Sega)[WiiU].7z",
+      "date": "2013-10-18",
+      "url": "http://wiiu.joshw.info/s/Sonic%20-%20Lost%20World%20(2013-10-18)(Sonic%20Team)(Sega)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2064905361
+    },
+    {
+      "name": "Sonic Boom - Rise of Lyric [Sonic Toon - Ancient Treasure]",
+      "raw_name": "Sonic Boom - Rise of Lyric [Sonic Toon - Ancient Treasure](2014-11-11)(Big Red Button)(Sega)[WiiU].7z",
+      "date": "2014-11-11",
+      "url": "http://wiiu.joshw.info/s/Sonic%20Boom%20-%20Rise%20of%20Lyric%20%5bSonic%20Toon%20-%20Ancient%20Treasure%5d(2014-11-11)(Big%20Red%20Button)(Sega)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 139622341
+    },
+    {
+      "name": "Soul Axiom",
+      "raw_name": "Soul Axiom (2016-09-29)(Wales)[WiiU].7z",
+      "date": "2016-09-29",
+      "url": "http://wiiu.joshw.info/s/Soul%20Axiom%20(2016-09-29)(Wales)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 180374488
+    },
+    {
+      "name": "Space Hulk",
+      "raw_name": "Space Hulk (2016-01-14)(Hoplite, Full Control, Plunge)[WiiU].7z",
+      "date": "2016-01-14",
+      "url": "http://wiiu.joshw.info/s/Space%20Hulk%20(2016-01-14)(Hoplite,%20Full%20Control,%20Plunge)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 24857349
+    },
+    {
+      "name": "Space Hunted",
+      "raw_name": "Space Hunted (2017-07-06)(Ultra Dolphin)[WiiU].7z",
+      "date": "2017-07-06",
+      "url": "http://wiiu.joshw.info/s/Space%20Hunted%20(2017-07-06)(Ultra%20Dolphin)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7362089
+    },
+    {
+      "name": "Spellcaster's Assistant",
+      "raw_name": "Spellcaster's Assistant (2018-03-29)(Ultra Dolphin)[WiiU].7z",
+      "date": "2018-03-29",
+      "url": "http://wiiu.joshw.info/s/Spellcaster's%20Assistant%20(2018-03-29)(Ultra%20Dolphin)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 10230768
+    },
+    {
+      "name": "SphereZor",
+      "raw_name": "SphereZor (2016-09-08)(James Guard)[WiiU].7z",
+      "date": "2016-09-08",
+      "url": "http://wiiu.joshw.info/s/SphereZor%20(2016-09-08)(James%20Guard)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 100452320
+    },
+    {
+      "name": "Spheroids",
+      "raw_name": "Spheroids (2017-01-05)(Eclipse)[WiiU].7z",
+      "date": "2017-01-05",
+      "url": "http://wiiu.joshw.info/s/Spheroids%20(2017-01-05)(Eclipse)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 56176269
+    },
+    {
+      "name": "SPLASHY DUCK",
+      "raw_name": "SPLASHY DUCK (2016-06-23)(RCMADIAX)[WiiU].7z",
+      "date": "2016-06-23",
+      "url": "http://wiiu.joshw.info/s/SPLASHY%20DUCK%20(2016-06-23)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2319873
+    },
+    {
+      "name": "Splatoon",
+      "raw_name": "Splatoon (2015-05-28)(Nintendo EAD)(Nintendo)[WiiU].7z",
+      "date": "2015-05-28",
+      "url": "http://wiiu.joshw.info/s/Splatoon%20(2015-05-28)(Nintendo%20EAD)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 217547323
+    },
+    {
+      "name": "Splatoon Global Testfire",
+      "raw_name": "Splatoon Global Testfire (2015-05-07)(Nintendo EAD)(Nintendo)[WiiU].7z",
+      "date": "2015-05-07",
+      "url": "http://wiiu.joshw.info/s/Splatoon%20Global%20Testfire%20(2015-05-07)(Nintendo%20EAD)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 36080701
+    },
+    {
+      "name": "Splatoon Kiosk Demo (EU)",
+      "raw_name": "Splatoon Kiosk Demo (EU) (2015)(Nintendo EAD)(Nintendo)[WiiU].7z",
+      "date": "2015",
+      "url": "http://wiiu.joshw.info/s/Splatoon%20Kiosk%20Demo%20(EU)%20(2015)(Nintendo%20EAD)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 52669035
+    },
+    {
+      "name": "SpongeBob SquarePants - Plankton’s Robotic Revenge",
+      "raw_name": "SpongeBob SquarePants - Plankton’s Robotic Revenge (2013-10-22)(Behaviour)(Activision)[WiiU].7z",
+      "date": "2013-10-22",
+      "url": "http://wiiu.joshw.info/s/SpongeBob%20SquarePants%20-%20Plankton%e2%80%99s%20Robotic%20Revenge%20(2013-10-22)(Behaviour)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 136252744
+    },
+    {
+      "name": "Sportsball",
+      "raw_name": "Sportsball (2014-11-06)(Just Clicks)[WiiU].7z",
+      "date": "2014-11-06",
+      "url": "http://wiiu.joshw.info/s/Sportsball%20(2014-11-06)(Just%20Clicks)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 20268283
+    },
+    {
+      "name": "Spot The Differences - Party!",
+      "raw_name": "Spot The Differences - Party! (2013-09-05)(Sanuk)[WiiU].7z",
+      "date": "2013-09-05",
+      "url": "http://wiiu.joshw.info/s/Spot%20The%20Differences%20-%20Party!%20(2013-09-05)(Sanuk)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 9085814
+    },
+    {
+      "name": "Spy Chameleon",
+      "raw_name": "Spy Chameleon (2014-12-25)(EnjoyUp)[WiiU].7z",
+      "date": "2014-12-25",
+      "url": "http://wiiu.joshw.info/s/Spy%20Chameleon%20(2014-12-25)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 52571662
+    },
+    {
+      "name": "Squids Odyssey",
+      "raw_name": "Squids Odyssey (2014-05-22)(The Game Bakers)[WiiU].7z",
+      "date": "2014-05-22",
+      "url": "http://wiiu.joshw.info/s/Squids%20Odyssey%20(2014-05-22)(The%20Game%20Bakers)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 154222628
+    },
+    {
+      "name": "Star Fox Guard",
+      "raw_name": "Star Fox Guard (2016-04-21)(PlatinumGames, Nintendo)(Nintendo)[WiiU].7z",
+      "date": "2016-04-21",
+      "url": "http://wiiu.joshw.info/s/Star%20Fox%20Guard%20(2016-04-21)(PlatinumGames,%20Nintendo)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 101799354
+    },
+    {
+      "name": "Star Fox Zero",
+      "raw_name": "Star Fox Zero (2016-04-21)(Platinum)(Nintendo)[WiiU].7z",
+      "date": "2016-04-21",
+      "url": "http://wiiu.joshw.info/s/Star%20Fox%20Zero%20(2016-04-21)(Platinum)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 213958155
+    },
+    {
+      "name": "Star Ghost",
+      "raw_name": "Star Ghost (2016-03-10)(Squarehead Studios)[WiiU].7z",
+      "date": "2016-03-10",
+      "url": "http://wiiu.joshw.info/s/Star%20Ghost%20(2016-03-10)(Squarehead%20Studios)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11874722
+    },
+    {
+      "name": "Star Sky",
+      "raw_name": "Star Sky (2015-09-10)(JMJ)[WiiU].7z",
+      "date": "2015-09-10",
+      "url": "http://wiiu.joshw.info/s/Star%20Sky%20(2015-09-10)(JMJ)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4908276
+    },
+    {
+      "name": "Star Splash - Shattered Star",
+      "raw_name": "Star Splash - Shattered Star (2017-02-02)(Snails)[WiiU].7z",
+      "date": "2017-02-02",
+      "url": "http://wiiu.joshw.info/s/Star%20Splash%20-%20Shattered%20Star%20(2017-02-02)(Snails)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 36087749
+    },
+    {
+      "name": "STARWHAL",
+      "raw_name": "STARWHAL (2015-09-24)(Breakfall)[WiiU].7z",
+      "date": "2015-09-24",
+      "url": "http://wiiu.joshw.info/s/STARWHAL%20(2015-09-24)(Breakfall)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 176024565
+    },
+    {
+      "name": "SteamWorld Dig",
+      "raw_name": "SteamWorld Dig (2014-08-28)(Image & Form)[WiiU].7z",
+      "date": "2014-08-28",
+      "url": "http://wiiu.joshw.info/s/SteamWorld%20Dig%20(2014-08-28)(Image%20&%20Form)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 12853977
+    },
+    {
+      "name": "SteamWorld Heist",
+      "raw_name": "SteamWorld Heist (2016-10-20)(Image & Form)[WiiU].7z",
+      "date": "2016-10-20",
+      "url": "http://wiiu.joshw.info/s/SteamWorld%20Heist%20(2016-10-20)(Image%20&%20Form)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 39360898
+    },
+    {
+      "name": "STEEL LORDS",
+      "raw_name": "STEEL LORDS (2016-07-07)(nuGAME)[WiiU].7z",
+      "date": "2016-07-07",
+      "url": "http://wiiu.joshw.info/s/STEEL%20LORDS%20(2016-07-07)(nuGAME)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 25131359
+    },
+    {
+      "name": "STEEL RIVALS",
+      "raw_name": "STEEL RIVALS (2016-03-03)(nuGAME)[WiiU].7z",
+      "date": "2016-03-03",
+      "url": "http://wiiu.joshw.info/s/STEEL%20RIVALS%20(2016-03-03)(nuGAME)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 36782311
+    },
+    {
+      "name": "Stick It To The Man",
+      "raw_name": "Stick It To The Man (2014-05-01)(Zoink!)(Ripstone)[WiiU].7z",
+      "date": "2014-05-01",
+      "url": "http://wiiu.joshw.info/s/Stick%20It%20To%20The%20Man%20(2014-05-01)(Zoink!)(Ripstone)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 103468683
+    },
+    {
+      "name": "Stone Shire",
+      "raw_name": "Stone Shire (2015-05-21)(Finger Gun)[WiiU].7z",
+      "date": "2015-05-21",
+      "url": "http://wiiu.joshw.info/s/Stone%20Shire%20(2015-05-21)(Finger%20Gun)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 32272790
+    },
+    {
+      "name": "Stonecutter, The",
+      "raw_name": "Stonecutter, The (2015-06-04)(Brave Rock)[WiiU].7z",
+      "date": "2015-06-04",
+      "url": "http://wiiu.joshw.info/s/Stonecutter,%20The%20(2015-06-04)(Brave%20Rock)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 16701343
+    },
+    {
+      "name": "Sudoku and Permudoku",
+      "raw_name": "Sudoku and Permudoku (2016-05-05)(Sebastian Küpper, Tosha Küpper)(Diplodocus)[WiiU].7z",
+      "date": "2016-05-05",
+      "url": "http://wiiu.joshw.info/s/Sudoku%20and%20Permudoku%20(2016-05-05)(Sebastian%20K%c3%bcpper,%20Tosha%20K%c3%bcpper)(Diplodocus)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 60195937
+    },
+    {
+      "name": "Sudoku Party",
+      "raw_name": "Sudoku Party (2017-03-16)(Lightwood)[WiiU].7z",
+      "date": "2017-03-16",
+      "url": "http://wiiu.joshw.info/s/Sudoku%20Party%20(2017-03-16)(Lightwood)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 9382693
+    },
+    {
+      "name": "Super Destronaut",
+      "raw_name": "Super Destronaut (2015-03-19)(Vilmos Gyokeres)(Petite)[WiiU].7z",
+      "date": "2015-03-19",
+      "url": "http://wiiu.joshw.info/s/Super%20Destronaut%20(2015-03-19)(Vilmos%20Gyokeres)(Petite)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7817224
+    },
+    {
+      "name": "Super Destronaut 2 - Go Duck Yourself",
+      "raw_name": "Super Destronaut 2 - Go Duck Yourself (2016-10-20)(Petite)[WiiU].7z",
+      "date": "2016-10-20",
+      "url": "http://wiiu.joshw.info/s/Super%20Destronaut%202%20-%20Go%20Duck%20Yourself%20(2016-10-20)(Petite)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 16921586
+    },
+    {
+      "name": "Super Mario 3D World",
+      "raw_name": "Super Mario 3D World (2013-11-21)(Nintendo)[WiiU].7z",
+      "date": "2013-11-21",
+      "url": "http://wiiu.joshw.info/s/Super%20Mario%203D%20World%20(2013-11-21)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 237211691
+    },
+    {
+      "name": "Super Mario Maker",
+      "raw_name": "Super Mario Maker (2015-09-10)(Nintendo)[WiiU].7z",
+      "date": "2015-09-10",
+      "url": "http://wiiu.joshw.info/s/Super%20Mario%20Maker%20(2015-09-10)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 543186385
+    },
+    {
+      "name": "SUPER ROBO MOUSE",
+      "raw_name": "SUPER ROBO MOUSE (2016-04-07)(RCMADIAX)[WiiU].7z",
+      "date": "2016-04-07",
+      "url": "http://wiiu.joshw.info/s/SUPER%20ROBO%20MOUSE%20(2016-04-07)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 6854644
+    },
+    {
+      "name": "Super Smash Bros. for Wii U [Dairantou Smash Bros. for Wii U]",
+      "raw_name": "Super Smash Bros. for Wii U [Dairantou Smash Bros. for Wii U] (2014-11-21)(Sora, Bandai Namco)(Nintendo)[WiiU].7z",
+      "date": "2014-11-21",
+      "url": "http://wiiu.joshw.info/s/Super%20Smash%20Bros.%20for%20Wii%20U%20%5bDairantou%20Smash%20Bros.%20for%20Wii%20U%5d%20(2014-11-21)(Sora,%20Bandai%20Namco)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2824833492
+    },
+    {
+      "name": "Super Toy Cars",
+      "raw_name": "Super Toy Cars (2014-07-24)(Eclipse)[WiiU].7z",
+      "date": "2014-07-24",
+      "url": "http://wiiu.joshw.info/s/Super%20Toy%20Cars%20(2014-07-24)(Eclipse)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 47341651
+    },
+    {
+      "name": "Super Ultra Star Shooter",
+      "raw_name": "Super Ultra Star Shooter (2017-09-28)(Ultra Dolphin)[WiiU].7z",
+      "date": "2017-09-28",
+      "url": "http://wiiu.joshw.info/s/Super%20Ultra%20Star%20Shooter%20(2017-09-28)(Ultra%20Dolphin)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 3797503
+    },
+    {
+      "name": "SWAP BLOCKS",
+      "raw_name": "SWAP BLOCKS (2017-06-01)(WizByte)[WiiU].7z",
+      "date": "2017-06-01",
+      "url": "http://wiiu.joshw.info/s/SWAP%20BLOCKS%20(2017-06-01)(WizByte)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 105491301
+    },
+    {
+      "name": "Swap Fire",
+      "raw_name": "Swap Fire (2016-11-18)(Midnight Status)[WiiU].7z",
+      "date": "2016-11-18",
+      "url": "http://wiiu.joshw.info/s/Swap%20Fire%20(2016-11-18)(Midnight%20Status)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 110056499
+    },
+    {
+      "name": "Swapper, The",
+      "raw_name": "Swapper, The (2014-11-06)(Curve, Facepalm)[WiiU].7z",
+      "date": "2014-11-06",
+      "url": "http://wiiu.joshw.info/s/Swapper,%20The%20(2014-11-06)(Curve,%20Facepalm)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 143797035
+    },
+    {
+      "name": "Sweetest Thing",
+      "raw_name": "Sweetest Thing (2016-05-19)(Seven Sails, Joindots)[WiiU].7z",
+      "date": "2016-05-19",
+      "url": "http://wiiu.joshw.info/s/Sweetest%20Thing%20(2016-05-19)(Seven%20Sails,%20Joindots)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 36207225
+    },
+    {
+      "name": "Swindle, The",
+      "raw_name": "Swindle, The (2015-09-10)(Dan Marshall)(Curve)[WiiU].7z",
+      "date": "2015-09-10",
+      "url": "http://wiiu.joshw.info/s/Swindle,%20The%20(2015-09-10)(Dan%20Marshall)(Curve)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 315248597
+    },
+    {
+      "name": "Swords & Soldiers",
+      "raw_name": "Swords & Soldiers (2014-05-22)(Two Tribes, Ronimo)[WiiU].7z",
+      "date": "2014-05-22",
+      "url": "http://wiiu.joshw.info/s/Swords%20&%20Soldiers%20(2014-05-22)(Two%20Tribes,%20Ronimo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 32091563
+    },
+    {
+      "name": "Swords & Soldiers 2",
+      "raw_name": "Swords & Soldiers 2 (2015-05-21)(Ronimo)[WiiU].7z",
+      "date": "2015-05-21",
+      "url": "http://wiiu.joshw.info/s/Swords%20&%20Soldiers%202%20(2015-05-21)(Ronimo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 82944851
+    },
+    {
+      "name": "TABLETOP GALLERY",
+      "raw_name": "TABLETOP GALLERY (2016-01-07)(RCMADIAX)[WiiU].7z",
+      "date": "2016-01-07",
+      "url": "http://wiiu.joshw.info/t/TABLETOP%20GALLERY%20(2016-01-07)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 9407374
+    },
+    {
+      "name": "Tachyon Project",
+      "raw_name": "Tachyon Project (2016-05-12)(Eclipse)[WiiU].7z",
+      "date": "2016-05-12",
+      "url": "http://wiiu.joshw.info/t/Tachyon%20Project%20(2016-05-12)(Eclipse)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 31685135
+    },
+    {
+      "name": "Tadpole Treble",
+      "raw_name": "Tadpole Treble (2016-08-11)(BitFinity)[WiiU].7z",
+      "date": "2016-08-11",
+      "url": "http://wiiu.joshw.info/t/Tadpole%20Treble%20(2016-08-11)(BitFinity)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 169865065
+    },
+    {
+      "name": "Taiko no Tatsujin - Atsumete★Tomodachi Daisakusen!",
+      "raw_name": "Taiko no Tatsujin - Atsumete★Tomodachi Daisakusen! (2015-11-26)(Bandai Namco)[WiiU].7z",
+      "date": "2015-11-26",
+      "url": "http://wiiu.joshw.info/t/Taiko%20no%20Tatsujin%20-%20Atsumete%e2%98%85Tomodachi%20Daisakusen!%20(2015-11-26)(Bandai%20Namco)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 802364499
+    },
+    {
+      "name": "Taiko no Tatsujin - Tokumori!",
+      "raw_name": "Taiko no Tatsujin - Tokumori! (2014-11-20)(Bandai Namco)[WiiU].7z",
+      "date": "2014-11-20",
+      "url": "http://wiiu.joshw.info/t/Taiko%20no%20Tatsujin%20-%20Tokumori!%20(2014-11-20)(Bandai%20Namco)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 821218861
+    },
+    {
+      "name": "Taiko no Tatsujin - Wii U Version",
+      "raw_name": "Taiko no Tatsujin - Wii U Version (2013-11-21)(Bandai Namco)[WiiU].7z",
+      "date": "2013-11-21",
+      "url": "http://wiiu.joshw.info/t/Taiko%20no%20Tatsujin%20-%20Wii%20U%20Version%20(2013-11-21)(Bandai%20Namco)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 676827298
+    },
+    {
+      "name": "Tallowmere",
+      "raw_name": "Tallowmere (2016-09-01)(Chris McFarland)[WiiU].7z",
+      "date": "2016-09-01",
+      "url": "http://wiiu.joshw.info/t/Tallowmere%20(2016-09-01)(Chris%20McFarland)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 30947171
+    },
+    {
+      "name": "Tank! Tank! Tank!",
+      "raw_name": "Tank! Tank! Tank! (2012-11-18)(Bandai Namco)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/t/Tank!%20Tank!%20Tank!%20(2012-11-18)(Bandai%20Namco)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 91552410
+    },
+    {
+      "name": "TAP TAP ARCADE",
+      "raw_name": "TAP TAP ARCADE (2016-02-18)(RCMADIAX)[WiiU].7z",
+      "date": "2016-02-18",
+      "url": "http://wiiu.joshw.info/t/TAP%20TAP%20ARCADE%20(2016-02-18)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 5097995
+    },
+    {
+      "name": "TAP TAP ARCADE 2",
+      "raw_name": "TAP TAP ARCADE 2 (2016-07-07)(RCMADIAX)[WiiU].7z",
+      "date": "2016-07-07",
+      "url": "http://wiiu.joshw.info/t/TAP%20TAP%20ARCADE%202%20(2016-07-07)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 4228468
+    },
+    {
+      "name": "Tekken Tag Tournament 2 - Wii U Edition",
+      "raw_name": "Tekken Tag Tournament 2 - Wii U Edition (2012-11-18)(Namco Bandai)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/t/Tekken%20Tag%20Tournament%202%20-%20Wii%20U%20Edition%20(2012-11-18)(Namco%20Bandai)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1325166070
+    },
+    {
+      "name": "TEMPLE OF YOG",
+      "raw_name": "TEMPLE OF YOG (2015-12-16)(CHUDCHUD)[WiiU].7z",
+      "date": "2015-12-16",
+      "url": "http://wiiu.joshw.info/t/TEMPLE%20OF%20YOG%20(2015-12-16)(CHUDCHUD)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 44967777
+    },
+    {
+      "name": "Teslagrad",
+      "raw_name": "Teslagrad (2014-09-11)(Rain Games)[WiiU].7z",
+      "date": "2014-09-11",
+      "url": "http://wiiu.joshw.info/t/Teslagrad%20(2014-09-11)(Rain%20Games)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 225813156
+    },
+    {
+      "name": "Teslapunk",
+      "raw_name": "Teslapunk (2016-12-08)(klutzGames)[WiiU].7z",
+      "date": "2016-12-08",
+      "url": "http://wiiu.joshw.info/t/Teslapunk%20(2016-12-08)(klutzGames)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 107669669
+    },
+    {
+      "name": "Test Your Mind",
+      "raw_name": "Test Your Mind (2015-11-12)(XenoHorizon)[WiiU].7z",
+      "date": "2015-11-12",
+      "url": "http://wiiu.joshw.info/t/Test%20Your%20Mind%20(2015-11-12)(XenoHorizon)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 13229889
+    },
+    {
+      "name": "Tested with Robots!",
+      "raw_name": "Tested with Robots! (2014-12-11)(M.R.)[WiiU].7z",
+      "date": "2014-12-11",
+      "url": "http://wiiu.joshw.info/t/Tested%20with%20Robots!%20(2014-12-11)(M.R.)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 36204075
+    },
+    {
+      "name": "TETRAMINOS",
+      "raw_name": "TETRAMINOS (2016-09-08)(Sanuk)[WiiU].7z",
+      "date": "2016-09-08",
+      "url": "http://wiiu.joshw.info/t/TETRAMINOS%20(2016-09-08)(Sanuk)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 15078728
+    },
+    {
+      "name": "Tetrobot & Co.",
+      "raw_name": "Tetrobot & Co. (2014-10-30)(Swing Swing Submarine)(Neko)[WiiU].7z",
+      "date": "2014-10-30",
+      "url": "http://wiiu.joshw.info/t/Tetrobot%20&%20Co.%20(2014-10-30)(Swing%20Swing%20Submarine)(Neko)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 177743637
+    },
+    {
+      "name": "Thomas Was Alone",
+      "raw_name": "Thomas Was Alone (2014-11-25)(Curve, Mike Bithell)[WiiU].7z",
+      "date": "2014-11-25",
+      "url": "http://wiiu.joshw.info/t/Thomas%20Was%20Alone%20(2014-11-25)(Curve,%20Mike%20Bithell)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 256417706
+    },
+    {
+      "name": "TITANS TOWER",
+      "raw_name": "TITANS TOWER (2016-09-22)(RCMADIAX)[WiiU].7z",
+      "date": "2016-09-22",
+      "url": "http://wiiu.joshw.info/t/TITANS%20TOWER%20(2016-09-22)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 2452298
+    },
+    {
+      "name": "Toby - The Secret Mine",
+      "raw_name": "Toby - The Secret Mine (2017-01-19)(Lukas Navratil)(Headup)[WiiU].7z",
+      "date": "2017-01-19",
+      "url": "http://wiiu.joshw.info/t/Toby%20-%20The%20Secret%20Mine%20(2017-01-19)(Lukas%20Navratil)(Headup)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 64452598
+    },
+    {
+      "name": "Toki Tori",
+      "raw_name": "Toki Tori (2013-11-07)(Two Tribes)[WiiU].7z",
+      "date": "2013-11-07",
+      "url": "http://wiiu.joshw.info/t/Toki%20Tori%20(2013-11-07)(Two%20Tribes)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 27977210
+    },
+    {
+      "name": "Toki Tori 2+",
+      "raw_name": "Toki Tori 2+ (2013-04-04)(Two Tribes)[WiiU].7z",
+      "date": "2013-04-04",
+      "url": "http://wiiu.joshw.info/t/Toki%20Tori%202+%20(2013-04-04)(Two%20Tribes)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 120363826
+    },
+    {
+      "name": "Tokyo Mirage Sessions #FE [Genei Ibunroku #FE]",
+      "raw_name": "Tokyo Mirage Sessions #FE [Genei Ibunroku #FE] (2015-12-26)(Atlus)(Nintendo)[WiiU].7z",
+      "date": "2015-12-26",
+      "url": "http://wiiu.joshw.info/t/Tokyo%20Mirage%20Sessions%20%23FE%20%5bGenei%20Ibunroku%20%23FE%5d%20(2015-12-26)(Atlus)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": null
+    },
+    {
+      "name": "Toon Tanks",
+      "raw_name": "Toon Tanks (2014-12-25)(Vilmos Gyokeres)(Petite)[WiiU].7z",
+      "date": "2014-12-25",
+      "url": "http://wiiu.joshw.info/t/Toon%20Tanks%20(2014-12-25)(Vilmos%20Gyokeres)(Petite)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 3060052
+    },
+    {
+      "name": "TOSS N GO",
+      "raw_name": "TOSS N GO (2014-12-18)(RCMADIAX)[WiiU].7z",
+      "date": "2014-12-18",
+      "url": "http://wiiu.joshw.info/t/TOSS%20N%20GO%20(2014-12-18)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 5930872
+    },
+    {
+      "name": "Toto Temple Deluxe",
+      "raw_name": "Toto Temple Deluxe (2015-10-01)(Juicy Beast)[WiiU].7z",
+      "date": "2015-10-01",
+      "url": "http://wiiu.joshw.info/t/Toto%20Temple%20Deluxe%20(2015-10-01)(Juicy%20Beast)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 60888809
+    },
+    {
+      "name": "TOUCH SELECTIONS",
+      "raw_name": "TOUCH SELECTIONS (2016-09-08)(RCMADIAX)[WiiU].7z",
+      "date": "2016-09-08",
+      "url": "http://wiiu.joshw.info/t/TOUCH%20SELECTIONS%20(2016-09-08)(RCMADIAX)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 5612586
+    },
+    {
+      "name": "Transformers Prime - the Game",
+      "raw_name": "Transformers Prime - the Game (2012-11-18)(Now Production)(Activision)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/t/Transformers%20Prime%20-%20the%20Game%20(2012-11-18)(Now%20Production)(Activision)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 289581423
+    },
+    {
+      "name": "Triple Breakout",
+      "raw_name": "Triple Breakout (2017-05-04)(nuGAME)[WiiU].7z",
+      "date": "2017-05-04",
+      "url": "http://wiiu.joshw.info/t/Triple%20Breakout%20(2017-05-04)(nuGAME)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 20634130
+    },
+    {
+      "name": "Tumblestone",
+      "raw_name": "Tumblestone (2016-07-12)(The Quantum Astrophysicists Guild)[WiiU].7z",
+      "date": "2016-07-12",
+      "url": "http://wiiu.joshw.info/t/Tumblestone%20(2016-07-12)(The%20Quantum%20Astrophysicists%20Guild)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 242842047
+    },
+    {
+      "name": "Twin Robots",
+      "raw_name": "Twin Robots (2016-06-16)(Ratalaika)[WiiU].7z",
+      "date": "2016-06-16",
+      "url": "http://wiiu.joshw.info/t/Twin%20Robots%20(2016-06-16)(Ratalaika)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 25894350
+    },
+    {
+      "name": "Twisted Fusion",
+      "raw_name": "Twisted Fusion (2016-11-03)(Leuvsion)[WiiU].7z",
+      "date": "2016-11-03",
+      "url": "http://wiiu.joshw.info/t/Twisted%20Fusion%20(2016-11-03)(Leuvsion)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 17884591
+    },
+    {
+      "name": "Ultratron",
+      "raw_name": "Ultratron (2015-05-14)(Carbon, Puppygames)(Curve)[WiiU].7z",
+      "date": "2015-05-14",
+      "url": "http://wiiu.joshw.info/u/Ultratron%20(2015-05-14)(Carbon,%20Puppygames)(Curve)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 39234548
+    },
+    {
+      "name": "Unalive",
+      "raw_name": "Unalive (2018-04-26)(RandomSpin)[WiiU].7z",
+      "date": "2018-04-26",
+      "url": "http://wiiu.joshw.info/u/Unalive%20(2018-04-26)(RandomSpin)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11962177
+    },
+    {
+      "name": "Underground",
+      "raw_name": "Underground (2015-04-02)(Grendel)[WiiU].7z",
+      "date": "2015-04-02",
+      "url": "http://wiiu.joshw.info/u/Underground%20(2015-04-02)(Grendel)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 52367613
+    },
+    {
+      "name": "Unepic",
+      "raw_name": "Unepic (2014-01-16)(EnjoyUp)[WiiU].7z",
+      "date": "2014-01-16",
+      "url": "http://wiiu.joshw.info/u/Unepic%20(2014-01-16)(EnjoyUp)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 40473382
+    },
+    {
+      "name": "uWordsmith",
+      "raw_name": "uWordsmith (2015-01-15)(CHUDCHUD)[WiiU].7z",
+      "date": "2015-01-15",
+      "url": "http://wiiu.joshw.info/u/uWordsmith%20(2015-01-15)(CHUDCHUD)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 20334952
+    },
+    {
+      "name": "Vaccine",
+      "raw_name": "Vaccine (2017-02-23)(Rainy Night)[WiiU].7z",
+      "date": "2017-02-23",
+      "url": "http://wiiu.joshw.info/v/Vaccine%20(2017-02-23)(Rainy%20Night)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 79911434
+    },
+    {
+      "name": "Vektor Wars",
+      "raw_name": "Vektor Wars (2016-07-28)(Super Icon)[WiiU].7z",
+      "date": "2016-07-28",
+      "url": "http://wiiu.joshw.info/v/Vektor%20Wars%20(2016-07-28)(Super%20Icon)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 100859510
+    },
+    {
+      "name": "VoxelMaker",
+      "raw_name": "VoxelMaker (2015-10-01)(Nostatic)[WiiU].7z",
+      "date": "2015-10-01",
+      "url": "http://wiiu.joshw.info/v/VoxelMaker%20(2015-10-01)(Nostatic)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 3897303
+    },
+    {
+      "name": "VRog",
+      "raw_name": "VRog (2017-03-16)(ByteRockers)[WiiU].7z",
+      "date": "2017-03-16",
+      "url": "http://wiiu.joshw.info/v/VRog%20(2017-03-16)(ByteRockers)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 11928784
+    },
+    {
+      "name": "Warriors Orochi 3 Hyper [Musou Orochi 2 Hyper]",
+      "raw_name": "Warriors Orochi 3 Hyper [Musou Orochi 2 Hyper] (2012-11-18)(Koei Tecmo)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/w/Warriors%20Orochi%203%20Hyper%20%5bMusou%20Orochi%202%20Hyper%5d%20(2012-11-18)(Koei%20Tecmo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 962877268
+    },
+    {
+      "name": "Wicked Monsters BLAST! HD+",
+      "raw_name": "Wicked Monsters BLAST! HD+ (2016-01-14)(Corecell Technology)[WiiU].7z",
+      "date": "2016-01-14",
+      "url": "http://wiiu.joshw.info/w/Wicked%20Monsters%20BLAST!%20HD+%20(2016-01-14)(Corecell%20Technology)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 73534052
+    },
+    {
+      "name": "Wii Fit U",
+      "raw_name": "Wii Fit U (2013-11-01)(Nintendo, Ganbarion)[WiiU].7z",
+      "date": "2013-11-01",
+      "url": "http://wiiu.joshw.info/w/Wii%20Fit%20U%20(2013-11-01)(Nintendo,%20Ganbarion)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 378331820
+    },
+    {
+      "name": "Wii Party U",
+      "raw_name": "Wii Party U (2013-10-25)(NdCUBE)(Nintendo)[WiiU].7z",
+      "date": "2013-10-25",
+      "url": "http://wiiu.joshw.info/w/Wii%20Party%20U%20(2013-10-25)(NdCUBE)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 260805363
+    },
+    {
+      "name": "Wii Sports Club",
+      "raw_name": "Wii Sports Club (2013-10-30)(Nintendo)[WiiU].7z",
+      "date": "2013-10-30",
+      "url": "http://wiiu.joshw.info/w/Wii%20Sports%20Club%20(2013-10-30)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 246703340
+    },
+    {
+      "name": "Wii U Chat",
+      "raw_name": "Wii U Chat (2012-11-18)(Nintendo)[WiiU][tagged].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/w/Wii%20U%20Chat%20(2012-11-18)(Nintendo)%5bWiiU%5d%5btagged%5d.7z",
+      "directory": false,
+      "size": 7894933
+    },
+    {
+      "name": "Wii U System Software",
+      "raw_name": "Wii U System Software (2012-11-18)(Nintendo)[WiiU].7z",
+      "date": "2012-11-18",
+      "url": "http://wiiu.joshw.info/w/Wii%20U%20System%20Software%20(2012-11-18)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 63782837
+    },
+    {
+      "name": "WinKings",
+      "raw_name": "WinKings (2017-05-04)(Lemondo)[WiiU].7z",
+      "date": "2017-05-04",
+      "url": "http://wiiu.joshw.info/w/WinKings%20(2017-05-04)(Lemondo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 18655525
+    },
+    {
+      "name": "Wonderful 101, The",
+      "raw_name": "Wonderful 101, The (2013-08-23)(Platinum)(Nintendo)[WiiU].7z",
+      "date": "2013-08-23",
+      "url": "http://wiiu.joshw.info/w/Wonderful%20101,%20The%20(2013-08-23)(Platinum)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 943317480
+    },
+    {
+      "name": "Wooden Sen'SeY",
+      "raw_name": "Wooden Sen'SeY (2014-07-24)(Upper Byte)(Neko)[WiiU].7z",
+      "date": "2014-07-24",
+      "url": "http://wiiu.joshw.info/w/Wooden%20Sen'SeY%20(2014-07-24)(Upper%20Byte)(Neko)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 89646971
+    },
+    {
+      "name": "Xenoblade Chronicles X [XenobladeX]",
+      "raw_name": "Xenoblade Chronicles X [XenobladeX] (2015-04-29)(Monolith Soft)(Nintendo)[WiiU].7z",
+      "date": "2015-04-29",
+      "url": "http://wiiu.joshw.info/x/Xenoblade%20Chronicles%20X%20%5bXenobladeX%5d%20(2015-04-29)(Monolith%20Soft)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 1245535610
+    },
+    {
+      "name": "Xeodrifter",
+      "raw_name": "Xeodrifter (2015-07-30)(Renegade Kid)(Atooi)[WiiU].7z",
+      "date": "2015-07-30",
+      "url": "http://wiiu.joshw.info/x/Xeodrifter%20(2015-07-30)(Renegade%20Kid)(Atooi)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 32855420
+    },
+    {
+      "name": "XType Plus",
+      "raw_name": "XType Plus (2014-08-14)(PhobosLab)[WiiU].7z",
+      "date": "2014-08-14",
+      "url": "http://wiiu.joshw.info/x/XType%20Plus%20(2014-08-14)(PhobosLab)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 14605809
+    },
+    {
+      "name": "Y.A.S.G",
+      "raw_name": "Y.A.S.G (2017-02-09)(LSA)[WiiU].7z",
+      "date": "2017-02-09",
+      "url": "http://wiiu.joshw.info/y/Y.A.S.G%20(2017-02-09)(LSA)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 7571208
+    },
+    {
+      "name": "Yakuman Houou",
+      "raw_name": "Yakuman Houou (2015-02-18)(Nintendo)[WiiU].7z",
+      "date": "2015-02-18",
+      "url": "http://wiiu.joshw.info/y/Yakuman%20Houou%20(2015-02-18)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 82702082
+    },
+    {
+      "name": "Year Walk",
+      "raw_name": "Year Walk (2015-09-17)(Simogo, Dakko Dakko)[WiiU].7z",
+      "date": "2015-09-17",
+      "url": "http://wiiu.joshw.info/y/Year%20Walk%20(2015-09-17)(Simogo,%20Dakko%20Dakko)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 26509351
+    },
+    {
+      "name": "Yo-kai Watch Dance - Just Dance Special Version",
+      "raw_name": "Yo-kai Watch Dance - Just Dance Special Version (2015-12-05)(Ubisoft Level-5)(Level-5)[WiiU].7z",
+      "date": "2015-12-05",
+      "url": "http://wiiu.joshw.info/y/Yo-kai%20Watch%20Dance%20-%20Just%20Dance%20Special%20Version%20(2015-12-05)(Ubisoft%20Level-5)(Level-5)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 116449402
+    },
+    {
+      "name": "Yoshi's Woolly World [Yoshi Wool World]",
+      "raw_name": "Yoshi's Woolly World [Yoshi Wool World] (2015-06-25)(Good-Feel)(Nintendo)[WiiU].7z",
+      "date": "2015-06-25",
+      "url": "http://wiiu.joshw.info/y/Yoshi's%20Woolly%20World%20%5bYoshi%20Wool%20World%5d%20(2015-06-25)(Good-Feel)(Nintendo)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 458417198
+    },
+    {
+      "name": "ZaciSa's Last Stand",
+      "raw_name": "ZaciSa's Last Stand (2014-07-03)(ZeNfA)[WiiU].7z",
+      "date": "2014-07-03",
+      "url": "http://wiiu.joshw.info/z/ZaciSa's%20Last%20Stand%20(2014-07-03)(ZeNfA)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 28661777
+    },
+    {
+      "name": "Ziggurat",
+      "raw_name": "Ziggurat (2016-08-18)(Milkstone)[WiiU].7z",
+      "date": "2016-08-18",
+      "url": "http://wiiu.joshw.info/z/Ziggurat%20(2016-08-18)(Milkstone)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 68651465
+    },
+    {
+      "name": "Zombie Brigade - No Brain No Gain",
+      "raw_name": "Zombie Brigade - No Brain No Gain (2017-01-05)(Cypron)(Cypronia)[WiiU].7z",
+      "date": "2017-01-05",
+      "url": "http://wiiu.joshw.info/z/Zombie%20Brigade%20-%20No%20Brain%20No%20Gain%20(2017-01-05)(Cypron)(Cypronia)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 39744499
+    },
+    {
+      "name": "Zombie Defense",
+      "raw_name": "Zombie Defense (2015-09-17)(Teyon)[WiiU].7z",
+      "date": "2015-09-17",
+      "url": "http://wiiu.joshw.info/z/Zombie%20Defense%20(2015-09-17)(Teyon)%5bWiiU%5d.7z",
+      "directory": false,
+      "size": 16905556
+    }
+  ],
+  "dir_sizes": {},
+  "scanned_dirs": [
+    "http://wiiu.joshw.info/s/",
+    "http://wiiu.joshw.info/x/",
+    "http://wiiu.joshw.info/",
+    "http://wiiu.joshw.info/a/",
+    "http://wiiu.joshw.info/n/",
+    "http://wiiu.joshw.info/r/",
+    "http://wiiu.joshw.info/c/",
+    "http://wiiu.joshw.info/d/",
+    "http://wiiu.joshw.info/f/",
+    "http://wiiu.joshw.info/z/",
+    "http://wiiu.joshw.info/m/",
+    "http://wiiu.joshw.info/k/",
+    "http://wiiu.joshw.info/g/",
+    "http://wiiu.joshw.info/p/",
+    "http://wiiu.joshw.info/b/",
+    "http://wiiu.joshw.info/u/",
+    "http://wiiu.joshw.info/o/",
+    "http://wiiu.joshw.info/q/",
+    "http://wiiu.joshw.info/j/",
+    "http://wiiu.joshw.info/h/",
+    "http://wiiu.joshw.info/l/",
+    "http://wiiu.joshw.info/v/",
+    "http://wiiu.joshw.info/0-9/",
+    "http://wiiu.joshw.info/t/",
+    "http://wiiu.joshw.info/w/",
+    "http://wiiu.joshw.info/i/",
+    "http://wiiu.joshw.info/y/",
+    "http://wiiu.joshw.info/e/"
+  ]
+}

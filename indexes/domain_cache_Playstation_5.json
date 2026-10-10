@@ -1,0 +1,184 @@
+{
+  "entries": [
+    {
+      "name": "a",
+      "raw_name": "a",
+      "date": "",
+      "url": "http://psf5.joshw.info/a/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "d",
+      "raw_name": "d",
+      "date": "",
+      "url": "http://psf5.joshw.info/d/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "l",
+      "raw_name": "l",
+      "date": "",
+      "url": "http://psf5.joshw.info/l/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "m",
+      "raw_name": "m",
+      "date": "",
+      "url": "http://psf5.joshw.info/m/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "n",
+      "raw_name": "n",
+      "date": "",
+      "url": "http://psf5.joshw.info/n/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "p",
+      "raw_name": "p",
+      "date": "",
+      "url": "http://psf5.joshw.info/p/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "r",
+      "raw_name": "r",
+      "date": "",
+      "url": "http://psf5.joshw.info/r/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "s",
+      "raw_name": "s",
+      "date": "",
+      "url": "http://psf5.joshw.info/s/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "robots.txt",
+      "raw_name": "robots.txt",
+      "date": "",
+      "url": "http://psf5.joshw.info/robots.txt",
+      "directory": false,
+      "size": 26
+    },
+    {
+      "name": "Ys X - Proud Nordics",
+      "raw_name": "Ys X - Proud Nordics (2026-02-19)(Falcom)[PS5].7z",
+      "date": "2026-02-19",
+      "url": "http://psf5.joshw.info/Ys%20X%20-%20Proud%20Nordics%20(2026-02-19)(Falcom)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 469034868
+    },
+    {
+      "name": "Astro Bot",
+      "raw_name": "Astro Bot (2024-09-06)(Team Asobi)(PlayStation Studios)[PS5].7z",
+      "date": "2024-09-06",
+      "url": "http://psf5.joshw.info/a/Astro%20Bot%20(2024-09-06)(Team%20Asobi)(PlayStation%20Studios)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 1484705046
+    },
+    {
+      "name": "Astro's Playroom",
+      "raw_name": "Astro's Playroom (2020-11-12)(Japan Studio, Team Asobi)(PlayStation Studios)[PS5].7z",
+      "date": "2020-11-12",
+      "url": "http://psf5.joshw.info/a/Astro's%20Playroom%20(2020-11-12)(Japan%20Studio,%20Team%20Asobi)(PlayStation%20Studios)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 354150076
+    },
+    {
+      "name": "Demon's Souls",
+      "raw_name": "Demon's Souls (2020-11-11)(Bluepoint Games, Japan Studio)(PlayStation Studios)[PS5].7z",
+      "date": "2020-11-11",
+      "url": "http://psf5.joshw.info/d/Demon's%20Souls%20(2020-11-11)(Bluepoint%20Games,%20Japan%20Studio)(PlayStation%20Studios)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 484565202
+    },
+    {
+      "name": "Destruction AllStars",
+      "raw_name": "Destruction AllStars (2021-02-02)(Lucid Games)(Sony Interactive Entertainment)[PS5].7z",
+      "date": "2021-02-02",
+      "url": "http://psf5.joshw.info/d/Destruction%20AllStars%20(2021-02-02)(Lucid%20Games)(Sony%20Interactive%20Entertainment)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 157368659
+    },
+    {
+      "name": "LEGO Star Wars - The Skywalker Saga",
+      "raw_name": "LEGO Star Wars - The Skywalker Saga (2022-04-05)(TT Games)(Warner Bros.)[PS5].7z",
+      "date": "2022-04-05",
+      "url": "http://psf5.joshw.info/l/LEGO%20Star%20Wars%20-%20The%20Skywalker%20Saga%20(2022-04-05)(TT%20Games)(Warner%20Bros.)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 1014742305
+    },
+    {
+      "name": "Marvel's Spider-Man 2",
+      "raw_name": "Marvel's Spider-Man 2 (2023-10-20)(Insomniac)(SIE)[PS5].7z",
+      "date": "2023-10-20",
+      "url": "http://psf5.joshw.info/m/Marvel's%20Spider-Man%202%20(2023-10-20)(Insomniac)(SIE)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 3393311409
+    },
+    {
+      "name": "Neptunia re★Verse [Go! Go! 5 Jigen Game Neptune re★Verse]",
+      "raw_name": "Neptunia re★Verse [Go! Go! 5 Jigen Game Neptune re★Verse] (2020-12-17)(Compile Heart)(Idea Factory)[PS5].7z",
+      "date": "2020-12-17",
+      "url": "http://psf5.joshw.info/n/Neptunia%20re%e2%98%85Verse%20%5bGo!%20Go!%205%20Jigen%20Game%20Neptune%20re%e2%98%85Verse%5d%20(2020-12-17)(Compile%20Heart)(Idea%20Factory)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 377752641
+    },
+    {
+      "name": "PlayStation 5 System Software",
+      "raw_name": "PlayStation 5 System Software (2020-11-12)(Sony Interactive Entertainment)[PS5].7z",
+      "date": "2020-11-12",
+      "url": "http://psf5.joshw.info/p/PlayStation%205%20System%20Software%20(2020-11-12)(Sony%20Interactive%20Entertainment)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 15089992
+    },
+    {
+      "name": "R-Type Final 3 Evolved",
+      "raw_name": "R-Type Final 3 Evolved (2023-03-23)(Granzella)[PS5].7z",
+      "date": "2023-03-23",
+      "url": "http://psf5.joshw.info/r/R-Type%20Final%203%20Evolved%20(2023-03-23)(Granzella)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 635217761
+    },
+    {
+      "name": "Sackboy - A Big Adventure",
+      "raw_name": "Sackboy - A Big Adventure (2020-11-12)(Sumo Digital, Xdev Software)(Sony Interactive Entertainment)[PS5].7z",
+      "date": "2020-11-12",
+      "url": "http://psf5.joshw.info/s/Sackboy%20-%20A%20Big%20Adventure%20(2020-11-12)(Sumo%20Digital,%20Xdev%20Software)(Sony%20Interactive%20Entertainment)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 3600102552
+    },
+    {
+      "name": "Silent Hill - The Short Message",
+      "raw_name": "Silent Hill - The Short Message (2024-01-31)(Konami Digital Entertainment)(Konami)[PS5].7z",
+      "date": "2024-01-31",
+      "url": "http://psf5.joshw.info/s/Silent%20Hill%20-%20The%20Short%20Message%20(2024-01-31)(Konami%20Digital%20Entertainment)(Konami)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 1724033117
+    }
+  ],
+  "dir_sizes": {},
+  "scanned_dirs": [
+    "http://psf5.joshw.info/l/",
+    "http://psf5.joshw.info/m/",
+    "http://psf5.joshw.info/r/",
+    "http://psf5.joshw.info/d/",
+    "http://psf5.joshw.info/n/",
+    "http://psf5.joshw.info/",
+    "http://psf5.joshw.info/s/",
+    "http://psf5.joshw.info/p/",
+    "http://psf5.joshw.info/a/"
+  ]
+}

@@ -1,0 +1,3834 @@
+{
+  "entries": [
+    {
+      "name": "0-9",
+      "raw_name": "0-9",
+      "date": "",
+      "url": "http://gcn.joshw.info/0-9/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "a",
+      "raw_name": "a",
+      "date": "",
+      "url": "http://gcn.joshw.info/a/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "b",
+      "raw_name": "b",
+      "date": "",
+      "url": "http://gcn.joshw.info/b/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "c",
+      "raw_name": "c",
+      "date": "",
+      "url": "http://gcn.joshw.info/c/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "d",
+      "raw_name": "d",
+      "date": "",
+      "url": "http://gcn.joshw.info/d/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "e",
+      "raw_name": "e",
+      "date": "",
+      "url": "http://gcn.joshw.info/e/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "f",
+      "raw_name": "f",
+      "date": "",
+      "url": "http://gcn.joshw.info/f/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "g",
+      "raw_name": "g",
+      "date": "",
+      "url": "http://gcn.joshw.info/g/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "h",
+      "raw_name": "h",
+      "date": "",
+      "url": "http://gcn.joshw.info/h/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "i",
+      "raw_name": "i",
+      "date": "",
+      "url": "http://gcn.joshw.info/i/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "j",
+      "raw_name": "j",
+      "date": "",
+      "url": "http://gcn.joshw.info/j/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "k",
+      "raw_name": "k",
+      "date": "",
+      "url": "http://gcn.joshw.info/k/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "l",
+      "raw_name": "l",
+      "date": "",
+      "url": "http://gcn.joshw.info/l/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "m",
+      "raw_name": "m",
+      "date": "",
+      "url": "http://gcn.joshw.info/m/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "n",
+      "raw_name": "n",
+      "date": "",
+      "url": "http://gcn.joshw.info/n/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "o",
+      "raw_name": "o",
+      "date": "",
+      "url": "http://gcn.joshw.info/o/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "p",
+      "raw_name": "p",
+      "date": "",
+      "url": "http://gcn.joshw.info/p/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "r",
+      "raw_name": "r",
+      "date": "",
+      "url": "http://gcn.joshw.info/r/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "s",
+      "raw_name": "s",
+      "date": "",
+      "url": "http://gcn.joshw.info/s/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "t",
+      "raw_name": "t",
+      "date": "",
+      "url": "http://gcn.joshw.info/t/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "u",
+      "raw_name": "u",
+      "date": "",
+      "url": "http://gcn.joshw.info/u/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "v",
+      "raw_name": "v",
+      "date": "",
+      "url": "http://gcn.joshw.info/v/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "w",
+      "raw_name": "w",
+      "date": "",
+      "url": "http://gcn.joshw.info/w/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "x",
+      "raw_name": "x",
+      "date": "",
+      "url": "http://gcn.joshw.info/x/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "y",
+      "raw_name": "y",
+      "date": "",
+      "url": "http://gcn.joshw.info/y/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "z",
+      "raw_name": "z",
+      "date": "",
+      "url": "http://gcn.joshw.info/z/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "robots.txt",
+      "raw_name": "robots.txt",
+      "date": "",
+      "url": "http://gcn.joshw.info/robots.txt",
+      "directory": false,
+      "size": 26
+    },
+    {
+      "name": "007 - Agent Under Fire",
+      "raw_name": "007 - Agent Under Fire (2002-03-13)(EA Redwood Shores)(Electronic Arts)[GC].7z",
+      "date": "2002-03-13",
+      "url": "http://gcn.joshw.info/0-9/007%20-%20Agent%20Under%20Fire%20(2002-03-13)(EA%20Redwood%20Shores)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 228844188
+    },
+    {
+      "name": "007 - Everything or Nothing",
+      "raw_name": "007 - Everything or Nothing (2004-02-11)(EA Redwood Shores)(Electronic Arts)[GC].7z",
+      "date": "2004-02-11",
+      "url": "http://gcn.joshw.info/0-9/007%20-%20Everything%20or%20Nothing%20(2004-02-11)(EA%20Redwood%20Shores)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 162141823
+    },
+    {
+      "name": "007 - From Russia With Love",
+      "raw_name": "007 - From Russia With Love (2005-11-15)(EA Redwood Shores)(Electronic Arts)[GC].7z",
+      "date": "2005-11-15",
+      "url": "http://gcn.joshw.info/0-9/007%20-%20From%20Russia%20With%20Love%20(2005-11-15)(EA%20Redwood%20Shores)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 217034877
+    },
+    {
+      "name": "007 - Nightfire",
+      "raw_name": "007 - Nightfire (2002-11-18)(Eurocom)(Electronic Arts)[GC].7z",
+      "date": "2002-11-18",
+      "url": "http://gcn.joshw.info/0-9/007%20-%20Nightfire%20(2002-11-18)(Eurocom)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 49111192
+    },
+    {
+      "name": "1080 - Avalanche",
+      "raw_name": "1080 - Avalanche (2003-11-28)(-)(Nintendo)[GC].7z",
+      "date": "2003-11-28",
+      "url": "http://gcn.joshw.info/0-9/1080%20-%20Avalanche%20(2003-11-28)(-)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 298345934
+    },
+    {
+      "name": "18 Wheeler - American Pro Trucker",
+      "raw_name": "18 Wheeler - American Pro Trucker (2002-08-18)(Sega AM2)(Acclaim Cheltenham)(Acclaim)[GC].7z",
+      "date": "2002-08-18",
+      "url": "http://gcn.joshw.info/0-9/18%20Wheeler%20-%20American%20Pro%20Trucker%20(2002-08-18)(Sega%20AM2)(Acclaim%20Cheltenham)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 77130289
+    },
+    {
+      "name": "4x4 Evo 2",
+      "raw_name": "4x4 Evo 2 (2002-09-10)(Terminal Reality)(Universal Interactive)[GC].7z",
+      "date": "2002-09-10",
+      "url": "http://gcn.joshw.info/0-9/4x4%20Evo%202%20(2002-09-10)(Terminal%20Reality)(Universal%20Interactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 23564071
+    },
+    {
+      "name": "Adventures of Jimmy Neutron - Boy Genius, The - Jet Fusion",
+      "raw_name": "Adventures of Jimmy Neutron - Boy Genius, The - Jet Fusion (2003-09-16)(Krome)(THQ)[GC].7z",
+      "date": "2003-09-16",
+      "url": "http://gcn.joshw.info/a/Adventures%20of%20Jimmy%20Neutron%20-%20Boy%20Genius,%20The%20-%20Jet%20Fusion%20(2003-09-16)(Krome)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 101619293
+    },
+    {
+      "name": "Aggresive Inline",
+      "raw_name": "Aggresive Inline (2002-07-31)(Z-Axis)(Acclaim)[GC].7z",
+      "date": "2002-07-31",
+      "url": "http://gcn.joshw.info/a/Aggresive%20Inline%20(2002-07-31)(Z-Axis)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 129992244
+    },
+    {
+      "name": "Alien Hominid",
+      "raw_name": "Alien Hominid (2004-11-23)(The Behemoth)(O3)[GC].7z",
+      "date": "2004-11-23",
+      "url": "http://gcn.joshw.info/a/Alien%20Hominid%20(2004-11-23)(The%20Behemoth)(O3)%5bGC%5d.7z",
+      "directory": false,
+      "size": 108286286
+    },
+    {
+      "name": "Amazing Island",
+      "raw_name": "Amazing Island (2004-08-25)(Hitmaker)(Sega)[GC].7z",
+      "date": "2004-08-25",
+      "url": "http://gcn.joshw.info/a/Amazing%20Island%20(2004-08-25)(Hitmaker)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 298140752
+    },
+    {
+      "name": "American Chopper 2 - Full Throttle",
+      "raw_name": "American Chopper 2 - Full Throttle (2005-11-29)(Creat)(Activision)[GC].7z",
+      "date": "2005-11-29",
+      "url": "http://gcn.joshw.info/a/American%20Chopper%202%20-%20Full%20Throttle%20(2005-11-29)(Creat)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 212665367
+    },
+    {
+      "name": "Animaniacs - The Great Edgar Hunt",
+      "raw_name": "Animaniacs - The Great Edgar Hunt (2005-05-27)(Warthog)(Ignition)[GC].7z",
+      "date": "2005-05-27",
+      "url": "http://gcn.joshw.info/a/Animaniacs%20-%20The%20Great%20Edgar%20Hunt%20(2005-05-27)(Warthog)(Ignition)%5bGC%5d.7z",
+      "directory": false,
+      "size": 112332024
+    },
+    {
+      "name": "Ant Bully, The",
+      "raw_name": "Ant Bully, The (2006-07-24)(Artificial Mind and Movement)(Midway)[GC].7z",
+      "date": "2006-07-24",
+      "url": "http://gcn.joshw.info/a/Ant%20Bully,%20The%20(2006-07-24)(Artificial%20Mind%20and%20Movement)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 113478590
+    },
+    {
+      "name": "Aquaman - Battle for Atlantis",
+      "raw_name": "Aquaman - Battle for Atlantis (2003-07-23)(Lucky Chicken)(TDK Mediactive)[GC].7z",
+      "date": "2003-07-23",
+      "url": "http://gcn.joshw.info/a/Aquaman%20-%20Battle%20for%20Atlantis%20(2003-07-23)(Lucky%20Chicken)(TDK%20Mediactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 77063781
+    },
+    {
+      "name": "Army Men - Air Combat - The Elite Missions",
+      "raw_name": "Army Men - Air Combat - The Elite Missions (2003-03-25)(-)(3DO)[GC].7z",
+      "date": "2003-03-25",
+      "url": "http://gcn.joshw.info/a/Army%20Men%20-%20Air%20Combat%20-%20The%20Elite%20Missions%20(2003-03-25)(-)(3DO)%5bGC%5d.7z",
+      "directory": false,
+      "size": 40902911
+    },
+    {
+      "name": "Army Men RTS - Real Time Strategy",
+      "raw_name": "Army Men RTS - Real Time Strategy (2004-11-02)(Pandemic)(Coyote)(Global Star)[GC].7z",
+      "date": "2004-11-02",
+      "url": "http://gcn.joshw.info/a/Army%20Men%20RTS%20-%20Real%20Time%20Strategy%20(2004-11-02)(Pandemic)(Coyote)(Global%20Star)%5bGC%5d.7z",
+      "directory": false,
+      "size": 77761099
+    },
+    {
+      "name": "Asterix & Obelix XXL [Asterix & Obelix - Kick Buttix]",
+      "raw_name": "Asterix & Obelix XXL [Asterix & Obelix - Kick Buttix] (2004-06-18)(Etranges Libellules)(Atari)[GC].7z",
+      "date": "2004-06-18",
+      "url": "http://gcn.joshw.info/a/Asterix%20&%20Obelix%20XXL%20%5bAsterix%20&%20Obelix%20-%20Kick%20Buttix%5d%20(2004-06-18)(Etranges%20Libellules)(Atari)%5bGC%5d.7z",
+      "directory": false,
+      "size": 139262142
+    },
+    {
+      "name": "ATV Quad Power Racing 2",
+      "raw_name": "ATV Quad Power Racing 2 (2003-01-22)(Climax Group)(AKA)[GC].7z",
+      "date": "2003-01-22",
+      "url": "http://gcn.joshw.info/a/ATV%20Quad%20Power%20Racing%202%20(2003-01-22)(Climax%20Group)(AKA)%5bGC%5d.7z",
+      "directory": false,
+      "size": 141823540
+    },
+    {
+      "name": "Auto Modellista [Auto Modellista - U.S.-tuned]",
+      "raw_name": "Auto Modellista [Auto Modellista - U.S.-tuned] (2003-07-03)(Capcom Production Studio 1)(Capcom)[GC].7z",
+      "date": "2003-07-03",
+      "url": "http://gcn.joshw.info/a/Auto%20Modellista%20%5bAuto%20Modellista%20-%20U.S.-tuned%5d%20(2003-07-03)(Capcom%20Production%20Studio%201)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 384807119
+    },
+    {
+      "name": "Avatar - The Last Airbender",
+      "raw_name": "Avatar - The Last Airbender (2006-10-10)(AWE)(THQ)[GC].7z",
+      "date": "2006-10-10",
+      "url": "http://gcn.joshw.info/a/Avatar%20-%20The%20Last%20Airbender%20(2006-10-10)(AWE)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 338992064
+    },
+    {
+      "name": "Backyard Baseball",
+      "raw_name": "Backyard Baseball (2003-03-31)(Humongous)(Atari)[GC].7z",
+      "date": "2003-03-31",
+      "url": "http://gcn.joshw.info/b/Backyard%20Baseball%20(2003-03-31)(Humongous)(Atari)%5bGC%5d.7z",
+      "directory": false,
+      "size": 72769608
+    },
+    {
+      "name": "Bad Boys - Miami Takedown",
+      "raw_name": "Bad Boys - Miami Takedown (2004-09-14)(Blitz)(Empire)[GC].7z",
+      "date": "2004-09-14",
+      "url": "http://gcn.joshw.info/b/Bad%20Boys%20-%20Miami%20Takedown%20(2004-09-14)(Blitz)(Empire)%5bGC%5d.7z",
+      "directory": false,
+      "size": 387181278
+    },
+    {
+      "name": "Baldur's Gate - Dark Alliance",
+      "raw_name": "Baldur's Gate - Dark Alliance (2002-11-20)(High Voltage)(Black Isle)[GC].7z",
+      "date": "2002-11-20",
+      "url": "http://gcn.joshw.info/b/Baldur's%20Gate%20-%20Dark%20Alliance%20(2002-11-20)(High%20Voltage)(Black%20Isle)%5bGC%5d.7z",
+      "directory": false,
+      "size": 72617287
+    },
+    {
+      "name": "Barbarian [Warrior Blade - Rastan vs. Barbarian]",
+      "raw_name": "Barbarian [Warrior Blade - Rastan vs. Barbarian] (2003-03-27)(Saffire)(Taito)[GC].7z",
+      "date": "2003-03-27",
+      "url": "http://gcn.joshw.info/b/Barbarian%20%5bWarrior%20Blade%20-%20Rastan%20vs.%20Barbarian%5d%20(2003-03-27)(Saffire)(Taito)%5bGC%5d.7z",
+      "directory": false,
+      "size": 32496901
+    },
+    {
+      "name": "Barnyard",
+      "raw_name": "Barnyard (2006-08-01)(Blue Tongue)(THQ)[GC].7z",
+      "date": "2006-08-01",
+      "url": "http://gcn.joshw.info/b/Barnyard%20(2006-08-01)(Blue%20Tongue)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 224943628
+    },
+    {
+      "name": "Baseball 2003, The - Battle Ball Park Sengen Perfect Play Pro Yakyuu",
+      "raw_name": "Baseball 2003, The - Battle Ball Park Sengen Perfect Play Pro Yakyuu (2003-03-20)(-)(Konami)[GC].7z",
+      "date": "2003-03-20",
+      "url": "http://gcn.joshw.info/b/Baseball%202003,%20The%20-%20Battle%20Ball%20Park%20Sengen%20Perfect%20Play%20Pro%20Yakyuu%20(2003-03-20)(-)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 51086412
+    },
+    {
+      "name": "Baten Kaitos - Eternal Wings and the Lost Ocean [Baten Kaitos - Owaranai Tsubasa to Ushinawareta Umi]",
+      "raw_name": "Baten Kaitos - Eternal Wings and the Lost Ocean [Baten Kaitos - Owaranai Tsubasa to Ushinawareta Umi] (2003-12-05)(Monolith, tri-Crescendo)(Namco)[GC].7z",
+      "date": "2003-12-05",
+      "url": "http://gcn.joshw.info/b/Baten%20Kaitos%20-%20Eternal%20Wings%20and%20the%20Lost%20Ocean%20%5bBaten%20Kaitos%20-%20Owaranai%20Tsubasa%20to%20Ushinawareta%20Umi%5d%20(2003-12-05)(Monolith,%20tri-Crescendo)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 235133354
+    },
+    {
+      "name": "Baten Kaitos Origins [Baten Kaitos II - Hajimari no Tsubasa to Kamigami no Shishi]",
+      "raw_name": "Baten Kaitos Origins [Baten Kaitos II - Hajimari no Tsubasa to Kamigami no Shishi] (2006-02-23)(Monolith, tri-Crescendo)(Namco)[GC].7z",
+      "date": "2006-02-23",
+      "url": "http://gcn.joshw.info/b/Baten%20Kaitos%20Origins%20%5bBaten%20Kaitos%20II%20-%20Hajimari%20no%20Tsubasa%20to%20Kamigami%20no%20Shishi%5d%20(2006-02-23)(Monolith,%20tri-Crescendo)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 322263168
+    },
+    {
+      "name": "Batman - Dark Tomorrow",
+      "raw_name": "Batman - Dark Tomorrow (2003-03-21)(Kemco)[GC].7z",
+      "date": "2003-03-21",
+      "url": "http://gcn.joshw.info/b/Batman%20-%20Dark%20Tomorrow%20(2003-03-21)(Kemco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 63416247
+    },
+    {
+      "name": "Batman - Rise of Sin Tzu",
+      "raw_name": "Batman - Rise of Sin Tzu (2003-11-11)(Ubisoft Montreal)(Ubisoft)[GC][unsorted].7z",
+      "date": "2003-11-11",
+      "url": "http://gcn.joshw.info/b/Batman%20-%20Rise%20of%20Sin%20Tzu%20(2003-11-11)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 286367771
+    },
+    {
+      "name": "Batman - Vengeance",
+      "raw_name": "Batman - Vengeance (2001-11-17)(Ubisoft Montreal)(Ubisoft)[GC][unsorted].7z",
+      "date": "2001-11-17",
+      "url": "http://gcn.joshw.info/b/Batman%20-%20Vengeance%20(2001-11-17)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 261466024
+    },
+    {
+      "name": "Batman Begins",
+      "raw_name": "Batman Begins (2005-06-14)(Eurocom)(Warner Bros. Interactive)[GC].7z",
+      "date": "2005-06-14",
+      "url": "http://gcn.joshw.info/b/Batman%20Begins%20(2005-06-14)(Eurocom)(Warner%20Bros.%20Interactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 135572094
+    },
+    {
+      "name": "Battalion Wars [Totsugeki! Famicom Wars]",
+      "raw_name": "Battalion Wars [Totsugeki! Famicom Wars] (2005-09-19)(Kuju London)(Nintendo)[GC].7z",
+      "date": "2005-09-19",
+      "url": "http://gcn.joshw.info/b/Battalion%20Wars%20%5bTotsugeki!%20Famicom%20Wars%5d%20(2005-09-19)(Kuju%20London)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 104360843
+    },
+    {
+      "name": "Battle Stadium D.O.N",
+      "raw_name": "Battle Stadium D.O.N (2006-07-20)(Eighting, Q)(Bandai)[GC].7z",
+      "date": "2006-07-20",
+      "url": "http://gcn.joshw.info/b/Battle%20Stadium%20D.O.N%20(2006-07-20)(Eighting,%20Q)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 81307150
+    },
+    {
+      "name": "Beach Spikers - Virtua Beach Volleyball",
+      "raw_name": "Beach Spikers - Virtua Beach Volleyball (2002-07-19)(Sega AM2)(Sega)[GC].7z",
+      "date": "2002-07-19",
+      "url": "http://gcn.joshw.info/b/Beach%20Spikers%20-%20Virtua%20Beach%20Volleyball%20(2002-07-19)(Sega%20AM2)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 58749163
+    },
+    {
+      "name": "Beyblade VForce - Super Tournament Battle [Bakuten Shoot Beyblade 2002 - Nettou! Magne Tag Battle]",
+      "raw_name": "Beyblade VForce - Super Tournament Battle [Bakuten Shoot Beyblade 2002 - Nettou! Magne Tag Battle] (2002-12-19)(A.I)(Takara)[GC].7z",
+      "date": "2002-12-19",
+      "url": "http://gcn.joshw.info/b/Beyblade%20VForce%20-%20Super%20Tournament%20Battle%20%5bBakuten%20Shoot%20Beyblade%202002%20-%20Nettou!%20Magne%20Tag%20Battle%5d%20(2002-12-19)(A.I)(Takara)%5bGC%5d.7z",
+      "directory": false,
+      "size": 11820080
+    },
+    {
+      "name": "Beyond Good & Evil",
+      "raw_name": "Beyond Good & Evil (2003-12-11)(Ubisoft Montpellier)(Ubisoft)[GC].7z",
+      "date": "2003-12-11",
+      "url": "http://gcn.joshw.info/b/Beyond%20Good%20&%20Evil%20(2003-12-11)(Ubisoft%20Montpellier)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 218239683
+    },
+    {
+      "name": "Big Air Freestyle",
+      "raw_name": "Big Air Freestyle (2002-09-13)(Paradigm)(Infogrames)[GC].7z",
+      "date": "2002-09-13",
+      "url": "http://gcn.joshw.info/b/Big%20Air%20Freestyle%20(2002-09-13)(Paradigm)(Infogrames)%5bGC%5d.7z",
+      "directory": false,
+      "size": 158040722
+    },
+    {
+      "name": "Billy Hatcher and the Giant Egg (Preview Demo)",
+      "raw_name": "Billy Hatcher and the Giant Egg (Preview Demo) (2003-03-03)(Sonic Team)(Sega)[GC].7z",
+      "date": "2003-03-03",
+      "url": "http://gcn.joshw.info/b/Billy%20Hatcher%20and%20the%20Giant%20Egg%20(Preview%20Demo)%20(2003-03-03)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 22679560
+    },
+    {
+      "name": "Billy Hatcher and the Giant Egg [Giant Egg - Billy Hatcher no Daibouken]",
+      "raw_name": "Billy Hatcher and the Giant Egg [Giant Egg - Billy Hatcher no Daibouken] (2003-09-23)(Sonic Team)(Sega)[GC].7z",
+      "date": "2003-09-23",
+      "url": "http://gcn.joshw.info/b/Billy%20Hatcher%20and%20the%20Giant%20Egg%20%5bGiant%20Egg%20-%20Billy%20Hatcher%20no%20Daibouken%5d%20(2003-09-23)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 198401594
+    },
+    {
+      "name": "Bionicle Heroes",
+      "raw_name": "Bionicle Heroes (2006-11-14)(Traveller's Tales)(Eidos)[GC].7z",
+      "date": "2006-11-14",
+      "url": "http://gcn.joshw.info/b/Bionicle%20Heroes%20(2006-11-14)(Traveller's%20Tales)(Eidos)%5bGC%5d.7z",
+      "directory": false,
+      "size": 133024514
+    },
+    {
+      "name": "Bleach GC - Tasogare ni Mamieru Shinigami",
+      "raw_name": "Bleach GC - Tasogare ni Mamieru Shinigami (2005-12-08)(Polygon Magic)(Sega)[GC].7z",
+      "date": "2005-12-08",
+      "url": "http://gcn.joshw.info/b/Bleach%20GC%20-%20Tasogare%20ni%20Mamieru%20Shinigami%20(2005-12-08)(Polygon%20Magic)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 86407934
+    },
+    {
+      "name": "Blood Omen 2",
+      "raw_name": "Blood Omen 2 (2002-12-09)(Crystal Dynamics)(Eidos)[GC].7z",
+      "date": "2002-12-09",
+      "url": "http://gcn.joshw.info/b/Blood%20Omen%202%20(2002-12-09)(Crystal%20Dynamics)(Eidos)%5bGC%5d.7z",
+      "directory": false,
+      "size": 156546541
+    },
+    {
+      "name": "BloodRayne",
+      "raw_name": "BloodRayne (2002-10-15)(Terminal Reality)(Majesco)[GC].7z",
+      "date": "2002-10-15",
+      "url": "http://gcn.joshw.info/b/BloodRayne%20(2002-10-15)(Terminal%20Reality)(Majesco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 54414176
+    },
+    {
+      "name": "Bloody Roar - Primal Fury [Bloody Roar Extreme]",
+      "raw_name": "Bloody Roar - Primal Fury [Bloody Roar Extreme] (2002-03-18)(Eighting)(Hudson)[GC].7z",
+      "date": "2002-03-18",
+      "url": "http://gcn.joshw.info/b/Bloody%20Roar%20-%20Primal%20Fury%20%5bBloody%20Roar%20Extreme%5d%20(2002-03-18)(Eighting)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 98365147
+    },
+    {
+      "name": "BlowOut",
+      "raw_name": "BlowOut (2003-10-28)(Terminal Reality)(Majesco)[GC].7z",
+      "date": "2003-10-28",
+      "url": "http://gcn.joshw.info/b/BlowOut%20(2003-10-28)(Terminal%20Reality)(Majesco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 34785200
+    },
+    {
+      "name": "Boboboubo Boubobo - Dasshutsu! Hajike Royale",
+      "raw_name": "Boboboubo Boubobo - Dasshutsu! Hajike Royale (2005-03-17)(Rokumendo)(Hudson)[GC].7z",
+      "date": "2005-03-17",
+      "url": "http://gcn.joshw.info/b/Boboboubo%20Boubobo%20-%20Dasshutsu!%20Hajike%20Royale%20(2005-03-17)(Rokumendo)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 111189754
+    },
+    {
+      "name": "Bomberman Generation",
+      "raw_name": "Bomberman Generation (2002-06-03)(Game Arts)(Hudson)[GC].7z",
+      "date": "2002-06-03",
+      "url": "http://gcn.joshw.info/b/Bomberman%20Generation%20(2002-06-03)(Game%20Arts)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 416333041
+    },
+    {
+      "name": "Bomberman Jetters",
+      "raw_name": "Bomberman Jetters (2002-12-19)(Hudson)[GC].7z",
+      "date": "2002-12-19",
+      "url": "http://gcn.joshw.info/b/Bomberman%20Jetters%20(2002-12-19)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 428018039
+    },
+    {
+      "name": "Burnout",
+      "raw_name": "Burnout (2002-04-29)(Criterion)(Acclaim)[GC].7z",
+      "date": "2002-04-29",
+      "url": "http://gcn.joshw.info/b/Burnout%20(2002-04-29)(Criterion)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 141472717
+    },
+    {
+      "name": "Burnout 2 - Point of Impact",
+      "raw_name": "Burnout 2 - Point of Impact (2003-04-09)(Criterion)(Acclaim)[GC].7z",
+      "date": "2003-04-09",
+      "url": "http://gcn.joshw.info/b/Burnout%202%20-%20Point%20of%20Impact%20(2003-04-09)(Criterion)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 577620164
+    },
+    {
+      "name": "Bust-A-Move 3000 [Super Puzzle Bobble All-Stars] [Super Bust-A-Move All Stars]",
+      "raw_name": "Bust-A-Move 3000 [Super Puzzle Bobble All-Stars] [Super Bust-A-Move All Stars] (2003-02-12)(Taito)[GC].7z",
+      "date": "2003-02-12",
+      "url": "http://gcn.joshw.info/b/Bust-A-Move%203000%20%5bSuper%20Puzzle%20Bobble%20All-Stars%5d%20%5bSuper%20Bust-A-Move%20All%20Stars%5d%20(2003-02-12)(Taito)%5bGC%5d.7z",
+      "directory": false,
+      "size": 21818978
+    },
+    {
+      "name": "Butt-Ugly Martians - Zoom or Doom!",
+      "raw_name": "Butt-Ugly Martians - Zoom or Doom! (2003-05-10)(Runecraft)(Vivendi Universal)[GC].7z",
+      "date": "2003-05-10",
+      "url": "http://gcn.joshw.info/b/Butt-Ugly%20Martians%20-%20Zoom%20or%20Doom!%20(2003-05-10)(Runecraft)(Vivendi%20Universal)%5bGC%5d.7z",
+      "directory": false,
+      "size": 95118979
+    },
+    {
+      "name": "Cabela's Big Game Hunter - 2005 Adventures",
+      "raw_name": "Cabela's Big Game Hunter - 2005 Adventures (2004-12-09)(Magic Wand)(Activision Value)[GC].7z",
+      "date": "2004-12-09",
+      "url": "http://gcn.joshw.info/c/Cabela's%20Big%20Game%20Hunter%20-%202005%20Adventures%20(2004-12-09)(Magic%20Wand)(Activision%20Value)%5bGC%5d.7z",
+      "directory": false,
+      "size": 18746550
+    },
+    {
+      "name": "Capcom vs. SNK 2 EO [Capcom vs. SNK 2 EO - Millionaire Fighting 2001]",
+      "raw_name": "Capcom vs. SNK 2 EO [Capcom vs. SNK 2 EO - Millionaire Fighting 2001] (2002-07-04)(Capcom Production Studio 1)(Capcom)[GC].7z",
+      "date": "2002-07-04",
+      "url": "http://gcn.joshw.info/c/Capcom%20vs.%20SNK%202%20EO%20%5bCapcom%20vs.%20SNK%202%20EO%20-%20Millionaire%20Fighting%202001%5d%20(2002-07-04)(Capcom%20Production%20Studio%201)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 142550500
+    },
+    {
+      "name": "Captain Tsubasa - Ougon Sedai no Chousen",
+      "raw_name": "Captain Tsubasa - Ougon Sedai no Chousen (2002-09-12)(Konami)[GC].7z",
+      "date": "2002-09-12",
+      "url": "http://gcn.joshw.info/c/Captain%20Tsubasa%20-%20Ougon%20Sedai%20no%20Chousen%20(2002-09-12)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 99301811
+    },
+    {
+      "name": "Cars",
+      "raw_name": "Cars (2006-06-06)(Rainbow)(THQ)[GC].7z",
+      "date": "2006-06-06",
+      "url": "http://gcn.joshw.info/c/Cars%20(2006-06-06)(Rainbow)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 176547582
+    },
+    {
+      "name": "Casper - Spirit Dimensions",
+      "raw_name": "Casper - Spirit Dimensions (2002-10-15)(Lucky Chicken)(TDK Mediactive)[GC].7z",
+      "date": "2002-10-15",
+      "url": "http://gcn.joshw.info/c/Casper%20-%20Spirit%20Dimensions%20(2002-10-15)(Lucky%20Chicken)(TDK%20Mediactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 63620544
+    },
+    {
+      "name": "Cel Damage",
+      "raw_name": "Cel Damage (2002-01-07)(Pseudo)(Electronic Arts)[GC].7z",
+      "date": "2002-01-07",
+      "url": "http://gcn.joshw.info/c/Cel%20Damage%20(2002-01-07)(Pseudo)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 117557376
+    },
+    {
+      "name": "Chaos Field [Chaos Field - Expanded]",
+      "raw_name": "Chaos Field [Chaos Field - Expanded] (2005-02-24)(MileStone)[GC].7z",
+      "date": "2005-02-24",
+      "url": "http://gcn.joshw.info/c/Chaos%20Field%20%5bChaos%20Field%20-%20Expanded%5d%20(2005-02-24)(MileStone)%5bGC%5d.7z",
+      "directory": false,
+      "size": 302602181
+    },
+    {
+      "name": "Charinko Hero",
+      "raw_name": "Charinko Hero (2003-07-17)(-)(Banpresto)[GC].7z",
+      "date": "2003-07-17",
+      "url": "http://gcn.joshw.info/c/Charinko%20Hero%20(2003-07-17)(-)(Banpresto)%5bGC%5d.7z",
+      "directory": false,
+      "size": 85400758
+    },
+    {
+      "name": "Charlie and the Chocolate Factory",
+      "raw_name": "Charlie and the Chocolate Factory (2005-07-11)(High Voltage)(Global Star)[GC].7z",
+      "date": "2005-07-11",
+      "url": "http://gcn.joshw.info/c/Charlie%20and%20the%20Chocolate%20Factory%20(2005-07-11)(High%20Voltage)(Global%20Star)%5bGC%5d.7z",
+      "directory": false,
+      "size": 255684279
+    },
+    {
+      "name": "Charlie's Angels",
+      "raw_name": "Charlie's Angels (2003-07-09)(Neko)(Ubisoft)[GC].7z",
+      "date": "2003-07-09",
+      "url": "http://gcn.joshw.info/c/Charlie's%20Angels%20(2003-07-09)(Neko)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 142341615
+    },
+    {
+      "name": "Chibi-Robo! Plug Into Adventure [Chibi-Robo!]",
+      "raw_name": "Chibi-Robo! Plug Into Adventure [Chibi-Robo!] (2005-06-23)(Skip)(Nintendo)[GC].7z",
+      "date": "2005-06-23",
+      "url": "http://gcn.joshw.info/c/Chibi-Robo!%20Plug%20Into%20Adventure%20%5bChibi-Robo!%5d%20(2005-06-23)(Skip)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 119069451
+    },
+    {
+      "name": "Chicken Little",
+      "raw_name": "Chicken Little (2005-10-20)(Avalanche)(Buena Vista)[GC].7z",
+      "date": "2005-10-20",
+      "url": "http://gcn.joshw.info/c/Chicken%20Little%20(2005-10-20)(Avalanche)(Buena%20Vista)%5bGC%5d.7z",
+      "directory": false,
+      "size": 107883043
+    },
+    {
+      "name": "Chronicles of Narnia, The - The Lion, The Witch and The Wardrobe",
+      "raw_name": "Chronicles of Narnia, The - The Lion, The Witch and The Wardrobe (2005-11-14)(Traveller's Tales)(Buena Vista)[GC].7z",
+      "date": "2005-11-14",
+      "url": "http://gcn.joshw.info/c/Chronicles%20of%20Narnia,%20The%20-%20The%20Lion,%20The%20Witch%20and%20The%20Wardrobe%20(2005-11-14)(Traveller's%20Tales)(Buena%20Vista)%5bGC%5d.7z",
+      "directory": false,
+      "size": 121702123
+    },
+    {
+      "name": "Cocoto Fun Fair",
+      "raw_name": "Cocoto Fun Fair (2006-04-07)(Neko)(Big Ben)[GC].7z",
+      "date": "2006-04-07",
+      "url": "http://gcn.joshw.info/c/Cocoto%20Fun%20Fair%20(2006-04-07)(Neko)(Big%20Ben)%5bGC%5d.7z",
+      "directory": false,
+      "size": 96840010
+    },
+    {
+      "name": "Cocoto Kart Racer",
+      "raw_name": "Cocoto Kart Racer (2005-04-22)(Neko)(BigBen)[GC].7z",
+      "date": "2005-04-22",
+      "url": "http://gcn.joshw.info/c/Cocoto%20Kart%20Racer%20(2005-04-22)(Neko)(BigBen)%5bGC%5d.7z",
+      "directory": false,
+      "size": 228650911
+    },
+    {
+      "name": "Cocoto Platform Jumper",
+      "raw_name": "Cocoto Platform Jumper (2004-12-10)(Neko)(BigBen)[GC].7z",
+      "date": "2004-12-10",
+      "url": "http://gcn.joshw.info/c/Cocoto%20Platform%20Jumper%20(2004-12-10)(Neko)(BigBen)%5bGC%5d.7z",
+      "directory": false,
+      "size": 87312912
+    },
+    {
+      "name": "Codename - Kids Next Door - Operation V.I.D.E.O.G.A.M.E.",
+      "raw_name": "Codename - Kids Next Door - Operation V.I.D.E.O.G.A.M.E. (2005-10-11)(High Voltage)(Global Star)[GC].7z",
+      "date": "2005-10-11",
+      "url": "http://gcn.joshw.info/c/Codename%20-%20Kids%20Next%20Door%20-%20Operation%20V.I.D.E.O.G.A.M.E.%20(2005-10-11)(High%20Voltage)(Global%20Star)%5bGC%5d.7z",
+      "directory": false,
+      "size": 387814994
+    },
+    {
+      "name": "Conan",
+      "raw_name": "Conan (2005-04-15)(Cauldron)(TDK Mediactive)[GC].7z",
+      "date": "2005-04-15",
+      "url": "http://gcn.joshw.info/c/Conan%20(2005-04-15)(Cauldron)(TDK%20Mediactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 168673039
+    },
+    {
+      "name": "Conflict - Desert Storm [Conflict Delta - Wangan Sensou 1991]",
+      "raw_name": "Conflict - Desert Storm [Conflict Delta - Wangan Sensou 1991] (2003-04-17)(Pivotal)(SCi)[GC].7z",
+      "date": "2003-04-17",
+      "url": "http://gcn.joshw.info/c/Conflict%20-%20Desert%20Storm%20%5bConflict%20Delta%20-%20Wangan%20Sensou%201991%5d%20(2003-04-17)(Pivotal)(SCi)%5bGC%5d.7z",
+      "directory": false,
+      "size": 48599486
+    },
+    {
+      "name": "Conflict - Desert Storm II - Back to Baghdad [Conflict - Desert Storm II]",
+      "raw_name": "Conflict - Desert Storm II - Back to Baghdad [Conflict - Desert Storm II] (2004-01-07)(Pivotal)(Gotham)[GC].7z",
+      "date": "2004-01-07",
+      "url": "http://gcn.joshw.info/c/Conflict%20-%20Desert%20Storm%20II%20-%20Back%20to%20Baghdad%20%5bConflict%20-%20Desert%20Storm%20II%5d%20(2004-01-07)(Pivotal)(Gotham)%5bGC%5d.7z",
+      "directory": false,
+      "size": 112830560
+    },
+    {
+      "name": "Crash Bandicoot - The Wrath of Cortex [Crash Bandicoot 4 - Sakuretsu! Majin Power]",
+      "raw_name": "Crash Bandicoot - The Wrath of Cortex [Crash Bandicoot 4 - Sakuretsu! Majin Power] (2002-09-17)(Traveller's Tales, Eurocom)(Universal)[GC].7z",
+      "date": "2002-09-17",
+      "url": "http://gcn.joshw.info/c/Crash%20Bandicoot%20-%20The%20Wrath%20of%20Cortex%20%5bCrash%20Bandicoot%204%20-%20Sakuretsu!%20Majin%20Power%5d%20(2002-09-17)(Traveller's%20Tales,%20Eurocom)(Universal)%5bGC%5d.7z",
+      "directory": false,
+      "size": 195425516
+    },
+    {
+      "name": "Crash Nitro Kart [Crash Bandicoot - Bakusou! Nitro Kart]",
+      "raw_name": "Crash Nitro Kart [Crash Bandicoot - Bakusou! Nitro Kart] (2003-11-11)(Driver-Inter, Vicarious Visions)(Universal)[GC].7z",
+      "date": "2003-11-11",
+      "url": "http://gcn.joshw.info/c/Crash%20Nitro%20Kart%20%5bCrash%20Bandicoot%20-%20Bakusou!%20Nitro%20Kart%5d%20(2003-11-11)(Driver-Inter,%20Vicarious%20Visions)(Universal)%5bGC%5d.7z",
+      "directory": false,
+      "size": 148779602
+    },
+    {
+      "name": "Crazy Taxi",
+      "raw_name": "Crazy Taxi (2001-11-17)(Hitmaker)(Acclaim Cheltenham)(Acclaim)[GC].7z",
+      "date": "2001-11-17",
+      "url": "http://gcn.joshw.info/c/Crazy%20Taxi%20(2001-11-17)(Hitmaker)(Acclaim%20Cheltenham)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 32217701
+    },
+    {
+      "name": "Croket! - Ban Ou no Kiki wo Sukue",
+      "raw_name": "Croket! - Ban Ou no Kiki wo Sukue (2004-07-08)(-)(Konami)[GC].7z",
+      "date": "2004-07-08",
+      "url": "http://gcn.joshw.info/c/Croket!%20-%20Ban%20Ou%20no%20Kiki%20wo%20Sukue%20(2004-07-08)(-)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 70973340
+    },
+    {
+      "name": "Cubivore - Survival of the Fittest [Doubutsu Banchou]",
+      "raw_name": "Cubivore - Survival of the Fittest [Doubutsu Banchou] (2002-02-21)(Saru Brunei)(Nintendo)[GC].7z",
+      "date": "2002-02-21",
+      "url": "http://gcn.joshw.info/c/Cubivore%20-%20Survival%20of%20the%20Fittest%20%5bDoubutsu%20Banchou%5d%20(2002-02-21)(Saru%20Brunei)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 13175317
+    },
+    {
+      "name": "Cubix - Robots For Everyone - Showdown",
+      "raw_name": "Cubix - Robots For Everyone - Showdown (2003-06-02)(Blitz)(3DO)[GC].7z",
+      "date": "2003-06-02",
+      "url": "http://gcn.joshw.info/c/Cubix%20-%20Robots%20For%20Everyone%20-%20Showdown%20(2003-06-02)(Blitz)(3DO)%5bGC%5d.7z",
+      "directory": false,
+      "size": 167224374
+    },
+    {
+      "name": "Curious George",
+      "raw_name": "Curious George (2006-02-01)(Monkey Bar)(Namco)[GC].7z",
+      "date": "2006-02-01",
+      "url": "http://gcn.joshw.info/c/Curious%20George%20(2006-02-01)(Monkey%20Bar)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 63561643
+    },
+    {
+      "name": "Custom Robo [Custom Robo - Battle Revolution]",
+      "raw_name": "Custom Robo [Custom Robo - Battle Revolution] (2004-03-04)(Noise)(Nintendo)[GC].7z",
+      "date": "2004-03-04",
+      "url": "http://gcn.joshw.info/c/Custom%20Robo%20%5bCustom%20Robo%20-%20Battle%20Revolution%5d%20(2004-03-04)(Noise)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 387197932
+    },
+    {
+      "name": "Dance Dance Revolution - Mario Mix [Dancing Stage - Mario Mix]",
+      "raw_name": "Dance Dance Revolution - Mario Mix [Dancing Stage - Mario Mix] (2005-07-14)(Konami, Hudson)(Nintendo)[GC].7z",
+      "date": "2005-07-14",
+      "url": "http://gcn.joshw.info/d/Dance%20Dance%20Revolution%20-%20Mario%20Mix%20%5bDancing%20Stage%20-%20Mario%20Mix%5d%20(2005-07-14)(Konami,%20Hudson)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 167631853
+    },
+    {
+      "name": "Dark Summit",
+      "raw_name": "Dark Summit (2002-02-04)(Radical)(THQ)[GC].7z",
+      "date": "2002-02-04",
+      "url": "http://gcn.joshw.info/d/Dark%20Summit%20(2002-02-04)(Radical)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 321054554
+    },
+    {
+      "name": "Dead to Rights",
+      "raw_name": "Dead to Rights (2002-11-25)(-)(Namco)[GC].7z",
+      "date": "2002-11-25",
+      "url": "http://gcn.joshw.info/d/Dead%20to%20Rights%20(2002-11-25)(-)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 146553429
+    },
+    {
+      "name": "Def Jam Vendetta",
+      "raw_name": "Def Jam Vendetta (2003-03-31)(AKI)(Electronic Arts)[GC].7z",
+      "date": "2003-03-31",
+      "url": "http://gcn.joshw.info/d/Def%20Jam%20Vendetta%20(2003-03-31)(AKI)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 76390521
+    },
+    {
+      "name": "Defender",
+      "raw_name": "Defender (2002-11-03)(7)(Inevitable)(Midway)[GC].7z",
+      "date": "2002-11-03",
+      "url": "http://gcn.joshw.info/d/Defender%20(2002-11-03)(7)(Inevitable)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 145910374
+    },
+    {
+      "name": "Derby Tsuku 3 - Derby Uma wo Tsukurou!",
+      "raw_name": "Derby Tsuku 3 - Derby Uma wo Tsukurou! (2003-12-11)(Land Ho!)(Sega)[GC].7z",
+      "date": "2003-12-11",
+      "url": "http://gcn.joshw.info/d/Derby%20Tsuku%203%20-%20Derby%20Uma%20wo%20Tsukurou!%20(2003-12-11)(Land%20Ho!)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 229738162
+    },
+    {
+      "name": "Digimon Rumble Arena 2 [Digimon Battle Chronicle]",
+      "raw_name": "Digimon Rumble Arena 2 [Digimon Battle Chronicle] (2004-07-29)(Black Ship)(Bandai)[GC].7z",
+      "date": "2004-07-29",
+      "url": "http://gcn.joshw.info/d/Digimon%20Rumble%20Arena%202%20%5bDigimon%20Battle%20Chronicle%5d%20(2004-07-29)(Black%20Ship)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 560293405
+    },
+    {
+      "name": "Digimon World 4 [Digimon World X]",
+      "raw_name": "Digimon World 4 [Digimon World X] (2005-01-06)(-)(Bandai)[GC].7z",
+      "date": "2005-01-06",
+      "url": "http://gcn.joshw.info/d/Digimon%20World%204%20%5bDigimon%20World%20X%5d%20(2005-01-06)(-)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 185491040
+    },
+    {
+      "name": "Dinotopia - The Sunstone Odyssey",
+      "raw_name": "Dinotopia - The Sunstone Odyssey (2003-07-23)(Vicious Cycle)(TDK Mediactive)[GC].7z",
+      "date": "2003-07-23",
+      "url": "http://gcn.joshw.info/d/Dinotopia%20-%20The%20Sunstone%20Odyssey%20(2003-07-23)(Vicious%20Cycle)(TDK%20Mediactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 29368888
+    },
+    {
+      "name": "Disney Sports - Basketball",
+      "raw_name": "Disney Sports - Basketball (2002-12-19)(Polygon Magic)(Konami)[GC].7z",
+      "date": "2002-12-19",
+      "url": "http://gcn.joshw.info/d/Disney%20Sports%20-%20Basketball%20(2002-12-19)(Polygon%20Magic)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 49850338
+    },
+    {
+      "name": "Disney Sports - Football [Disney Sports - American Football]",
+      "raw_name": "Disney Sports - Football [Disney Sports - American Football] (2002-12-08)(KCE Osaka)(Konami)[GC].7z",
+      "date": "2002-12-08",
+      "url": "http://gcn.joshw.info/d/Disney%20Sports%20-%20Football%20%5bDisney%20Sports%20-%20American%20Football%5d%20(2002-12-08)(KCE%20Osaka)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 75320061
+    },
+    {
+      "name": "Disney Sports Skateboarding",
+      "raw_name": "Disney Sports Skateboarding (2002-09-19)(KCE Osaka)(Konami)[GC].7z",
+      "date": "2002-09-19",
+      "url": "http://gcn.joshw.info/d/Disney%20Sports%20Skateboarding%20(2002-09-19)(KCE%20Osaka)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 46246839
+    },
+    {
+      "name": "Disney's PK - Out of the Shadows",
+      "raw_name": "Disney's PK - Out of the Shadows (2002-11-29)(Ubisoft Montreal)(Ubisoft)[GC][unsorted].7z",
+      "date": "2002-11-29",
+      "url": "http://gcn.joshw.info/d/Disney's%20PK%20-%20Out%20of%20the%20Shadows%20(2002-11-29)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 357584256
+    },
+    {
+      "name": "Disney's Tarzan - Untamed (Disney's Tarzan - Freeride)",
+      "raw_name": "Disney's Tarzan - Untamed (Disney's Tarzan - Freeride) (2001-11-17)(Ubisoft Montreal)(Ubisoft)[GC][unsorted].7z",
+      "date": "2001-11-17",
+      "url": "http://gcn.joshw.info/d/Disney's%20Tarzan%20-%20Untamed%20(Disney's%20Tarzan%20-%20Freeride)%20(2001-11-17)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 219010129
+    },
+    {
+      "name": "Donald Duck - Goin' Quackers (Donald Duck - Quack Attack)",
+      "raw_name": "Donald Duck - Goin' Quackers (Donald Duck - Quack Attack) (2002-03-25)(Ubisoft Montreal)(Ubisoft)[GC][unsorted].7z",
+      "date": "2002-03-25",
+      "url": "http://gcn.joshw.info/d/Donald%20Duck%20-%20Goin'%20Quackers%20(Donald%20Duck%20-%20Quack%20Attack)%20(2002-03-25)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 240749511
+    },
+    {
+      "name": "Donkey Konga",
+      "raw_name": "Donkey Konga (2003-12-12)(Namco)(Nintendo)[GC].7z",
+      "date": "2003-12-12",
+      "url": "http://gcn.joshw.info/d/Donkey%20Konga%20(2003-12-12)(Namco)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 201604526
+    },
+    {
+      "name": "Donkey Konga 2 [Donkey Konga 2 - Hit Song Parade]",
+      "raw_name": "Donkey Konga 2 [Donkey Konga 2 - Hit Song Parade] (2004-07-01)(Namco)(Nintendo)[GC].7z",
+      "date": "2004-07-01",
+      "url": "http://gcn.joshw.info/d/Donkey%20Konga%202%20%5bDonkey%20Konga%202%20-%20Hit%20Song%20Parade%5d%20(2004-07-01)(Namco)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 169104781
+    },
+    {
+      "name": "Donkey Konga 3 - Tabe-Houdai Haru Mogitate 50 Kyoku",
+      "raw_name": "Donkey Konga 3 - Tabe-Houdai Haru Mogitate 50 Kyoku (2005-03-17)(Namco)(Nintendo)[GC].7z",
+      "date": "2005-03-17",
+      "url": "http://gcn.joshw.info/d/Donkey%20Konga%203%20-%20Tabe-Houdai%20Haru%20Mogitate%2050%20Kyoku%20(2005-03-17)(Namco)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 198173284
+    },
+    {
+      "name": "Dora the Explorer - Journey to the Purple Planet",
+      "raw_name": "Dora the Explorer - Journey to the Purple Planet (2005-10-13)(Monkey Bar)(Global Star)[GC].7z",
+      "date": "2005-10-13",
+      "url": "http://gcn.joshw.info/d/Dora%20the%20Explorer%20-%20Journey%20to%20the%20Purple%20Planet%20(2005-10-13)(Monkey%20Bar)(Global%20Star)%5bGC%5d.7z",
+      "directory": false,
+      "size": 18000336
+    },
+    {
+      "name": "Dr. Muto",
+      "raw_name": "Dr. Muto (2002-12-17)(Midway West)(Midway)[GC].7z",
+      "date": "2002-12-17",
+      "url": "http://gcn.joshw.info/d/Dr.%20Muto%20(2002-12-17)(Midway%20West)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 543302234
+    },
+    {
+      "name": "Dragon Ball Z - Sagas",
+      "raw_name": "Dragon Ball Z - Sagas (2005-03-22)(Avalanche)(Atari)[GC].7z",
+      "date": "2005-03-22",
+      "url": "http://gcn.joshw.info/d/Dragon%20Ball%20Z%20-%20Sagas%20(2005-03-22)(Avalanche)(Atari)%5bGC%5d.7z",
+      "directory": false,
+      "size": 87116374
+    },
+    {
+      "name": "Dragon Drive - D-Masters Shot",
+      "raw_name": "Dragon Drive - D-Masters Shot (2003-08-08)(Treasure)(Bandai)[GC].7z",
+      "date": "2003-08-08",
+      "url": "http://gcn.joshw.info/d/Dragon%20Drive%20-%20D-Masters%20Shot%20(2003-08-08)(Treasure)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 100272553
+    },
+    {
+      "name": "Dragon's Lair 3D - Return to the Lair [Dragon's Lair 3D - Special Edition]",
+      "raw_name": "Dragon's Lair 3D - Return to the Lair [Dragon's Lair 3D - Special Edition] (2002-12-22)(Dragonstone)(Encore)[GC].7z",
+      "date": "2002-12-22",
+      "url": "http://gcn.joshw.info/d/Dragon's%20Lair%203D%20-%20Return%20to%20the%20Lair%20%5bDragon's%20Lair%203D%20-%20Special%20Edition%5d%20(2002-12-22)(Dragonstone)(Encore)%5bGC%5d.7z",
+      "directory": false,
+      "size": 154107180
+    },
+    {
+      "name": "Dream Mix TV - World Fighters",
+      "raw_name": "Dream Mix TV - World Fighters (2003-12-18)(Bitstep)(Hudson)[GC].7z",
+      "date": "2003-12-18",
+      "url": "http://gcn.joshw.info/d/Dream%20Mix%20TV%20-%20World%20Fighters%20(2003-12-18)(Bitstep)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 73569137
+    },
+    {
+      "name": "DreamMix TV - World Fighters",
+      "raw_name": "DreamMix TV - World Fighters (2003-12-18)(Bitstep)(Hudson)[GC].7z",
+      "date": "2003-12-18",
+      "url": "http://gcn.joshw.info/d/DreamMix%20TV%20-%20World%20Fighters%20(2003-12-18)(Bitstep)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 73559833
+    },
+    {
+      "name": "Driven",
+      "raw_name": "Driven (2002-03-30)(BAM! Europe)(BAM!)[GC].7z",
+      "date": "2002-03-30",
+      "url": "http://gcn.joshw.info/d/Driven%20(2002-03-30)(BAM!%20Europe)(BAM!)%5bGC%5d.7z",
+      "directory": false,
+      "size": 63716020
+    },
+    {
+      "name": "Egg Mania - Eggstreme Madness [Egg Mania - Tsukande! Mawashite! Dossun Puzzle!!] [Eggo Mania]",
+      "raw_name": "Egg Mania - Eggstreme Madness [Egg Mania - Tsukande! Mawashite! Dossun Puzzle!!] [Eggo Mania] (2002-09-11)(HotGen)(Kemco)[GC].7z",
+      "date": "2002-09-11",
+      "url": "http://gcn.joshw.info/e/Egg%20Mania%20-%20Eggstreme%20Madness%20%5bEgg%20Mania%20-%20Tsukande!%20Mawashite!%20Dossun%20Puzzle!!%5d%20%5bEggo%20Mania%5d%20(2002-09-11)(HotGen)(Kemco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 62013624
+    },
+    {
+      "name": "Eisei Meijin VI",
+      "raw_name": "Eisei Meijin VI (2002-09-26)(-)(Konami)[GC].7z",
+      "date": "2002-09-26",
+      "url": "http://gcn.joshw.info/e/Eisei%20Meijin%20VI%20(2002-09-26)(-)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 28119871
+    },
+    {
+      "name": "ESPN International Winter Sports 2002 [Hyper Sports 2002 Winter] [ESPN International Winter Sports]",
+      "raw_name": "ESPN International Winter Sports 2002 [Hyper Sports 2002 Winter] [ESPN International Winter Sports] (2002-01-31)(KCE Osaka)(Konami)[GC].7z",
+      "date": "2002-01-31",
+      "url": "http://gcn.joshw.info/e/ESPN%20International%20Winter%20Sports%202002%20%5bHyper%20Sports%202002%20Winter%5d%20%5bESPN%20International%20Winter%20Sports%5d%20(2002-01-31)(KCE%20Osaka)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 42015285
+    },
+    {
+      "name": "ESPN MLS ExtraTime 2002",
+      "raw_name": "ESPN MLS ExtraTime 2002 (2002-03-25)(KCE Hawaii)(Konami)[GC].7z",
+      "date": "2002-03-25",
+      "url": "http://gcn.joshw.info/e/ESPN%20MLS%20ExtraTime%202002%20(2002-03-25)(KCE%20Hawaii)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 89920463
+    },
+    {
+      "name": "Eternal Darkness - Sanity's Requiem [Eternal Darkness - Manukareta 13-nin]",
+      "raw_name": "Eternal Darkness - Sanity's Requiem [Eternal Darkness - Manukareta 13-nin] (2002-06-23)(Silicon Knights)(Nintendo)[GC].7z",
+      "date": "2002-06-23",
+      "url": "http://gcn.joshw.info/e/Eternal%20Darkness%20-%20Sanity's%20Requiem%20%5bEternal%20Darkness%20-%20Manukareta%2013-nin%5d%20(2002-06-23)(Silicon%20Knights)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 105225138
+    },
+    {
+      "name": "Evolution Skateboarding",
+      "raw_name": "Evolution Skateboarding (2002-11-17)(KCE Osaka)(Konami)[GC].7z",
+      "date": "2002-11-17",
+      "url": "http://gcn.joshw.info/e/Evolution%20Skateboarding%20(2002-11-17)(KCE%20Osaka)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 134970063
+    },
+    {
+      "name": "Evolution Worlds",
+      "raw_name": "Evolution Worlds (2002-07-26)(Sting Entertainment)(ESP, Ubisoft)[GCN].7z",
+      "date": "2002-07-26",
+      "url": "http://gcn.joshw.info/e/Evolution%20Worlds%20(2002-07-26)(Sting%20Entertainment)(ESP,%20Ubisoft)%5bGCN%5d.7z",
+      "directory": false,
+      "size": 232959239
+    },
+    {
+      "name": "Extreme Skate Adventure",
+      "raw_name": "Extreme Skate Adventure (2003-09-04)(Toys for Bob)(Activision)[GC].7z",
+      "date": "2003-09-04",
+      "url": "http://gcn.joshw.info/e/Extreme%20Skate%20Adventure%20(2003-09-04)(Toys%20for%20Bob)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 165602874
+    },
+    {
+      "name": "F-Zero AX (Triforce)",
+      "raw_name": "F-Zero AX (Triforce)(2003)(Amusement Vision)(Nintendo)[GC].7z",
+      "date": "2003",
+      "url": "http://gcn.joshw.info/f/F-Zero%20AX%20(Triforce)(2003)(Amusement%20Vision)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 20291396
+    },
+    {
+      "name": "F-Zero GX",
+      "raw_name": "F-Zero GX (2003-07-25)(Amusement Vision)(Nintendo)[GC].7z",
+      "date": "2003-07-25",
+      "url": "http://gcn.joshw.info/f/F-Zero%20GX%20(2003-07-25)(Amusement%20Vision)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 307486237
+    },
+    {
+      "name": "F1 2002",
+      "raw_name": "F1 2002 (2002-06-22) (Visual Sciences)(Electronic Arts)[GC].7z",
+      "date": "2002-06-22",
+      "url": "http://gcn.joshw.info/f/F1%202002%20(2002-06-22)%20(Visual%20Sciences)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 45926798
+    },
+    {
+      "name": "Fairly OddParents! - Breakin' da Rules, The",
+      "raw_name": "Fairly OddParents! - Breakin' da Rules, The (2003-11-03)(Blitz Games)(THQ)[GC].7z",
+      "date": "2003-11-03",
+      "url": "http://gcn.joshw.info/f/Fairly%20OddParents!%20-%20Breakin'%20da%20Rules,%20The%20(2003-11-03)(Blitz%20Games)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 368118253
+    },
+    {
+      "name": "Fairly OddParents! - Shadow Showdown, The",
+      "raw_name": "Fairly OddParents! - Shadow Showdown, The (2004-09-08)(Blitz Games)(THQ)[GC].7z",
+      "date": "2004-09-08",
+      "url": "http://gcn.joshw.info/f/Fairly%20OddParents!%20-%20Shadow%20Showdown,%20The%20(2004-09-08)(Blitz%20Games)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 319223906
+    },
+    {
+      "name": "Fantastic 4",
+      "raw_name": "Fantastic 4 (2005-06-27)(7 Studios)(Activision)[GC].7z",
+      "date": "2005-06-27",
+      "url": "http://gcn.joshw.info/f/Fantastic%204%20(2005-06-27)(7%20Studios)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 434688384
+    },
+    {
+      "name": "Fantastic 4",
+      "raw_name": "Fantastic 4 (2005-06-27)(7)(Activision)[GC].7z",
+      "date": "2005-06-27",
+      "url": "http://gcn.joshw.info/f/Fantastic%204%20(2005-06-27)(7)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 65092609
+    },
+    {
+      "name": "FIFA Soccer 06 [FIFA 06]",
+      "raw_name": "FIFA Soccer 06 [FIFA 06] (2005-09-30)(EA Canada)(Electronic Arts)[GC].7z",
+      "date": "2005-09-30",
+      "url": "http://gcn.joshw.info/f/FIFA%20Soccer%2006%20%5bFIFA%2006%5d%20(2005-09-30)(EA%20Canada)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 85701460
+    },
+    {
+      "name": "FIFA Soccer 07 [FIFA 07]",
+      "raw_name": "FIFA Soccer 07 [FIFA 07] (2006-09-25)(EA Canada)(Electronic Arts)[GC].7z",
+      "date": "2006-09-25",
+      "url": "http://gcn.joshw.info/f/FIFA%20Soccer%2007%20%5bFIFA%2007%5d%20(2006-09-25)(EA%20Canada)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 84763607
+    },
+    {
+      "name": "FIFA Soccer 2002 [FIFA 2002 - Road to FIFA World Cup]",
+      "raw_name": "FIFA Soccer 2002 [FIFA 2002 - Road to FIFA World Cup] (2001-11-15)(-)(Electronic Arts)[GC].7z",
+      "date": "2001-11-15",
+      "url": "http://gcn.joshw.info/f/FIFA%20Soccer%202002%20%5bFIFA%202002%20-%20Road%20to%20FIFA%20World%20Cup%5d%20(2001-11-15)(-)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 67097481
+    },
+    {
+      "name": "FIFA Soccer 2003 [FIFA 2003 - European Soccer] [FIFA Football 2003]",
+      "raw_name": "FIFA Soccer 2003 [FIFA 2003 - European Soccer] [FIFA Football 2003] (2002-11-01)(EA Canada)(Electronic Arts)[GC].7z",
+      "date": "2002-11-01",
+      "url": "http://gcn.joshw.info/f/FIFA%20Soccer%202003%20%5bFIFA%202003%20-%20European%20Soccer%5d%20%5bFIFA%20Football%202003%5d%20(2002-11-01)(EA%20Canada)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 77602882
+    },
+    {
+      "name": "FIFA Soccer 2004 [FIFA Football 2004]",
+      "raw_name": "FIFA Soccer 2004 [FIFA Football 2004] (2003-10-24)(-)(Electronic Arts)[GC].7z",
+      "date": "2003-10-24",
+      "url": "http://gcn.joshw.info/f/FIFA%20Soccer%202004%20%5bFIFA%20Football%202004%5d%20(2003-10-24)(-)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 58644729
+    },
+    {
+      "name": "FIFA Soccer 2005 [FIFA Football 2005]",
+      "raw_name": "FIFA Soccer 2005 [FIFA Football 2005] (2004-10-08)(EA Canada)(Electronic Arts)[GC].7z",
+      "date": "2004-10-08",
+      "url": "http://gcn.joshw.info/f/FIFA%20Soccer%202005%20%5bFIFA%20Football%202005%5d%20(2004-10-08)(EA%20Canada)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 56318986
+    },
+    {
+      "name": "FIFA World Cup - Germany 2006 [2006 FIFA World Cup]",
+      "raw_name": "FIFA World Cup - Germany 2006 [2006 FIFA World Cup] (2006-04-24)(EA Canada)(Electronic Arts)[GC].7z",
+      "date": "2006-04-24",
+      "url": "http://gcn.joshw.info/f/FIFA%20World%20Cup%20-%20Germany%202006%20%5b2006%20FIFA%20World%20Cup%5d%20(2006-04-24)(EA%20Canada)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 109175789
+    },
+    {
+      "name": "Fight Night Round 2",
+      "raw_name": "Fight Night Round 2 (2005-02-28)(-)(Electronic Arts)[GC].7z",
+      "date": "2005-02-28",
+      "url": "http://gcn.joshw.info/f/Fight%20Night%20Round%202%20(2005-02-28)(-)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 60950656
+    },
+    {
+      "name": "Final Fantasy Crystal Chronicles",
+      "raw_name": "Final Fantasy Crystal Chronicles (2003-08-08)(Square Enix)[GC][unplayable].7z",
+      "date": "2003-08-08",
+      "url": "http://gcn.joshw.info/f/Final%20Fantasy%20Crystal%20Chronicles%20(2003-08-08)(Square%20Enix)%5bGC%5d%5bunplayable%5d.7z",
+      "directory": false,
+      "size": 187070193
+    },
+    {
+      "name": "Finding Nemo",
+      "raw_name": "Finding Nemo (2003-05-12)(Traveller's Tales)(THQ)[GC].7z",
+      "date": "2003-05-12",
+      "url": "http://gcn.joshw.info/f/Finding%20Nemo%20(2003-05-12)(Traveller's%20Tales)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 88295301
+    },
+    {
+      "name": "Fire Emblem - Path of Radiance [Fire Emblem - Souen no Kiseki]",
+      "raw_name": "Fire Emblem - Path of Radiance [Fire Emblem - Souen no Kiseki] (2005-04-20)(Intelligent Systems)(Nintendo)[GC].7z",
+      "date": "2005-04-20",
+      "url": "http://gcn.joshw.info/f/Fire%20Emblem%20-%20Path%20of%20Radiance%20%5bFire%20Emblem%20-%20Souen%20no%20Kiseki%5d%20(2005-04-20)(Intelligent%20Systems)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 236635072
+    },
+    {
+      "name": "Flushed Away",
+      "raw_name": "Flushed Away (2006-10-24)(Monkey Bar Games)(D3 Publisher)[GC].7z",
+      "date": "2006-10-24",
+      "url": "http://gcn.joshw.info/f/Flushed%20Away%20(2006-10-24)(Monkey%20Bar%20Games)(D3%20Publisher)%5bGC%5d.7z",
+      "directory": false,
+      "size": 32738020
+    },
+    {
+      "name": "Freaky Flyers",
+      "raw_name": "Freaky Flyers (2003-08-08)(Midway San Diego)(Point of View)(Midway)[GC].7z",
+      "date": "2003-08-08",
+      "url": "http://gcn.joshw.info/f/Freaky%20Flyers%20(2003-08-08)(Midway%20San%20Diego)(Point%20of%20View)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 226628816
+    },
+    {
+      "name": "Freekstyle",
+      "raw_name": "Freekstyle (2002-09-05)(Page 44 Studios)(EA Sports Big)[GC].7z",
+      "date": "2002-09-05",
+      "url": "http://gcn.joshw.info/f/Freekstyle%20(2002-09-05)(Page%2044%20Studios)(EA%20Sports%20Big)%5bGC%5d.7z",
+      "directory": false,
+      "size": 120738976
+    },
+    {
+      "name": "Frogger - Ancient Shadow",
+      "raw_name": "Frogger - Ancient Shadow (2005-09-27)(Hudson Soft)(Konami)[GC].7z",
+      "date": "2005-09-27",
+      "url": "http://gcn.joshw.info/f/Frogger%20-%20Ancient%20Shadow%20(2005-09-27)(Hudson%20Soft)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 104580291
+    },
+    {
+      "name": "Frogger Beyond [Frogger]",
+      "raw_name": "Frogger Beyond [Frogger] (2002-12-06)(KCE Hawaii, Konami Shanghai)(Konami)[GC].7z",
+      "date": "2002-12-06",
+      "url": "http://gcn.joshw.info/f/Frogger%20Beyond%20%5bFrogger%5d%20(2002-12-06)(KCE%20Hawaii,%20Konami%20Shanghai)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 59839987
+    },
+    {
+      "name": "Frogger's Adventures - The Rescue",
+      "raw_name": "Frogger's Adventures - The Rescue (2003-10-31)(Hudson)(Konami)[GC].7z",
+      "date": "2003-10-31",
+      "url": "http://gcn.joshw.info/f/Frogger's%20Adventures%20-%20The%20Rescue%20(2003-10-31)(Hudson)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 119125023
+    },
+    {
+      "name": "Future Tactics - The Uprising",
+      "raw_name": "Future Tactics - The Uprising (2004-05-10)(Craftgold)(Crave)[GC].7z",
+      "date": "2004-05-10",
+      "url": "http://gcn.joshw.info/f/Future%20Tactics%20-%20The%20Uprising%20(2004-05-10)(Craftgold)(Crave)%5bGC%5d.7z",
+      "directory": false,
+      "size": 58265904
+    },
+    {
+      "name": "Gauntlet Dark Legacy",
+      "raw_name": "Gauntlet Dark Legacy (2002-03-06)(Midway West)(Big Ape)(Midway)[GC].7z",
+      "date": "2002-03-06",
+      "url": "http://gcn.joshw.info/g/Gauntlet%20Dark%20Legacy%20(2002-03-06)(Midway%20West)(Big%20Ape)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 231459952
+    },
+    {
+      "name": "Geist",
+      "raw_name": "Geist (2005-08-15)(n-Space)(Nintendo)[GC].7z",
+      "date": "2005-08-15",
+      "url": "http://gcn.joshw.info/g/Geist%20(2005-08-15)(n-Space)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 3389985
+    },
+    {
+      "name": "Giftpia",
+      "raw_name": "Giftpia (2003-04-25)(Skip)(Nintendo)[GC].7z",
+      "date": "2003-04-25",
+      "url": "http://gcn.joshw.info/g/Giftpia%20(2003-04-25)(Skip)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 300795498
+    },
+    {
+      "name": "Go! Go! Hypergrind",
+      "raw_name": "Go! Go! Hypergrind (2003-11-18)(Team Poponchi)(Atlus USA)[GC].7z",
+      "date": "2003-11-18",
+      "url": "http://gcn.joshw.info/g/Go!%20Go!%20Hypergrind%20(2003-11-18)(Team%20Poponchi)(Atlus%20USA)%5bGC%5d.7z",
+      "directory": false,
+      "size": 128655347
+    },
+    {
+      "name": "Godzilla - Destroy All Monsters Melee [Godzilla - Kaijuu Dairantou]",
+      "raw_name": "Godzilla - Destroy All Monsters Melee [Godzilla - Kaijuu Dairantou] (2002-10-08)(Pipeworks)(Atari)[GC].7z",
+      "date": "2002-10-08",
+      "url": "http://gcn.joshw.info/g/Godzilla%20-%20Destroy%20All%20Monsters%20Melee%20%5bGodzilla%20-%20Kaijuu%20Dairantou%5d%20(2002-10-08)(Pipeworks)(Atari)%5bGC%5d.7z",
+      "directory": false,
+      "size": 32532998
+    },
+    {
+      "name": "GoldenEye - Rogue Agent [GoldenEye - Dark Agent]",
+      "raw_name": "GoldenEye - Rogue Agent [GoldenEye - Dark Agent] (2004-11-22)(EA Los Angeles, Savage)(Electronic Arts)[GC].7z",
+      "date": "2004-11-22",
+      "url": "http://gcn.joshw.info/g/GoldenEye%20-%20Rogue%20Agent%20%5bGoldenEye%20-%20Dark%20Agent%5d%20(2004-11-22)(EA%20Los%20Angeles,%20Savage)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 280219226
+    },
+    {
+      "name": "Gotcha Force",
+      "raw_name": "Gotcha Force (2003-11-27)(Capcom Production Studio 1)(Capcom)[GC].7z",
+      "date": "2003-11-27",
+      "url": "http://gcn.joshw.info/g/Gotcha%20Force%20(2003-11-27)(Capcom%20Production%20Studio%201)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 108741971
+    },
+    {
+      "name": "Grim Adventures of Billy & Mandy, The",
+      "raw_name": "Grim Adventures of Billy & Mandy, The (2006-09-25)(High Voltage)(Midway)[GC].7z",
+      "date": "2006-09-25",
+      "url": "http://gcn.joshw.info/g/Grim%20Adventures%20of%20Billy%20&%20Mandy,%20The%20(2006-09-25)(High%20Voltage)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 133022879
+    },
+    {
+      "name": "Grooverider - Slot Car Thunder",
+      "raw_name": "Grooverider - Slot Car Thunder (2003-09-28)(King of the Jungle)(Encore)[GC].7z",
+      "date": "2003-09-28",
+      "url": "http://gcn.joshw.info/g/Grooverider%20-%20Slot%20Car%20Thunder%20(2003-09-28)(King%20of%20the%20Jungle)(Encore)%5bGC%5d.7z",
+      "directory": false,
+      "size": 53920049
+    },
+    {
+      "name": "GT Cube",
+      "raw_name": "GT Cube (2003-06-20)(-)(MTO)[GC].7z",
+      "date": "2003-06-20",
+      "url": "http://gcn.joshw.info/g/GT%20Cube%20(2003-06-20)(-)(MTO)%5bGC%5d.7z",
+      "directory": false,
+      "size": 105129875
+    },
+    {
+      "name": "Gun",
+      "raw_name": "Gun (2005-11-08)(Neversoft)(Activision)[GC].7z",
+      "date": "2005-11-08",
+      "url": "http://gcn.joshw.info/g/Gun%20(2005-11-08)(Neversoft)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 167296176
+    },
+    {
+      "name": "Harry Potter & The Sorcerer's Stone [Harry Potter to Kenja no Ishi]",
+      "raw_name": "Harry Potter & The Sorcerer's Stone [Harry Potter to Kenja no Ishi] (2003-12-09)(Warthog)(Electronic Arts)[GC].7z",
+      "date": "2003-12-09",
+      "url": "http://gcn.joshw.info/h/Harry%20Potter%20&%20The%20Sorcerer's%20Stone%20%5bHarry%20Potter%20to%20Kenja%20no%20Ishi%5d%20(2003-12-09)(Warthog)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 99094204
+    },
+    {
+      "name": "Harry Potter and the Chamber of Secrets",
+      "raw_name": "Harry Potter and the Chamber of Secrets (2002-11-14)(Eurocom, EA UK)(Electronic Arts)[GC].7z",
+      "date": "2002-11-14",
+      "url": "http://gcn.joshw.info/h/Harry%20Potter%20and%20the%20Chamber%20of%20Secrets%20(2002-11-14)(Eurocom,%20EA%20UK)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 94551085
+    },
+    {
+      "name": "Harry Potter and the Goblet of Fire",
+      "raw_name": "Harry Potter and the Goblet of Fire (2005-11-08)(EA UK)(Electronic Arts)[GC].7z",
+      "date": "2005-11-08",
+      "url": "http://gcn.joshw.info/h/Harry%20Potter%20and%20the%20Goblet%20of%20Fire%20(2005-11-08)(EA%20UK)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 210061428
+    },
+    {
+      "name": "Harry Potter and the Prisoner of Azkaban",
+      "raw_name": "Harry Potter and the Prisoner of Azkaban (2004-05-29)(EA UK)(Electronic Arts)[GC].7z",
+      "date": "2004-05-29",
+      "url": "http://gcn.joshw.info/h/Harry%20Potter%20and%20the%20Prisoner%20of%20Azkaban%20(2004-05-29)(EA%20UK)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 167100419
+    },
+    {
+      "name": "Harry Potter and the Prisoner of Azkaban",
+      "raw_name": "Harry Potter and the Prisoner of Azkaban (2004-05-29)(EA UK)(Electronic Arts)[GC][alt].7z",
+      "date": "2004-05-29",
+      "url": "http://gcn.joshw.info/h/Harry%20Potter%20and%20the%20Prisoner%20of%20Azkaban%20(2004-05-29)(EA%20UK)(Electronic%20Arts)%5bGC%5d%5balt%5d.7z",
+      "directory": false,
+      "size": 172530633
+    },
+    {
+      "name": "Harvest Moon - Another Wonderful Life [Bokujou Monogatari - Wonderful Life for Girls]",
+      "raw_name": "Harvest Moon - Another Wonderful Life [Bokujou Monogatari - Wonderful Life for Girls] (2004-07-08)(Tose)(Marvelous)[GC].7z",
+      "date": "2004-07-08",
+      "url": "http://gcn.joshw.info/h/Harvest%20Moon%20-%20Another%20Wonderful%20Life%20%5bBokujou%20Monogatari%20-%20Wonderful%20Life%20for%20Girls%5d%20(2004-07-08)(Tose)(Marvelous)%5bGC%5d.7z",
+      "directory": false,
+      "size": 53879618
+    },
+    {
+      "name": "Haunted Mansion, The",
+      "raw_name": "Haunted Mansion, The (2003-10-14)(High Voltage)(TDK Mediactive)[GC].7z",
+      "date": "2003-10-14",
+      "url": "http://gcn.joshw.info/h/Haunted%20Mansion,%20The%20(2003-10-14)(High%20Voltage)(TDK%20Mediactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 56856600
+    },
+    {
+      "name": "Hello Kitty - Roller Rescue [Hello Kitty - Mission Rescue]",
+      "raw_name": "Hello Kitty - Roller Rescue [Hello Kitty - Mission Rescue] (2005-08-16)(Xpec)(Namco)[GC].7z",
+      "date": "2005-08-16",
+      "url": "http://gcn.joshw.info/h/Hello%20Kitty%20-%20Roller%20Rescue%20%5bHello%20Kitty%20-%20Mission%20Rescue%5d%20(2005-08-16)(Xpec)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 31469000
+    },
+    {
+      "name": "Hikaru no Go 3",
+      "raw_name": "Hikaru no Go 3 (2003-03-20)(-)(Konami)[GC].7z",
+      "date": "2003-03-20",
+      "url": "http://gcn.joshw.info/h/Hikaru%20no%20Go%203%20(2003-03-20)(-)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 116489291
+    },
+    {
+      "name": "Hobbit, The",
+      "raw_name": "Hobbit, The (2003-11-11)(Inevitable)(Sierra Entertainment)[GC].7z",
+      "date": "2003-11-11",
+      "url": "http://gcn.joshw.info/h/Hobbit,%20The%20(2003-11-11)(Inevitable)(Sierra%20Entertainment)%5bGC%5d.7z",
+      "directory": false,
+      "size": 243633649
+    },
+    {
+      "name": "Home Run King",
+      "raw_name": "Home Run King (2002-03-18)(WOW)(Sega)[GC].7z",
+      "date": "2002-03-18",
+      "url": "http://gcn.joshw.info/h/Home%20Run%20King%20(2002-03-18)(WOW)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 53955386
+    },
+    {
+      "name": "Homeland",
+      "raw_name": "Homeland (2005-04-29)(-)(Chunsoft)[GC].7z",
+      "date": "2005-04-29",
+      "url": "http://gcn.joshw.info/h/Homeland%20(2005-04-29)(-)(Chunsoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 207637358
+    },
+    {
+      "name": "Hot Wheels - World Race [Hot Wheels - Highway 35 World Race]",
+      "raw_name": "Hot Wheels - World Race [Hot Wheels - Highway 35 World Race] (2003-10-31)(Climax Group)(THQ)[GC].7z",
+      "date": "2003-10-31",
+      "url": "http://gcn.joshw.info/h/Hot%20Wheels%20-%20World%20Race%20%5bHot%20Wheels%20-%20Highway%2035%20World%20Race%5d%20(2003-10-31)(Climax%20Group)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 104603310
+    },
+    {
+      "name": "Hudson Selection Vol. 3 - PC Genjin",
+      "raw_name": "Hudson Selection Vol. 3 - PC Genjin (2003-12-04)(-)(Hudson)[GC].7z",
+      "date": "2003-12-04",
+      "url": "http://gcn.joshw.info/h/Hudson%20Selection%20Vol.%203%20-%20PC%20Genjin%20(2003-12-04)(-)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 42831310
+    },
+    {
+      "name": "Hudson Selection Vol.1 - Cubic Lode Runner",
+      "raw_name": "Hudson Selection Vol.1 - Cubic Lode Runner (2003-07-10)(Hudson)[GC].7z",
+      "date": "2003-07-10",
+      "url": "http://gcn.joshw.info/h/Hudson%20Selection%20Vol.1%20-%20Cubic%20Lode%20Runner%20(2003-07-10)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 26488069
+    },
+    {
+      "name": "Hudson Selection Vol.4 - Takahashi Meijin no Bouken Jima",
+      "raw_name": "Hudson Selection Vol.4 - Takahashi Meijin no Bouken Jima (2003-12-18)(Hudson)[GC].7z",
+      "date": "2003-12-18",
+      "url": "http://gcn.joshw.info/h/Hudson%20Selection%20Vol.4%20-%20Takahashi%20Meijin%20no%20Bouken%20Jima%20(2003-12-18)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 71853604
+    },
+    {
+      "name": "Hulk",
+      "raw_name": "Hulk (2003-05-27)(Radical)(Universal)[GC].7z",
+      "date": "2003-05-27",
+      "url": "http://gcn.joshw.info/h/Hulk%20(2003-05-27)(Radical)(Universal)%5bGC%5d.7z",
+      "directory": false,
+      "size": 304589784
+    },
+    {
+      "name": "Hunter - The Reckoning",
+      "raw_name": "Hunter - The Reckoning (2002-11-18)(High Voltage)(Interplay)[GC].7z",
+      "date": "2002-11-18",
+      "url": "http://gcn.joshw.info/h/Hunter%20-%20The%20Reckoning%20(2002-11-18)(High%20Voltage)(Interplay)%5bGC%5d.7z",
+      "directory": false,
+      "size": 252602656
+    },
+    {
+      "name": "Ice Age 2 - The Meltdown",
+      "raw_name": "Ice Age 2 - The Meltdown (2006-03-14)(Eurocom)(Sierra)[GC].7z",
+      "date": "2006-03-14",
+      "url": "http://gcn.joshw.info/i/Ice%20Age%202%20-%20The%20Meltdown%20(2006-03-14)(Eurocom)(Sierra)%5bGC%5d.7z",
+      "directory": false,
+      "size": 275918884
+    },
+    {
+      "name": "Ikaruga",
+      "raw_name": "Ikaruga (2003-01-16)(Treasure)(Atari)[GC].7z",
+      "date": "2003-01-16",
+      "url": "http://gcn.joshw.info/i/Ikaruga%20(2003-01-16)(Treasure)(Atari)%5bGC%5d.7z",
+      "directory": false,
+      "size": 94994871
+    },
+    {
+      "name": "Incredible Hulk, The - Ultimate Destruction",
+      "raw_name": "Incredible Hulk, The - Ultimate Destruction (2005-08-23)(Radical)(Vivendi Universal)[GC].7z",
+      "date": "2005-08-23",
+      "url": "http://gcn.joshw.info/i/Incredible%20Hulk,%20The%20-%20Ultimate%20Destruction%20(2005-08-23)(Radical)(Vivendi%20Universal)%5bGC%5d.7z",
+      "directory": false,
+      "size": 222095704
+    },
+    {
+      "name": "Incredibles, The - Rise of the Underminer [Mr. Incredible - Kyouteki Underminder Toujou]",
+      "raw_name": "Incredibles, The - Rise of the Underminer [Mr. Incredible - Kyouteki Underminder Toujou] (2005-11-01)(Heavy Iron)(THQ)[GC].7z",
+      "date": "2005-11-01",
+      "url": "http://gcn.joshw.info/i/Incredibles,%20The%20-%20Rise%20of%20the%20Underminer%20%5bMr.%20Incredible%20-%20Kyouteki%20Underminder%20Toujou%5d%20(2005-11-01)(Heavy%20Iron)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 57289903
+    },
+    {
+      "name": "Incredibles, The [Mr. Incredible]",
+      "raw_name": "Incredibles, The [Mr. Incredible] (2004-10-31)(Heavy Iron)(THQ)[GC].7z",
+      "date": "2004-10-31",
+      "url": "http://gcn.joshw.info/i/Incredibles,%20The%20%5bMr.%20Incredible%5d%20(2004-10-31)(Heavy%20Iron)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 85253646
+    },
+    {
+      "name": "ISS 2 - International Superstar Soccer 2 [Jikkyou World Soccer 2002]",
+      "raw_name": "ISS 2 - International Superstar Soccer 2 [Jikkyou World Soccer 2002] (2002-05-03)(KCE Osaka)(Konami)[GC].7z",
+      "date": "2002-05-03",
+      "url": "http://gcn.joshw.info/i/ISS%202%20-%20International%20Superstar%20Soccer%202%20%5bJikkyou%20World%20Soccer%202002%5d%20(2002-05-03)(KCE%20Osaka)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 67054524
+    },
+    {
+      "name": "Italian Job, The [Italian Job, The - L.A. Heist]",
+      "raw_name": "Italian Job, The [Italian Job, The - L.A. Heist] (2003-07-17)(Climax Group)(Eidos)[GC].7z",
+      "date": "2003-07-17",
+      "url": "http://gcn.joshw.info/i/Italian%20Job,%20The%20%5bItalian%20Job,%20The%20-%20L.A.%20Heist%5d%20(2003-07-17)(Climax%20Group)(Eidos)%5bGC%5d.7z",
+      "directory": false,
+      "size": 41196788
+    },
+    {
+      "name": "Jeremy McGrath Supercross World",
+      "raw_name": "Jeremy McGrath Supercross World (2002-02-27)(Acclaim)[GC].7z",
+      "date": "2002-02-27",
+      "url": "http://gcn.joshw.info/j/Jeremy%20McGrath%20Supercross%20World%20(2002-02-27)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 136144438
+    },
+    {
+      "name": "Jikkyou Powerful Pro Yakyuu 10",
+      "raw_name": "Jikkyou Powerful Pro Yakyuu 10 (2003-07-17)(-)(Konami)[GC].7z",
+      "date": "2003-07-17",
+      "url": "http://gcn.joshw.info/j/Jikkyou%20Powerful%20Pro%20Yakyuu%2010%20(2003-07-17)(-)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 155372292
+    },
+    {
+      "name": "Jikkyou Powerful Pro Yakyuu 10 Chou Ketteiban - 2003 Memorial",
+      "raw_name": "Jikkyou Powerful Pro Yakyuu 10 Chou Ketteiban - 2003 Memorial (2003-12-08)(-)(Konami)[GC].7z",
+      "date": "2003-12-08",
+      "url": "http://gcn.joshw.info/j/Jikkyou%20Powerful%20Pro%20Yakyuu%2010%20Chou%20Ketteiban%20-%202003%20Memorial%20(2003-12-08)(-)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 176344423
+    },
+    {
+      "name": "Jikkyou Powerful Pro Yakyuu 11 Chou Ketteiban",
+      "raw_name": "Jikkyou Powerful Pro Yakyuu 11 Chou Ketteiban (2004-12-16)(-)(Konami)[GC].7z",
+      "date": "2004-12-16",
+      "url": "http://gcn.joshw.info/j/Jikkyou%20Powerful%20Pro%20Yakyuu%2011%20Chou%20Ketteiban%20(2004-12-16)(-)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 148576861
+    },
+    {
+      "name": "Jikkyou Powerful Pro Yakyuu 12",
+      "raw_name": "Jikkyou Powerful Pro Yakyuu 12 (2005-07-14)(-)(Konami)[GC].7z",
+      "date": "2005-07-14",
+      "url": "http://gcn.joshw.info/j/Jikkyou%20Powerful%20Pro%20Yakyuu%2012%20(2005-07-14)(-)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 154504381
+    },
+    {
+      "name": "Jikkyou Powerful Pro Yakyuu 9",
+      "raw_name": "Jikkyou Powerful Pro Yakyuu 9 (2002-07-18)(-)(Konami)[GC].7z",
+      "date": "2002-07-18",
+      "url": "http://gcn.joshw.info/j/Jikkyou%20Powerful%20Pro%20Yakyuu%209%20(2002-07-18)(-)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 89315197
+    },
+    {
+      "name": "Judge Dredd - Dredd vs Death",
+      "raw_name": "Judge Dredd - Dredd vs Death (2003-12-12)(Rebellion)(Evolved)[GC].7z",
+      "date": "2003-12-12",
+      "url": "http://gcn.joshw.info/j/Judge%20Dredd%20-%20Dredd%20vs%20Death%20(2003-12-12)(Rebellion)(Evolved)%5bGC%5d.7z",
+      "directory": false,
+      "size": 259766134
+    },
+    {
+      "name": "Karaoke Revolution Party",
+      "raw_name": "Karaoke Revolution Party (2005-11-08)(Harmonix)(Konami)[GC].7z",
+      "date": "2005-11-08",
+      "url": "http://gcn.joshw.info/k/Karaoke%20Revolution%20Party%20(2005-11-08)(Harmonix)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 528277234
+    },
+    {
+      "name": "Kidou Senshi Gundam - Gundam vs. Z Gundam",
+      "raw_name": "Kidou Senshi Gundam - Gundam vs. Z Gundam (2004-12-09)(Capcom)(Bandai)[GC].7z",
+      "date": "2004-12-09",
+      "url": "http://gcn.joshw.info/k/Kidou%20Senshi%20Gundam%20-%20Gundam%20vs.%20Z%20Gundam%20(2004-12-09)(Capcom)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 274861126
+    },
+    {
+      "name": "Kidou Senshi Gundam - Senshitachi no Kiseki",
+      "raw_name": "Kidou Senshi Gundam - Senshitachi no Kiseki (2004-03-18)(BEC)(Bandai)[GC].7z",
+      "date": "2004-03-18",
+      "url": "http://gcn.joshw.info/k/Kidou%20Senshi%20Gundam%20-%20Senshitachi%20no%20Kiseki%20(2004-03-18)(BEC)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 152691713
+    },
+    {
+      "name": "Killer7",
+      "raw_name": "Killer7 (2005-06-09)(Capcom Production Studio 4, Grasshopper Manufacture)(Capcom)[GC].7z",
+      "date": "2005-06-09",
+      "url": "http://gcn.joshw.info/k/Killer7%20(2005-06-09)(Capcom%20Production%20Studio%204,%20Grasshopper%20Manufacture)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 394368866
+    },
+    {
+      "name": "King Arthur [King Arthur - The Truth Behind The Legend]",
+      "raw_name": "King Arthur [King Arthur - The Truth Behind The Legend] (2004-11-18)(Krome)(Konami)[GC].7z",
+      "date": "2004-11-18",
+      "url": "http://gcn.joshw.info/k/King%20Arthur%20%5bKing%20Arthur%20-%20The%20Truth%20Behind%20The%20Legend%5d%20(2004-11-18)(Krome)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 194849152
+    },
+    {
+      "name": "Kirby Air Ride [Kirby no Air Ride]",
+      "raw_name": "Kirby Air Ride [Kirby no Air Ride] (2003-07-11)(HAL Laboratory)(Nintendo)[GC].7z",
+      "date": "2003-07-11",
+      "url": "http://gcn.joshw.info/k/Kirby%20Air%20Ride%20%5bKirby%20no%20Air%20Ride%5d%20(2003-07-11)(HAL%20Laboratory)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 144527577
+    },
+    {
+      "name": "Konjiki no Gashbell!! Yuujou no Tag Battle Full Power",
+      "raw_name": "Konjiki no Gashbell!! Yuujou no Tag Battle Full Power (2004-08-05)(Eighting)(Bandai)[GC].7z",
+      "date": "2004-08-05",
+      "url": "http://gcn.joshw.info/k/Konjiki%20no%20Gashbell!!%20Yuujou%20no%20Tag%20Battle%20Full%20Power%20(2004-08-05)(Eighting)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 113954542
+    },
+    {
+      "name": "Kururin Squash!",
+      "raw_name": "Kururin Squash! (2004-10-14)(Eighting)(Nintendo)[GC].7z",
+      "date": "2004-10-14",
+      "url": "http://gcn.joshw.info/k/Kururin%20Squash!%20(2004-10-14)(Eighting)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 50810356
+    },
+    {
+      "name": "Legend of Spyro, The - A New Beginning",
+      "raw_name": "Legend of Spyro, The - A New Beginning (2006-10-10)(Krome)(Sierra)[GC].7z",
+      "date": "2006-10-10",
+      "url": "http://gcn.joshw.info/l/Legend%20of%20Spyro,%20The%20-%20A%20New%20Beginning%20(2006-10-10)(Krome)(Sierra)%5bGC%5d.7z",
+      "directory": false,
+      "size": 193454449
+    },
+    {
+      "name": "Legend of Zelda, The - Collector's Edition",
+      "raw_name": "Legend of Zelda, The - Collector's Edition (2003-11-07)(Nintendo EAD)(Nintendo)[GC].7z",
+      "date": "2003-11-07",
+      "url": "http://gcn.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Collector's%20Edition%20(2003-11-07)(Nintendo%20EAD)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 2312553
+    },
+    {
+      "name": "Legend of Zelda, The - Four Swords Adventures [Zelda no Densetsu - 4tsu no Tsurugi+]",
+      "raw_name": "Legend of Zelda, The - Four Swords Adventures [Zelda no Densetsu - 4tsu no Tsurugi+] (2004-03-18)(Nintendo EAD, Capcom Production Studio 2)(Nintendo)[GC].7z",
+      "date": "2004-03-18",
+      "url": "http://gcn.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Four%20Swords%20Adventures%20%5bZelda%20no%20Densetsu%20-%204tsu%20no%20Tsurugi+%5d%20(2004-03-18)(Nintendo%20EAD,%20Capcom%20Production%20Studio%202)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 51545624
+    },
+    {
+      "name": "Legend of Zelda, The - Ocarina of Time & Master Quest",
+      "raw_name": "Legend of Zelda, The - Ocarina of Time & Master Quest (2002-11-28)(Nintendo EAD)(Nintendo)[GC].7z",
+      "date": "2002-11-28",
+      "url": "http://gcn.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Ocarina%20of%20Time%20&%20Master%20Quest%20(2002-11-28)(Nintendo%20EAD)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 6741559
+    },
+    {
+      "name": "Legend of Zelda, The - The Wind Waker [Zelda no Densetsu - Kaze no Takuto]",
+      "raw_name": "Legend of Zelda, The - The Wind Waker [Zelda no Densetsu - Kaze no Takuto] (2002-12-13)(Nintendo EAD)(Nintendo)[GC].7z",
+      "date": "2002-12-13",
+      "url": "http://gcn.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20The%20Wind%20Waker%20%5bZelda%20no%20Densetsu%20-%20Kaze%20no%20Takuto%5d%20(2002-12-13)(Nintendo%20EAD)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 147756028
+    },
+    {
+      "name": "Legend of Zelda, The - Twilight Princess [Zelda no Densetsu - Twilight Princess]",
+      "raw_name": "Legend of Zelda, The - Twilight Princess [Zelda no Densetsu - Twilight Princess] (2006-12-02)(Nintendo EAD)(Nintendo)[GC].7z",
+      "date": "2006-12-02",
+      "url": "http://gcn.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Twilight%20Princess%20%5bZelda%20no%20Densetsu%20-%20Twilight%20Princess%5d%20(2006-12-02)(Nintendo%20EAD)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 316359205
+    },
+    {
+      "name": "Legends of Wrestling",
+      "raw_name": "Legends of Wrestling (2002-05-27)(Acclaim Salt Lake City)(Acclaim)[GC].7z",
+      "date": "2002-05-27",
+      "url": "http://gcn.joshw.info/l/Legends%20of%20Wrestling%20(2002-05-27)(Acclaim%20Salt%20Lake%20City)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 134678058
+    },
+    {
+      "name": "LEGO Star Wars",
+      "raw_name": "LEGO Star Wars (2005-10-25)(Traveller's Tales)(Eidos)[GC].7z",
+      "date": "2005-10-25",
+      "url": "http://gcn.joshw.info/l/LEGO%20Star%20Wars%20(2005-10-25)(Traveller's%20Tales)(Eidos)%5bGC%5d.7z",
+      "directory": false,
+      "size": 312243762
+    },
+    {
+      "name": "LEGO Star Wars II - The Original Trilogy",
+      "raw_name": "LEGO Star Wars II - The Original Trilogy (2006-09-11)(Traveller's Tales)(LucasArts)[GC].7z",
+      "date": "2006-09-11",
+      "url": "http://gcn.joshw.info/l/LEGO%20Star%20Wars%20II%20-%20The%20Original%20Trilogy%20(2006-09-11)(Traveller's%20Tales)(LucasArts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 369411879
+    },
+    {
+      "name": "LEGO Super Soccer Adventure (Prototype)",
+      "raw_name": "LEGO Super Soccer Adventure (Prototype) (2003-06-05)(Blitz)(Electronic Arts, LEGO)[GC].7z",
+      "date": "2003-06-05",
+      "url": "http://gcn.joshw.info/l/LEGO%20Super%20Soccer%20Adventure%20(Prototype)%20(2003-06-05)(Blitz)(Electronic%20Arts,%20LEGO)%5bGC%5d.7z",
+      "directory": false,
+      "size": 48312966
+    },
+    {
+      "name": "Looney Tunes - Back in Action",
+      "raw_name": "Looney Tunes - Back in Action (2003-11-24)(Warthog PLC)(Electronic Arts)[GC].7z",
+      "date": "2003-11-24",
+      "url": "http://gcn.joshw.info/l/Looney%20Tunes%20-%20Back%20in%20Action%20(2003-11-24)(Warthog%20PLC)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 87677802
+    },
+    {
+      "name": "Lost Kingdoms [Rune]",
+      "raw_name": "Lost Kingdoms [Rune] (2002-04-25)(From Software)[GC].7z",
+      "date": "2002-04-25",
+      "url": "http://gcn.joshw.info/l/Lost%20Kingdoms%20%5bRune%5d%20(2002-04-25)(From%20Software)%5bGC%5d.7z",
+      "directory": false,
+      "size": 126322852
+    },
+    {
+      "name": "Lost Kingdoms II [Rune II - Koruten no Kagi no Himitsu]",
+      "raw_name": "Lost Kingdoms II [Rune II - Koruten no Kagi no Himitsu] (2003-05-21)(From Software)[GC].7z",
+      "date": "2003-05-21",
+      "url": "http://gcn.joshw.info/l/Lost%20Kingdoms%20II%20%5bRune%20II%20-%20Koruten%20no%20Kagi%20no%20Himitsu%5d%20(2003-05-21)(From%20Software)%5bGC%5d.7z",
+      "directory": false,
+      "size": 236702562
+    },
+    {
+      "name": "Luigi's Mansion [Luigi Mansion]",
+      "raw_name": "Luigi's Mansion [Luigi Mansion] (2001-09-14)(Nintendo EAD)(Nintendo)[GC][unplayable].7z",
+      "date": "2001-09-14",
+      "url": "http://gcn.joshw.info/l/Luigi's%20Mansion%20%5bLuigi%20Mansion%5d%20(2001-09-14)(Nintendo%20EAD)(Nintendo)%5bGC%5d%5bunplayable%5d.7z",
+      "directory": false,
+      "size": 30735433
+    },
+    {
+      "name": "Madagascar",
+      "raw_name": "Madagascar (2005-05-23)(Toys for Bob)(Activision)[GC].7z",
+      "date": "2005-05-23",
+      "url": "http://gcn.joshw.info/m/Madagascar%20(2005-05-23)(Toys%20for%20Bob)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 88528081
+    },
+    {
+      "name": "Madden NFL 06",
+      "raw_name": "Madden NFL 06 (2005-08-08)(EA Tiburon)(Electronic Arts)[GC].7z",
+      "date": "2005-08-08",
+      "url": "http://gcn.joshw.info/m/Madden%20NFL%2006%20(2005-08-08)(EA%20Tiburon)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 141438620
+    },
+    {
+      "name": "Madden NFL 07",
+      "raw_name": "Madden NFL 07 (2006-08-22)(EA Tiburon)(Electronic Arts)[GC].7z",
+      "date": "2006-08-22",
+      "url": "http://gcn.joshw.info/m/Madden%20NFL%2007%20(2006-08-22)(EA%20Tiburon)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 117392642
+    },
+    {
+      "name": "Madden NFL 08",
+      "raw_name": "Madden NFL 08 (2007-08-14)(EA Tiburon)(Electronic Arts)[GC].7z",
+      "date": "2007-08-14",
+      "url": "http://gcn.joshw.info/m/Madden%20NFL%2008%20(2007-08-14)(EA%20Tiburon)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 148318927
+    },
+    {
+      "name": "Madden NFL 2002",
+      "raw_name": "Madden NFL 2002 (2001-11-17)(-)(Electronic Arts)[GC].7z",
+      "date": "2001-11-17",
+      "url": "http://gcn.joshw.info/m/Madden%20NFL%202002%20(2001-11-17)(-)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 31946238
+    },
+    {
+      "name": "Madden NFL 2003",
+      "raw_name": "Madden NFL 2003 (2002-08-12)(-)(Electronic Arts)[GC].7z",
+      "date": "2002-08-12",
+      "url": "http://gcn.joshw.info/m/Madden%20NFL%202003%20(2002-08-12)(-)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 66378375
+    },
+    {
+      "name": "Madden NFL 2004",
+      "raw_name": "Madden NFL 2004 (2003-08-12)(EA Tiburon)(Electronic Arts)[GC].7z",
+      "date": "2003-08-12",
+      "url": "http://gcn.joshw.info/m/Madden%20NFL%202004%20(2003-08-12)(EA%20Tiburon)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 91989123
+    },
+    {
+      "name": "Madden NFL 2005",
+      "raw_name": "Madden NFL 2005 (2004-08-09)(EA Tiburon)(Electronic Arts)[GC].7z",
+      "date": "2004-08-09",
+      "url": "http://gcn.joshw.info/m/Madden%20NFL%202005%20(2004-08-09)(EA%20Tiburon)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 86268666
+    },
+    {
+      "name": "Magical Mirror Starring Mickey Mouse [Mickey Mouse no Fushigi no Kagami]",
+      "raw_name": "Magical Mirror Starring Mickey Mouse [Mickey Mouse no Fushigi no Kagami] (2002-08-09)(Capcom Production Studio 3)(Capcom)[GC].7z",
+      "date": "2002-08-09",
+      "url": "http://gcn.joshw.info/m/Magical%20Mirror%20Starring%20Mickey%20Mouse%20%5bMickey%20Mouse%20no%20Fushigi%20no%20Kagami%5d%20(2002-08-09)(Capcom%20Production%20Studio%203)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 49778311
+    },
+    {
+      "name": "Mario Kart - Double Dash!!",
+      "raw_name": "Mario Kart - Double Dash!! (2003-11-07)(Nintendo EAD)(Nintendo)[GC].7z",
+      "date": "2003-11-07",
+      "url": "http://gcn.joshw.info/m/Mario%20Kart%20-%20Double%20Dash!!%20(2003-11-07)(Nintendo%20EAD)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 285156683
+    },
+    {
+      "name": "Mario Kart Arcade GP (Triforce)",
+      "raw_name": "Mario Kart Arcade GP (Triforce)(2005)(Namco)[GC].7z",
+      "date": "2005",
+      "url": "http://gcn.joshw.info/m/Mario%20Kart%20Arcade%20GP%20(Triforce)(2005)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 51014332
+    },
+    {
+      "name": "Mario Kart Arcade GP 2 (Triforce)",
+      "raw_name": "Mario Kart Arcade GP 2 (Triforce)(2007)(Namco)[GC].7z",
+      "date": "2007",
+      "url": "http://gcn.joshw.info/m/Mario%20Kart%20Arcade%20GP%202%20(Triforce)(2007)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 77008623
+    },
+    {
+      "name": "Mario Party 4",
+      "raw_name": "Mario Party 4 (2002-10-21)(Hudson)(Nintendo)[GC].7z",
+      "date": "2002-10-21",
+      "url": "http://gcn.joshw.info/m/Mario%20Party%204%20(2002-10-21)(Hudson)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 10613498
+    },
+    {
+      "name": "Mario Party 5",
+      "raw_name": "Mario Party 5 (2003-11-10)(Hudson)(Nintendo)[GC].7z",
+      "date": "2003-11-10",
+      "url": "http://gcn.joshw.info/m/Mario%20Party%205%20(2003-11-10)(Hudson)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 105305520
+    },
+    {
+      "name": "Mario Party 6",
+      "raw_name": "Mario Party 6 (2004-11-18)(Hudson)(Nintendo)[GC].7z",
+      "date": "2004-11-18",
+      "url": "http://gcn.joshw.info/m/Mario%20Party%206%20(2004-11-18)(Hudson)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 145404285
+    },
+    {
+      "name": "Mario Party 7",
+      "raw_name": "Mario Party 7 (2005-11-07)(Hudson)(Nintendo)[GC].7z",
+      "date": "2005-11-07",
+      "url": "http://gcn.joshw.info/m/Mario%20Party%207%20(2005-11-07)(Hudson)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 87514903
+    },
+    {
+      "name": "Mario Superstar Baseball [Super Mario Stadium - Miracle Baseball]",
+      "raw_name": "Mario Superstar Baseball [Super Mario Stadium - Miracle Baseball] (2005-07-21)(Namco)(Nintendo)[GC].7z",
+      "date": "2005-07-21",
+      "url": "http://gcn.joshw.info/m/Mario%20Superstar%20Baseball%20%5bSuper%20Mario%20Stadium%20-%20Miracle%20Baseball%5d%20(2005-07-21)(Namco)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 132450257
+    },
+    {
+      "name": "Mary-Kate and Ashley Sweet 16 - Licensed to Drive",
+      "raw_name": "Mary-Kate and Ashley Sweet 16 - Licensed to Drive (2003-02-14)(n-Space)(Acclaim)[GC].7z",
+      "date": "2003-02-14",
+      "url": "http://gcn.joshw.info/m/Mary-Kate%20and%20Ashley%20Sweet%2016%20-%20Licensed%20to%20Drive%20(2003-02-14)(n-Space)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 95830825
+    },
+    {
+      "name": "Mat Hoffman's Pro BMX 2",
+      "raw_name": "Mat Hoffman's Pro BMX 2 (2002-10-08)(Rainbow)(Activision)[GC].7z",
+      "date": "2002-10-08",
+      "url": "http://gcn.joshw.info/m/Mat%20Hoffman's%20Pro%20BMX%202%20(2002-10-08)(Rainbow)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 98422149
+    },
+    {
+      "name": "MC Groovz Dance Craze",
+      "raw_name": "MC Groovz Dance Craze (2004-11-22)(Mad Catz)[GC].7z",
+      "date": "2004-11-22",
+      "url": "http://gcn.joshw.info/m/MC%20Groovz%20Dance%20Craze%20(2004-11-22)(Mad%20Catz)%5bGC%5d.7z",
+      "directory": false,
+      "size": 355929875
+    },
+    {
+      "name": "Medabots - Infinity [Medarot Brave]",
+      "raw_name": "Medabots - Infinity [Medarot Brave] (2003-11-28)(Natsume)[GC].7z",
+      "date": "2003-11-28",
+      "url": "http://gcn.joshw.info/m/Medabots%20-%20Infinity%20%5bMedarot%20Brave%5d%20(2003-11-28)(Natsume)%5bGC%5d.7z",
+      "directory": false,
+      "size": 99683705
+    },
+    {
+      "name": "Meet the Robinsons",
+      "raw_name": "Meet the Robinsons (2007-03-27)(Avalanche)(Disney Interactive)[GC].7z",
+      "date": "2007-03-27",
+      "url": "http://gcn.joshw.info/m/Meet%20the%20Robinsons%20(2007-03-27)(Avalanche)(Disney%20Interactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 257372271
+    },
+    {
+      "name": "Mega Man - Network Transmission [RockMan EXE Transmission]",
+      "raw_name": "Mega Man - Network Transmission [RockMan EXE Transmission] (2003-03-06)(Arika)(Capcom)[GC].7z",
+      "date": "2003-03-06",
+      "url": "http://gcn.joshw.info/m/Mega%20Man%20-%20Network%20Transmission%20%5bRockMan%20EXE%20Transmission%5d%20(2003-03-06)(Arika)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 90942622
+    },
+    {
+      "name": "Mega Man Anniversary Collection",
+      "raw_name": "Mega Man Anniversary Collection (2004-06-22)(Capcom Production Studio 2)(Atomic Planet)(Capcom)[GC].7z",
+      "date": "2004-06-22",
+      "url": "http://gcn.joshw.info/m/Mega%20Man%20Anniversary%20Collection%20(2004-06-22)(Capcom%20Production%20Studio%202)(Atomic%20Planet)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 775085880
+    },
+    {
+      "name": "Mega Man X - Command Mission [RockMan X - Command Mission]",
+      "raw_name": "Mega Man X - Command Mission [RockMan X - Command Mission] (2004-07-29)(Value Wave)(Capcom)[GCN].7z",
+      "date": "2004-07-29",
+      "url": "http://gcn.joshw.info/m/Mega%20Man%20X%20-%20Command%20Mission%20%5bRockMan%20X%20-%20Command%20Mission%5d%20(2004-07-29)(Value%20Wave)(Capcom)%5bGCN%5d.7z",
+      "directory": false,
+      "size": 110683165
+    },
+    {
+      "name": "Mega Man X Collection",
+      "raw_name": "Mega Man X Collection (2006-01-10)(Capcom)(OeRSTED, Bloom)(Capcom)[GC].7z",
+      "date": "2006-01-10",
+      "url": "http://gcn.joshw.info/m/Mega%20Man%20X%20Collection%20(2006-01-10)(Capcom)(OeRSTED,%20Bloom)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 401352932
+    },
+    {
+      "name": "Metal Arms - Glitch in the System",
+      "raw_name": "Metal Arms - Glitch in the System (2003-11-18)(Swingin' Ape)(Sierra)[GC].7z",
+      "date": "2003-11-18",
+      "url": "http://gcn.joshw.info/m/Metal%20Arms%20-%20Glitch%20in%20the%20System%20(2003-11-18)(Swingin'%20Ape)(Sierra)%5bGC%5d.7z",
+      "directory": false,
+      "size": 140686670
+    },
+    {
+      "name": "Metal Gear Solid - The Twin Snakes",
+      "raw_name": "Metal Gear Solid - The Twin Snakes (2004-03-09)(Silicon Knights, KCE Japan)(Konami)[GC].7z",
+      "date": "2004-03-09",
+      "url": "http://gcn.joshw.info/m/Metal%20Gear%20Solid%20-%20The%20Twin%20Snakes%20(2004-03-09)(Silicon%20Knights,%20KCE%20Japan)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 293585510
+    },
+    {
+      "name": "Metroid Prime",
+      "raw_name": "Metroid Prime (2002-11-17)(Retro)(Nintendo)[GC].7z",
+      "date": "2002-11-17",
+      "url": "http://gcn.joshw.info/m/Metroid%20Prime%20(2002-11-17)(Retro)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 319625735
+    },
+    {
+      "name": "Metroid Prime",
+      "raw_name": "Metroid Prime (2002-11-27)(Retro)(Nintendo)[GC].7z",
+      "date": "2002-11-27",
+      "url": "http://gcn.joshw.info/m/Metroid%20Prime%20(2002-11-27)(Retro)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 182368922
+    },
+    {
+      "name": "Metroid Prime - Kiosk Demo",
+      "raw_name": "Metroid Prime - Kiosk Demo (2002-07-24)(Retro)(Nintendo)[GC].7z",
+      "date": "2002-07-24",
+      "url": "http://gcn.joshw.info/m/Metroid%20Prime%20-%20Kiosk%20Demo%20(2002-07-24)(Retro)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 131743917
+    },
+    {
+      "name": "Metroid Prime 2 - Echoes [Metroid Prime 2 - Dark Echoes]",
+      "raw_name": "Metroid Prime 2 - Echoes [Metroid Prime 2 - Dark Echoes] (2004-11-15)(Retro)(Nintendo)[GC].7z",
+      "date": "2004-11-15",
+      "url": "http://gcn.joshw.info/m/Metroid%20Prime%202%20-%20Echoes%20%5bMetroid%20Prime%202%20-%20Dark%20Echoes%5d%20(2004-11-15)(Retro)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 209021995
+    },
+    {
+      "name": "Micro Machines",
+      "raw_name": "Micro Machines (2003-01-17)(Infogrames Sheffield House)(Atari)[GC].7z",
+      "date": "2003-01-17",
+      "url": "http://gcn.joshw.info/m/Micro%20Machines%20(2003-01-17)(Infogrames%20Sheffield%20House)(Atari)%5bGC%5d.7z",
+      "directory": false,
+      "size": 76921555
+    },
+    {
+      "name": "Momotarou Dentetsu 11 - Black Bombie Shutsugen no Kan",
+      "raw_name": "Momotarou Dentetsu 11 - Black Bombie Shutsugen no Kan (2002-12-05)(-)(Hudson)[GC].7z",
+      "date": "2002-12-05",
+      "url": "http://gcn.joshw.info/m/Momotarou%20Dentetsu%2011%20-%20Black%20Bombie%20Shutsugen%20no%20Kan%20(2002-12-05)(-)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 137233475
+    },
+    {
+      "name": "Momotarou Dentetsu 12 - Nishi Nihon-hen mo Arimasse!",
+      "raw_name": "Momotarou Dentetsu 12 - Nishi Nihon-hen mo Arimasse! (2003-12-11)(-)(Hudson)[GC].7z",
+      "date": "2003-12-11",
+      "url": "http://gcn.joshw.info/m/Momotarou%20Dentetsu%2012%20-%20Nishi%20Nihon-hen%20mo%20Arimasse!%20(2003-12-11)(-)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 180529101
+    },
+    {
+      "name": "Monopoly Party! [Monopoly - Mezase!! Daifugou Jinsei!!]",
+      "raw_name": "Monopoly Party! [Monopoly - Mezase!! Daifugou Jinsei!!] (2002-11-20)(Runecraft)(Infogrames)[GC].7z",
+      "date": "2002-11-20",
+      "url": "http://gcn.joshw.info/m/Monopoly%20Party!%20%5bMonopoly%20-%20Mezase!!%20Daifugou%20Jinsei!!%5d%20(2002-11-20)(Runecraft)(Infogrames)%5bGC%5d.7z",
+      "directory": false,
+      "size": 127367013
+    },
+    {
+      "name": "Monster Jam - Maximum Destruction",
+      "raw_name": "Monster Jam - Maximum Destruction (2002-12-29)(Inland)(Ubisoft)[GC].7z",
+      "date": "2002-12-29",
+      "url": "http://gcn.joshw.info/m/Monster%20Jam%20-%20Maximum%20Destruction%20(2002-12-29)(Inland)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 41450041
+    },
+    {
+      "name": "Monsters, Inc. - Scream Arena",
+      "raw_name": "Monsters, Inc. - Scream Arena (2002-09-14)(Radical)(THQ)[GC].7z",
+      "date": "2002-09-14",
+      "url": "http://gcn.joshw.info/m/Monsters,%20Inc.%20-%20Scream%20Arena%20(2002-09-14)(Radical)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 140903193
+    },
+    {
+      "name": "Mr. Driller - Drill Land",
+      "raw_name": "Mr. Driller - Drill Land (2002-12-20)(-)(Namco)[GC].7z",
+      "date": "2002-12-20",
+      "url": "http://gcn.joshw.info/m/Mr.%20Driller%20-%20Drill%20Land%20(2002-12-20)(-)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 277136025
+    },
+    {
+      "name": "Muscle Champion - Kinnikutou no Kessen",
+      "raw_name": "Muscle Champion - Kinnikutou no Kessen (2002-11-21)(Konami)[GC].7z",
+      "date": "2002-11-21",
+      "url": "http://gcn.joshw.info/m/Muscle%20Champion%20-%20Kinnikutou%20no%20Kessen%20(2002-11-21)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 192521955
+    },
+    {
+      "name": "MX SuperFly featuring Ricky Carmichael",
+      "raw_name": "MX SuperFly featuring Ricky Carmichael (2002-06-25)Pacific Coast Power & Light)(THQ)[GC].7z",
+      "date": "2002-06-25",
+      "url": "http://gcn.joshw.info/m/MX%20SuperFly%20featuring%20Ricky%20Carmichael%20(2002-06-25)Pacific%20Coast%20Power%20&%20Light)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 162736551
+    },
+    {
+      "name": "Namco Museum",
+      "raw_name": "Namco Museum (2002-10-09)(Mass Media)(Namco)[GC].7z",
+      "date": "2002-10-09",
+      "url": "http://gcn.joshw.info/n/Namco%20Museum%20(2002-10-09)(Mass%20Media)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 167375218
+    },
+    {
+      "name": "Namco Museum 50th Anniversary",
+      "raw_name": "Namco Museum 50th Anniversary (2005-08-30)(Digital Eclipse)(Namco)[GC].7z",
+      "date": "2005-08-30",
+      "url": "http://gcn.joshw.info/n/Namco%20Museum%2050th%20Anniversary%20(2005-08-30)(Digital%20Eclipse)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 52770851
+    },
+    {
+      "name": "Naruto - Clash of Ninja",
+      "raw_name": "Naruto - Clash of Ninja (2006-03-07)(Eighting)(Tomy)[GC].7z",
+      "date": "2006-03-07",
+      "url": "http://gcn.joshw.info/n/Naruto%20-%20Clash%20of%20Ninja%20(2006-03-07)(Eighting)(Tomy)%5bGC%5d.7z",
+      "directory": false,
+      "size": 152660253
+    },
+    {
+      "name": "Naruto - Clash of Ninja 2",
+      "raw_name": "Naruto - Clash of Ninja 2 (2006-09-26)(Eighting)(Tomy)[GC].7z",
+      "date": "2006-09-26",
+      "url": "http://gcn.joshw.info/n/Naruto%20-%20Clash%20of%20Ninja%202%20(2006-09-26)(Eighting)(Tomy)%5bGC%5d.7z",
+      "directory": false,
+      "size": 321120978
+    },
+    {
+      "name": "Naruto - Gekitou Ninja Taisen 3!",
+      "raw_name": "Naruto - Gekitou Ninja Taisen 3! (2004-11-20)(Eighting)(Tomy)[GC].7z",
+      "date": "2004-11-20",
+      "url": "http://gcn.joshw.info/n/Naruto%20-%20Gekitou%20Ninja%20Taisen%203!%20(2004-11-20)(Eighting)(Tomy)%5bGC%5d.7z",
+      "directory": false,
+      "size": 493730544
+    },
+    {
+      "name": "Naruto - Gekitou Ninja Taisen! 4",
+      "raw_name": "Naruto - Gekitou Ninja Taisen! 4 (2005-11-21)(Eighting)(Tomy)[GC].7z",
+      "date": "2005-11-21",
+      "url": "http://gcn.joshw.info/n/Naruto%20-%20Gekitou%20Ninja%20Taisen!%204%20(2005-11-21)(Eighting)(Tomy)%5bGC%5d.7z",
+      "directory": false,
+      "size": 528915328
+    },
+    {
+      "name": "NASCAR - Dirt to Daytona",
+      "raw_name": "NASCAR - Dirt to Daytona (2002-11-12)(Monster Games)(Infogrames)[GC].7z",
+      "date": "2002-11-12",
+      "url": "http://gcn.joshw.info/n/NASCAR%20-%20Dirt%20to%20Daytona%20(2002-11-12)(Monster%20Games)(Infogrames)%5bGC%5d.7z",
+      "directory": false,
+      "size": 10425304
+    },
+    {
+      "name": "NASCAR 2005 - Chase for the Cup",
+      "raw_name": "NASCAR 2005 - Chase for the Cup (2004-09-04)(EA Tiburon)(Electronic Arts)[GC].7z",
+      "date": "2004-09-04",
+      "url": "http://gcn.joshw.info/n/NASCAR%202005%20-%20Chase%20for%20the%20Cup%20(2004-09-04)(EA%20Tiburon)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 129382006
+    },
+    {
+      "name": "NBA Courtside 2002",
+      "raw_name": "NBA Courtside 2002 (2002-01-13)(Left Field)(Nintendo)[GC].7z",
+      "date": "2002-01-13",
+      "url": "http://gcn.joshw.info/n/NBA%20Courtside%202002%20(2002-01-13)(Left%20Field)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 42826737
+    },
+    {
+      "name": "NBA Live 06",
+      "raw_name": "NBA Live 06 (2005-09-26)(EA Canada)(Electronic Arts)[GC].7z",
+      "date": "2005-09-26",
+      "url": "http://gcn.joshw.info/n/NBA%20Live%2006%20(2005-09-26)(EA%20Canada)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 134718543
+    },
+    {
+      "name": "Need for Speed - Most Wanted",
+      "raw_name": "Need for Speed - Most Wanted (2005-11-15)(Black Box)(Electronic Arts)[GC].7z",
+      "date": "2005-11-15",
+      "url": "http://gcn.joshw.info/n/Need%20for%20Speed%20-%20Most%20Wanted%20(2005-11-15)(Black%20Box)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 193302809
+    },
+    {
+      "name": "Need for Speed - Underground",
+      "raw_name": "Need for Speed - Underground (2003-11-17)(Black Box)(Electronic Arts)[GC].7z",
+      "date": "2003-11-17",
+      "url": "http://gcn.joshw.info/n/Need%20for%20Speed%20-%20Underground%20(2003-11-17)(Black%20Box)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 335518644
+    },
+    {
+      "name": "Need for Speed - Underground 2",
+      "raw_name": "Need for Speed - Underground 2 (2004-11-15)(Black Box)(Electronic Arts)[GC].7z",
+      "date": "2004-11-15",
+      "url": "http://gcn.joshw.info/n/Need%20for%20Speed%20-%20Underground%202%20(2004-11-15)(Black%20Box)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 163359316
+    },
+    {
+      "name": "NFL Blitz 20-03",
+      "raw_name": "NFL Blitz 20-03 (2002-08-12)(Point of View)(Midway)[GC].7z",
+      "date": "2002-08-12",
+      "url": "http://gcn.joshw.info/n/NFL%20Blitz%2020-03%20(2002-08-12)(Point%20of%20View)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 39517450
+    },
+    {
+      "name": "NHL 2003",
+      "raw_name": "NHL 2003 (2002-09-30)(EA Canada)(Electronic Arts)[GC].7z",
+      "date": "2002-09-30",
+      "url": "http://gcn.joshw.info/n/NHL%202003%20(2002-09-30)(EA%20Canada)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 329961064
+    },
+    {
+      "name": "NHL Hitz Pro",
+      "raw_name": "NHL Hitz Pro (2003-09-25)(Next Level)(Midway)[GC].7z",
+      "date": "2003-09-25",
+      "url": "http://gcn.joshw.info/n/NHL%20Hitz%20Pro%20(2003-09-25)(Next%20Level)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 122448787
+    },
+    {
+      "name": "Nickelodeon Party Blast",
+      "raw_name": "Nickelodeon Party Blast (2002-10-30)(Data Design Interactive)(Infogrames)[GC].7z",
+      "date": "2002-10-30",
+      "url": "http://gcn.joshw.info/n/Nickelodeon%20Party%20Blast%20(2002-10-30)(Data%20Design%20Interactive)(Infogrames)%5bGC%5d.7z",
+      "directory": false,
+      "size": 74602934
+    },
+    {
+      "name": "Nicktoons - Battle for Volcano Island [SpongeBob & Friends - Battle for Volcano Island]",
+      "raw_name": "Nicktoons - Battle for Volcano Island [SpongeBob & Friends - Battle for Volcano Island] (2006-10-24)(Blue Tongue)(THQ)[GC].7z",
+      "date": "2006-10-24",
+      "url": "http://gcn.joshw.info/n/Nicktoons%20-%20Battle%20for%20Volcano%20Island%20%5bSpongeBob%20&%20Friends%20-%20Battle%20for%20Volcano%20Island%5d%20(2006-10-24)(Blue%20Tongue)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 226901957
+    },
+    {
+      "name": "Nicktoons Unite! [SpongeBob SquarePants and Friends Unite!]",
+      "raw_name": "Nicktoons Unite! [SpongeBob SquarePants and Friends Unite!] (2005-10-27)(Blue Tongue)(THQ)[GC].7z",
+      "date": "2005-10-27",
+      "url": "http://gcn.joshw.info/n/Nicktoons%20Unite!%20%5bSpongeBob%20SquarePants%20and%20Friends%20Unite!%5d%20(2005-10-27)(Blue%20Tongue)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 111102520
+    },
+    {
+      "name": "Ohenro-san - Hosshin no Doujou",
+      "raw_name": "Ohenro-san - Hosshin no Doujou (2003-04-24)(EJ)(Pin Change)[GC].7z",
+      "date": "2003-04-24",
+      "url": "http://gcn.joshw.info/o/Ohenro-san%20-%20Hosshin%20no%20Doujou%20(2003-04-24)(EJ)(Pin%20Change)%5bGC%5d.7z",
+      "directory": false,
+      "size": 48409681
+    },
+    {
+      "name": "One Piece - Grand Adventure",
+      "raw_name": "One Piece - Grand Adventure (2006-08-29)(Ganbarion)(Bandai Namco)[GC].7z",
+      "date": "2006-08-29",
+      "url": "http://gcn.joshw.info/o/One%20Piece%20-%20Grand%20Adventure%20(2006-08-29)(Ganbarion)(Bandai%20Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 248079145
+    },
+    {
+      "name": "One Piece - Grand Battle! 3",
+      "raw_name": "One Piece - Grand Battle! 3 (2003-12-11)(Ganbarion)(Bandai)[GC].7z",
+      "date": "2003-12-11",
+      "url": "http://gcn.joshw.info/o/One%20Piece%20-%20Grand%20Battle!%203%20(2003-12-11)(Ganbarion)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 124204372
+    },
+    {
+      "name": "One Piece - Grand Battle! Rush",
+      "raw_name": "One Piece - Grand Battle! Rush (2005-03-17)(Ganbarion)(Bandai)[GC].7z",
+      "date": "2005-03-17",
+      "url": "http://gcn.joshw.info/o/One%20Piece%20-%20Grand%20Battle!%20Rush%20(2005-03-17)(Ganbarion)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 106049872
+    },
+    {
+      "name": "One Piece - Pirates' Carnival",
+      "raw_name": "One Piece - Pirates' Carnival (2005-11-23)(h.a.n.d.)(Bandai)[GC].7z",
+      "date": "2005-11-23",
+      "url": "http://gcn.joshw.info/o/One%20Piece%20-%20Pirates'%20Carnival%20(2005-11-23)(h.a.n.d.)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 34176217
+    },
+    {
+      "name": "One Piece - Treasure Battle!",
+      "raw_name": "One Piece - Treasure Battle! (2002-11-01)(-)(Bandai)[GC].7z",
+      "date": "2002-11-01",
+      "url": "http://gcn.joshw.info/o/One%20Piece%20-%20Treasure%20Battle!%20(2002-11-01)(-)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 198957629
+    },
+    {
+      "name": "One Piece Treasure Battle! (Trial)",
+      "raw_name": "One Piece Treasure Battle! (Trial) (2002-10)(Bandai)[GC].7z",
+      "date": "2002-10",
+      "url": "http://gcn.joshw.info/o/One%20Piece%20Treasure%20Battle!%20(Trial)%20(2002-10)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 110378867
+    },
+    {
+      "name": "Open Season",
+      "raw_name": "Open Season (2006-09-19)(Ubisoft Quebec, Ubisoft Montreal)(Ubisoft)[GC].7z",
+      "date": "2006-09-19",
+      "url": "http://gcn.joshw.info/o/Open%20Season%20(2006-09-19)(Ubisoft%20Quebec,%20Ubisoft%20Montreal)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 210801779
+    },
+    {
+      "name": "Over the Hedge",
+      "raw_name": "Over the Hedge (2006-05-09)(Edge of Reality)(Activision)[GC].7z",
+      "date": "2006-05-09",
+      "url": "http://gcn.joshw.info/o/Over%20the%20Hedge%20(2006-05-09)(Edge%20of%20Reality)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 226199312
+    },
+    {
+      "name": "P.N.03",
+      "raw_name": "P.N.03 (2003-03-27)(Capcom Production Studio 4)(Capcom)[GC].7z",
+      "date": "2003-03-27",
+      "url": "http://gcn.joshw.info/p/P.N.03%20(2003-03-27)(Capcom%20Production%20Studio%204)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 85752290
+    },
+    {
+      "name": "Pac-Man vs.",
+      "raw_name": "Pac-Man vs. (2003-12-02)(Namco)[GC].7z",
+      "date": "2003-12-02",
+      "url": "http://gcn.joshw.info/p/Pac-Man%20vs.%20(2003-12-02)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 46573453
+    },
+    {
+      "name": "Pac-Man World 2",
+      "raw_name": "Pac-Man World 2 (2002-03-19)(Namco Hometek)(Namco)[GC].7z",
+      "date": "2002-03-19",
+      "url": "http://gcn.joshw.info/p/Pac-Man%20World%202%20(2002-03-19)(Namco%20Hometek)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 373153701
+    },
+    {
+      "name": "Pac-Man World 3",
+      "raw_name": "Pac-Man World 3 (2005-11-15)(Blitz)(Namco)[GC].7z",
+      "date": "2005-11-15",
+      "url": "http://gcn.joshw.info/p/Pac-Man%20World%203%20(2005-11-15)(Blitz)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 529442954
+    },
+    {
+      "name": "Pac-Man World Rally",
+      "raw_name": "Pac-Man World Rally (2006-08-22)(Smart Bomb)(Namco Bandai)[GC].7z",
+      "date": "2006-08-22",
+      "url": "http://gcn.joshw.info/p/Pac-Man%20World%20Rally%20(2006-08-22)(Smart%20Bomb)(Namco%20Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 92974437
+    },
+    {
+      "name": "Paper Mario - The Thousand-Year Door [Paper Mario RPG]",
+      "raw_name": "Paper Mario - The Thousand-Year Door [Paper Mario RPG] (2004-07-22)(Intelligent Systems)(Nintendo)[GC].7z",
+      "date": "2004-07-22",
+      "url": "http://gcn.joshw.info/p/Paper%20Mario%20-%20The%20Thousand-Year%20Door%20%5bPaper%20Mario%20RPG%5d%20(2004-07-22)(Intelligent%20Systems)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 243809977
+    },
+    {
+      "name": "Peter Jackson's King Kong - The Official Game of the Movie",
+      "raw_name": "Peter Jackson's King Kong - The Official Game of the Movie (2005-11-17)(Ubisoft Montpellier)(Ubisoft)[GC].7z",
+      "date": "2005-11-17",
+      "url": "http://gcn.joshw.info/p/Peter%20Jackson's%20King%20Kong%20-%20The%20Official%20Game%20of%20the%20Movie%20(2005-11-17)(Ubisoft%20Montpellier)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 422486629
+    },
+    {
+      "name": "Phantasy Star Online Episode I & II Plus",
+      "raw_name": "Phantasy Star Online Episode I & II Plus (2003-11-27)(Sonic Team)(Sega)[GC].7z",
+      "date": "2003-11-27",
+      "url": "http://gcn.joshw.info/p/Phantasy%20Star%20Online%20Episode%20I%20&%20II%20Plus%20(2003-11-27)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 360535850
+    },
+    {
+      "name": "Phantasy Star Online Episode III - C.A.R.D. Revolution",
+      "raw_name": "Phantasy Star Online Episode III - C.A.R.D. Revolution (2003-11-27)(Sonic Team)(Sega)[GC].7z",
+      "date": "2003-11-27",
+      "url": "http://gcn.joshw.info/p/Phantasy%20Star%20Online%20Episode%20III%20-%20C.A.R.D.%20Revolution%20(2003-11-27)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 558503232
+    },
+    {
+      "name": "Pickles (Prototype)",
+      "raw_name": "Pickles (Prototype) (2005)(Santa Cruz)[GC].7z",
+      "date": "2005",
+      "url": "http://gcn.joshw.info/p/Pickles%20(Prototype)%20(2005)(Santa%20Cruz)%5bGC%5d.7z",
+      "directory": false,
+      "size": 17489103
+    },
+    {
+      "name": "Pikmin",
+      "raw_name": "Pikmin (2001-10-26)(Nintendo EAD)(Nintendo)[GC].7z",
+      "date": "2001-10-26",
+      "url": "http://gcn.joshw.info/p/Pikmin%20(2001-10-26)(Nintendo%20EAD)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 55388512
+    },
+    {
+      "name": "Pikmin 2",
+      "raw_name": "Pikmin 2 (2004-04-29)(Nintendo EAD)(Nintendo)[GC].7z",
+      "date": "2004-04-29",
+      "url": "http://gcn.joshw.info/p/Pikmin%202%20(2004-04-29)(Nintendo%20EAD)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 90945361
+    },
+    {
+      "name": "Pokemon XD - Gale of Darkness [Pokemon XD - Yami no Senpuu Dark Lugia]",
+      "raw_name": "Pokemon XD - Gale of Darkness [Pokemon XD - Yami no Senpuu Dark Lugia] (2005-08-04)(Genius Sonority)(Nintendo)[GC].7z",
+      "date": "2005-08-04",
+      "url": "http://gcn.joshw.info/p/Pokemon%20XD%20-%20Gale%20of%20Darkness%20%5bPokemon%20XD%20-%20Yami%20no%20Senpuu%20Dark%20Lugia%5d%20(2005-08-04)(Genius%20Sonority)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 135979771
+    },
+    {
+      "name": "Pool Paradise",
+      "raw_name": "Pool Paradise (2004-03-15)(Awesome)(Ignition)[GC].7z",
+      "date": "2004-03-15",
+      "url": "http://gcn.joshw.info/p/Pool%20Paradise%20(2004-03-15)(Awesome)(Ignition)%5bGC%5d.7z",
+      "directory": false,
+      "size": 136505052
+    },
+    {
+      "name": "Power Rangers - Dino Thunder",
+      "raw_name": "Power Rangers - Dino Thunder (2004-09-14)(Pacific Coast Power & Light)(THQ)[GC].7z",
+      "date": "2004-09-14",
+      "url": "http://gcn.joshw.info/p/Power%20Rangers%20-%20Dino%20Thunder%20(2004-09-14)(Pacific%20Coast%20Power%20&%20Light)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 56543512
+    },
+    {
+      "name": "Powerpuff Girls, The - Relish Rampage - Pickle Edition",
+      "raw_name": "Powerpuff Girls, The - Relish Rampage - Pickle Edition (2003-12-13)(VIS)(BAM!)[GC].7z",
+      "date": "2003-12-13",
+      "url": "http://gcn.joshw.info/p/Powerpuff%20Girls,%20The%20-%20Relish%20Rampage%20-%20Pickle%20Edition%20(2003-12-13)(VIS)(BAM!)%5bGC%5d.7z",
+      "directory": false,
+      "size": 80532040
+    },
+    {
+      "name": "Prince of Persia - The Sands of Time",
+      "raw_name": "Prince of Persia - The Sands of Time (2003-11-18)(Ubisoft Montreal)(Ubisoft)[GC].7z",
+      "date": "2003-11-18",
+      "url": "http://gcn.joshw.info/p/Prince%20of%20Persia%20-%20The%20Sands%20of%20Time%20(2003-11-18)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 144207911
+    },
+    {
+      "name": "Prince of Persia - The Two Thrones",
+      "raw_name": "Prince of Persia - The Two Thrones (2005-06-15)(Ubisoft Montreal)(Ubisoft)[GC].7z",
+      "date": "2005-06-15",
+      "url": "http://gcn.joshw.info/p/Prince%20of%20Persia%20-%20The%20Two%20Thrones%20(2005-06-15)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 292211731
+    },
+    {
+      "name": "Prince of Persia - Warrior Within",
+      "raw_name": "Prince of Persia - Warrior Within (2004-11-30)(Ubisoft Montreal)(Ubisoft)[GC].7z",
+      "date": "2004-11-30",
+      "url": "http://gcn.joshw.info/p/Prince%20of%20Persia%20-%20Warrior%20Within%20(2004-11-30)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 320525664
+    },
+    {
+      "name": "Pro Rally",
+      "raw_name": "Pro Rally (2002-10-04)(Ubisoft Barcelona)(Ubisoft)[GC].7z",
+      "date": "2002-10-04",
+      "url": "http://gcn.joshw.info/p/Pro%20Rally%20(2002-10-04)(Ubisoft%20Barcelona)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 95539850
+    },
+    {
+      "name": "Puyo Pop Fever [Puyo Puyo Fever]",
+      "raw_name": "Puyo Pop Fever [Puyo Puyo Fever] (2004-02-27)(MileStone)(Sega)[GC].7z",
+      "date": "2004-02-27",
+      "url": "http://gcn.joshw.info/p/Puyo%20Pop%20Fever%20%5bPuyo%20Puyo%20Fever%5d%20(2004-02-27)(MileStone)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 84303683
+    },
+    {
+      "name": "R - Racing Evolution",
+      "raw_name": "R - Racing Evolution (2003-11-27)(Namco)[GC].7z",
+      "date": "2003-11-27",
+      "url": "http://gcn.joshw.info/r/R%20-%20Racing%20Evolution%20(2003-11-27)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 213441238
+    },
+    {
+      "name": "Radirgy Generic",
+      "raw_name": "Radirgy Generic (2006-05-25)(MileStone)[GC].7z",
+      "date": "2006-05-25",
+      "url": "http://gcn.joshw.info/r/Radirgy%20Generic%20(2006-05-25)(MileStone)%5bGC%5d.7z",
+      "directory": false,
+      "size": 486281440
+    },
+    {
+      "name": "Rampage - Total Destruction",
+      "raw_name": "Rampage - Total Destruction (2006-04-24)(Pipeworks)(Midway)[GC].7z",
+      "date": "2006-04-24",
+      "url": "http://gcn.joshw.info/r/Rampage%20-%20Total%20Destruction%20(2006-04-24)(Pipeworks)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 70107114
+    },
+    {
+      "name": "Ratatouille",
+      "raw_name": "Ratatouille (2007-06-26)(Heavy Iron)(Asobo)(THQ)[GC].7z",
+      "date": "2007-06-26",
+      "url": "http://gcn.joshw.info/r/Ratatouille%20(2007-06-26)(Heavy%20Iron)(Asobo)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 76019695
+    },
+    {
+      "name": "Ratatouille (Prototype)",
+      "raw_name": "Ratatouille (Prototype) (2006-01-18)(Heavy Iron)(THQ)[GC].7z",
+      "date": "2006-01-18",
+      "url": "http://gcn.joshw.info/r/Ratatouille%20(Prototype)%20(2006-01-18)(Heavy%20Iron)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 197215238
+    },
+    {
+      "name": "Ratatouille (Prototype)",
+      "raw_name": "Ratatouille (Prototype) (2007)(Heavy Iron)(Asobo)(THQ)[GC].7z",
+      "date": "2007",
+      "url": "http://gcn.joshw.info/r/Ratatouille%20(Prototype)%20(2007)(Heavy%20Iron)(Asobo)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 19493063
+    },
+    {
+      "name": "Rave Master [Groove Adventure Rave - Fighting Live]",
+      "raw_name": "Rave Master [Groove Adventure Rave - Fighting Live] (2002-03-20)(-)(Konami)[GC].7z",
+      "date": "2002-03-20",
+      "url": "http://gcn.joshw.info/r/Rave%20Master%20%5bGroove%20Adventure%20Rave%20-%20Fighting%20Live%5d%20(2002-03-20)(-)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 138611970
+    },
+    {
+      "name": "Rayman 3 - Hoodlum Havoc",
+      "raw_name": "Rayman 3 - Hoodlum Havoc (2003-02-21)(Ubi Pictures)(Ubisoft)[GC][unsorted].7z",
+      "date": "2003-02-21",
+      "url": "http://gcn.joshw.info/r/Rayman%203%20-%20Hoodlum%20Havoc%20(2003-02-21)(Ubi%20Pictures)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 630238149
+    },
+    {
+      "name": "Rayman Arena",
+      "raw_name": "Rayman Arena (2002-07-24)(Ubi Pictures, Ubisoft Milan)(Ubisoft)[GC][unsorted].7z",
+      "date": "2002-07-24",
+      "url": "http://gcn.joshw.info/r/Rayman%20Arena%20(2002-07-24)(Ubi%20Pictures,%20Ubisoft%20Milan)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 371605130
+    },
+    {
+      "name": "Red Faction II",
+      "raw_name": "Red Faction II (2003-03-31)(Volition)(Cranky Pants)(THQ)[GC].7z",
+      "date": "2003-03-31",
+      "url": "http://gcn.joshw.info/r/Red%20Faction%20II%20(2003-03-31)(Volition)(Cranky%20Pants)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 389356972
+    },
+    {
+      "name": "RedCard 20-03 [RedCard]",
+      "raw_name": "RedCard 20-03 [RedCard] (2002-06-24)(Point of View)(Midway)[GC].7z",
+      "date": "2002-06-24",
+      "url": "http://gcn.joshw.info/r/RedCard%2020-03%20%5bRedCard%5d%20(2002-06-24)(Point%20of%20View)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 14555729
+    },
+    {
+      "name": "Resident Evil - CODE - Veronica X [Biohazard - CODE - Veronica Kanzenban]",
+      "raw_name": "Resident Evil - CODE - Veronica X [Biohazard - CODE - Veronica Kanzenban] (2003-08-07)(Nextech, Flagship, Capcom Production Studio 4)(Capcom)[GC].7z",
+      "date": "2003-08-07",
+      "url": "http://gcn.joshw.info/r/Resident%20Evil%20-%20CODE%20-%20Veronica%20X%20%5bBiohazard%20-%20CODE%20-%20Veronica%20Kanzenban%5d%20(2003-08-07)(Nextech,%20Flagship,%20Capcom%20Production%20Studio%204)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 200180143
+    },
+    {
+      "name": "Resident Evil 2 [BioHazard 2]",
+      "raw_name": "Resident Evil 2 [BioHazard 2] (2003-01-16)(Capcom Production Studio 4)(Capcom)[GC].7z",
+      "date": "2003-01-16",
+      "url": "http://gcn.joshw.info/r/Resident%20Evil%202%20%5bBioHazard%202%5d%20(2003-01-16)(Capcom%20Production%20Studio%204)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 452869387
+    },
+    {
+      "name": "Resident Evil 4 [BioHazard 4]",
+      "raw_name": "Resident Evil 4 [BioHazard 4] (2005-01-11)(Capcom Production Studio 4)(Capcom)[GC].7z",
+      "date": "2005-01-11",
+      "url": "http://gcn.joshw.info/r/Resident%20Evil%204%20%5bBioHazard%204%5d%20(2005-01-11)(Capcom%20Production%20Studio%204)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 154019494
+    },
+    {
+      "name": "Resident Evil 4 E3 ver. [BioHazard 4 E3 ver.]",
+      "raw_name": "Resident Evil 4 E3 ver. [BioHazard 4 E3 ver.] (2004-05-21)(Capcom Production Studio 4)(Capcom)[GC].7z",
+      "date": "2004-05-21",
+      "url": "http://gcn.joshw.info/r/Resident%20Evil%204%20E3%20ver.%20%5bBioHazard%204%20E3%20ver.%5d%20(2004-05-21)(Capcom%20Production%20Studio%204)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 31909880
+    },
+    {
+      "name": "Resident Evil 4 Preview Disc [BioHazard 4 Preview Disc]",
+      "raw_name": "Resident Evil 4 Preview Disc [BioHazard 4 Preview Disc] (2004-12)(Capcom Production Studio 4)(Capcom)[GC].7z",
+      "date": "2004-12",
+      "url": "http://gcn.joshw.info/r/Resident%20Evil%204%20Preview%20Disc%20%5bBioHazard%204%20Preview%20Disc%5d%20(2004-12)(Capcom%20Production%20Studio%204)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 58060517
+    },
+    {
+      "name": "Resident Evil 4 Trial Edition [BioHazard 4 Trial Edition]",
+      "raw_name": "Resident Evil 4 Trial Edition [BioHazard 4 Trial Edition] (2004-09)(Capcom Production Studio 4)(Capcom)[GC].7z",
+      "date": "2004-09",
+      "url": "http://gcn.joshw.info/r/Resident%20Evil%204%20Trial%20Edition%20%5bBioHazard%204%20Trial%20Edition%5d%20(2004-09)(Capcom%20Production%20Studio%204)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 46862027
+    },
+    {
+      "name": "RoadKill",
+      "raw_name": "RoadKill (2003-10-30)(Terminal Reality)(Midway)[GC].7z",
+      "date": "2003-10-30",
+      "url": "http://gcn.joshw.info/r/RoadKill%20(2003-10-30)(Terminal%20Reality)(Midway)%5bGC%5d.7z",
+      "directory": false,
+      "size": 393323622
+    },
+    {
+      "name": "Robots",
+      "raw_name": "Robots (2005-02-24)(Eurocom)(Sierra)[GC].7z",
+      "date": "2005-02-24",
+      "url": "http://gcn.joshw.info/r/Robots%20(2005-02-24)(Eurocom)(Sierra)%5bGC%5d.7z",
+      "directory": false,
+      "size": 127790817
+    },
+    {
+      "name": "Rocky",
+      "raw_name": "Rocky (2002-11-17)(Rage)(Steel Monkeys)(Ubisoft)[GC].7z",
+      "date": "2002-11-17",
+      "url": "http://gcn.joshw.info/r/Rocky%20(2002-11-17)(Rage)(Steel%20Monkeys)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 38368003
+    },
+    {
+      "name": "Rugrats - Royal Ransom",
+      "raw_name": "Rugrats - Royal Ransom (2002-11-27)(Avalanche)(THQ)[GC].7z",
+      "date": "2002-11-27",
+      "url": "http://gcn.joshw.info/r/Rugrats%20-%20Royal%20Ransom%20(2002-11-27)(Avalanche)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 80571733
+    },
+    {
+      "name": "Samurai Jack - The Shadow of Aku",
+      "raw_name": "Samurai Jack - The Shadow of Aku (2004-03-23)(Adrenium Games)(SEGA)[GC].7z",
+      "date": "2004-03-23",
+      "url": "http://gcn.joshw.info/s/Samurai%20Jack%20-%20The%20Shadow%20of%20Aku%20(2004-03-23)(Adrenium%20Games)(SEGA)%5bGC%5d.7z",
+      "directory": false,
+      "size": 119835216
+    },
+    {
+      "name": "Scorpion King, The - Rise of the Akkadian",
+      "raw_name": "Scorpion King, The - Rise of the Akkadian (2002-09-11)(Point of View)(Universal)[GC].7z",
+      "date": "2002-09-11",
+      "url": "http://gcn.joshw.info/s/Scorpion%20King,%20The%20-%20Rise%20of%20the%20Akkadian%20(2002-09-11)(Point%20of%20View)(Universal)%5bGC%5d.7z",
+      "directory": false,
+      "size": 249069808
+    },
+    {
+      "name": "SD Gundam - Gashapon Wars",
+      "raw_name": "SD Gundam - Gashapon Wars (2005-12-01)(Banpresto)[GC].7z",
+      "date": "2005-12-01",
+      "url": "http://gcn.joshw.info/s/SD%20Gundam%20-%20Gashapon%20Wars%20(2005-12-01)(Banpresto)%5bGC%5d.7z",
+      "directory": false,
+      "size": 620183356
+    },
+    {
+      "name": "SD Gundam - Gashapon Wars (Taikenban)",
+      "raw_name": "SD Gundam - Gashapon Wars (Taikenban) (2005-12-01)(Banpresto)[GC].7z",
+      "date": "2005-12-01",
+      "url": "http://gcn.joshw.info/s/SD%20Gundam%20-%20Gashapon%20Wars%20(Taikenban)%20(2005-12-01)(Banpresto)%5bGC%5d.7z",
+      "directory": false,
+      "size": 38593956
+    },
+    {
+      "name": "Second Sight",
+      "raw_name": "Second Sight (2004-09-03)(Free Radical Design)(Codemasters)[GC].7z",
+      "date": "2004-09-03",
+      "url": "http://gcn.joshw.info/s/Second%20Sight%20(2004-09-03)(Free%20Radical%20Design)(Codemasters)%5bGC%5d.7z",
+      "directory": false,
+      "size": 218540090
+    },
+    {
+      "name": "Sega Soccer Slam",
+      "raw_name": "Sega Soccer Slam (2002-03-18)(Black Box)(Sega)[GC].7z",
+      "date": "2002-03-18",
+      "url": "http://gcn.joshw.info/s/Sega%20Soccer%20Slam%20(2002-03-18)(Black%20Box)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 52342337
+    },
+    {
+      "name": "Shadow the Hedgehog",
+      "raw_name": "Shadow the Hedgehog (2005-11-15)(Sega Studio USA)(Sega)[GC].7z",
+      "date": "2005-11-15",
+      "url": "http://gcn.joshw.info/s/Shadow%20the%20Hedgehog%20(2005-11-15)(Sega%20Studio%20USA)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 291246649
+    },
+    {
+      "name": "Shadow the Hedgehog (Prototype)",
+      "raw_name": "Shadow the Hedgehog (Prototype) (2005-05-27)(Sega Studio USA)(Sega)[GC].7z",
+      "date": "2005-05-27",
+      "url": "http://gcn.joshw.info/s/Shadow%20the%20Hedgehog%20(Prototype)%20(2005-05-27)(Sega%20Studio%20USA)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 72601349
+    },
+    {
+      "name": "Shadow the Hedgehog (Trial Version)",
+      "raw_name": "Shadow the Hedgehog (Trial Version) (2005-10-31)(Sonic Team)(Sega)[GC].7z",
+      "date": "2005-10-31",
+      "url": "http://gcn.joshw.info/s/Shadow%20the%20Hedgehog%20(Trial%20Version)%20(2005-10-31)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 279041343
+    },
+    {
+      "name": "Shark Tale",
+      "raw_name": "Shark Tale (2004-09-27)(Edge of Reality)(Activision)[GC].7z",
+      "date": "2004-09-27",
+      "url": "http://gcn.joshw.info/s/Shark%20Tale%20(2004-09-27)(Edge%20of%20Reality)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 347176303
+    },
+    {
+      "name": "Shikigami no Shiro II",
+      "raw_name": "Shikigami no Shiro II (2003-10-24)(Alfa System)(Kids Station)[GC].7z",
+      "date": "2003-10-24",
+      "url": "http://gcn.joshw.info/s/Shikigami%20no%20Shiro%20II%20(2003-10-24)(Alfa%20System)(Kids%20Station)%5bGC%5d.7z",
+      "directory": false,
+      "size": 320433416
+    },
+    {
+      "name": "Shinseiki GPX Cyber Formula - Road to the Evolution",
+      "raw_name": "Shinseiki GPX Cyber Formula - Road to the Evolution (2004-07-29)(Atelier-Sai)(Sunrise)[GC].7z",
+      "date": "2004-07-29",
+      "url": "http://gcn.joshw.info/s/Shinseiki%20GPX%20Cyber%20Formula%20-%20Road%20to%20the%20Evolution%20(2004-07-29)(Atelier-Sai)(Sunrise)%5bGC%5d.7z",
+      "directory": false,
+      "size": 303417545
+    },
+    {
+      "name": "Shrek - Extra Large",
+      "raw_name": "Shrek - Extra Large (2002-10-31)(Digital Illusions CE)(TDK Mediactive)[GC].7z",
+      "date": "2002-10-31",
+      "url": "http://gcn.joshw.info/s/Shrek%20-%20Extra%20Large%20(2002-10-31)(Digital%20Illusions%20CE)(TDK%20Mediactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 93358109
+    },
+    {
+      "name": "Shrek - Smash n' Crash Racing",
+      "raw_name": "Shrek - Smash n' Crash Racing (2006-11-14)(Torus Games)(Activision)[GC].7z",
+      "date": "2006-11-14",
+      "url": "http://gcn.joshw.info/s/Shrek%20-%20Smash%20n'%20Crash%20Racing%20(2006-11-14)(Torus%20Games)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 172257438
+    },
+    {
+      "name": "Shrek 2",
+      "raw_name": "Shrek 2 (2004-04-28)(Luxoflux)(Activision)[GC].7z",
+      "date": "2004-04-28",
+      "url": "http://gcn.joshw.info/s/Shrek%202%20(2004-04-28)(Luxoflux)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 306698929
+    },
+    {
+      "name": "Simpsons, The - Hit & Run",
+      "raw_name": "Simpsons, The - Hit & Run (2003-09-16)(Radical)(Vivendi Universal)[GC].7z",
+      "date": "2003-09-16",
+      "url": "http://gcn.joshw.info/s/Simpsons,%20The%20-%20Hit%20&%20Run%20(2003-09-16)(Radical)(Vivendi%20Universal)%5bGC%5d.7z",
+      "directory": false,
+      "size": 144836443
+    },
+    {
+      "name": "Simpsons, The - Road Rage",
+      "raw_name": "Simpsons, The - Road Rage (2001-12-17)(Radical)(Electronic Arts)[GC].7z",
+      "date": "2001-12-17",
+      "url": "http://gcn.joshw.info/s/Simpsons,%20The%20-%20Road%20Rage%20(2001-12-17)(Radical)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 180408114
+    },
+    {
+      "name": "Sims 2, The - Pets",
+      "raw_name": "Sims 2, The - Pets (2006-10-17)(Maxis)(Electronic Arts)[GC].7z",
+      "date": "2006-10-17",
+      "url": "http://gcn.joshw.info/s/Sims%202,%20The%20-%20Pets%20(2006-10-17)(Maxis)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 163284413
+    },
+    {
+      "name": "Sims, The - Bustin' Out [Sims, The]",
+      "raw_name": "Sims, The - Bustin' Out [Sims, The] (2003-12-15)(Maxis)(Electronic Arts)[GC].7z",
+      "date": "2003-12-15",
+      "url": "http://gcn.joshw.info/s/Sims,%20The%20-%20Bustin'%20Out%20%5bSims,%20The%5d%20(2003-12-15)(Maxis)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 258116207
+    },
+    {
+      "name": "Skies of Arcadia Legends [Eternal Arcadia Legends]",
+      "raw_name": "Skies of Arcadia Legends [Eternal Arcadia Legends] (2002-12-26)(Overworks)(Sega)[GC].7z",
+      "date": "2002-12-26",
+      "url": "http://gcn.joshw.info/s/Skies%20of%20Arcadia%20Legends%20%5bEternal%20Arcadia%20Legends%5d%20(2002-12-26)(Overworks)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 16144316
+    },
+    {
+      "name": "Smashing Drive",
+      "raw_name": "Smashing Drive (2002-02-18)(Point of View)(Namco)[GC].7z",
+      "date": "2002-02-18",
+      "url": "http://gcn.joshw.info/s/Smashing%20Drive%20(2002-02-18)(Point%20of%20View)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 58973736
+    },
+    {
+      "name": "Sonic Adventure 2 - Battle",
+      "raw_name": "Sonic Adventure 2 - Battle (2001-12-20)(Sonic Team)(Sega)[GC].7z",
+      "date": "2001-12-20",
+      "url": "http://gcn.joshw.info/s/Sonic%20Adventure%202%20-%20Battle%20(2001-12-20)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 340526494
+    },
+    {
+      "name": "Sonic Adventure DX Director's Cut [Sonic Adventure DX]",
+      "raw_name": "Sonic Adventure DX Director's Cut [Sonic Adventure DX] (2003-06-18)(Sonic Team)(Sega)[GC].7z",
+      "date": "2003-06-18",
+      "url": "http://gcn.joshw.info/s/Sonic%20Adventure%20DX%20Director's%20Cut%20%5bSonic%20Adventure%20DX%5d%20(2003-06-18)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 472479542
+    },
+    {
+      "name": "Sonic Gems Collection",
+      "raw_name": "Sonic Gems Collection (2005-08-11)(Sonic Team, Traveller's Tales, Sega AM2)(H.I.C., Comolink)(Sega)[GC].7z",
+      "date": "2005-08-11",
+      "url": "http://gcn.joshw.info/s/Sonic%20Gems%20Collection%20(2005-08-11)(Sonic%20Team,%20Traveller's%20Tales,%20Sega%20AM2)(H.I.C.,%20Comolink)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 450280449
+    },
+    {
+      "name": "Sonic Heroes",
+      "raw_name": "Sonic Heroes (2003-12-30)(Sonic Team USA)(Sega)[GC].7z",
+      "date": "2003-12-30",
+      "url": "http://gcn.joshw.info/s/Sonic%20Heroes%20(2003-12-30)(Sonic%20Team%20USA)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 202183428
+    },
+    {
+      "name": "Sonic Heroes (NPDP Prototype 2)",
+      "raw_name": "Sonic Heroes (NPDP Prototype 2) (2003-10-30)(Sonic Team)(Sega)[GC].7z",
+      "date": "2003-10-30",
+      "url": "http://gcn.joshw.info/s/Sonic%20Heroes%20(NPDP%20Prototype%202)%20(2003-10-30)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 194931098
+    },
+    {
+      "name": "Sonic Heroes (NPDP Prototype)",
+      "raw_name": "Sonic Heroes (NPDP Prototype) (2003-10-30)(Sonic Team)(Sega)[GC].7z",
+      "date": "2003-10-30",
+      "url": "http://gcn.joshw.info/s/Sonic%20Heroes%20(NPDP%20Prototype)%20(2003-10-30)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 235561356
+    },
+    {
+      "name": "Sonic Heroes E3 Demo",
+      "raw_name": "Sonic Heroes E3 Demo (2003)(Sonic Team)(Sega)[GC].7z",
+      "date": "2003",
+      "url": "http://gcn.joshw.info/s/Sonic%20Heroes%20E3%20Demo%20(2003)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 27417649
+    },
+    {
+      "name": "Sonic Heroes Prototype",
+      "raw_name": "Sonic Heroes Prototype (2003)(Sonic Team USA)(Sega)[GC].7z",
+      "date": "2003",
+      "url": "http://gcn.joshw.info/s/Sonic%20Heroes%20Prototype%20(2003)(Sonic%20Team%20USA)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 172264697
+    },
+    {
+      "name": "Sonic Mega Collection",
+      "raw_name": "Sonic Mega Collection (2002-11-10)(Sonic Team)(Sega)[GC].7z",
+      "date": "2002-11-10",
+      "url": "http://gcn.joshw.info/s/Sonic%20Mega%20Collection%20(2002-11-10)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 82573736
+    },
+    {
+      "name": "Sonic Riders",
+      "raw_name": "Sonic Riders (2006-02-21)(Now Production)(Sega)[GC].7z",
+      "date": "2006-02-21",
+      "url": "http://gcn.joshw.info/s/Sonic%20Riders%20(2006-02-21)(Now%20Production)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 258259125
+    },
+    {
+      "name": "Sonic Riders (NPDP prototype)",
+      "raw_name": "Sonic Riders (NPDP prototype) (2006)(Sonic Team)(Sega)[GC].7z",
+      "date": "2006",
+      "url": "http://gcn.joshw.info/s/Sonic%20Riders%20(NPDP%20prototype)%20(2006)(Sonic%20Team)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 258628109
+    },
+    {
+      "name": "SoulCalibur II",
+      "raw_name": "SoulCalibur II (2003-03-27)(Namco)[GC].7z",
+      "date": "2003-03-27",
+      "url": "http://gcn.joshw.info/s/SoulCalibur%20II%20(2003-03-27)(Namco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 144522573
+    },
+    {
+      "name": "Spartan - Total Warrior",
+      "raw_name": "Spartan - Total Warrior (2005-10-27)(Creative Assembly, The)(Sega)[GC].7z",
+      "date": "2005-10-27",
+      "url": "http://gcn.joshw.info/s/Spartan%20-%20Total%20Warrior%20(2005-10-27)(Creative%20Assembly,%20The)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 461309725
+    },
+    {
+      "name": "Speed Challenge - Jacques Villeneuve's Racing Vision",
+      "raw_name": "Speed Challenge - Jacques Villeneuve's Racing Vision (2003-10-18)(Ubisoft Romania)(Ubisoft)[GC].7z",
+      "date": "2003-10-18",
+      "url": "http://gcn.joshw.info/s/Speed%20Challenge%20-%20Jacques%20Villeneuve's%20Racing%20Vision%20(2003-10-18)(Ubisoft%20Romania)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 153969463
+    },
+    {
+      "name": "Sphinx and the Cursed Mummy",
+      "raw_name": "Sphinx and the Cursed Mummy (2003-11-10)(Eurocom)(THQ)[GC].7z",
+      "date": "2003-11-10",
+      "url": "http://gcn.joshw.info/s/Sphinx%20and%20the%20Cursed%20Mummy%20(2003-11-10)(Eurocom)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 103509073
+    },
+    {
+      "name": "Spider-Man - The Movie",
+      "raw_name": "Spider-Man - The Movie (2002-04-16)(Treyarch)(Activision)[GC].7z",
+      "date": "2002-04-16",
+      "url": "http://gcn.joshw.info/s/Spider-Man%20-%20The%20Movie%20(2002-04-16)(Treyarch)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 57322849
+    },
+    {
+      "name": "Spider-Man 2",
+      "raw_name": "Spider-Man 2 (2004-06-28)(Treyarch)(Activision)[GC].7z",
+      "date": "2004-06-28",
+      "url": "http://gcn.joshw.info/s/Spider-Man%202%20(2004-06-28)(Treyarch)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 380798357
+    },
+    {
+      "name": "Spirits & Spells [Castleween] [Mahou no Pumpkin - Ann to Greg no Daibouken]",
+      "raw_name": "Spirits & Spells [Castleween] [Mahou no Pumpkin - Ann to Greg no Daibouken] (2003-09-24)(Kalisto)(Wanadoo)(DreamCatcher)[GC].7z",
+      "date": "2003-09-24",
+      "url": "http://gcn.joshw.info/s/Spirits%20&%20Spells%20%5bCastleween%5d%20%5bMahou%20no%20Pumpkin%20-%20Ann%20to%20Greg%20no%20Daibouken%5d%20(2003-09-24)(Kalisto)(Wanadoo)(DreamCatcher)%5bGC%5d.7z",
+      "directory": false,
+      "size": 231777701
+    },
+    {
+      "name": "SpongeBob SquarePants - Creature from the Krusty Krab",
+      "raw_name": "SpongeBob SquarePants - Creature from the Krusty Krab (2006-10-16)(Blitz)(THQ)[GC].7z",
+      "date": "2006-10-16",
+      "url": "http://gcn.joshw.info/s/SpongeBob%20SquarePants%20-%20Creature%20from%20the%20Krusty%20Krab%20(2006-10-16)(Blitz)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 230289629
+    },
+    {
+      "name": "SpongeBob SquarePants - Revenge of the Flying Dutchman",
+      "raw_name": "SpongeBob SquarePants - Revenge of the Flying Dutchman (2002-12-18)(BigSky)(THQ)[GC].7z",
+      "date": "2002-12-18",
+      "url": "http://gcn.joshw.info/s/SpongeBob%20SquarePants%20-%20Revenge%20of%20the%20Flying%20Dutchman%20(2002-12-18)(BigSky)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 87427086
+    },
+    {
+      "name": "Spyro - A Hero's Tail",
+      "raw_name": "Spyro - A Hero's Tail (2004-11-03)(Eurocom)(Vivid)[GC].7z",
+      "date": "2004-11-03",
+      "url": "http://gcn.joshw.info/s/Spyro%20-%20A%20Hero's%20Tail%20(2004-11-03)(Eurocom)(Vivid)%5bGC%5d.7z",
+      "directory": false,
+      "size": 148557816
+    },
+    {
+      "name": "Spyro - Enter the Dragonfly",
+      "raw_name": "Spyro - Enter the Dragonfly (2002-11-08)(Equinoxe)(Vivendi Universal)[GC].7z",
+      "date": "2002-11-08",
+      "url": "http://gcn.joshw.info/s/Spyro%20-%20Enter%20the%20Dragonfly%20(2002-11-08)(Equinoxe)(Vivendi%20Universal)%5bGC%5d.7z",
+      "directory": false,
+      "size": 113562959
+    },
+    {
+      "name": "SSX 3",
+      "raw_name": "SSX 3 (2003-10-20)(EA Canada)(Electronic Arts)[GC].7z",
+      "date": "2003-10-20",
+      "url": "http://gcn.joshw.info/s/SSX%203%20(2003-10-20)(EA%20Canada)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 367865762
+    },
+    {
+      "name": "SSX Tricky",
+      "raw_name": "SSX Tricky (2001-12-02)(EA Canada)(Electronic Arts)[GC].7z",
+      "date": "2001-12-02",
+      "url": "http://gcn.joshw.info/s/SSX%20Tricky%20(2001-12-02)(EA%20Canada)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 285780367
+    },
+    {
+      "name": "Star Fox Assault",
+      "raw_name": "Star Fox Assault (2005-02-14)(Namco)(Nintendo)[GC].7z",
+      "date": "2005-02-14",
+      "url": "http://gcn.joshw.info/s/Star%20Fox%20Assault%20(2005-02-14)(Namco)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 179782716
+    },
+    {
+      "name": "Star Soldier",
+      "raw_name": "Star Soldier (2003-07-10)(Sting)(Hudson)[GC].7z",
+      "date": "2003-07-10",
+      "url": "http://gcn.joshw.info/s/Star%20Soldier%20(2003-07-10)(Sting)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 45956453
+    },
+    {
+      "name": "Star Wars - Bounty Hunter",
+      "raw_name": "Star Wars - Bounty Hunter (2002-12-07)(Lucas Arts)[GC].7z",
+      "date": "2002-12-07",
+      "url": "http://gcn.joshw.info/s/Star%20Wars%20-%20Bounty%20Hunter%20(2002-12-07)(Lucas%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 174363995
+    },
+    {
+      "name": "Star Wars - Bounty Hunter",
+      "raw_name": "Star Wars - Bounty Hunter (2002-12-07)(LucasArts)[GC].7z",
+      "date": "2002-12-07",
+      "url": "http://gcn.joshw.info/s/Star%20Wars%20-%20Bounty%20Hunter%20(2002-12-07)(LucasArts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 122968184
+    },
+    {
+      "name": "Starsky & Hutch",
+      "raw_name": "Starsky & Hutch (2003-09-26)(Supersonic)(Empire)[GC].7z",
+      "date": "2003-09-26",
+      "url": "http://gcn.joshw.info/s/Starsky%20&%20Hutch%20(2003-09-26)(Supersonic)(Empire)%5bGC%5d.7z",
+      "directory": false,
+      "size": 30130083
+    },
+    {
+      "name": "Sum of All Fears, The",
+      "raw_name": "Sum of All Fears, The (2003-01-09)(Red Storm)(Ubisoft Shanghai)(Ubisoft)[GC].7z",
+      "date": "2003-01-09",
+      "url": "http://gcn.joshw.info/s/Sum%20of%20All%20Fears,%20The%20(2003-01-09)(Red%20Storm)(Ubisoft%20Shanghai)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 64684787
+    },
+    {
+      "name": "Summoner - A Goddess Reborn",
+      "raw_name": "Summoner - A Goddess Reborn (2003-01-31)(Volition)(Cranky Pants)(THQ)[GC].7z",
+      "date": "2003-01-31",
+      "url": "http://gcn.joshw.info/s/Summoner%20-%20A%20Goddess%20Reborn%20(2003-01-31)(Volition)(Cranky%20Pants)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 382698891
+    },
+    {
+      "name": "Super Bubble Pop",
+      "raw_name": "Super Bubble Pop (2003-01-03)(Runecraft)(Jaleco)[GC].7z",
+      "date": "2003-01-03",
+      "url": "http://gcn.joshw.info/s/Super%20Bubble%20Pop%20(2003-01-03)(Runecraft)(Jaleco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 178740391
+    },
+    {
+      "name": "Super Mario Strikers [Mario Smash Football]",
+      "raw_name": "Super Mario Strikers [Mario Smash Football] (2005-11-18)(Next Level)(Nintendo)[GC].7z",
+      "date": "2005-11-18",
+      "url": "http://gcn.joshw.info/s/Super%20Mario%20Strikers%20%5bMario%20Smash%20Football%5d%20(2005-11-18)(Next%20Level)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 193912288
+    },
+    {
+      "name": "Super Mario Sunshine",
+      "raw_name": "Super Mario Sunshine (2002-07-19)(Nintendo EAD)(Nintendo)[GC].7z",
+      "date": "2002-07-19",
+      "url": "http://gcn.joshw.info/s/Super%20Mario%20Sunshine%20(2002-07-19)(Nintendo%20EAD)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 1510544
+    },
+    {
+      "name": "Super Monkey Ball",
+      "raw_name": "Super Monkey Ball (2001-09-14)(Amusement Vision)(Sega)[GC].7z",
+      "date": "2001-09-14",
+      "url": "http://gcn.joshw.info/s/Super%20Monkey%20Ball%20(2001-09-14)(Amusement%20Vision)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 117535173
+    },
+    {
+      "name": "Super Monkey Ball 2",
+      "raw_name": "Super Monkey Ball 2 (2002-08-25)(Amusement Vision)(Sega)[GC].7z",
+      "date": "2002-08-25",
+      "url": "http://gcn.joshw.info/s/Super%20Monkey%20Ball%202%20(2002-08-25)(Amusement%20Vision)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 257515366
+    },
+    {
+      "name": "Super Monkey Ball 2 (Demo)",
+      "raw_name": "Super Monkey Ball 2 (Demo) (2002-10)(Amusement Vision)(SEGA)[GC].7z",
+      "date": "2002-10",
+      "url": "http://gcn.joshw.info/s/Super%20Monkey%20Ball%202%20(Demo)%20(2002-10)(Amusement%20Vision)(SEGA)%5bGC%5d.7z",
+      "directory": false,
+      "size": 60763451
+    },
+    {
+      "name": "Super Monkey Ball Adventure",
+      "raw_name": "Super Monkey Ball Adventure (2006-07-14)(Traveller's Tales)(Sega)[GC].7z",
+      "date": "2006-07-14",
+      "url": "http://gcn.joshw.info/s/Super%20Monkey%20Ball%20Adventure%20(2006-07-14)(Traveller's%20Tales)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 234138715
+    },
+    {
+      "name": "Super Robot Taisen GC",
+      "raw_name": "Super Robot Taisen GC (2004-12-16)(AI)(Banpresto)[GC].7z",
+      "date": "2004-12-16",
+      "url": "http://gcn.joshw.info/s/Super%20Robot%20Taisen%20GC%20(2004-12-16)(AI)(Banpresto)%5bGC%5d.7z",
+      "directory": false,
+      "size": 175101751
+    },
+    {
+      "name": "Super Smash Bros. Melee [Dairantou Smash Brothers DX]",
+      "raw_name": "Super Smash Bros. Melee [Dairantou Smash Brothers DX] (2001-11-21)(HAL Laboratory)(Nintendo)[GC].7z",
+      "date": "2001-11-21",
+      "url": "http://gcn.joshw.info/s/Super%20Smash%20Bros.%20Melee%20%5bDairantou%20Smash%20Brothers%20DX%5d%20(2001-11-21)(HAL%20Laboratory)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 228028125
+    },
+    {
+      "name": "Swingerz Golf [Ace Golf] [Wai Wai Golf]",
+      "raw_name": "Swingerz Golf [Ace Golf] [Wai Wai Golf] (2002-10-23)(Telenet Japan)(Eidos)[GC].7z",
+      "date": "2002-10-23",
+      "url": "http://gcn.joshw.info/s/Swingerz%20Golf%20%5bAce%20Golf%5d%20%5bWai%20Wai%20Golf%5d%20(2002-10-23)(Telenet%20Japan)(Eidos)%5bGC%5d.7z",
+      "directory": false,
+      "size": 271215058
+    },
+    {
+      "name": "SX Superstar",
+      "raw_name": "SX Superstar (2003-06-30)(Climax Group)(AKA)[GC].7z",
+      "date": "2003-06-30",
+      "url": "http://gcn.joshw.info/s/SX%20Superstar%20(2003-06-30)(Climax%20Group)(AKA)%5bGC%5d.7z",
+      "directory": false,
+      "size": 146180126
+    },
+    {
+      "name": "Tak - The Great Juju Challenge",
+      "raw_name": "Tak - The Great Juju Challenge (2005-09-19)(Avalanche)(THQ)[GC].7z",
+      "date": "2005-09-19",
+      "url": "http://gcn.joshw.info/t/Tak%20-%20The%20Great%20Juju%20Challenge%20(2005-09-19)(Avalanche)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 163235718
+    },
+    {
+      "name": "Tak 2 - The Staff of Dreams",
+      "raw_name": "Tak 2 - The Staff of Dreams (2004-10-11)(Avalanche)(THQ)[GC].7z",
+      "date": "2004-10-11",
+      "url": "http://gcn.joshw.info/t/Tak%202%20-%20The%20Staff%20of%20Dreams%20(2004-10-11)(Avalanche)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 190223430
+    },
+    {
+      "name": "Tak and the Power of Juju",
+      "raw_name": "Tak and the Power of Juju (2003-10-15)(Avalanche)(THQ)[GC].7z",
+      "date": "2003-10-15",
+      "url": "http://gcn.joshw.info/t/Tak%20and%20the%20Power%20of%20Juju%20(2003-10-15)(Avalanche)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 87248499
+    },
+    {
+      "name": "Tales of Symphonia",
+      "raw_name": "Tales of Symphonia (2003-08-29)(Namco Tales Studio)(Namco)[GC][unplayable].7z",
+      "date": "2003-08-29",
+      "url": "http://gcn.joshw.info/t/Tales%20of%20Symphonia%20(2003-08-29)(Namco%20Tales%20Studio)(Namco)%5bGC%5d%5bunplayable%5d.7z",
+      "directory": false,
+      "size": 95063036
+    },
+    {
+      "name": "Taz Wanted",
+      "raw_name": "Taz Wanted (2002-10-04)(Blitz)(Infogrames)[GC].7z",
+      "date": "2002-10-04",
+      "url": "http://gcn.joshw.info/t/Taz%20Wanted%20(2002-10-04)(Blitz)(Infogrames)%5bGC%5d.7z",
+      "directory": false,
+      "size": 206346684
+    },
+    {
+      "name": "Teenage Mutant Ninja Turtles",
+      "raw_name": "Teenage Mutant Ninja Turtles (2003-10-31)(KCE Studios)(Konami)[GC].7z",
+      "date": "2003-10-31",
+      "url": "http://gcn.joshw.info/t/Teenage%20Mutant%20Ninja%20Turtles%20(2003-10-31)(KCE%20Studios)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 112388203
+    },
+    {
+      "name": "Teenage Mutant Ninja Turtles 2 - Battle Nexus",
+      "raw_name": "Teenage Mutant Ninja Turtles 2 - Battle Nexus (2004-10-19)(KCE Studios)(Konami)[GC].7z",
+      "date": "2004-10-19",
+      "url": "http://gcn.joshw.info/t/Teenage%20Mutant%20Ninja%20Turtles%202%20-%20Battle%20Nexus%20(2004-10-19)(KCE%20Studios)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 134813619
+    },
+    {
+      "name": "Teenage Mutant Ninja Turtles 3 - Mutant Nightmare",
+      "raw_name": "Teenage Mutant Ninja Turtles 3 - Mutant Nightmare (2005-11-01)(KCE Studios)(Konami)[GC].7z",
+      "date": "2005-11-01",
+      "url": "http://gcn.joshw.info/t/Teenage%20Mutant%20Ninja%20Turtles%203%20-%20Mutant%20Nightmare%20(2005-11-01)(KCE%20Studios)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 115872700
+    },
+    {
+      "name": "Tengai Makyou II - Manji Maru",
+      "raw_name": "Tengai Makyou II - Manji Maru (2003-09-25)(Sting)(Hudson)[GC].7z",
+      "date": "2003-09-25",
+      "url": "http://gcn.joshw.info/t/Tengai%20Makyou%20II%20-%20Manji%20Maru%20(2003-09-25)(Sting)(Hudson)%5bGC%5d.7z",
+      "directory": false,
+      "size": 128514719
+    },
+    {
+      "name": "Tetris Worlds",
+      "raw_name": "Tetris Worlds (2002-06-23)(Blue Planet, Radical)(THQ)[GC].7z",
+      "date": "2002-06-23",
+      "url": "http://gcn.joshw.info/t/Tetris%20Worlds%20(2002-06-23)(Blue%20Planet,%20Radical)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 140467108
+    },
+    {
+      "name": "TimeSplitters - Future Perfect",
+      "raw_name": "TimeSplitters - Future Perfect (2005-03-21)(Free Radical Design)(Electronic Arts)[GC].7z",
+      "date": "2005-03-21",
+      "url": "http://gcn.joshw.info/t/TimeSplitters%20-%20Future%20Perfect%20(2005-03-21)(Free%20Radical%20Design)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 202420927
+    },
+    {
+      "name": "TimeSplitters 2",
+      "raw_name": "TimeSplitters 2 (2002-10-16)(Free Radical Design)(Eidos)[GC].7z",
+      "date": "2002-10-16",
+      "url": "http://gcn.joshw.info/t/TimeSplitters%202%20(2002-10-16)(Free%20Radical%20Design)(Eidos)%5bGC%5d.7z",
+      "directory": false,
+      "size": 621014817
+    },
+    {
+      "name": "TMNT",
+      "raw_name": "TMNT (2007-03-13)(Ubisoft Montreal)(Ubisoft)[GC].7z",
+      "date": "2007-03-13",
+      "url": "http://gcn.joshw.info/t/TMNT%20(2007-03-13)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 141629181
+    },
+    {
+      "name": "Tom Clancy's Ghost Recon",
+      "raw_name": "Tom Clancy's Ghost Recon (2003-02-09)(Red Storm)(Ubisoft Shanghai)(Ubisoft)[GC].7z",
+      "date": "2003-02-09",
+      "url": "http://gcn.joshw.info/t/Tom%20Clancy's%20Ghost%20Recon%20(2003-02-09)(Red%20Storm)(Ubisoft%20Shanghai)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 63525001
+    },
+    {
+      "name": "Tom Clancy's Rainbow Six 3",
+      "raw_name": "Tom Clancy's Rainbow Six 3 (2004-06-16)(Ubisoft Shanghai)(Ubisoft)[GC][unsorted].7z",
+      "date": "2004-06-16",
+      "url": "http://gcn.joshw.info/t/Tom%20Clancy's%20Rainbow%20Six%203%20(2004-06-16)(Ubisoft%20Shanghai)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 209831222
+    },
+    {
+      "name": "Tom Clancy's Splinter Cell",
+      "raw_name": "Tom Clancy's Splinter Cell (2003-04-08)(Ubisoft Shanghai)(Ubisoft)[GC][unsorted].7z",
+      "date": "2003-04-08",
+      "url": "http://gcn.joshw.info/t/Tom%20Clancy's%20Splinter%20Cell%20(2003-04-08)(Ubisoft%20Shanghai)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 162411412
+    },
+    {
+      "name": "Tom Clancy's Splinter Cell - Chaos Theory",
+      "raw_name": "Tom Clancy's Splinter Cell - Chaos Theory (2005-03-28)(Ubisoft Montreal)(Ubisoft)[GC][unsorted].7z",
+      "date": "2005-03-28",
+      "url": "http://gcn.joshw.info/t/Tom%20Clancy's%20Splinter%20Cell%20-%20Chaos%20Theory%20(2005-03-28)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 286789388
+    },
+    {
+      "name": "Tom Clancy's Splinter Cell - Double Agent",
+      "raw_name": "Tom Clancy's Splinter Cell - Double Agent (2006-10-26)(Ubisoft Montreal)(Ubisoft)[GC].7z",
+      "date": "2006-10-26",
+      "url": "http://gcn.joshw.info/t/Tom%20Clancy's%20Splinter%20Cell%20-%20Double%20Agent%20(2006-10-26)(Ubisoft%20Montreal)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 405388352
+    },
+    {
+      "name": "Tom Clancy's Splinter Cell - Pandora Tomorrow",
+      "raw_name": "Tom Clancy's Splinter Cell - Pandora Tomorrow (2004-07-20)(Ubisoft Shanghai, Ubisoft Milan)(Ubisoft)[GC][unsorted].7z",
+      "date": "2004-07-20",
+      "url": "http://gcn.joshw.info/t/Tom%20Clancy's%20Splinter%20Cell%20-%20Pandora%20Tomorrow%20(2004-07-20)(Ubisoft%20Shanghai,%20Ubisoft%20Milan)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 227360148
+    },
+    {
+      "name": "Tomb Raider - Legend",
+      "raw_name": "Tomb Raider - Legend (2006-11-14)(Crystal Dynamics)(Eidos)[GC].7z",
+      "date": "2006-11-14",
+      "url": "http://gcn.joshw.info/t/Tomb%20Raider%20-%20Legend%20(2006-11-14)(Crystal%20Dynamics)(Eidos)%5bGC%5d.7z",
+      "directory": false,
+      "size": 511233214
+    },
+    {
+      "name": "Tonka Rescue Patrol",
+      "raw_name": "Tonka Rescue Patrol (2003-11-18)(Lucky Chicken)(TDK Mediactive)[GC].7z",
+      "date": "2003-11-18",
+      "url": "http://gcn.joshw.info/t/Tonka%20Rescue%20Patrol%20(2003-11-18)(Lucky%20Chicken)(TDK%20Mediactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 30797327
+    },
+    {
+      "name": "Tony Hawk's American Wasteland",
+      "raw_name": "Tony Hawk's American Wasteland (2005-10-18)(Neversoft)(Activision)[GC].7z",
+      "date": "2005-10-18",
+      "url": "http://gcn.joshw.info/t/Tony%20Hawk's%20American%20Wasteland%20(2005-10-18)(Neversoft)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 225638266
+    },
+    {
+      "name": "Tony Hawk's Pro Skater 3",
+      "raw_name": "Tony Hawk's Pro Skater 3 (2001-11-13)(Neversoft)(Activision)[GC].7z",
+      "date": "2001-11-13",
+      "url": "http://gcn.joshw.info/t/Tony%20Hawk's%20Pro%20Skater%203%20(2001-11-13)(Neversoft)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 225048703
+    },
+    {
+      "name": "Top Angler - Real Bass Fishing",
+      "raw_name": "Top Angler - Real Bass Fishing (2003-01-01)(SIMS)(Xicat)[GC].7z",
+      "date": "2003-01-01",
+      "url": "http://gcn.joshw.info/t/Top%20Angler%20-%20Real%20Bass%20Fishing%20(2003-01-01)(SIMS)(Xicat)%5bGC%5d.7z",
+      "directory": false,
+      "size": 27530463
+    },
+    {
+      "name": "Top Gun - Combat Zones [Top Gun - Ace of the Sky]",
+      "raw_name": "Top Gun - Combat Zones [Top Gun - Ace of the Sky] (2002-10-24)(Digital Integration)(Titus)[GC].7z",
+      "date": "2002-10-24",
+      "url": "http://gcn.joshw.info/t/Top%20Gun%20-%20Combat%20Zones%20%5bTop%20Gun%20-%20Ace%20of%20the%20Sky%5d%20(2002-10-24)(Digital%20Integration)(Titus)%5bGC%5d.7z",
+      "directory": false,
+      "size": 60948403
+    },
+    {
+      "name": "TransWorld Surf - Next Wave",
+      "raw_name": "TransWorld Surf - Next Wave (2003-03-18)(Angel)(Atari)[GC].7z",
+      "date": "2003-03-18",
+      "url": "http://gcn.joshw.info/t/TransWorld%20Surf%20-%20Next%20Wave%20(2003-03-18)(Angel)(Atari)%5bGC%5d.7z",
+      "directory": false,
+      "size": 596603271
+    },
+    {
+      "name": "True Crime - New York City",
+      "raw_name": "True Crime - New York City (2005-11-15)(Luxoflux)(Exakt)(Activision)[GC].7z",
+      "date": "2005-11-15",
+      "url": "http://gcn.joshw.info/t/True%20Crime%20-%20New%20York%20City%20(2005-11-15)(Luxoflux)(Exakt)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 199970360
+    },
+    {
+      "name": "True Crime - Streets of LA",
+      "raw_name": "True Crime - Streets of LA (2003-11-03)(Luxoflux)(Exakt)(Activision)[GC].7z",
+      "date": "2003-11-03",
+      "url": "http://gcn.joshw.info/t/True%20Crime%20-%20Streets%20of%20LA%20(2003-11-03)(Luxoflux)(Exakt)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 220742633
+    },
+    {
+      "name": "Tube Slider",
+      "raw_name": "Tube Slider (2003-04-17)(NDcube)(NEC)[GC].7z",
+      "date": "2003-04-17",
+      "url": "http://gcn.joshw.info/t/Tube%20Slider%20(2003-04-17)(NDcube)(NEC)%5bGC%5d.7z",
+      "directory": false,
+      "size": 171359606
+    },
+    {
+      "name": "Turok - Evolution",
+      "raw_name": "Turok - Evolution (2002-08-31)(Acclaim Austin)(Acclaim)[GC].7z",
+      "date": "2002-08-31",
+      "url": "http://gcn.joshw.info/t/Turok%20-%20Evolution%20(2002-08-31)(Acclaim%20Austin)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 105520546
+    },
+    {
+      "name": "Ty the Tasmanian Tiger",
+      "raw_name": "Ty the Tasmanian Tiger (2002-09-10)(Krome)(Electronic Arts)[GC].7z",
+      "date": "2002-09-10",
+      "url": "http://gcn.joshw.info/t/Ty%20the%20Tasmanian%20Tiger%20(2002-09-10)(Krome)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 223024376
+    },
+    {
+      "name": "Ty the Tasmanian Tiger 2 - Bush Rescue",
+      "raw_name": "Ty the Tasmanian Tiger 2 - Bush Rescue (2004-10-12)(Krome)(Electronic Arts)[GC].7z",
+      "date": "2004-10-12",
+      "url": "http://gcn.joshw.info/t/Ty%20the%20Tasmanian%20Tiger%202%20-%20Bush%20Rescue%20(2004-10-12)(Krome)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 338437821
+    },
+    {
+      "name": "Ty the Tasmanian Tiger 3 - Night of the Quinkan",
+      "raw_name": "Ty the Tasmanian Tiger 3 - Night of the Quinkan (2005-10-12)(Krome)(Activision Value)[GC].7z",
+      "date": "2005-10-12",
+      "url": "http://gcn.joshw.info/t/Ty%20the%20Tasmanian%20Tiger%203%20-%20Night%20of%20the%20Quinkan%20(2005-10-12)(Krome)(Activision%20Value)%5bGC%5d.7z",
+      "directory": false,
+      "size": 441093899
+    },
+    {
+      "name": "UEFA Champions League 2004-2005",
+      "raw_name": "UEFA Champions League 2004-2005 (2005-02-04)(EA Canada)(Electronic Arts)[GC].7z",
+      "date": "2005-02-04",
+      "url": "http://gcn.joshw.info/u/UEFA%20Champions%20League%202004-2005%20(2005-02-04)(EA%20Canada)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 42971296
+    },
+    {
+      "name": "UFC - Throwdown [UFC 2 - Tapout Final Spec]",
+      "raw_name": "UFC - Throwdown [UFC 2 - Tapout Final Spec] (2002-07-29)(Anchor)(Crave)[GC].7z",
+      "date": "2002-07-29",
+      "url": "http://gcn.joshw.info/u/UFC%20-%20Throwdown%20%5bUFC%202%20-%20Tapout%20Final%20Spec%5d%20(2002-07-29)(Anchor)(Crave)%5bGC%5d.7z",
+      "directory": false,
+      "size": 75508605
+    },
+    {
+      "name": "Ultimate Spider-Man",
+      "raw_name": "Ultimate Spider-Man (2005-09-22)(Treyarch)(Activision)[GC].7z",
+      "date": "2005-09-22",
+      "url": "http://gcn.joshw.info/u/Ultimate%20Spider-Man%20(2005-09-22)(Treyarch)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 239912499
+    },
+    {
+      "name": "Universal Studios Theme Parks Adventure [Universal Studios Japan Adventure]",
+      "raw_name": "Universal Studios Theme Parks Adventure [Universal Studios Japan Adventure] (2001-12-07)(Zoom, Nai'a Digital Works)(Kemco)[GC].7z",
+      "date": "2001-12-07",
+      "url": "http://gcn.joshw.info/u/Universal%20Studios%20Theme%20Parks%20Adventure%20%5bUniversal%20Studios%20Japan%20Adventure%5d%20(2001-12-07)(Zoom,%20Nai'a%20Digital%20Works)(Kemco)%5bGC%5d.7z",
+      "directory": false,
+      "size": 141569009
+    },
+    {
+      "name": "Urbz, The - Sims in the City",
+      "raw_name": "Urbz, The - Sims in the City (2004-11-09)(Maxis)(Electronic Arts)[GC].7z",
+      "date": "2004-11-09",
+      "url": "http://gcn.joshw.info/u/Urbz,%20The%20-%20Sims%20in%20the%20City%20(2004-11-09)(Maxis)(Electronic%20Arts)%5bGC%5d.7z",
+      "directory": false,
+      "size": 132724582
+    },
+    {
+      "name": "V-Rally 3",
+      "raw_name": "V-Rally 3 (2003-06-25)(Eden)(Atari)[GC].7z",
+      "date": "2003-06-25",
+      "url": "http://gcn.joshw.info/v/V-Rally%203%20(2003-06-25)(Eden)(Atari)%5bGC%5d.7z",
+      "directory": false,
+      "size": 15142518
+    },
+    {
+      "name": "Viewtiful Joe",
+      "raw_name": "Viewtiful Joe (2003-06-26)(Capcom Production Studio 4)(Capcom)[GC].7z",
+      "date": "2003-06-26",
+      "url": "http://gcn.joshw.info/v/Viewtiful%20Joe%20(2003-06-26)(Capcom%20Production%20Studio%204)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 235611351
+    },
+    {
+      "name": "Viewtiful Joe - Red Hot Rumble [Viewtiful Joe - Battle Carnival]",
+      "raw_name": "Viewtiful Joe - Red Hot Rumble [Viewtiful Joe - Battle Carnival] (2005-09-29)(Clover)(Capcom)[GC].7z",
+      "date": "2005-09-29",
+      "url": "http://gcn.joshw.info/v/Viewtiful%20Joe%20-%20Red%20Hot%20Rumble%20%5bViewtiful%20Joe%20-%20Battle%20Carnival%5d%20(2005-09-29)(Clover)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 152050436
+    },
+    {
+      "name": "Viewtiful Joe 2 [Viewtiful Joe 2 - Black Film no Nazo]",
+      "raw_name": "Viewtiful Joe 2 [Viewtiful Joe 2 - Black Film no Nazo] (2004-11-18)(Clover)(Capcom)[GC].7z",
+      "date": "2004-11-18",
+      "url": "http://gcn.joshw.info/v/Viewtiful%20Joe%202%20%5bViewtiful%20Joe%202%20-%20Black%20Film%20no%20Nazo%5d%20(2004-11-18)(Clover)(Capcom)%5bGC%5d.7z",
+      "directory": false,
+      "size": 155805758
+    },
+    {
+      "name": "Virtua Quest [Virtua Fighter Cyber Generation - Judgment Six no Yabou]",
+      "raw_name": "Virtua Quest [Virtua Fighter Cyber Generation - Judgment Six no Yabou] (2004-08-26)(Tose)(Sega)[GC].7z",
+      "date": "2004-08-26",
+      "url": "http://gcn.joshw.info/v/Virtua%20Quest%20%5bVirtua%20Fighter%20Cyber%20Generation%20-%20Judgment%20Six%20no%20Yabou%5d%20(2004-08-26)(Tose)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 264636344
+    },
+    {
+      "name": "Virtua Striker 2002 [Virtua Striker 3 Ver.2002]",
+      "raw_name": "Virtua Striker 2002 [Virtua Striker 3 Ver.2002] (2002-02-14)(Amusement Vision)(Sega)[GC].7z",
+      "date": "2002-02-14",
+      "url": "http://gcn.joshw.info/v/Virtua%20Striker%202002%20%5bVirtua%20Striker%203%20Ver.2002%5d%20(2002-02-14)(Amusement%20Vision)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 258403724
+    },
+    {
+      "name": "WarioWorld",
+      "raw_name": "WarioWorld (2003-06-20)(Treasure)(Nintendo)[GC].7z",
+      "date": "2003-06-20",
+      "url": "http://gcn.joshw.info/w/WarioWorld%20(2003-06-20)(Treasure)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 128463487
+    },
+    {
+      "name": "Wave Race - Blue Storm",
+      "raw_name": "Wave Race - Blue Storm (2001-09-14)(NST)(Nintendo)[GC].7z",
+      "date": "2001-09-14",
+      "url": "http://gcn.joshw.info/w/Wave%20Race%20-%20Blue%20Storm%20(2001-09-14)(NST)(Nintendo)%5bGC%5d.7z",
+      "directory": false,
+      "size": 273782200
+    },
+    {
+      "name": "Whirl Tour",
+      "raw_name": "Whirl Tour (2002-11-12)(Papaya)(Crave)[GC].7z",
+      "date": "2002-11-12",
+      "url": "http://gcn.joshw.info/w/Whirl%20Tour%20(2002-11-12)(Papaya)(Crave)%5bGC%5d.7z",
+      "directory": false,
+      "size": 255599831
+    },
+    {
+      "name": "Winnie the Pooh's Rumbly Tumbly Adventure",
+      "raw_name": "Winnie the Pooh's Rumbly Tumbly Adventure (2005-02-15)(Phoenix Studio)(Ubisoft)[GC].7z",
+      "date": "2005-02-15",
+      "url": "http://gcn.joshw.info/w/Winnie%20the%20Pooh's%20Rumbly%20Tumbly%20Adventure%20(2005-02-15)(Phoenix%20Studio)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 5898283
+    },
+    {
+      "name": "World Racing",
+      "raw_name": "World Racing (2004-04-08)(Synetic)(TDK Mediactive)[GC].7z",
+      "date": "2004-04-08",
+      "url": "http://gcn.joshw.info/w/World%20Racing%20(2004-04-08)(Synetic)(TDK%20Mediactive)%5bGC%5d.7z",
+      "directory": false,
+      "size": 160212024
+    },
+    {
+      "name": "World Series of Poker",
+      "raw_name": "World Series of Poker (2005-09-14)(Left Field)(Activision)[GC].7z",
+      "date": "2005-09-14",
+      "url": "http://gcn.joshw.info/w/World%20Series%20of%20Poker%20(2005-09-14)(Left%20Field)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 7067727
+    },
+    {
+      "name": "Worms 3D",
+      "raw_name": "Worms 3D (2003-10-31)(Team 17)(Sega)[GC].7z",
+      "date": "2003-10-31",
+      "url": "http://gcn.joshw.info/w/Worms%203D%20(2003-10-31)(Team%2017)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 314742036
+    },
+    {
+      "name": "Worms Blast",
+      "raw_name": "Worms Blast (2002-09-13)(Team 17)(Ubisoft)[GC].7z",
+      "date": "2002-09-13",
+      "url": "http://gcn.joshw.info/w/Worms%20Blast%20(2002-09-13)(Team%2017)(Ubisoft)%5bGC%5d.7z",
+      "directory": false,
+      "size": 183615700
+    },
+    {
+      "name": "WTA Tour Tennis [WTA Tour Tennis - Pro Evolution] [Pro Tennis WTA Tour]",
+      "raw_name": "WTA Tour Tennis [WTA Tour Tennis - Pro Evolution] [Pro Tennis WTA Tour] (2002-08-29)(KCE Osaka)(Konami)[GC].7z",
+      "date": "2002-08-29",
+      "url": "http://gcn.joshw.info/w/WTA%20Tour%20Tennis%20%5bWTA%20Tour%20Tennis%20-%20Pro%20Evolution%5d%20%5bPro%20Tennis%20WTA%20Tour%5d%20(2002-08-29)(KCE%20Osaka)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 56755476
+    },
+    {
+      "name": "WWE Day of Reckoning",
+      "raw_name": "WWE Day of Reckoning (2004-08-30)(Yuke's)(THQ)[GC].7z",
+      "date": "2004-08-30",
+      "url": "http://gcn.joshw.info/w/WWE%20Day%20of%20Reckoning%20(2004-08-30)(Yuke's)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 207611905
+    },
+    {
+      "name": "WWE Day of Reckoning 2",
+      "raw_name": "WWE Day of Reckoning 2 (2005-08-29)(Yuke's)(THQ)[GC].7z",
+      "date": "2005-08-29",
+      "url": "http://gcn.joshw.info/w/WWE%20Day%20of%20Reckoning%202%20(2005-08-29)(Yuke's)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 230154800
+    },
+    {
+      "name": "WWE WrestleMania X8",
+      "raw_name": "WWE WrestleMania X8 (2002-06-09)(Yuke's)(THQ)[GC].7z",
+      "date": "2002-06-09",
+      "url": "http://gcn.joshw.info/w/WWE%20WrestleMania%20X8%20(2002-06-09)(Yuke's)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 242215695
+    },
+    {
+      "name": "WWE WrestleMania XIX",
+      "raw_name": "WWE WrestleMania XIX (2003-09-08)(Yuke's)(THQ)[GC].7z",
+      "date": "2003-09-08",
+      "url": "http://gcn.joshw.info/w/WWE%20WrestleMania%20XIX%20(2003-09-08)(Yuke's)(THQ)%5bGC%5d.7z",
+      "directory": false,
+      "size": 201858291
+    },
+    {
+      "name": "X-Men - Next Dimension",
+      "raw_name": "X-Men - Next Dimension (2002-10-15)(Paradox)(Exakt)(Activision)[GC].7z",
+      "date": "2002-10-15",
+      "url": "http://gcn.joshw.info/x/X-Men%20-%20Next%20Dimension%20(2002-10-15)(Paradox)(Exakt)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 35798073
+    },
+    {
+      "name": "X-Men Legends II - Rise of Apocalypse",
+      "raw_name": "X-Men Legends II - Rise of Apocalypse (2005-09-20)(Raven)(Vicarious Visions)(Activision)[GC].7z",
+      "date": "2005-09-20",
+      "url": "http://gcn.joshw.info/x/X-Men%20Legends%20II%20-%20Rise%20of%20Apocalypse%20(2005-09-20)(Raven)(Vicarious%20Visions)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 307627134
+    },
+    {
+      "name": "X2 - Wolverine's Revenge [X-Men 2 - Wolverine's Revenge]",
+      "raw_name": "X2 - Wolverine's Revenge [X-Men 2 - Wolverine's Revenge] (2003-04-14)(GenePool)(Activision)[GC].7z",
+      "date": "2003-04-14",
+      "url": "http://gcn.joshw.info/x/X2%20-%20Wolverine's%20Revenge%20%5bX-Men%202%20-%20Wolverine's%20Revenge%5d%20(2003-04-14)(GenePool)(Activision)%5bGC%5d.7z",
+      "directory": false,
+      "size": 201929595
+    },
+    {
+      "name": "XGIII - Extreme G Racing",
+      "raw_name": "XGIII - Extreme G Racing (2001-11-27)(Acclaim Cheltenham)(Acclaim)[GC].7z",
+      "date": "2001-11-27",
+      "url": "http://gcn.joshw.info/x/XGIII%20-%20Extreme%20G%20Racing%20(2001-11-27)(Acclaim%20Cheltenham)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 115653806
+    },
+    {
+      "name": "XGRA - Extreme-G Racing Association",
+      "raw_name": "XGRA - Extreme-G Racing Association (2003-11-24)(Acclaim Cheltenham)(Acclaim)[GC].7z",
+      "date": "2003-11-24",
+      "url": "http://gcn.joshw.info/x/XGRA%20-%20Extreme-G%20Racing%20Association%20(2003-11-24)(Acclaim%20Cheltenham)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 256246465
+    },
+    {
+      "name": "XIII",
+      "raw_name": "XIII (2003-11-25)(Ubisoft Paris)(Ubisoft)[GC][unsorted].7z",
+      "date": "2003-11-25",
+      "url": "http://gcn.joshw.info/x/XIII%20(2003-11-25)(Ubisoft%20Paris)(Ubisoft)%5bGC%5d%5bunsorted%5d.7z",
+      "directory": false,
+      "size": 680745270
+    },
+    {
+      "name": "Yu-Gi-Oh! The Falsebound Kingdom [Yu-Gi-Oh! - Kyokou ni Tozasareta Oukoku]",
+      "raw_name": "Yu-Gi-Oh! The Falsebound Kingdom [Yu-Gi-Oh! - Kyokou ni Tozasareta Oukoku] (2002-12-05)(KCE Japan)(Konami)[GC].7z",
+      "date": "2002-12-05",
+      "url": "http://gcn.joshw.info/y/Yu-Gi-Oh!%20The%20Falsebound%20Kingdom%20%5bYu-Gi-Oh!%20-%20Kyokou%20ni%20Tozasareta%20Oukoku%5d%20(2002-12-05)(KCE%20Japan)(Konami)%5bGC%5d.7z",
+      "directory": false,
+      "size": 155157542
+    },
+    {
+      "name": "Zapper - One Wicked Cricket!",
+      "raw_name": "Zapper - One Wicked Cricket! (2002-11-16)(Blitz)(Infogrames)[GC].7z",
+      "date": "2002-11-16",
+      "url": "http://gcn.joshw.info/z/Zapper%20-%20One%20Wicked%20Cricket!%20(2002-11-16)(Blitz)(Infogrames)%5bGC%5d.7z",
+      "directory": false,
+      "size": 365712777
+    },
+    {
+      "name": "Zatch Bell! - Mamodo Fury [Konjiki no Gashbell!! - Go! Go! Mamono Fight!!]",
+      "raw_name": "Zatch Bell! - Mamodo Fury [Konjiki no Gashbell!! - Go! Go! Mamono Fight!!] (2005-12-15)(Mechanic Arms)(Bandai)[GC].7z",
+      "date": "2005-12-15",
+      "url": "http://gcn.joshw.info/z/Zatch%20Bell!%20-%20Mamodo%20Fury%20%5bKonjiki%20no%20Gashbell!!%20-%20Go!%20Go!%20Mamono%20Fight!!%5d%20(2005-12-15)(Mechanic%20Arms)(Bandai)%5bGC%5d.7z",
+      "directory": false,
+      "size": 51254978
+    },
+    {
+      "name": "Zoids - Full Metal Crash",
+      "raw_name": "Zoids - Full Metal Crash (2005-10-27)(Eighting)(Tomy)[GC].7z",
+      "date": "2005-10-27",
+      "url": "http://gcn.joshw.info/z/Zoids%20-%20Full%20Metal%20Crash%20(2005-10-27)(Eighting)(Tomy)%5bGC%5d.7z",
+      "directory": false,
+      "size": 79416464
+    },
+    {
+      "name": "ZooCube",
+      "raw_name": "ZooCube (2002-05-30)(PuzzleKings)(Acclaim)[GC].7z",
+      "date": "2002-05-30",
+      "url": "http://gcn.joshw.info/z/ZooCube%20(2002-05-30)(PuzzleKings)(Acclaim)%5bGC%5d.7z",
+      "directory": false,
+      "size": 58378264
+    }
+  ],
+  "dir_sizes": {},
+  "scanned_dirs": [
+    "http://gcn.joshw.info/t/",
+    "http://gcn.joshw.info/x/",
+    "http://gcn.joshw.info/p/",
+    "http://gcn.joshw.info/0-9/",
+    "http://gcn.joshw.info/y/",
+    "http://gcn.joshw.info/b/",
+    "http://gcn.joshw.info/w/",
+    "http://gcn.joshw.info/z/",
+    "http://gcn.joshw.info/e/",
+    "http://gcn.joshw.info/a/",
+    "http://gcn.joshw.info/c/",
+    "http://gcn.joshw.info/u/",
+    "http://gcn.joshw.info/r/",
+    "http://gcn.joshw.info/s/",
+    "http://gcn.joshw.info/o/",
+    "http://gcn.joshw.info/h/",
+    "http://gcn.joshw.info/d/",
+    "http://gcn.joshw.info/g/",
+    "http://gcn.joshw.info/l/",
+    "http://gcn.joshw.info/j/",
+    "http://gcn.joshw.info/k/",
+    "http://gcn.joshw.info/m/",
+    "http://gcn.joshw.info/n/",
+    "http://gcn.joshw.info/f/",
+    "http://gcn.joshw.info/i/",
+    "http://gcn.joshw.info/",
+    "http://gcn.joshw.info/v/"
+  ]
+}

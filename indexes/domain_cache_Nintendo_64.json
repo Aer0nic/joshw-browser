@@ -1,0 +1,2251 @@
+{
+  "entries": [
+    {
+      "name": "0-9",
+      "raw_name": "0-9",
+      "date": "",
+      "url": "http://usf.joshw.info/0-9/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "a",
+      "raw_name": "a",
+      "date": "",
+      "url": "http://usf.joshw.info/a/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "b",
+      "raw_name": "b",
+      "date": "",
+      "url": "http://usf.joshw.info/b/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "c",
+      "raw_name": "c",
+      "date": "",
+      "url": "http://usf.joshw.info/c/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "d",
+      "raw_name": "d",
+      "date": "",
+      "url": "http://usf.joshw.info/d/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "e",
+      "raw_name": "e",
+      "date": "",
+      "url": "http://usf.joshw.info/e/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "f",
+      "raw_name": "f",
+      "date": "",
+      "url": "http://usf.joshw.info/f/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "g",
+      "raw_name": "g",
+      "date": "",
+      "url": "http://usf.joshw.info/g/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "h",
+      "raw_name": "h",
+      "date": "",
+      "url": "http://usf.joshw.info/h/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "i",
+      "raw_name": "i",
+      "date": "",
+      "url": "http://usf.joshw.info/i/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "j",
+      "raw_name": "j",
+      "date": "",
+      "url": "http://usf.joshw.info/j/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "k",
+      "raw_name": "k",
+      "date": "",
+      "url": "http://usf.joshw.info/k/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "l",
+      "raw_name": "l",
+      "date": "",
+      "url": "http://usf.joshw.info/l/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "m",
+      "raw_name": "m",
+      "date": "",
+      "url": "http://usf.joshw.info/m/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "n",
+      "raw_name": "n",
+      "date": "",
+      "url": "http://usf.joshw.info/n/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "o",
+      "raw_name": "o",
+      "date": "",
+      "url": "http://usf.joshw.info/o/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "p",
+      "raw_name": "p",
+      "date": "",
+      "url": "http://usf.joshw.info/p/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "q",
+      "raw_name": "q",
+      "date": "",
+      "url": "http://usf.joshw.info/q/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "r",
+      "raw_name": "r",
+      "date": "",
+      "url": "http://usf.joshw.info/r/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "s",
+      "raw_name": "s",
+      "date": "",
+      "url": "http://usf.joshw.info/s/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "t",
+      "raw_name": "t",
+      "date": "",
+      "url": "http://usf.joshw.info/t/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "u",
+      "raw_name": "u",
+      "date": "",
+      "url": "http://usf.joshw.info/u/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "v",
+      "raw_name": "v",
+      "date": "",
+      "url": "http://usf.joshw.info/v/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "w",
+      "raw_name": "w",
+      "date": "",
+      "url": "http://usf.joshw.info/w/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "y",
+      "raw_name": "y",
+      "date": "",
+      "url": "http://usf.joshw.info/y/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "z",
+      "raw_name": "z",
+      "date": "",
+      "url": "http://usf.joshw.info/z/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "zzz_old",
+      "raw_name": "zzz_old",
+      "date": "",
+      "url": "http://usf.joshw.info/zzz_old/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "robots.txt",
+      "raw_name": "robots.txt",
+      "date": "",
+      "url": "http://usf.joshw.info/robots.txt",
+      "directory": false,
+      "size": 26
+    },
+    {
+      "name": "007 - The World is not Enough [ut]",
+      "raw_name": "007 - The World is not Enough [ut] (2000-11-01)(Eurocom)(Electronic Arts)[N64].7z",
+      "date": "2000-11-01",
+      "url": "http://usf.joshw.info/0-9/007%20-%20The%20World%20is%20not%20Enough%20%5but%5d%20(2000-11-01)(Eurocom)(Electronic%20Arts)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2206955
+    },
+    {
+      "name": "1080° Snowboarding",
+      "raw_name": "1080° Snowboarding (1998-02-28)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1998-02-28",
+      "url": "http://usf.joshw.info/0-9/1080%c2%b0%20Snowboarding%20(1998-02-28)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1785303
+    },
+    {
+      "name": "64 de Hakken! Tamagotchi Minna de Tamagotchi World [ut]",
+      "raw_name": "64 de Hakken! Tamagotchi Minna de Tamagotchi World [ut] (1997-12-19)(A.I.)(Bandai)[N64].7z",
+      "date": "1997-12-19",
+      "url": "http://usf.joshw.info/0-9/64%20de%20Hakken!%20Tamagotchi%20Minna%20de%20Tamagotchi%20World%20%5but%5d%20(1997-12-19)(A.I.)(Bandai)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1321076
+    },
+    {
+      "name": "64 Oozumou 2 [ut]",
+      "raw_name": "64 Oozumou 2 [ut] (1999-03-19)(Bottom Up)(Bottom Up)[N64].7z",
+      "date": "1999-03-19",
+      "url": "http://usf.joshw.info/0-9/64%20Oozumou%202%20%5but%5d%20(1999-03-19)(Bottom%20Up)(Bottom%20Up)%5bN64%5d.7z",
+      "directory": false,
+      "size": 750721
+    },
+    {
+      "name": "64 Oozumou [ut]",
+      "raw_name": "64 Oozumou [ut] (1997-11-28)(Bottom Up)(Bottom Up)[N64].7z",
+      "date": "1997-11-28",
+      "url": "http://usf.joshw.info/0-9/64%20Oozumou%20%5but%5d%20(1997-11-28)(Bottom%20Up)(Bottom%20Up)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2265600
+    },
+    {
+      "name": "64 Trump Collection - Alice no Wakuwaku Trump World [ut]",
+      "raw_name": "64 Trump Collection - Alice no Wakuwaku Trump World [ut] (1998-08-07)(Bottom Up)[N64].7z",
+      "date": "1998-08-07",
+      "url": "http://usf.joshw.info/0-9/64%20Trump%20Collection%20-%20Alice%20no%20Wakuwaku%20Trump%20World%20%5but%5d%20(1998-08-07)(Bottom%20Up)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1621489
+    },
+    {
+      "name": "A Bug's Life [ut][rr]",
+      "raw_name": "A Bug's Life [ut][rr] (1999-04-30)(Traveller's Tales)(Activision)[N64].7z",
+      "date": "1999-04-30",
+      "url": "http://usf.joshw.info/a/A%20Bug's%20Life%20%5but%5d%5brr%5d%20(1999-04-30)(Traveller's%20Tales)(Activision)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1844101
+    },
+    {
+      "name": "Aerofighters Assault [ut]",
+      "raw_name": "Aerofighters Assault [ut] (1997-11-21)(Paradigm Entertainment)(Video System)[N64].7z",
+      "date": "1997-11-21",
+      "url": "http://usf.joshw.info/a/Aerofighters%20Assault%20%5but%5d%20(1997-11-21)(Paradigm%20Entertainment)(Video%20System)%5bN64%5d.7z",
+      "directory": false,
+      "size": 439781
+    },
+    {
+      "name": "AeroGauge [ut]",
+      "raw_name": "AeroGauge [ut] (1997-12-19)(Locomotive)(ASCII)[N64].7z",
+      "date": "1997-12-19",
+      "url": "http://usf.joshw.info/a/AeroGauge%20%5but%5d%20(1997-12-19)(Locomotive)(ASCII)%5bN64%5d.7z",
+      "directory": false,
+      "size": 825693
+    },
+    {
+      "name": "Aidyn Chronicles - The First Mage [ut]",
+      "raw_name": "Aidyn Chronicles - The First Mage [ut] (2001-03-14)(H2O)(THQ)[N64].7z",
+      "date": "2001-03-14",
+      "url": "http://usf.joshw.info/a/Aidyn%20Chronicles%20-%20The%20First%20Mage%20%5but%5d%20(2001-03-14)(H2O)(THQ)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2651000
+    },
+    {
+      "name": "Airboarder 64 [ut]",
+      "raw_name": "Airboarder 64 [ut] (1998-03-27)(Human Entertainment)(Human Entertainment)[N64].7z",
+      "date": "1998-03-27",
+      "url": "http://usf.joshw.info/a/Airboarder%2064%20%5but%5d%20(1998-03-27)(Human%20Entertainment)(Human%20Entertainment)%5bN64%5d.7z",
+      "directory": false,
+      "size": 383209
+    },
+    {
+      "name": "All Star Tennis 99 [ut]",
+      "raw_name": "All Star Tennis 99 [ut] (1999-08-31)(Smart Dog)(Ubisoft)[N64].7z",
+      "date": "1999-08-31",
+      "url": "http://usf.joshw.info/a/All%20Star%20Tennis%2099%20%5but%5d%20(1999-08-31)(Smart%20Dog)(Ubisoft)%5bN64%5d.7z",
+      "directory": false,
+      "size": 168328
+    },
+    {
+      "name": "All-Star Baseball 2000 [ut]",
+      "raw_name": "All-Star Baseball 2000 [ut] (1999-03-31)(Iguana Entertainment)(Acclaim Entertainment)[N64].7z",
+      "date": "1999-03-31",
+      "url": "http://usf.joshw.info/a/All-Star%20Baseball%202000%20%5but%5d%20(1999-03-31)(Iguana%20Entertainment)(Acclaim%20Entertainment)%5bN64%5d.7z",
+      "directory": false,
+      "size": 409966
+    },
+    {
+      "name": "All-Star Baseball 2001 [ut]",
+      "raw_name": "All-Star Baseball 2001 [ut] (2000-02-29)(High Voltage Software)(Acclaim Entertainment)[N64].7z",
+      "date": "2000-02-29",
+      "url": "http://usf.joshw.info/a/All-Star%20Baseball%202001%20%5but%5d%20(2000-02-29)(High%20Voltage%20Software)(Acclaim%20Entertainment)%5bN64%5d.7z",
+      "directory": false,
+      "size": 611864
+    },
+    {
+      "name": "All-Star Baseball 99 [ut]",
+      "raw_name": "All-Star Baseball 99 [ut] (1998-05-27)(Iguana Entertainment)(Acclaim Entertainment)[N64].7z",
+      "date": "1998-05-27",
+      "url": "http://usf.joshw.info/a/All-Star%20Baseball%2099%20%5but%5d%20(1998-05-27)(Iguana%20Entertainment)(Acclaim%20Entertainment)%5bN64%5d.7z",
+      "directory": false,
+      "size": 493974
+    },
+    {
+      "name": "Armorines - Project S.W.A.R.M. [ut]",
+      "raw_name": "Armorines - Project S.W.A.R.M. [ut] (1999-12-09)(Acclaim Software)(Acclaim Entertainment)[N64].7z",
+      "date": "1999-12-09",
+      "url": "http://usf.joshw.info/a/Armorines%20-%20Project%20S.W.A.R.M.%20%5but%5d%20(1999-12-09)(Acclaim%20Software)(Acclaim%20Entertainment)%5bN64%5d.7z",
+      "directory": false,
+      "size": 994906
+    },
+    {
+      "name": "Army Men - Air Combat [ut]",
+      "raw_name": "Army Men - Air Combat [ut] (2000-07-18)(3DO)(3DO)[N64].7z",
+      "date": "2000-07-18",
+      "url": "http://usf.joshw.info/a/Army%20Men%20-%20Air%20Combat%20%5but%5d%20(2000-07-18)(3DO)(3DO)%5bN64%5d.7z",
+      "directory": false,
+      "size": 571899
+    },
+    {
+      "name": "Army Men - Sarge's Heroes 2 [ut]",
+      "raw_name": "Army Men - Sarge's Heroes 2 [ut] (2000-09-26)(3DO)[N64].7z",
+      "date": "2000-09-26",
+      "url": "http://usf.joshw.info/a/Army%20Men%20-%20Sarge's%20Heroes%202%20%5but%5d%20(2000-09-26)(3DO)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1351673
+    },
+    {
+      "name": "Army Men - Sarge's Heroes [ut]",
+      "raw_name": "Army Men - Sarge's Heroes [ut] (1999-09-29)(3DO)[N64].7z",
+      "date": "1999-09-29",
+      "url": "http://usf.joshw.info/a/Army%20Men%20-%20Sarge's%20Heroes%20%5but%5d%20(1999-09-29)(3DO)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1285948
+    },
+    {
+      "name": "Asteroids Hyper 64 [ut]",
+      "raw_name": "Asteroids Hyper 64 [ut] (1999-12-14)(Syrox Developments)(Crave Entertainment)[N64].7z",
+      "date": "1999-12-14",
+      "url": "http://usf.joshw.info/a/Asteroids%20Hyper%2064%20%5but%5d%20(1999-12-14)(Syrox%20Developments)(Crave%20Entertainment)%5bN64%5d.7z",
+      "directory": false,
+      "size": 114367
+    },
+    {
+      "name": "Automobili Lamborghini [Super Speed Race 64] [ut]",
+      "raw_name": "Automobili Lamborghini [Super Speed Race 64] [ut] (1997-11-30)(Titus)[N64].7z",
+      "date": "1997-11-30",
+      "url": "http://usf.joshw.info/a/Automobili%20Lamborghini%20%5bSuper%20Speed%20Race%2064%5d%20%5but%5d%20(1997-11-30)(Titus)%5bN64%5d.7z",
+      "directory": false,
+      "size": 490046
+    },
+    {
+      "name": "Bakuretsu Muteki Bangai-O",
+      "raw_name": "Bakuretsu Muteki Bangai-O (1999-09-03)(Treasure)(ESP)[N64].7z",
+      "date": "1999-09-03",
+      "url": "http://usf.joshw.info/b/Bakuretsu%20Muteki%20Bangai-O%20(1999-09-03)(Treasure)(ESP)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1631258
+    },
+    {
+      "name": "Bakushō Jinsei 64: Mezase! Resort Ō [ut]",
+      "raw_name": "Bakushō Jinsei 64: Mezase! Resort Ō [ut] (1998-12-24)(Taito)(Taito)[N64].7z",
+      "date": "1998-12-24",
+      "url": "http://usf.joshw.info/b/Bakush%c5%8d%20Jinsei%2064:%20Mezase!%20Resort%20%c5%8c%20%5but%5d%20(1998-12-24)(Taito)(Taito)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2044757
+    },
+    {
+      "name": "Banjo-Kazooie [Banjo to Kazooie no Daibouken]",
+      "raw_name": "Banjo-Kazooie [Banjo to Kazooie no Daibouken] (1998-05-31)(Rare)(Nintendo)[N64].7z",
+      "date": "1998-05-31",
+      "url": "http://usf.joshw.info/b/Banjo-Kazooie%20%5bBanjo%20to%20Kazooie%20no%20Daibouken%5d%20(1998-05-31)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 850940
+    },
+    {
+      "name": "Banjo-Tooie [Banjo to Kazooie no Daibouken 2]",
+      "raw_name": "Banjo-Tooie [Banjo to Kazooie no Daibouken 2] (2000-11-19)(Rare)(Nintendo)[N64].7z",
+      "date": "2000-11-19",
+      "url": "http://usf.joshw.info/b/Banjo-Tooie%20%5bBanjo%20to%20Kazooie%20no%20Daibouken%202%5d%20(2000-11-19)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3896740
+    },
+    {
+      "name": "Banjo-Tooie [Banjo to Kazooie no Daibouken 2] [rr]",
+      "raw_name": "Banjo-Tooie [Banjo to Kazooie no Daibouken 2] [rr] (2000-11-19)(Rare)(Nintendo)[N64].7z",
+      "date": "2000-11-19",
+      "url": "http://usf.joshw.info/b/Banjo-Tooie%20%5bBanjo%20to%20Kazooie%20no%20Daibouken%202%5d%20%5brr%5d%20(2000-11-19)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1098467
+    },
+    {
+      "name": "Bass Hunter 64 (In-Fisherman Bass Hunter 64) [ut]",
+      "raw_name": "Bass Hunter 64 (In-Fisherman Bass Hunter 64) [ut] (1999-10-22)(GearHead Entertainment)(Take 2)[N64].7z",
+      "date": "1999-10-22",
+      "url": "http://usf.joshw.info/b/Bass%20Hunter%2064%20(In-Fisherman%20Bass%20Hunter%2064)%20%5but%5d%20(1999-10-22)(GearHead%20Entertainment)(Take%202)%5bN64%5d.7z",
+      "directory": false,
+      "size": 485952
+    },
+    {
+      "name": "Bass Masters 2000 [ut]",
+      "raw_name": "Bass Masters 2000 [ut] (1999-12-16)(Mass Media)(THQ)[N64].7z",
+      "date": "1999-12-16",
+      "url": "http://usf.joshw.info/b/Bass%20Masters%202000%20%5but%5d%20(1999-12-16)(Mass%20Media)(THQ)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1151576
+    },
+    {
+      "name": "Bass Rush - ECOGEAR PowerWorm Championship [ut]",
+      "raw_name": "Bass Rush - ECOGEAR PowerWorm Championship [ut] (2000-07-28)(Visco Corporation)(Visco Corporation)[N64].7z",
+      "date": "2000-07-28",
+      "url": "http://usf.joshw.info/b/Bass%20Rush%20-%20ECOGEAR%20PowerWorm%20Championship%20%5but%5d%20(2000-07-28)(Visco%20Corporation)(Visco%20Corporation)%5bN64%5d.7z",
+      "directory": false,
+      "size": 410780
+    },
+    {
+      "name": "Batman Beyond - Return of the Joker [ut]",
+      "raw_name": "Batman Beyond - Return of the Joker [ut] (2000-10-31)(Kemco)(Ubisoft)[N64].7z",
+      "date": "2000-10-31",
+      "url": "http://usf.joshw.info/b/Batman%20Beyond%20-%20Return%20of%20the%20Joker%20%5but%5d%20(2000-10-31)(Kemco)(Ubisoft)%5bN64%5d.7z",
+      "directory": false,
+      "size": 551067
+    },
+    {
+      "name": "BattleTanx",
+      "raw_name": "BattleTanx (1998-12-31)(Studio 3DO)(3DO)[N64].7z",
+      "date": "1998-12-31",
+      "url": "http://usf.joshw.info/b/BattleTanx%20(1998-12-31)(Studio%203DO)(3DO)%5bN64%5d.7z",
+      "directory": false,
+      "size": 501757
+    },
+    {
+      "name": "BattleTanx - Global Assault",
+      "raw_name": "BattleTanx - Global Assault (1999-08-31)(Studio 3DO)(3DO)[N64].7z",
+      "date": "1999-08-31",
+      "url": "http://usf.joshw.info/b/BattleTanx%20-%20Global%20Assault%20(1999-08-31)(Studio%203DO)(3DO)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1221899
+    },
+    {
+      "name": "Battlezone - Rise of the Black Dogs",
+      "raw_name": "Battlezone - Rise of the Black Dogs (2000-03-01)(Climax Group)(Crave Entertainment)[N64].7z",
+      "date": "2000-03-01",
+      "url": "http://usf.joshw.info/b/Battlezone%20-%20Rise%20of%20the%20Black%20Dogs%20(2000-03-01)(Climax%20Group)(Crave%20Entertainment)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1151015
+    },
+    {
+      "name": "Beetle Adventure Racing!",
+      "raw_name": "Beetle Adventure Racing! (1999-02-28)(Paradigm)(Electronic Arts)[N64].7z",
+      "date": "1999-02-28",
+      "url": "http://usf.joshw.info/b/Beetle%20Adventure%20Racing!%20(1999-02-28)(Paradigm)(Electronic%20Arts)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1790674
+    },
+    {
+      "name": "Big Mountain 2000 [ut]",
+      "raw_name": "Big Mountain 2000 [ut] (1998-12-26)(Imagineer)(SouthPeak Interactive)[N64].7z",
+      "date": "1998-12-26",
+      "url": "http://usf.joshw.info/b/Big%20Mountain%202000%20%5but%5d%20(1998-12-26)(Imagineer)(SouthPeak%20Interactive)%5bN64%5d.7z",
+      "directory": false,
+      "size": 862696
+    },
+    {
+      "name": "Bio FREAKS [ut]",
+      "raw_name": "Bio FREAKS [ut] (1998-05-19)(Saffire)(Midway)[N64].7z",
+      "date": "1998-05-19",
+      "url": "http://usf.joshw.info/b/Bio%20FREAKS%20%5but%5d%20(1998-05-19)(Saffire)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2764212
+    },
+    {
+      "name": "Blast Corps [Blastdozer]",
+      "raw_name": "Blast Corps [Blastdozer] (1997-02-28)(Rare)(Nintendo)[N64].7z",
+      "date": "1997-02-28",
+      "url": "http://usf.joshw.info/b/Blast%20Corps%20%5bBlastdozer%5d%20(1997-02-28)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 450006
+    },
+    {
+      "name": "Blues Brothers 2000 [ut]",
+      "raw_name": "Blues Brothers 2000 [ut] (2000-10-13)(Player 1)(Titus)[N64].7z",
+      "date": "2000-10-13",
+      "url": "http://usf.joshw.info/b/Blues%20Brothers%202000%20%5but%5d%20(2000-10-13)(Player%201)(Titus)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2734670
+    },
+    {
+      "name": "Body Harvest [ut]",
+      "raw_name": "Body Harvest [ut] (1998-09-30)(DMA Design)(Midway)[N64].7z",
+      "date": "1998-09-30",
+      "url": "http://usf.joshw.info/b/Body%20Harvest%20%5but%5d%20(1998-09-30)(DMA%20Design)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 925211
+    },
+    {
+      "name": "Bomberman 64",
+      "raw_name": "Bomberman 64 (2001-12-20)(Racjin)(Hudson)[N64].7z",
+      "date": "2001-12-20",
+      "url": "http://usf.joshw.info/b/Bomberman%2064%20(2001-12-20)(Racjin)(Hudson)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1716066
+    },
+    {
+      "name": "Bomberman 64 - The Second Attack [Baku Bomberman 2]",
+      "raw_name": "Bomberman 64 - The Second Attack [Baku Bomberman 2] (1999-12-03)(Hudson)[N64].7z",
+      "date": "1999-12-03",
+      "url": "http://usf.joshw.info/b/Bomberman%2064%20-%20The%20Second%20Attack%20%5bBaku%20Bomberman%202%5d%20(1999-12-03)(Hudson)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1165427
+    },
+    {
+      "name": "Bomberman 64 [Baku Bomberman]",
+      "raw_name": "Bomberman 64 [Baku Bomberman] (1997-09-26)(Hudson)[N64].7z",
+      "date": "1997-09-26",
+      "url": "http://usf.joshw.info/b/Bomberman%2064%20%5bBaku%20Bomberman%5d%20(1997-09-26)(Hudson)%5bN64%5d.7z",
+      "directory": false,
+      "size": 828785
+    },
+    {
+      "name": "Bomberman Hero [Bomberman Hero - Milian Oujo wo Sukue!]",
+      "raw_name": "Bomberman Hero [Bomberman Hero - Milian Oujo wo Sukue!] (1998-04-30)(A.I.)(Hudson)[N64].7z",
+      "date": "1998-04-30",
+      "url": "http://usf.joshw.info/b/Bomberman%20Hero%20%5bBomberman%20Hero%20-%20Milian%20Oujo%20wo%20Sukue!%5d%20(1998-04-30)(A.I.)(Hudson)%5bN64%5d.7z",
+      "directory": false,
+      "size": 818624
+    },
+    {
+      "name": "Buck Bumble",
+      "raw_name": "Buck Bumble (1998-09-30)(Argonaut)(Ubisoft)[N64].7z",
+      "date": "1998-09-30",
+      "url": "http://usf.joshw.info/b/Buck%20Bumble%20(1998-09-30)(Argonaut)(Ubisoft)%5bN64%5d.7z",
+      "directory": false,
+      "size": 872844
+    },
+    {
+      "name": "Bust-A-Move '99 [Puzzle Bobble 64] [ut]",
+      "raw_name": "Bust-A-Move '99 [Puzzle Bobble 64] [ut] (1998-11)(Taito)(Distinctive Development)(Taito)[N64].7z",
+      "date": "1998-11",
+      "url": "http://usf.joshw.info/b/Bust-A-Move%20'99%20%5bPuzzle%20Bobble%2064%5d%20%5but%5d%20(1998-11)(Taito)(Distinctive%20Development)(Taito)%5bN64%5d.7z",
+      "directory": false,
+      "size": 710013
+    },
+    {
+      "name": "Bust-A-Move 2 - Arcade Edition [ut]",
+      "raw_name": "Bust-A-Move 2 - Arcade Edition [ut] (1999-12-22)(Probe Design)(Acclaim Entertainment)[N64].7z",
+      "date": "1999-12-22",
+      "url": "http://usf.joshw.info/b/Bust-A-Move%202%20-%20Arcade%20Edition%20%5but%5d%20(1999-12-22)(Probe%20Design)(Acclaim%20Entertainment)%5bN64%5d.7z",
+      "directory": false,
+      "size": 830054
+    },
+    {
+      "name": "California Speed [ut]",
+      "raw_name": "California Speed [ut] (1999-12-22)(Midway)(Midway)[N64].7z",
+      "date": "1999-12-22",
+      "url": "http://usf.joshw.info/c/California%20Speed%20%5but%5d%20(1999-12-22)(Midway)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1677755
+    },
+    {
+      "name": "Carmageddon 64 [ut]",
+      "raw_name": "Carmageddon 64 [ut] (1999-10-22)(Software Creations)(Titus)[N64].7z",
+      "date": "1999-10-22",
+      "url": "http://usf.joshw.info/c/Carmageddon%2064%20%5but%5d%20(1999-10-22)(Software%20Creations)(Titus)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2361623
+    },
+    {
+      "name": "Carnivalé - Cenzo's Adventure [ut] (prototype)",
+      "raw_name": "Carnivalé - Cenzo's Adventure [ut] (prototype)(2000-07-21)(Vatical)(Terra Glyph)[N64].7z",
+      "date": "2000-07-21",
+      "url": "http://usf.joshw.info/c/Carnival%c3%a9%20-%20Cenzo's%20Adventure%20%5but%5d%20(prototype)(2000-07-21)(Vatical)(Terra%20Glyph)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2675769
+    },
+    {
+      "name": "Castlevania - Legacy of Darkness [Akumajou Dracula Mokushiroku Gaiden - Legend of Cornell]",
+      "raw_name": "Castlevania - Legacy of Darkness [Akumajou Dracula Mokushiroku Gaiden - Legend of Cornell] (1999-11-30)(KCE Kobe)(Konami)[N64].7z",
+      "date": "1999-11-30",
+      "url": "http://usf.joshw.info/c/Castlevania%20-%20Legacy%20of%20Darkness%20%5bAkumajou%20Dracula%20Mokushiroku%20Gaiden%20-%20Legend%20of%20Cornell%5d%20(1999-11-30)(KCE%20Kobe)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3660761
+    },
+    {
+      "name": "Castlevania [Akumajou Dracula Mokushiroku]",
+      "raw_name": "Castlevania [Akumajou Dracula Mokushiroku] (1998-12-31)(KCE Kobe)(Konami)[N64].7z",
+      "date": "1998-12-31",
+      "url": "http://usf.joshw.info/c/Castlevania%20%5bAkumajou%20Dracula%20Mokushiroku%5d%20(1998-12-31)(KCE%20Kobe)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2423307
+    },
+    {
+      "name": "Centre Court Tennis [Let's Smash]",
+      "raw_name": "Centre Court Tennis [Let's Smash] (1998-10-09)(Hudson)[N64].7z",
+      "date": "1998-10-09",
+      "url": "http://usf.joshw.info/c/Centre%20Court%20Tennis%20%5bLet's%20Smash%5d%20(1998-10-09)(Hudson)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1111078
+    },
+    {
+      "name": "Chameleon Twist 2",
+      "raw_name": "Chameleon Twist 2 (1998-12-25)(Japan System Supply)[N64].7z",
+      "date": "1998-12-25",
+      "url": "http://usf.joshw.info/c/Chameleon%20Twist%202%20(1998-12-25)(Japan%20System%20Supply)%5bN64%5d.7z",
+      "directory": false,
+      "size": 289416
+    },
+    {
+      "name": "Chameleon Twist [ut]",
+      "raw_name": "Chameleon Twist [ut] (1998-12-06)(Japan System Supply)(SunSoft)[N64].7z",
+      "date": "1998-12-06",
+      "url": "http://usf.joshw.info/c/Chameleon%20Twist%20%5but%5d%20(1998-12-06)(Japan%20System%20Supply)(SunSoft)%5bN64%5d.7z",
+      "directory": false,
+      "size": 998660
+    },
+    {
+      "name": "Charlie Blast's Territory [ut]",
+      "raw_name": "Charlie Blast's Territory [ut] (1999-04-02)(Realtime Associates Inc)(Kemco)[N64].7z",
+      "date": "1999-04-02",
+      "url": "http://usf.joshw.info/c/Charlie%20Blast's%20Territory%20%5but%5d%20(1999-04-02)(Realtime%20Associates%20Inc)(Kemco)%5bN64%5d.7z",
+      "directory": false,
+      "size": 502647
+    },
+    {
+      "name": "Chopper Attack [Wild Choppers]",
+      "raw_name": "Chopper Attack [Wild Choppers] (1997-11-28)(Seta)[N64].7z",
+      "date": "1997-11-28",
+      "url": "http://usf.joshw.info/c/Chopper%20Attack%20%5bWild%20Choppers%5d%20(1997-11-28)(Seta)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1112052
+    },
+    {
+      "name": "Choro Q 64 2 - Hachamecha Grand Prix Race [ut]",
+      "raw_name": "Choro Q 64 2 - Hachamecha Grand Prix Race [ut] (1999-12-24)(Locomotive)(Takara)[N64].7z",
+      "date": "1999-12-24",
+      "url": "http://usf.joshw.info/c/Choro%20Q%2064%202%20-%20Hachamecha%20Grand%20Prix%20Race%20%5but%5d%20(1999-12-24)(Locomotive)(Takara)%5bN64%5d.7z",
+      "directory": false,
+      "size": 871923
+    },
+    {
+      "name": "Chōkukan Night Pro Yakyu King 2 [ut]",
+      "raw_name": "Chōkukan Night Pro Yakyu King 2 [ut] (1999-03-19)(Genki)(Imagineer)[N64].7z",
+      "date": "1999-03-19",
+      "url": "http://usf.joshw.info/c/Ch%c5%8dkukan%20Night%20Pro%20Yakyu%20King%202%20%5but%5d%20(1999-03-19)(Genki)(Imagineer)%5bN64%5d.7z",
+      "directory": false,
+      "size": 239025
+    },
+    {
+      "name": "Chōkukan Night Pro Yakyu King [ut]",
+      "raw_name": "Chōkukan Night Pro Yakyu King [ut] (1996-12-20)(Genki)(Imagineer)[N64].7z",
+      "date": "1996-12-20",
+      "url": "http://usf.joshw.info/c/Ch%c5%8dkukan%20Night%20Pro%20Yakyu%20King%20%5but%5d%20(1996-12-20)(Genki)(Imagineer)%5bN64%5d.7z",
+      "directory": false,
+      "size": 256701
+    },
+    {
+      "name": "Clay Fighter 63 1-3 - Sculptor's Cut [ut]",
+      "raw_name": "Clay Fighter 63 1-3 - Sculptor's Cut [ut] (1998-05-30)(Interplay)(Interplay)[N64].7z",
+      "date": "1998-05-30",
+      "url": "http://usf.joshw.info/c/Clay%20Fighter%2063%201-3%20-%20Sculptor's%20Cut%20%5but%5d%20(1998-05-30)(Interplay)(Interplay)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1307277
+    },
+    {
+      "name": "Clay Fighter 63 1-3 [ut]",
+      "raw_name": "Clay Fighter 63 1-3 [ut] (1997-09-30)(Danger Productions)(Interplay)[N64].7z",
+      "date": "1997-09-30",
+      "url": "http://usf.joshw.info/c/Clay%20Fighter%2063%201-3%20%5but%5d%20(1997-09-30)(Danger%20Productions)(Interplay)%5bN64%5d.7z",
+      "directory": false,
+      "size": 819009
+    },
+    {
+      "name": "Command & Conquer",
+      "raw_name": "Command & Conquer (1999-06-31)(Westwood)(Looking Glass)[N64].7z",
+      "date": "1999-06-31",
+      "url": "http://usf.joshw.info/c/Command%20&%20Conquer%20(1999-06-31)(Westwood)(Looking%20Glass)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2195244
+    },
+    {
+      "name": "Conker's Bad Fur Day [ut][rr]",
+      "raw_name": "Conker's Bad Fur Day [ut][rr] (2001-03-04)(Rare)[N64].7z",
+      "date": "2001-03-04",
+      "url": "http://usf.joshw.info/c/Conker's%20Bad%20Fur%20Day%20%5but%5d%5brr%5d%20(2001-03-04)(Rare)%5bN64%5d.7z",
+      "directory": false,
+      "size": 6715934
+    },
+    {
+      "name": "Cruis'n Exotica [ut]",
+      "raw_name": "Cruis'n Exotica [ut] (2000-10-16)(Gratuitous)(Midway)[N64].7z",
+      "date": "2000-10-16",
+      "url": "http://usf.joshw.info/c/Cruis'n%20Exotica%20%5but%5d%20(2000-10-16)(Gratuitous)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2869857
+    },
+    {
+      "name": "Cruis'n USA",
+      "raw_name": "Cruis'n USA (1996-12-03)(Midway)(Nintendo)[N64].7z",
+      "date": "1996-12-03",
+      "url": "http://usf.joshw.info/c/Cruis'n%20USA%20(1996-12-03)(Midway)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 557149
+    },
+    {
+      "name": "Cruis'n World",
+      "raw_name": "Cruis'n World (1998-06-25)(Midway)(Eurocom)(Nintendo)[N64].7z",
+      "date": "1998-06-25",
+      "url": "http://usf.joshw.info/c/Cruis'n%20World%20(1998-06-25)(Midway)(Eurocom)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3382806
+    },
+    {
+      "name": "Custom Robo",
+      "raw_name": "Custom Robo (1999-12-08)(Noise)(Nintendo)[N64].7z",
+      "date": "1999-12-08",
+      "url": "http://usf.joshw.info/c/Custom%20Robo%20(1999-12-08)(Noise)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4779209
+    },
+    {
+      "name": "Custom Robo V2 [ut]",
+      "raw_name": "Custom Robo V2 [ut] (2000-11-10)(Noise)(Nintendo)[N64].7z",
+      "date": "2000-11-10",
+      "url": "http://usf.joshw.info/c/Custom%20Robo%20V2%20%5but%5d%20(2000-11-10)(Noise)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2020586
+    },
+    {
+      "name": "Daikatana [ut]",
+      "raw_name": "Daikatana [ut] (2000-04-07)(Ion Storm)(Kemco)(Kemco)[N64].7z",
+      "date": "2000-04-07",
+      "url": "http://usf.joshw.info/d/Daikatana%20%5but%5d%20(2000-04-07)(Ion%20Storm)(Kemco)(Kemco)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1347476
+    },
+    {
+      "name": "Deadly Arts",
+      "raw_name": "Deadly Arts (1998-10-07)(Konami)[N64].7z",
+      "date": "1998-10-07",
+      "url": "http://usf.joshw.info/d/Deadly%20Arts%20(1998-10-07)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 763167
+    },
+    {
+      "name": "Densha de Go 64 [ut]",
+      "raw_name": "Densha de Go 64 [ut] (1999-07-23)(Taito)(Taito)[N64].7z",
+      "date": "1999-07-23",
+      "url": "http://usf.joshw.info/d/Densha%20de%20Go%2064%20%5but%5d%20(1999-07-23)(Taito)(Taito)%5bN64%5d.7z",
+      "directory": false,
+      "size": 991870
+    },
+    {
+      "name": "Destruction Derby 64 [ut]",
+      "raw_name": "Destruction Derby 64 [ut] (1999-10-02)(Looking Glass)(THQ)[N64].7z",
+      "date": "1999-10-02",
+      "url": "http://usf.joshw.info/d/Destruction%20Derby%2064%20%5but%5d%20(1999-10-02)(Looking%20Glass)(THQ)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1342256
+    },
+    {
+      "name": "Diddy Kong Racing [rr]",
+      "raw_name": "Diddy Kong Racing [rr] (1997-11-14)(Rare)(Nintendo)[N64].7z",
+      "date": "1997-11-14",
+      "url": "http://usf.joshw.info/d/Diddy%20Kong%20Racing%20%5brr%5d%20(1997-11-14)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 838325
+    },
+    {
+      "name": "Dinosaur Planet (Prototype) [ut]",
+      "raw_name": "Dinosaur Planet (Prototype) [ut](2000-12-01)(Rare)[N64].7z",
+      "date": "2000-12-01",
+      "url": "http://usf.joshw.info/d/Dinosaur%20Planet%20(Prototype)%20%5but%5d(2000-12-01)(Rare)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4418284
+    },
+    {
+      "name": "Donald Duck - Goin Quackers (Repaired) [ut]",
+      "raw_name": "Donald Duck - Goin Quackers (Repaired) [ut] (2000-12-20)(Ubisoft)[N64].7z",
+      "date": "2000-12-20",
+      "url": "http://usf.joshw.info/d/Donald%20Duck%20-%20Goin%20Quackers%20(Repaired)%20%5but%5d%20(2000-12-20)(Ubisoft)%5bN64%5d.7z",
+      "directory": false,
+      "size": 983886
+    },
+    {
+      "name": "Donkey Kong 64 [rr]",
+      "raw_name": "Donkey Kong 64 [rr] (1999-10-31)(Rare)(Nintendo)[N64].7z",
+      "date": "1999-10-31",
+      "url": "http://usf.joshw.info/d/Donkey%20Kong%2064%20%5brr%5d%20(1999-10-31)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2335761
+    },
+    {
+      "name": "Doom 64",
+      "raw_name": "Doom 64 (1997-03-31)(Midway San Diego)(Midway)[N64].7z",
+      "date": "1997-03-31",
+      "url": "http://usf.joshw.info/d/Doom%2064%20(1997-03-31)(Midway%20San%20Diego)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 884550
+    },
+    {
+      "name": "Doom 64 [ut]",
+      "raw_name": "Doom 64 [ut] (1997-03-31)(id)(Midway San Diego)(Midway)[N64].7z",
+      "date": "1997-03-31",
+      "url": "http://usf.joshw.info/d/Doom%2064%20%5but%5d%20(1997-03-31)(id)(Midway%20San%20Diego)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 886630
+    },
+    {
+      "name": "Doshin the Giant [Kyojin no Doshin][ut]",
+      "raw_name": "Doshin the Giant [Kyojin no Doshin][ut] (1999-12-01)(Param)(RandnetDD)[N64].7z",
+      "date": "1999-12-01",
+      "url": "http://usf.joshw.info/d/Doshin%20the%20Giant%20%5bKyojin%20no%20Doshin%5d%5but%5d%20(1999-12-01)(Param)(RandnetDD)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2253716
+    },
+    {
+      "name": "Doshin the Giant Expansion [Kyojin no Doshin Kaihou Sensen Chibikko Chikko Daishuugou] [ut]",
+      "raw_name": "Doshin the Giant Expansion [Kyojin no Doshin Kaihou Sensen Chibikko Chikko Daishuugou] [ut] (2000-06-30)(Param)(RandnetDD)[N64].7z",
+      "date": "2000-06-30",
+      "url": "http://usf.joshw.info/d/Doshin%20the%20Giant%20Expansion%20%5bKyojin%20no%20Doshin%20Kaihou%20Sensen%20Chibikko%20Chikko%20Daishuugou%5d%20%5but%5d%20(2000-06-30)(Param)(RandnetDD)%5bN64%5d.7z",
+      "directory": false,
+      "size": 976733
+    },
+    {
+      "name": "Doubutsu Banchou [Cubivore][ut](prototype)",
+      "raw_name": "Doubutsu Banchou [Cubivore][ut](prototype) (2002-02-21)(Saru Brunei)(Marigul)[N64].7z",
+      "date": "2002-02-21",
+      "url": "http://usf.joshw.info/d/Doubutsu%20Banchou%20%5bCubivore%5d%5but%5d(prototype)%20(2002-02-21)(Saru%20Brunei)(Marigul)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4062893
+    },
+    {
+      "name": "Doubutsu no Mori",
+      "raw_name": "Doubutsu no Mori (2001-04-14)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "2001-04-14",
+      "url": "http://usf.joshw.info/d/Doubutsu%20no%20Mori%20(2001-04-14)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2018688
+    },
+    {
+      "name": "Dr. Mario 64",
+      "raw_name": "Dr. Mario 64 (2001-04-08)(Newcom)(Nintendo)[N64].7z",
+      "date": "2001-04-08",
+      "url": "http://usf.joshw.info/d/Dr.%20Mario%2064%20(2001-04-08)(Newcom)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 547345
+    },
+    {
+      "name": "Duke Nukem - Zero Hour",
+      "raw_name": "Duke Nukem - Zero Hour (1999-08-01)(Eurocom)(GT)[N64].7z",
+      "date": "1999-08-01",
+      "url": "http://usf.joshw.info/d/Duke%20Nukem%20-%20Zero%20Hour%20(1999-08-01)(Eurocom)(GT)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4295480
+    },
+    {
+      "name": "Duke Nukem 64",
+      "raw_name": "Duke Nukem 64 (1997-10-31)(3D Realms)(Eurocom)(GT)[N64].7z",
+      "date": "1997-10-31",
+      "url": "http://usf.joshw.info/d/Duke%20Nukem%2064%20(1997-10-31)(3D%20Realms)(Eurocom)(GT)%5bN64%5d.7z",
+      "directory": false,
+      "size": 231561
+    },
+    {
+      "name": "Earthworm Jim 3D [ut]",
+      "raw_name": "Earthworm Jim 3D [ut] (1999-10-31)(VIS)(Rockstar)[N64].7z",
+      "date": "1999-10-31",
+      "url": "http://usf.joshw.info/e/Earthworm%20Jim%203D%20%5but%5d%20(1999-10-31)(VIS)(Rockstar)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2738944
+    },
+    {
+      "name": "Eikou no St. Andrews [ut]",
+      "raw_name": "Eikou no St. Andrews [ut] (1996-11-29)(Seta)[N64].7z",
+      "date": "1996-11-29",
+      "url": "http://usf.joshw.info/e/Eikou%20no%20St.%20Andrews%20%5but%5d%20(1996-11-29)(Seta)%5bN64%5d.7z",
+      "directory": false,
+      "size": 871126
+    },
+    {
+      "name": "Excitebike 64",
+      "raw_name": "Excitebike 64 (2000-04-30)(Left Field)(Nintendo)[N64].7z",
+      "date": "2000-04-30",
+      "url": "http://usf.joshw.info/e/Excitebike%2064%20(2000-04-30)(Left%20Field)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2112349
+    },
+    {
+      "name": "Extreme-G",
+      "raw_name": "Extreme-G (1997-09-30)(Probe)(Acclaim)[N64].7z",
+      "date": "1997-09-30",
+      "url": "http://usf.joshw.info/e/Extreme-G%20(1997-09-30)(Probe)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 316681
+    },
+    {
+      "name": "Extreme-G - XG2",
+      "raw_name": "Extreme-G - XG2 (1998-10-07)(Probe)(Acclaim)[N64].7z",
+      "date": "1998-10-07",
+      "url": "http://usf.joshw.info/e/Extreme-G%20-%20XG2%20(1998-10-07)(Probe)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 789933
+    },
+    {
+      "name": "F-1 World Grand Prix [ut]",
+      "raw_name": "F-1 World Grand Prix [ut] (1998-07-31)(Paradigm)(Video System)[N64].7z",
+      "date": "1998-07-31",
+      "url": "http://usf.joshw.info/f/F-1%20World%20Grand%20Prix%20%5but%5d%20(1998-07-31)(Paradigm)(Video%20System)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1205329
+    },
+    {
+      "name": "F-Zero X",
+      "raw_name": "F-Zero X (1998-07-14)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1998-07-14",
+      "url": "http://usf.joshw.info/f/F-Zero%20X%20(1998-07-14)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 9031845
+    },
+    {
+      "name": "FIFA Soccer 64",
+      "raw_name": "FIFA Soccer 64 (1997-03-27)(EA Canada)(EA Sports)[N64][unplayable].7z",
+      "date": "1997-03-27",
+      "url": "http://usf.joshw.info/f/FIFA%20Soccer%2064%20(1997-03-27)(EA%20Canada)(EA%20Sports)%5bN64%5d%5bunplayable%5d.7z",
+      "directory": false,
+      "size": 3569294
+    },
+    {
+      "name": "Fighter Destiny 2 [ut][rr]",
+      "raw_name": "Fighter Destiny 2 [ut][rr] (2000-07-14)(GenkI)(Imagineer)[N64].7z",
+      "date": "2000-07-14",
+      "url": "http://usf.joshw.info/f/Fighter%20Destiny%202%20%5but%5d%5brr%5d%20(2000-07-14)(GenkI)(Imagineer)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2380024
+    },
+    {
+      "name": "Fighters Destiny [ut][rr]",
+      "raw_name": "Fighters Destiny [ut][rr] (1998-01-31)(Genki)(Imagineer)[N64].7z",
+      "date": "1998-01-31",
+      "url": "http://usf.joshw.info/f/Fighters%20Destiny%20%5but%5d%5brr%5d%20(1998-01-31)(Genki)(Imagineer)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2116115
+    },
+    {
+      "name": "Flying Dragon [Hiryū no Ken Twin] [ut]",
+      "raw_name": "Flying Dragon [Hiryū no Ken Twin] [ut] (1998-07-31)(Culture Brain)(Natsume)[N64].7z",
+      "date": "1998-07-31",
+      "url": "http://usf.joshw.info/f/Flying%20Dragon%20%5bHiry%c5%ab%20no%20Ken%20Twin%5d%20%5but%5d%20(1998-07-31)(Culture%20Brain)(Natsume)%5bN64%5d.7z",
+      "directory": false,
+      "size": 609011
+    },
+    {
+      "name": "Forsaken 64",
+      "raw_name": "Forsaken 64 (1998-04-30)(Probe)(Iguana UK)(Acclaim)[N64].7z",
+      "date": "1998-04-30",
+      "url": "http://usf.joshw.info/f/Forsaken%2064%20(1998-04-30)(Probe)(Iguana%20UK)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 532482
+    },
+    {
+      "name": "Fuurai no Shiren 2 - Oni Shuurai! Shiren Jou! [ut]",
+      "raw_name": "Fuurai no Shiren 2 - Oni Shuurai! Shiren Jou! [ut] (2000-09-27)(Chunsoft)[N64].7z",
+      "date": "2000-09-27",
+      "url": "http://usf.joshw.info/f/Fuurai%20no%20Shiren%202%20-%20Oni%20Shuurai!%20Shiren%20Jou!%20%5but%5d%20(2000-09-27)(Chunsoft)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2301641
+    },
+    {
+      "name": "Gauntlet Legends",
+      "raw_name": "Gauntlet Legends (1999-08-31)(Atari Games)(Midway)[N64].7z",
+      "date": "1999-08-31",
+      "url": "http://usf.joshw.info/g/Gauntlet%20Legends%20(1999-08-31)(Atari%20Games)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 955814
+    },
+    {
+      "name": "Getter Love!! - Cho Renai Party Game",
+      "raw_name": "Getter Love!! - Cho Renai Party Game (1998-12-04)(Hudson)[N64].7z",
+      "date": "1998-12-04",
+      "url": "http://usf.joshw.info/g/Getter%20Love!!%20-%20Cho%20Renai%20Party%20Game%20(1998-12-04)(Hudson)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1467209
+    },
+    {
+      "name": "Gex 3 - Deep Cover Gecko [ut]",
+      "raw_name": "Gex 3 - Deep Cover Gecko [ut] (1999-08-31)(Gratuitous)(Crave)[N64].7z",
+      "date": "1999-08-31",
+      "url": "http://usf.joshw.info/g/Gex%203%20-%20Deep%20Cover%20Gecko%20%5but%5d%20(1999-08-31)(Gratuitous)(Crave)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1692081
+    },
+    {
+      "name": "Gex 64 - Enter the Gecko [ut]",
+      "raw_name": "Gex 64 - Enter the Gecko [ut] (1998-08-31)(Crystal Dynamics)(Realtime Associates)(Midway)[N64].7z",
+      "date": "1998-08-31",
+      "url": "http://usf.joshw.info/g/Gex%2064%20-%20Enter%20the%20Gecko%20%5but%5d%20(1998-08-31)(Crystal%20Dynamics)(Realtime%20Associates)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 973979
+    },
+    {
+      "name": "Glover",
+      "raw_name": "Glover (1998-10-31)(Interactive Studios)(Hasbro)[N64].7z",
+      "date": "1998-10-31",
+      "url": "http://usf.joshw.info/g/Glover%20(1998-10-31)(Interactive%20Studios)(Hasbro)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1237602
+    },
+    {
+      "name": "Glover (Prototype)",
+      "raw_name": "Glover (Prototype) (1998-07-16)(Interactive Studios)(Hasbro)[N64].7z",
+      "date": "1998-07-16",
+      "url": "http://usf.joshw.info/g/Glover%20(Prototype)%20(1998-07-16)(Interactive%20Studios)(Hasbro)%5bN64%5d.7z",
+      "directory": false,
+      "size": 520009
+    },
+    {
+      "name": "Goemon Mononoke Sugoroku",
+      "raw_name": "Goemon Mononoke Sugoroku (1999-12-25)(KCE Kobe)(Konami)[N64].7z",
+      "date": "1999-12-25",
+      "url": "http://usf.joshw.info/g/Goemon%20Mononoke%20Sugoroku%20(1999-12-25)(KCE%20Kobe)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2479922
+    },
+    {
+      "name": "Goemon's Great Adventure [Ganbare Goemon - Derudero Douchuu Obake Tenkomori] [Mystical Ninja Starring Goemon 2]",
+      "raw_name": "Goemon's Great Adventure [Ganbare Goemon - Derudero Douchuu Obake Tenkomori] [Mystical Ninja Starring Goemon 2] (1998-12-23)(KCE Osaka)(Konami)[N64].7z",
+      "date": "1998-12-23",
+      "url": "http://usf.joshw.info/g/Goemon's%20Great%20Adventure%20%5bGanbare%20Goemon%20-%20Derudero%20Douchuu%20Obake%20Tenkomori%5d%20%5bMystical%20Ninja%20Starring%20Goemon%202%5d%20(1998-12-23)(KCE%20Osaka)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2802344
+    },
+    {
+      "name": "GoldenEye 007",
+      "raw_name": "GoldenEye 007 (1997-08-23)(Rare)(Nintendo)[N64].7z",
+      "date": "1997-08-23",
+      "url": "http://usf.joshw.info/g/GoldenEye%20007%20(1997-08-23)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 526920
+    },
+    {
+      "name": "Harvest Moon 64 [Bokujou Monogatari 2] [ut]",
+      "raw_name": "Harvest Moon 64 [Bokujou Monogatari 2] [ut] (1999-02-05)(Toy Box Creative)(Pack-In-Soft)[N64].7z",
+      "date": "1999-02-05",
+      "url": "http://usf.joshw.info/h/Harvest%20Moon%2064%20%5bBokujou%20Monogatari%202%5d%20%5but%5d%20(1999-02-05)(Toy%20Box%20Creative)(Pack-In-Soft)%5bN64%5d.7z",
+      "directory": false,
+      "size": 779081
+    },
+    {
+      "name": "Hey You, Pikachu! [ut]",
+      "raw_name": "Hey You, Pikachu! [ut] (2000-11-06)(Ambrella)(Nintendo)[N64].7z",
+      "date": "2000-11-06",
+      "url": "http://usf.joshw.info/h/Hey%20You,%20Pikachu!%20%5but%5d%20(2000-11-06)(Ambrella)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 968082
+    },
+    {
+      "name": "Hybrid Heaven [ut]",
+      "raw_name": "Hybrid Heaven [ut] (1999-08-05)(KCE Osaka)(Konami)[N64].7z",
+      "date": "1999-08-05",
+      "url": "http://usf.joshw.info/h/Hybrid%20Heaven%20%5but%5d%20(1999-08-05)(KCE%20Osaka)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1311070
+    },
+    {
+      "name": "Iggy's Reckin' Balls [Iggi-kun no Bura Bura Payon]",
+      "raw_name": "Iggy's Reckin' Balls [Iggi-kun no Bura Bura Payon] (1998-07-31)(Iguana)(Acclaim)[N64].7z",
+      "date": "1998-07-31",
+      "url": "http://usf.joshw.info/i/Iggy's%20Reckin'%20Balls%20%5bIggi-kun%20no%20Bura%20Bura%20Payon%5d%20(1998-07-31)(Iguana)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 326901
+    },
+    {
+      "name": "Indy Racing 2000 [ut]",
+      "raw_name": "Indy Racing 2000 [ut] (2000-06-09)(Paradigm Entertainment)(Infogrames)[N64].7z",
+      "date": "2000-06-09",
+      "url": "http://usf.joshw.info/i/Indy%20Racing%202000%20%5but%5d%20(2000-06-09)(Paradigm%20Entertainment)(Infogrames)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1245101
+    },
+    {
+      "name": "International Superstar Soccer 2000 [ut]",
+      "raw_name": "International Superstar Soccer 2000 [ut] (1999-07-29)(KCEO)(Konami)[N64].7z",
+      "date": "1999-07-29",
+      "url": "http://usf.joshw.info/i/International%20Superstar%20Soccer%202000%20%5but%5d%20(1999-07-29)(KCEO)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 897476
+    },
+    {
+      "name": "International Superstar Soccer 64 [Jikkyou World Soccer 3]",
+      "raw_name": "International Superstar Soccer 64 [Jikkyou World Soccer 3] (1997-06-01)(Major A)(Konami)[N64].7z",
+      "date": "1997-06-01",
+      "url": "http://usf.joshw.info/i/International%20Superstar%20Soccer%2064%20%5bJikkyou%20World%20Soccer%203%5d%20(1997-06-01)(Major%20A)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 558136
+    },
+    {
+      "name": "Jet Force Gemini (Kiosk Demo) [Star Twins]",
+      "raw_name": "Jet Force Gemini (Kiosk Demo) [Star Twins] (1999-09-30)(Rare)(Nintendo)[N64].7z",
+      "date": "1999-09-30",
+      "url": "http://usf.joshw.info/j/Jet%20Force%20Gemini%20(Kiosk%20Demo)%20%5bStar%20Twins%5d%20(1999-09-30)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2561209
+    },
+    {
+      "name": "Jet Force Gemini [Star Twins]",
+      "raw_name": "Jet Force Gemini [Star Twins] (1999-09-30)(Rare)(Nintendo)[N64].7z",
+      "date": "1999-09-30",
+      "url": "http://usf.joshw.info/j/Jet%20Force%20Gemini%20%5bStar%20Twins%5d%20(1999-09-30)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2687932
+    },
+    {
+      "name": "Jikkyo Powerful Pro Yakyu 2000 [ut][rr]",
+      "raw_name": "Jikkyo Powerful Pro Yakyu 2000 [ut][rr] (2000-04-29)(Pawapuro)(Konami)[N64].7z",
+      "date": "2000-04-29",
+      "url": "http://usf.joshw.info/j/Jikkyo%20Powerful%20Pro%20Yakyu%202000%20%5but%5d%5brr%5d%20(2000-04-29)(Pawapuro)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 872205
+    },
+    {
+      "name": "Jikkyo Powerful Pro Yakyu 6",
+      "raw_name": "Jikkyo Powerful Pro Yakyu 6 (1999-03-25)(Pawapuro)(Konami)[N64].7z",
+      "date": "1999-03-25",
+      "url": "http://usf.joshw.info/j/Jikkyo%20Powerful%20Pro%20Yakyu%206%20(1999-03-25)(Pawapuro)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1097430
+    },
+    {
+      "name": "Killer Instinct Gold",
+      "raw_name": "Killer Instinct Gold (1996-11-25)(Rare)(Nintendo)[N64].7z",
+      "date": "1996-11-25",
+      "url": "http://usf.joshw.info/k/Killer%20Instinct%20Gold%20(1996-11-25)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 674907
+    },
+    {
+      "name": "Kirby 64 - The Crystal Shards [Hoshi no Kirby 64]",
+      "raw_name": "Kirby 64 - The Crystal Shards [Hoshi no Kirby 64] (2000-03-24)(HAL Laboratory)(Nintendo)[N64].7z",
+      "date": "2000-03-24",
+      "url": "http://usf.joshw.info/k/Kirby%2064%20-%20The%20Crystal%20Shards%20%5bHoshi%20no%20Kirby%2064%5d%20(2000-03-24)(HAL%20Laboratory)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1357508
+    },
+    {
+      "name": "Knife Edge - Nose Gunner [ut]",
+      "raw_name": "Knife Edge - Nose Gunner [ut] (1998-11-10)(Kemco)[N64].7z",
+      "date": "1998-11-10",
+      "url": "http://usf.joshw.info/k/Knife%20Edge%20-%20Nose%20Gunner%20%5but%5d%20(1998-11-10)(Kemco)%5bN64%5d.7z",
+      "directory": false,
+      "size": 513232
+    },
+    {
+      "name": "Last Legion UX [ut]",
+      "raw_name": "Last Legion UX [ut] (1999-05-28)(Yuke's)(Hudson)[N64].7z",
+      "date": "1999-05-28",
+      "url": "http://usf.joshw.info/l/Last%20Legion%20UX%20%5but%5d%20(1999-05-28)(Yuke's)(Hudson)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1164107
+    },
+    {
+      "name": "Legend of Zelda, The - Majora's Mask [Zelda no Densetsu - Majora no Kamen]",
+      "raw_name": "Legend of Zelda, The - Majora's Mask [Zelda no Densetsu - Majora no Kamen] (2000-04-27)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "2000-04-27",
+      "url": "http://usf.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Majora's%20Mask%20%5bZelda%20no%20Densetsu%20-%20Majora%20no%20Kamen%5d%20(2000-04-27)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1824868
+    },
+    {
+      "name": "Legend of Zelda, The - Majora's Mask [Zelda no Densetsu - Majora no Kamen] [fixed]",
+      "raw_name": "Legend of Zelda, The - Majora's Mask [Zelda no Densetsu - Majora no Kamen] [fixed] (2000-04-27)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "2000-04-27",
+      "url": "http://usf.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Majora's%20Mask%20%5bZelda%20no%20Densetsu%20-%20Majora%20no%20Kamen%5d%20%5bfixed%5d%20(2000-04-27)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1819271
+    },
+    {
+      "name": "Legend of Zelda, The - Ocarina of Time [Zelda no Densetsu - Toki no Ocarina] (v1.0)",
+      "raw_name": "Legend of Zelda, The - Ocarina of Time [Zelda no Densetsu - Toki no Ocarina] (v1.0) (1998-11-21)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1998-11-21",
+      "url": "http://usf.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Ocarina%20of%20Time%20%5bZelda%20no%20Densetsu%20-%20Toki%20no%20Ocarina%5d%20(v1.0)%20(1998-11-21)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1649552
+    },
+    {
+      "name": "Legend of Zelda, The - Ocarina of Time [Zelda no Densetsu - Toki no Ocarina] (v1.0) [fixed]",
+      "raw_name": "Legend of Zelda, The - Ocarina of Time [Zelda no Densetsu - Toki no Ocarina] (v1.0) [fixed] (1998-11-21)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1998-11-21",
+      "url": "http://usf.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Ocarina%20of%20Time%20%5bZelda%20no%20Densetsu%20-%20Toki%20no%20Ocarina%5d%20(v1.0)%20%5bfixed%5d%20(1998-11-21)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1642875
+    },
+    {
+      "name": "Legend of Zelda, The - Ocarina of Time [Zelda no Densetsu - Toki no Ocarina] (v1.2)",
+      "raw_name": "Legend of Zelda, The - Ocarina of Time [Zelda no Densetsu - Toki no Ocarina] (v1.2) (1998-11-21)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1998-11-21",
+      "url": "http://usf.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Ocarina%20of%20Time%20%5bZelda%20no%20Densetsu%20-%20Toki%20no%20Ocarina%5d%20(v1.2)%20(1998-11-21)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1610298
+    },
+    {
+      "name": "Legend of Zelda, The - Ocarina of Time [Zelda no Densetsu - Toki no Ocarina] (v1.2) [fixed]",
+      "raw_name": "Legend of Zelda, The - Ocarina of Time [Zelda no Densetsu - Toki no Ocarina] (v1.2) [fixed] (1998-11-21)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1998-11-21",
+      "url": "http://usf.joshw.info/l/Legend%20of%20Zelda,%20The%20-%20Ocarina%20of%20Time%20%5bZelda%20no%20Densetsu%20-%20Toki%20no%20Ocarina%5d%20(v1.2)%20%5bfixed%5d%20(1998-11-21)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1603392
+    },
+    {
+      "name": "Lego Racers [ut][rr]",
+      "raw_name": "Lego Racers [ut][rr] (1999-10-12)(High Voltage Software)(Lego)[N64].7z",
+      "date": "1999-10-12",
+      "url": "http://usf.joshw.info/l/Lego%20Racers%20%5but%5d%5brr%5d%20(1999-10-12)(High%20Voltage%20Software)(Lego)%5bN64%5d.7z",
+      "directory": false,
+      "size": 972772
+    },
+    {
+      "name": "Lode Runner 3-D",
+      "raw_name": "Lode Runner 3-D (1999-03-26)(Big Bang)(Infogrames)[N64].7z",
+      "date": "1999-03-26",
+      "url": "http://usf.joshw.info/l/Lode%20Runner%203-D%20(1999-03-26)(Big%20Bang)(Infogrames)%5bN64%5d.7z",
+      "directory": false,
+      "size": 784261
+    },
+    {
+      "name": "Looney Tunes Daffy Duck Starring as Duck Dodgers [ut]",
+      "raw_name": "Looney Tunes Daffy Duck Starring as Duck Dodgers [ut] (2000-09-16)(Paradigm Entertainment)(Infogrames)[N64].7z",
+      "date": "2000-09-16",
+      "url": "http://usf.joshw.info/l/Looney%20Tunes%20Daffy%20Duck%20Starring%20as%20Duck%20Dodgers%20%5but%5d%20(2000-09-16)(Paradigm%20Entertainment)(Infogrames)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1484520
+    },
+    {
+      "name": "Mace - The Dark Age [ut]",
+      "raw_name": "Mace - The Dark Age [ut] (1997-10)(Atari Games)(Midway)[N64].7z",
+      "date": "1997-10",
+      "url": "http://usf.joshw.info/m/Mace%20-%20The%20Dark%20Age%20%5but%5d%20(1997-10)(Atari%20Games)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1301682
+    },
+    {
+      "name": "Magical Tetris Challenge [Magical Tetris Challenge featuring Mickey]",
+      "raw_name": "Magical Tetris Challenge [Magical Tetris Challenge featuring Mickey] (1998-11-20)(Capcom Production Studio 1)(Capcom)[N64].7z",
+      "date": "1998-11-20",
+      "url": "http://usf.joshw.info/m/Magical%20Tetris%20Challenge%20%5bMagical%20Tetris%20Challenge%20featuring%20Mickey%5d%20(1998-11-20)(Capcom%20Production%20Studio%201)(Capcom)%5bN64%5d.7z",
+      "directory": false,
+      "size": 6950673
+    },
+    {
+      "name": "Mario Artist Paint Studio",
+      "raw_name": "Mario Artist Paint Studio (1999-12-11)(Software Creations)(Nintendo)[N64].7z",
+      "date": "1999-12-11",
+      "url": "http://usf.joshw.info/m/Mario%20Artist%20Paint%20Studio%20(1999-12-11)(Software%20Creations)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 5780508
+    },
+    {
+      "name": "Mario Artist Paint Studio (prototype)",
+      "raw_name": "Mario Artist Paint Studio (prototype)(1999-02-11)(Software Creations)(Nintendo)[N64].7z",
+      "date": "1999-02-11",
+      "url": "http://usf.joshw.info/m/Mario%20Artist%20Paint%20Studio%20(prototype)(1999-02-11)(Software%20Creations)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 9525637
+    },
+    {
+      "name": "Mario Golf [Mario Golf 64]",
+      "raw_name": "Mario Golf [Mario Golf 64] (1999-06-11)(Camelot)(Nintendo)[N64].7z",
+      "date": "1999-06-11",
+      "url": "http://usf.joshw.info/m/Mario%20Golf%20%5bMario%20Golf%2064%5d%20(1999-06-11)(Camelot)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 937022
+    },
+    {
+      "name": "Mario Kart 64",
+      "raw_name": "Mario Kart 64 (1996-12-14)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1996-12-14",
+      "url": "http://usf.joshw.info/m/Mario%20Kart%2064%20(1996-12-14)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 812780
+    },
+    {
+      "name": "Mario Kart 64 [rr]",
+      "raw_name": "Mario Kart 64 [rr] (1996-12-14)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1996-12-14",
+      "url": "http://usf.joshw.info/m/Mario%20Kart%2064%20%5brr%5d%20(1996-12-14)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 875070
+    },
+    {
+      "name": "Mario no Photopi",
+      "raw_name": "Mario no Photopi (1998-12-02)(Tokyo Electron)[N64].7z",
+      "date": "1998-12-02",
+      "url": "http://usf.joshw.info/m/Mario%20no%20Photopi%20(1998-12-02)(Tokyo%20Electron)%5bN64%5d.7z",
+      "directory": false,
+      "size": 438903
+    },
+    {
+      "name": "Mario Party",
+      "raw_name": "Mario Party (1998-12-18)(Hudson)(Nintendo)[N64].7z",
+      "date": "1998-12-18",
+      "url": "http://usf.joshw.info/m/Mario%20Party%20(1998-12-18)(Hudson)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2350101
+    },
+    {
+      "name": "Mario Party 2",
+      "raw_name": "Mario Party 2 (1999-12-17)(Hudson)(Nintendo)[N64].7z",
+      "date": "1999-12-17",
+      "url": "http://usf.joshw.info/m/Mario%20Party%202%20(1999-12-17)(Hudson)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1642341
+    },
+    {
+      "name": "Mario Party 3",
+      "raw_name": "Mario Party 3 (2000-12-07)(Hudson)(Nintendo)[N64].7z",
+      "date": "2000-12-07",
+      "url": "http://usf.joshw.info/m/Mario%20Party%203%20(2000-12-07)(Hudson)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1586750
+    },
+    {
+      "name": "Mario Tennis [Mario Tennis 64]",
+      "raw_name": "Mario Tennis [Mario Tennis 64] (2000-07-21)(Camelot)(Nintendo)[N64].7z",
+      "date": "2000-07-21",
+      "url": "http://usf.joshw.info/m/Mario%20Tennis%20%5bMario%20Tennis%2064%5d%20(2000-07-21)(Camelot)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1033707
+    },
+    {
+      "name": "Mega Man 64 [RockMan Dash - Hagane no Boukenshi]",
+      "raw_name": "Mega Man 64 [RockMan Dash - Hagane no Boukenshi] (2000-11-22)(Capcom Production Studio 2)(Capcom)[N64].7z",
+      "date": "2000-11-22",
+      "url": "http://usf.joshw.info/m/Mega%20Man%2064%20%5bRockMan%20Dash%20-%20Hagane%20no%20Boukenshi%5d%20(2000-11-22)(Capcom%20Production%20Studio%202)(Capcom)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1272858
+    },
+    {
+      "name": "Mickey's Speedway USA [Mickey no Racing Challenge USA]",
+      "raw_name": "Mickey's Speedway USA [Mickey no Racing Challenge USA] (2000-11-13)(Rare)(Nintendo)[N64].7z",
+      "date": "2000-11-13",
+      "url": "http://usf.joshw.info/m/Mickey's%20Speedway%20USA%20%5bMickey%20no%20Racing%20Challenge%20USA%5d%20(2000-11-13)(Rare)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1366964
+    },
+    {
+      "name": "Micro Machines 64 Turbo [ut]",
+      "raw_name": "Micro Machines 64 Turbo [ut] (1999-03-24)(Codemasters)(Midway)[N64].7z",
+      "date": "1999-03-24",
+      "url": "http://usf.joshw.info/m/Micro%20Machines%2064%20Turbo%20%5but%5d%20(1999-03-24)(Codemasters)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 655155
+    },
+    {
+      "name": "Mischief Makers [Yuke Yuke!! Trouble Makers]",
+      "raw_name": "Mischief Makers [Yuke Yuke!! Trouble Makers] (1997-06-27)(Treasure)(Enix)[N64].7z",
+      "date": "1997-06-27",
+      "url": "http://usf.joshw.info/m/Mischief%20Makers%20%5bYuke%20Yuke!!%20Trouble%20Makers%5d%20(1997-06-27)(Treasure)(Enix)%5bN64%5d.7z",
+      "directory": false,
+      "size": 636169
+    },
+    {
+      "name": "Mission - Impossible",
+      "raw_name": "Mission - Impossible (1997-09-11)(Infogrames)(Ocean)[N64].7z",
+      "date": "1997-09-11",
+      "url": "http://usf.joshw.info/m/Mission%20-%20Impossible%20(1997-09-11)(Infogrames)(Ocean)%5bN64%5d.7z",
+      "directory": false,
+      "size": 576338
+    },
+    {
+      "name": "Monopoly",
+      "raw_name": "Monopoly (1999-12-17)(Minds Eye)(Hasbro)[N64].7z",
+      "date": "1999-12-17",
+      "url": "http://usf.joshw.info/m/Monopoly%20(1999-12-17)(Minds%20Eye)(Hasbro)%5bN64%5d.7z",
+      "directory": false,
+      "size": 508906
+    },
+    {
+      "name": "Mortal Kombat 4 [ut]",
+      "raw_name": "Mortal Kombat 4 [ut] (1998-06-23)(Midway, Eurocom)(GT)[N64].7z",
+      "date": "1998-06-23",
+      "url": "http://usf.joshw.info/m/Mortal%20Kombat%204%20%5but%5d%20(1998-06-23)(Midway,%20Eurocom)(GT)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3751337
+    },
+    {
+      "name": "Mortal Kombat Trilogy [ut]",
+      "raw_name": "Mortal Kombat Trilogy [ut] (1996-10-31)(Midway)[N64].7z",
+      "date": "1996-10-31",
+      "url": "http://usf.joshw.info/m/Mortal%20Kombat%20Trilogy%20%5but%5d%20(1996-10-31)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 392876
+    },
+    {
+      "name": "Mystical Ninja Starring Goemon [Ganbare Goemon - Neo Touzan Bakufu no Odori]",
+      "raw_name": "Mystical Ninja Starring Goemon [Ganbare Goemon - Neo Touzan Bakufu no Odori] (1997-08-07)(KCE Osaka)(Konami)[N64].7z",
+      "date": "1997-08-07",
+      "url": "http://usf.joshw.info/m/Mystical%20Ninja%20Starring%20Goemon%20%5bGanbare%20Goemon%20-%20Neo%20Touzan%20Bakufu%20no%20Odori%5d%20(1997-08-07)(KCE%20Osaka)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2659090
+    },
+    {
+      "name": "Namco Museum 64 [ut]",
+      "raw_name": "Namco Museum 64 [ut] (1999-10-31)(Namco)(Mass Media)(Namco)[N64].7z",
+      "date": "1999-10-31",
+      "url": "http://usf.joshw.info/n/Namco%20Museum%2064%20%5but%5d%20(1999-10-31)(Namco)(Mass%20Media)(Namco)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2319619
+    },
+    {
+      "name": "NBA Jam 99 [ut]",
+      "raw_name": "NBA Jam 99 [ut] (1998-11-30)(Iguana West)(Acclaim)[N64].7z",
+      "date": "1998-11-30",
+      "url": "http://usf.joshw.info/n/NBA%20Jam%2099%20%5but%5d%20(1998-11-30)(Iguana%20West)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1162731
+    },
+    {
+      "name": "Neon Genesis Evangelion",
+      "raw_name": "Neon Genesis Evangelion (1999-06-25)(BEC)(Bandai)[N64].7z",
+      "date": "1999-06-25",
+      "url": "http://usf.joshw.info/n/Neon%20Genesis%20Evangelion%20(1999-06-25)(BEC)(Bandai)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3610396
+    },
+    {
+      "name": "New Tetris, The",
+      "raw_name": "New Tetris, The (1999-07-31)(H2O, Blue Planet)(Nintendo)[N64].7z",
+      "date": "1999-07-31",
+      "url": "http://usf.joshw.info/n/New%20Tetris,%20The%20(1999-07-31)(H2O,%20Blue%20Planet)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4497385
+    },
+    {
+      "name": "NHL Breakaway 98",
+      "raw_name": "NHL Breakaway 98 (1998-02-26)(Iguana West)(Acclaim)[N64].7z",
+      "date": "1998-02-26",
+      "url": "http://usf.joshw.info/n/NHL%20Breakaway%2098%20(1998-02-26)(Iguana%20West)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 200905
+    },
+    {
+      "name": "Nintama Rantarou 64 Game Gallery [ut]",
+      "raw_name": "Nintama Rantarou 64 Game Gallery [ut] (2000-04-21)(Culture Brain)[N64].7z",
+      "date": "2000-04-21",
+      "url": "http://usf.joshw.info/n/Nintama%20Rantarou%2064%20Game%20Gallery%20%5but%5d%20(2000-04-21)(Culture%20Brain)%5bN64%5d.7z",
+      "directory": false,
+      "size": 662520
+    },
+    {
+      "name": "Ogre Battle 64 - Person of Lordly Caliber",
+      "raw_name": "Ogre Battle 64 - Person of Lordly Caliber (1999-07-14)(Quest)(Nintendo)[N64].7z",
+      "date": "1999-07-14",
+      "url": "http://usf.joshw.info/o/Ogre%20Battle%2064%20-%20Person%20of%20Lordly%20Caliber%20(1999-07-14)(Quest)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1505397
+    },
+    {
+      "name": "Onegai Monster [ut]",
+      "raw_name": "Onegai Monster [ut] (1999-04-09)(Bottom Up)[N64].7z",
+      "date": "1999-04-09",
+      "url": "http://usf.joshw.info/o/Onegai%20Monster%20%5but%5d%20(1999-04-09)(Bottom%20Up)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4783481
+    },
+    {
+      "name": "Paper Mario [Mario Story]",
+      "raw_name": "Paper Mario [Mario Story] (2000-08-11)(Intelligent Systems)(Nintendo)[N64].7z",
+      "date": "2000-08-11",
+      "url": "http://usf.joshw.info/p/Paper%20Mario%20%5bMario%20Story%5d%20(2000-08-11)(Intelligent%20Systems)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3311980
+    },
+    {
+      "name": "Paperboy [ut]",
+      "raw_name": "Paperboy [ut] (1999-10-31)(High Voltage Software)(Midway)[N64].7z",
+      "date": "1999-10-31",
+      "url": "http://usf.joshw.info/p/Paperboy%20%5but%5d%20(1999-10-31)(High%20Voltage%20Software)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 864810
+    },
+    {
+      "name": "Penny Racers [Choro Q 64] [rr][ut]",
+      "raw_name": "Penny Racers [Choro Q 64] [rr][ut] (1998-07-17)(Locomotive)(Takara)[N64].7z",
+      "date": "1998-07-17",
+      "url": "http://usf.joshw.info/p/Penny%20Racers%20%5bChoro%20Q%2064%5d%20%5brr%5d%5but%5d%20(1998-07-17)(Locomotive)(Takara)%5bN64%5d.7z",
+      "directory": false,
+      "size": 697852
+    },
+    {
+      "name": "Penny Racers [Choro Q 64] [ut]",
+      "raw_name": "Penny Racers [Choro Q 64] [ut] (1998-07-17)(Locomotive)(Takara)[N64].7z",
+      "date": "1998-07-17",
+      "url": "http://usf.joshw.info/p/Penny%20Racers%20%5bChoro%20Q%2064%5d%20%5but%5d%20(1998-07-17)(Locomotive)(Takara)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1209315
+    },
+    {
+      "name": "Perfect Dark",
+      "raw_name": "Perfect Dark (2000-05-22)(Rare)[N64].7z",
+      "date": "2000-05-22",
+      "url": "http://usf.joshw.info/p/Perfect%20Dark%20(2000-05-22)(Rare)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1748700
+    },
+    {
+      "name": "Perfect Dark [rr]",
+      "raw_name": "Perfect Dark [rr] (2000-05-22)(Rare)[N64].7z",
+      "date": "2000-05-22",
+      "url": "http://usf.joshw.info/p/Perfect%20Dark%20%5brr%5d%20(2000-05-22)(Rare)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1888266
+    },
+    {
+      "name": "Pilotwings 64",
+      "raw_name": "Pilotwings 64 (1996-06-23)(Paradigm)(Nintendo)[N64].7z",
+      "date": "1996-06-23",
+      "url": "http://usf.joshw.info/p/Pilotwings%2064%20(1996-06-23)(Paradigm)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 629933
+    },
+    {
+      "name": "Pokemon Puzzle League",
+      "raw_name": "Pokemon Puzzle League (2000-09-01)(NST)(Nintendo)[N64].7z",
+      "date": "2000-09-01",
+      "url": "http://usf.joshw.info/p/Pokemon%20Puzzle%20League%20(2000-09-01)(NST)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2754213
+    },
+    {
+      "name": "Pokemon Puzzle League [ut]",
+      "raw_name": "Pokemon Puzzle League [ut] (2000-09-01)(NST)(Nintendo)[N64].7z",
+      "date": "2000-09-01",
+      "url": "http://usf.joshw.info/p/Pokemon%20Puzzle%20League%20%5but%5d%20(2000-09-01)(NST)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2765512
+    },
+    {
+      "name": "Pokemon Snap [Pocket Monsters Snap]",
+      "raw_name": "Pokemon Snap [Pocket Monsters Snap] (1999-03-21)(HAL Laboratory, Pax Softnica)(Nintendo)[N64].7z",
+      "date": "1999-03-21",
+      "url": "http://usf.joshw.info/p/Pokemon%20Snap%20%5bPocket%20Monsters%20Snap%5d%20(1999-03-21)(HAL%20Laboratory,%20Pax%20Softnica)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 737210
+    },
+    {
+      "name": "Pokemon Stadium 2 [Pocket Monsters Stadium Kin Gin] [ut]",
+      "raw_name": "Pokemon Stadium 2 [Pocket Monsters Stadium Kin Gin] [ut] (2000-12-14)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "2000-12-14",
+      "url": "http://usf.joshw.info/p/Pokemon%20Stadium%202%20%5bPocket%20Monsters%20Stadium%20Kin%20Gin%5d%20%5but%5d%20(2000-12-14)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2262497
+    },
+    {
+      "name": "Pokemon Stadium [Pocket Monsters Stadium 2]",
+      "raw_name": "Pokemon Stadium [Pocket Monsters Stadium 2] (1999-04-30)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1999-04-30",
+      "url": "http://usf.joshw.info/p/Pokemon%20Stadium%20%5bPocket%20Monsters%20Stadium%202%5d%20(1999-04-30)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1185123
+    },
+    {
+      "name": "Puyo Puyo Sun 64 [ut]",
+      "raw_name": "Puyo Puyo Sun 64 [ut] (1997-10-31)(Compile)[N64].7z",
+      "date": "1997-10-31",
+      "url": "http://usf.joshw.info/p/Puyo%20Puyo%20Sun%2064%20%5but%5d%20(1997-10-31)(Compile)%5bN64%5d.7z",
+      "directory": false,
+      "size": 587610
+    },
+    {
+      "name": "Puyo Puyo~n Party",
+      "raw_name": "Puyo Puyo~n Party (1999-12-03)(Compile)[N64].7z",
+      "date": "1999-12-03",
+      "url": "http://usf.joshw.info/p/Puyo%20Puyo~n%20Party%20(1999-12-03)(Compile)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1107886
+    },
+    {
+      "name": "zzz_old_Perfect Dark [rr]",
+      "raw_name": "zzz_old_Perfect Dark [rr] (2000-05-22)(Rare)[N64].7z",
+      "date": "2000-05-22",
+      "url": "http://usf.joshw.info/p/zzz_old_Perfect%20Dark%20%5brr%5d%20(2000-05-22)(Rare)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1812693
+    },
+    {
+      "name": "Quake [ut]",
+      "raw_name": "Quake [ut] (1998-03-24)(id)(Midway San Diego)(Midway)[N64].7z",
+      "date": "1998-03-24",
+      "url": "http://usf.joshw.info/q/Quake%20%5but%5d%20(1998-03-24)(id)(Midway%20San%20Diego)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 495779
+    },
+    {
+      "name": "Quake II [ut]",
+      "raw_name": "Quake II [ut] (1999-02-07)(id)(Raster Productions)(Activision)[N64].7z",
+      "date": "1999-02-07",
+      "url": "http://usf.joshw.info/q/Quake%20II%20%5but%5d%20(1999-02-07)(id)(Raster%20Productions)(Activision)%5bN64%5d.7z",
+      "directory": false,
+      "size": 420350
+    },
+    {
+      "name": "Quest 64 [Eltale Monsters] [Holy Magic Century]",
+      "raw_name": "Quest 64 [Eltale Monsters] [Holy Magic Century] (1998-06-01)(-)(THQ)[N64].7z",
+      "date": "1998-06-01",
+      "url": "http://usf.joshw.info/q/Quest%2064%20%5bEltale%20Monsters%5d%20%5bHoly%20Magic%20Century%5d%20(1998-06-01)(-)(THQ)%5bN64%5d.7z",
+      "directory": false,
+      "size": 381354
+    },
+    {
+      "name": "Rakugakids [ut]",
+      "raw_name": "Rakugakids [ut] (1998-12-04)(Konami)[N64].7z",
+      "date": "1998-12-04",
+      "url": "http://usf.joshw.info/r/Rakugakids%20%5but%5d%20(1998-12-04)(Konami)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2407857
+    },
+    {
+      "name": "Rayman 2 - The Great Escape",
+      "raw_name": "Rayman 2 - The Great Escape (1999-10-22)(Ubisoft Montpellier)(Ubisoft)[N64].7z",
+      "date": "1999-10-22",
+      "url": "http://usf.joshw.info/r/Rayman%202%20-%20The%20Great%20Escape%20(1999-10-22)(Ubisoft%20Montpellier)(Ubisoft)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1314659
+    },
+    {
+      "name": "Rayman 2 - The Great Escape",
+      "raw_name": "Rayman 2 - The Great Escape (1999-10-22)(Ubisoft Montpellier)(Ubisoft)[N64][alt].7z",
+      "date": "1999-10-22",
+      "url": "http://usf.joshw.info/r/Rayman%202%20-%20The%20Great%20Escape%20(1999-10-22)(Ubisoft%20Montpellier)(Ubisoft)%5bN64%5d%5balt%5d.7z",
+      "directory": false,
+      "size": 16745419
+    },
+    {
+      "name": "Resident Evil 2 [ut]",
+      "raw_name": "Resident Evil 2 [ut] (1999-10-31)(Angel Studios)(Capcom)[N64].7z",
+      "date": "1999-10-31",
+      "url": "http://usf.joshw.info/r/Resident%20Evil%202%20%5but%5d%20(1999-10-31)(Angel%20Studios)(Capcom)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2550919
+    },
+    {
+      "name": "Ridge Racer 64",
+      "raw_name": "Ridge Racer 64 (2000-02-14)(Namco)(NST)(Nintendo)[N64].7z",
+      "date": "2000-02-14",
+      "url": "http://usf.joshw.info/r/Ridge%20Racer%2064%20(2000-02-14)(Namco)(NST)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 11828918
+    },
+    {
+      "name": "Robotech - Crystal Dreams (Prototype) [ut]",
+      "raw_name": "Robotech - Crystal Dreams (Prototype) [ut] (1998)(Gametek)[N64].7z",
+      "date": "1998",
+      "url": "http://usf.joshw.info/r/Robotech%20-%20Crystal%20Dreams%20(Prototype)%20%5but%5d%20(1998)(Gametek)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1183160
+    },
+    {
+      "name": "Rocket - Robot on Wheels",
+      "raw_name": "Rocket - Robot on Wheels (1999-10-31)(Sucker Punch)(Ubisoft)[N64].7z",
+      "date": "1999-10-31",
+      "url": "http://usf.joshw.info/r/Rocket%20-%20Robot%20on%20Wheels%20(1999-10-31)(Sucker%20Punch)(Ubisoft)%5bN64%5d.7z",
+      "directory": false,
+      "size": 610670
+    },
+    {
+      "name": "Rugrats in Paris - The Movie [ut]",
+      "raw_name": "Rugrats in Paris - The Movie [ut] (2000-11-12)(Avalanche Software)(THQ)[N64].7z",
+      "date": "2000-11-12",
+      "url": "http://usf.joshw.info/r/Rugrats%20in%20Paris%20-%20The%20Movie%20%5but%5d%20(2000-11-12)(Avalanche%20Software)(THQ)%5bN64%5d.7z",
+      "directory": false,
+      "size": 489023
+    },
+    {
+      "name": "Rush 2 - Extreme Racing USA",
+      "raw_name": "Rush 2 - Extreme Racing USA (1998-11-10)(Atari Games)(Midway)[N64].7z",
+      "date": "1998-11-10",
+      "url": "http://usf.joshw.info/r/Rush%202%20-%20Extreme%20Racing%20USA%20(1998-11-10)(Atari%20Games)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1616297
+    },
+    {
+      "name": "San Francisco Rush - Extreme Racing",
+      "raw_name": "San Francisco Rush - Extreme Racing (1997-11-08)(Atari Games)(Midway)[N64].7z",
+      "date": "1997-11-08",
+      "url": "http://usf.joshw.info/s/San%20Francisco%20Rush%20-%20Extreme%20Racing%20(1997-11-08)(Atari%20Games)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1154677
+    },
+    {
+      "name": "San Francisco Rush 2049",
+      "raw_name": "San Francisco Rush 2049 (2000-09-07)(Midway West)(Midway)[N64].7z",
+      "date": "2000-09-07",
+      "url": "http://usf.joshw.info/s/San%20Francisco%20Rush%202049%20(2000-09-07)(Midway%20West)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1442817
+    },
+    {
+      "name": "Scooby-Doo - Classic Creep Capers",
+      "raw_name": "Scooby-Doo - Classic Creep Capers (2000-11-30)(Terraglyph)(THQ)[N64].7z",
+      "date": "2000-11-30",
+      "url": "http://usf.joshw.info/s/Scooby-Doo%20-%20Classic%20Creep%20Capers%20(2000-11-30)(Terraglyph)(THQ)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1475810
+    },
+    {
+      "name": "Shadow Man [ut]",
+      "raw_name": "Shadow Man [ut] (1999-03-09)(Acclaim Teesside)(Acclaim)[N64].7z",
+      "date": "1999-03-09",
+      "url": "http://usf.joshw.info/s/Shadow%20Man%20%5but%5d%20(1999-03-09)(Acclaim%20Teesside)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4298499
+    },
+    {
+      "name": "Shadow Man [ut][rr]",
+      "raw_name": "Shadow Man [ut][rr] (1999-03-09)(Acclaim Teesside)(Acclaim)[N64].7z",
+      "date": "1999-03-09",
+      "url": "http://usf.joshw.info/s/Shadow%20Man%20%5but%5d%5brr%5d%20(1999-03-09)(Acclaim%20Teesside)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4281757
+    },
+    {
+      "name": "Shadowgate 64 - Trials of the Four Towers",
+      "raw_name": "Shadowgate 64 - Trials of the Four Towers (1999-05-31)(Infinite Ventures)(Kemco)[N64].7z",
+      "date": "1999-05-31",
+      "url": "http://usf.joshw.info/s/Shadowgate%2064%20-%20Trials%20of%20the%20Four%20Towers%20(1999-05-31)(Infinite%20Ventures)(Kemco)%5bN64%5d.7z",
+      "directory": false,
+      "size": 730539
+    },
+    {
+      "name": "Sim City 2000 [ut]",
+      "raw_name": "Sim City 2000 [ut] (1998-01-30)(Maxis)(Genki)(Imagineer)[N64].7z",
+      "date": "1998-01-30",
+      "url": "http://usf.joshw.info/s/Sim%20City%202000%20%5but%5d%20(1998-01-30)(Maxis)(Genki)(Imagineer)%5bN64%5d.7z",
+      "directory": false,
+      "size": 174618
+    },
+    {
+      "name": "Snowboard Kids 2 [Chou Snobow Kids]",
+      "raw_name": "Snowboard Kids 2 [Chou Snobow Kids] (1999-02-19)(Racdym)(Atlus)[N64].7z",
+      "date": "1999-02-19",
+      "url": "http://usf.joshw.info/s/Snowboard%20Kids%202%20%5bChou%20Snobow%20Kids%5d%20(1999-02-19)(Racdym)(Atlus)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4212886
+    },
+    {
+      "name": "Snowboard Kids [Snobow Kids]",
+      "raw_name": "Snowboard Kids [Snobow Kids] (1997-12-12)(Racdym)(Atlus)[N64].7z",
+      "date": "1997-12-12",
+      "url": "http://usf.joshw.info/s/Snowboard%20Kids%20%5bSnobow%20Kids%5d%20(1997-12-12)(Racdym)(Atlus)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1700959
+    },
+    {
+      "name": "South Park [ut][rr]",
+      "raw_name": "South Park [ut][rr] (1998-12-12)(Iguana)(Acclaim)[N64].7z",
+      "date": "1998-12-12",
+      "url": "http://usf.joshw.info/s/South%20Park%20%5but%5d%5brr%5d%20(1998-12-12)(Iguana)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 724225
+    },
+    {
+      "name": "South Park Rally [ut]",
+      "raw_name": "South Park Rally [ut] (2000-02-28)(Tantalus)(Acclaim)[N64].7z",
+      "date": "2000-02-28",
+      "url": "http://usf.joshw.info/s/South%20Park%20Rally%20%5but%5d%20(2000-02-28)(Tantalus)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1065076
+    },
+    {
+      "name": "Space Station Silicon Valley",
+      "raw_name": "Space Station Silicon Valley (1998-10-21)(DMA Design)(Take-Two)[N64].7z",
+      "date": "1998-10-21",
+      "url": "http://usf.joshw.info/s/Space%20Station%20Silicon%20Valley%20(1998-10-21)(DMA%20Design)(Take-Two)%5bN64%5d.7z",
+      "directory": false,
+      "size": 595746
+    },
+    {
+      "name": "Star Fox 64 [Lylat Wars]",
+      "raw_name": "Star Fox 64 [Lylat Wars] (1997-04-27)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1997-04-27",
+      "url": "http://usf.joshw.info/s/Star%20Fox%2064%20%5bLylat%20Wars%5d%20(1997-04-27)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 661032
+    },
+    {
+      "name": "Star Fox 64 [Lylat Wars] [fixed]",
+      "raw_name": "Star Fox 64 [Lylat Wars] [fixed] (1997-04-27)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1997-04-27",
+      "url": "http://usf.joshw.info/s/Star%20Fox%2064%20%5bLylat%20Wars%5d%20%5bfixed%5d%20(1997-04-27)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 657331
+    },
+    {
+      "name": "Star Soldier - Vanishing Earth",
+      "raw_name": "Star Soldier - Vanishing Earth (1998-12-15)(Hudson)[N64].7z",
+      "date": "1998-12-15",
+      "url": "http://usf.joshw.info/s/Star%20Soldier%20-%20Vanishing%20Earth%20(1998-12-15)(Hudson)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1090239
+    },
+    {
+      "name": "Star Wars - Episode 1 Battle for Naboo",
+      "raw_name": "Star Wars - Episode 1 Battle for Naboo (2000-12-15)(Factor 5)(LucasArts)[N64].7z",
+      "date": "2000-12-15",
+      "url": "http://usf.joshw.info/s/Star%20Wars%20-%20Episode%201%20Battle%20for%20Naboo%20(2000-12-15)(Factor%205)(LucasArts)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3303530
+    },
+    {
+      "name": "Star Wars - Rogue Squadron [ut][rr]",
+      "raw_name": "Star Wars - Rogue Squadron [ut][rr] (1998-12-03)(Factor 5)(LucasArts)[N64].7z",
+      "date": "1998-12-03",
+      "url": "http://usf.joshw.info/s/Star%20Wars%20-%20Rogue%20Squadron%20%5but%5d%5brr%5d%20(1998-12-03)(Factor%205)(LucasArts)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1986498
+    },
+    {
+      "name": "Star Wars - Shadows of the Empire [Star Wars - Teikoku no Kage] [tagged]",
+      "raw_name": "Star Wars - Shadows of the Empire [Star Wars - Teikoku no Kage] [tagged] (1996-12-03)(Lucasarts)(Nintendo)[N64].7z",
+      "date": "1996-12-03",
+      "url": "http://usf.joshw.info/s/Star%20Wars%20-%20Shadows%20of%20the%20Empire%20%5bStar%20Wars%20-%20Teikoku%20no%20Kage%5d%20%5btagged%5d%20(1996-12-03)(Lucasarts)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3665981
+    },
+    {
+      "name": "Star Wars - Shadows of the Empire [Star Wars - Teikoku no Kage] [ut]",
+      "raw_name": "Star Wars - Shadows of the Empire [Star Wars - Teikoku no Kage] [ut] (1996-12-03)(Lucasarts)(Nintendo)[N64].7z",
+      "date": "1996-12-03",
+      "url": "http://usf.joshw.info/s/Star%20Wars%20-%20Shadows%20of%20the%20Empire%20%5bStar%20Wars%20-%20Teikoku%20no%20Kage%5d%20%5but%5d%20(1996-12-03)(Lucasarts)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3673757
+    },
+    {
+      "name": "Starshot - Space Circus Fever",
+      "raw_name": "Starshot - Space Circus Fever (1998-12-04)(Infogrames)[N64].7z",
+      "date": "1998-12-04",
+      "url": "http://usf.joshw.info/s/Starshot%20-%20Space%20Circus%20Fever%20(1998-12-04)(Infogrames)%5bN64%5d.7z",
+      "directory": false,
+      "size": 916808
+    },
+    {
+      "name": "Starshot - Space Circus Fever [ut]",
+      "raw_name": "Starshot - Space Circus Fever [ut] (1998-12-04)(Infogrames)[N64].7z",
+      "date": "1998-12-04",
+      "url": "http://usf.joshw.info/s/Starshot%20-%20Space%20Circus%20Fever%20%5but%5d%20(1998-12-04)(Infogrames)%5bN64%5d.7z",
+      "directory": false,
+      "size": 915209
+    },
+    {
+      "name": "Super B-Daman - Battle Phoenix 64 [ut]",
+      "raw_name": "Super B-Daman - Battle Phoenix 64 [ut] (1998-07-24)(Hudson)[N64].7z",
+      "date": "1998-07-24",
+      "url": "http://usf.joshw.info/s/Super%20B-Daman%20-%20Battle%20Phoenix%2064%20%5but%5d%20(1998-07-24)(Hudson)%5bN64%5d.7z",
+      "directory": false,
+      "size": 864045
+    },
+    {
+      "name": "Super Bowling [ut]",
+      "raw_name": "Super Bowling [ut] (1999-03-26)(Athena)[N64].7z",
+      "date": "1999-03-26",
+      "url": "http://usf.joshw.info/s/Super%20Bowling%20%5but%5d%20(1999-03-26)(Athena)%5bN64%5d.7z",
+      "directory": false,
+      "size": 466633
+    },
+    {
+      "name": "Super Mario 64",
+      "raw_name": "Super Mario 64 (1996-06-23)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1996-06-23",
+      "url": "http://usf.joshw.info/s/Super%20Mario%2064%20(1996-06-23)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 939861
+    },
+    {
+      "name": "Super Mario 64",
+      "raw_name": "Super Mario 64 (1996-06-23)(Nintendo EAD)(Nintendo)[N64][rerip].7z",
+      "date": "1996-06-23",
+      "url": "http://usf.joshw.info/s/Super%20Mario%2064%20(1996-06-23)(Nintendo%20EAD)(Nintendo)%5bN64%5d%5brerip%5d.7z",
+      "directory": false,
+      "size": 882090
+    },
+    {
+      "name": "Super Mario 64 (64DD)(Nintendo EAD)(Nintendo)[N64].7z",
+      "raw_name": "Super Mario 64 (64DD)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "",
+      "url": "http://usf.joshw.info/s/Super%20Mario%2064%20(64DD)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1008481
+    },
+    {
+      "name": "Super Robot Spirits [ut]",
+      "raw_name": "Super Robot Spirits [ut] (1998-07-17)(Vertex)(Banpresto)[N64].7z",
+      "date": "1998-07-17",
+      "url": "http://usf.joshw.info/s/Super%20Robot%20Spirits%20%5but%5d%20(1998-07-17)(Vertex)(Banpresto)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1640830
+    },
+    {
+      "name": "Super Robot Taisen 64 [ut]",
+      "raw_name": "Super Robot Taisen 64 [ut] (1999-10-29)(Banpresto)[N64].7z",
+      "date": "1999-10-29",
+      "url": "http://usf.joshw.info/s/Super%20Robot%20Taisen%2064%20%5but%5d%20(1999-10-29)(Banpresto)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2666986
+    },
+    {
+      "name": "Super Smash Bros. [Nintendo All Stars! Dairantou Smash Brothers]",
+      "raw_name": "Super Smash Bros. [Nintendo All Stars! Dairantou Smash Brothers] (1999-01-21)(HAL Laboratory)(Nintendo)[N64].7z",
+      "date": "1999-01-21",
+      "url": "http://usf.joshw.info/s/Super%20Smash%20Bros.%20%5bNintendo%20All%20Stars!%20Dairantou%20Smash%20Brothers%5d%20(1999-01-21)(HAL%20Laboratory)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1087438
+    },
+    {
+      "name": "Superman - The New Superman Adventures [ut]",
+      "raw_name": "Superman - The New Superman Adventures [ut](1999-05-29)(Titus)[N64].7z",
+      "date": "1999-05-29",
+      "url": "http://usf.joshw.info/s/Superman%20-%20The%20New%20Superman%20Adventures%20%5but%5d(1999-05-29)(Titus)%5bN64%5d.7z",
+      "directory": false,
+      "size": 469708
+    },
+    {
+      "name": "Tetrisphere",
+      "raw_name": "Tetrisphere (1997-08-11)(H2O)(Nintendo)[N64].7z",
+      "date": "1997-08-11",
+      "url": "http://usf.joshw.info/t/Tetrisphere%20(1997-08-11)(H2O)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2330214
+    },
+    {
+      "name": "Tom and Jerry in Fists of Furry",
+      "raw_name": "Tom and Jerry in Fists of Furry (2000-11-12) (VIS Interactive)(NewKidCo)[N64].7z",
+      "date": "2000-11-12",
+      "url": "http://usf.joshw.info/t/Tom%20and%20Jerry%20in%20Fists%20of%20Furry%20(2000-11-12)%20(VIS%20Interactive)(NewKidCo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1474180
+    },
+    {
+      "name": "Tonic Trouble [ut]",
+      "raw_name": "Tonic Trouble [ut] (1999-08-31)(Ubisoft)[N64].7z",
+      "date": "1999-08-31",
+      "url": "http://usf.joshw.info/t/Tonic%20Trouble%20%5but%5d%20(1999-08-31)(Ubisoft)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1243967
+    },
+    {
+      "name": "Tony Hawk's Pro Skater 2",
+      "raw_name": "Tony Hawk's Pro Skater 2 (2001-08-21)(Neversoft)(Edge of Reality)(Activision)[N64].7z",
+      "date": "2001-08-21",
+      "url": "http://usf.joshw.info/t/Tony%20Hawk's%20Pro%20Skater%202%20(2001-08-21)(Neversoft)(Edge%20of%20Reality)(Activision)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3700868
+    },
+    {
+      "name": "Tony Hawk's Pro Skater 3",
+      "raw_name": "Tony Hawk's Pro Skater 3 (2002-08-20)(Neversoft)(Edge of Reality)(Activision)[N64].7z",
+      "date": "2002-08-20",
+      "url": "http://usf.joshw.info/t/Tony%20Hawk's%20Pro%20Skater%203%20(2002-08-20)(Neversoft)(Edge%20of%20Reality)(Activision)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4296715
+    },
+    {
+      "name": "Tony Hawk's Pro Skater [Tony Hawk's Skateboarding]",
+      "raw_name": "Tony Hawk's Pro Skater [Tony Hawk's Skateboarding] (2000-02-29)(Neversoft)(Edge of Reality)(Activision)[N64].7z",
+      "date": "2000-02-29",
+      "url": "http://usf.joshw.info/t/Tony%20Hawk's%20Pro%20Skater%20%5bTony%20Hawk's%20Skateboarding%5d%20(2000-02-29)(Neversoft)(Edge%20of%20Reality)(Activision)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1791774
+    },
+    {
+      "name": "Top Gear Overdrive [ut]",
+      "raw_name": "Top Gear Overdrive [ut] (1998-11-23)(Snowblind)(Kemco)[N64].7z",
+      "date": "1998-11-23",
+      "url": "http://usf.joshw.info/t/Top%20Gear%20Overdrive%20%5but%5d%20(1998-11-23)(Snowblind)(Kemco)%5bN64%5d.7z",
+      "directory": false,
+      "size": 4766840
+    },
+    {
+      "name": "Toy Story 2 - Buzz Lightyear to the Rescue [ut][rr]",
+      "raw_name": "Toy Story 2 - Buzz Lightyear to the Rescue [ut][rr] (1999-11-30)(Traveller's Tales)(Activision)[N64].7z",
+      "date": "1999-11-30",
+      "url": "http://usf.joshw.info/t/Toy%20Story%202%20-%20Buzz%20Lightyear%20to%20the%20Rescue%20%5but%5d%5brr%5d%20(1999-11-30)(Traveller's%20Tales)(Activision)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1524126
+    },
+    {
+      "name": "Tsumi to Batsu - Hoshi no Keishousha",
+      "raw_name": "Tsumi to Batsu - Hoshi no Keishousha (2000-11-21)(Treasure)(Nintendo)[N64].7z",
+      "date": "2000-11-21",
+      "url": "http://usf.joshw.info/t/Tsumi%20to%20Batsu%20-%20Hoshi%20no%20Keishousha%20(2000-11-21)(Treasure)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 8927134
+    },
+    {
+      "name": "Turok - Dinosaur Hunter [Jikku Senshi Turok]",
+      "raw_name": "Turok - Dinosaur Hunter [Jikku Senshi Turok] (1997-02-28)(Iguana)(Acclaim)[N64].7z",
+      "date": "1997-02-28",
+      "url": "http://usf.joshw.info/t/Turok%20-%20Dinosaur%20Hunter%20%5bJikku%20Senshi%20Turok%5d%20(1997-02-28)(Iguana)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 333952
+    },
+    {
+      "name": "Turok - Rage Wars [ut]",
+      "raw_name": "Turok - Rage Wars [ut] (1999-10-31)(Acclaim Austin)(Acclaim)[N64].7z",
+      "date": "1999-10-31",
+      "url": "http://usf.joshw.info/t/Turok%20-%20Rage%20Wars%20%5but%5d%20(1999-10-31)(Acclaim%20Austin)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 875021
+    },
+    {
+      "name": "Turok 2 - Seeds of Evil [Violence Killer - Turok New Generation]",
+      "raw_name": "Turok 2 - Seeds of Evil [Violence Killer - Turok New Generation] (1998-10-21)(Iguana)(Acclaim)[N64].7z",
+      "date": "1998-10-21",
+      "url": "http://usf.joshw.info/t/Turok%202%20-%20Seeds%20of%20Evil%20%5bViolence%20Killer%20-%20Turok%20New%20Generation%5d%20(1998-10-21)(Iguana)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3226774
+    },
+    {
+      "name": "Turok 3 - Shadow of Oblivion [ut]",
+      "raw_name": "Turok 3 - Shadow of Oblivion [ut] (2000-08-30)(Acclaim Austin)(Acclaim)[N64].7z",
+      "date": "2000-08-30",
+      "url": "http://usf.joshw.info/t/Turok%203%20-%20Shadow%20of%20Oblivion%20%5but%5d%20(2000-08-30)(Acclaim%20Austin)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 3562663
+    },
+    {
+      "name": "Turok 3 - Shadow of Oblivion [ut][rr]",
+      "raw_name": "Turok 3 - Shadow of Oblivion [ut][rr] (2000-08-30)(Acclaim Austin)(Acclaim)[N64].7z",
+      "date": "2000-08-30",
+      "url": "http://usf.joshw.info/t/Turok%203%20-%20Shadow%20of%20Oblivion%20%5but%5d%5brr%5d%20(2000-08-30)(Acclaim%20Austin)(Acclaim)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2669429
+    },
+    {
+      "name": "Ucchannanchan no Honoo no Challenger - Denryuu Iraira-Bou [ut]",
+      "raw_name": "Ucchannanchan no Honoo no Challenger - Denryuu Iraira-Bou [ut] (1997-12-19)(Yuke's)(Hudson)[N64].7z",
+      "date": "1997-12-19",
+      "url": "http://usf.joshw.info/u/Ucchannanchan%20no%20Honoo%20no%20Challenger%20-%20Denryuu%20Iraira-Bou%20%5but%5d%20(1997-12-19)(Yuke's)(Hudson)%5bN64%5d.7z",
+      "directory": false,
+      "size": 707179
+    },
+    {
+      "name": "Vigilante 8",
+      "raw_name": "Vigilante 8 (1998-03-29)(Luxoflux)(Activision)[N64].7z",
+      "date": "1998-03-29",
+      "url": "http://usf.joshw.info/v/Vigilante%208%20(1998-03-29)(Luxoflux)(Activision)%5bN64%5d.7z",
+      "directory": false,
+      "size": 679168
+    },
+    {
+      "name": "Vigilante 8 - 2nd Offense",
+      "raw_name": "Vigilante 8 - 2nd Offense (2000-02-02)(Luxoflux)(Activision)[N64].7z",
+      "date": "2000-02-02",
+      "url": "http://usf.joshw.info/v/Vigilante%208%20-%202nd%20Offense%20(2000-02-02)(Luxoflux)(Activision)%5bN64%5d.7z",
+      "directory": false,
+      "size": 897865
+    },
+    {
+      "name": "Virtual Pro Wrestling 64 [ut]",
+      "raw_name": "Virtual Pro Wrestling 64 [ut] (1997-12-19)(AKI)(Asmik Ace)[N64].7z",
+      "date": "1997-12-19",
+      "url": "http://usf.joshw.info/v/Virtual%20Pro%20Wrestling%2064%20%5but%5d%20(1997-12-19)(AKI)(Asmik%20Ace)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2119770
+    },
+    {
+      "name": "Wave Race 64",
+      "raw_name": "Wave Race 64 (1996-09-27)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1996-09-27",
+      "url": "http://usf.joshw.info/w/Wave%20Race%2064%20(1996-09-27)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 595150
+    },
+    {
+      "name": "Wave Race 64 - Shindou Edition",
+      "raw_name": "Wave Race 64 - Shindou Edition (1997-07-18)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1997-07-18",
+      "url": "http://usf.joshw.info/w/Wave%20Race%2064%20-%20Shindou%20Edition%20(1997-07-18)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 541955
+    },
+    {
+      "name": "WCW vs. nWo Revenge [ut]",
+      "raw_name": "WCW vs. nWo Revenge [ut] (1998-11-30)(AKI)(THQ)[N64].7z",
+      "date": "1998-11-30",
+      "url": "http://usf.joshw.info/w/WCW%20vs.%20nWo%20Revenge%20%5but%5d%20(1998-11-30)(AKI)(THQ)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1351394
+    },
+    {
+      "name": "WCW vs. nWo World Tour",
+      "raw_name": "WCW vs. nWo World Tour (1997-11-30)(AKI)(THQ)[N64].7z",
+      "date": "1997-11-30",
+      "url": "http://usf.joshw.info/w/WCW%20vs.%20nWo%20World%20Tour%20(1997-11-30)(AKI)(THQ)%5bN64%5d.7z",
+      "directory": false,
+      "size": 880308
+    },
+    {
+      "name": "WCW vs. nWo World Tour [ut]",
+      "raw_name": "WCW vs. nWo World Tour [ut] (1997-11-30)(AKI)(THQ)[N64].7z",
+      "date": "1997-11-30",
+      "url": "http://usf.joshw.info/w/WCW%20vs.%20nWo%20World%20Tour%20%5but%5d%20(1997-11-30)(AKI)(THQ)%5bN64%5d.7z",
+      "directory": false,
+      "size": 881938
+    },
+    {
+      "name": "Wetrix",
+      "raw_name": "Wetrix (1998-06-16)(Zed Two)(Ocean)[N64].7z",
+      "date": "1998-06-16",
+      "url": "http://usf.joshw.info/w/Wetrix%20(1998-06-16)(Zed%20Two)(Ocean)%5bN64%5d.7z",
+      "directory": false,
+      "size": 838583
+    },
+    {
+      "name": "WinBack - Covert Operations [WinBack] [Operation WinBack] [ut]",
+      "raw_name": "WinBack - Covert Operations [WinBack] [Operation WinBack] [ut] (1999-09-23)(Omega Force)(Koei)[N64].7z",
+      "date": "1999-09-23",
+      "url": "http://usf.joshw.info/w/WinBack%20-%20Covert%20Operations%20%5bWinBack%5d%20%5bOperation%20WinBack%5d%20%5but%5d%20(1999-09-23)(Omega%20Force)(Koei)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1854063
+    },
+    {
+      "name": "WipeOut 64",
+      "raw_name": "WipeOut 64 (1998-11-03)(Psygnosis)(Midway)[N64].7z",
+      "date": "1998-11-03",
+      "url": "http://usf.joshw.info/w/WipeOut%2064%20(1998-11-03)(Psygnosis)(Midway)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2077050
+    },
+    {
+      "name": "Wonder Project J2 - Koruro no Mori no Josette",
+      "raw_name": "Wonder Project J2 - Koruro no Mori no Josette (1996-11-22)(Givro)(Enix)[N64].7z",
+      "date": "1996-11-22",
+      "url": "http://usf.joshw.info/w/Wonder%20Project%20J2%20-%20Koruro%20no%20Mori%20no%20Josette%20(1996-11-22)(Givro)(Enix)%5bN64%5d.7z",
+      "directory": false,
+      "size": 333426
+    },
+    {
+      "name": "Yoshi's Story [Yoshi Story]",
+      "raw_name": "Yoshi's Story [Yoshi Story] (1997-12-21)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1997-12-21",
+      "url": "http://usf.joshw.info/y/Yoshi's%20Story%20%5bYoshi%20Story%5d%20(1997-12-21)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1632091
+    },
+    {
+      "name": "Yoshi's Story [Yoshi Story] [fixed]",
+      "raw_name": "Yoshi's Story [Yoshi Story] [fixed] (1997-12-21)(Nintendo EAD)(Nintendo)[N64].7z",
+      "date": "1997-12-21",
+      "url": "http://usf.joshw.info/y/Yoshi's%20Story%20%5bYoshi%20Story%5d%20%5bfixed%5d%20(1997-12-21)(Nintendo%20EAD)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1626630
+    },
+    {
+      "name": "Zool - Majuu Tsukai Densetsu",
+      "raw_name": "Zool - Majuu Tsukai Densetsu (1999-06-11)(Pandora Box)(Imagineer)[N64].7z",
+      "date": "1999-06-11",
+      "url": "http://usf.joshw.info/z/Zool%20-%20Majuu%20Tsukai%20Densetsu%20(1999-06-11)(Pandora%20Box)(Imagineer)%5bN64%5d.7z",
+      "directory": false,
+      "size": 1213814
+    },
+    {
+      "name": "007 - The World is not Enough [ut]",
+      "raw_name": "007 - The World is not Enough [ut] (2000-11-01)(Eurocom)(Electronic Arts)[N64].7z",
+      "date": "2000-11-01",
+      "url": "http://usf.joshw.info/zzz_old/007%20-%20The%20World%20is%20not%20Enough%20%5but%5d%20(2000-11-01)(Eurocom)(Electronic%20Arts)%5bN64%5d.7z",
+      "directory": false,
+      "size": 2202967
+    },
+    {
+      "name": "Pokemon Snap [Pocket Monsters Snap]",
+      "raw_name": "Pokemon Snap [Pocket Monsters Snap] (1999-03-21)(HAL Laboratory, Pax Softnica)(Nintendo)[N64].7z",
+      "date": "1999-03-21",
+      "url": "http://usf.joshw.info/zzz_old/Pokemon%20Snap%20%5bPocket%20Monsters%20Snap%5d%20(1999-03-21)(HAL%20Laboratory,%20Pax%20Softnica)(Nintendo)%5bN64%5d.7z",
+      "directory": false,
+      "size": 660631
+    }
+  ],
+  "dir_sizes": {},
+  "scanned_dirs": [
+    "http://usf.joshw.info/zzz_old/",
+    "http://usf.joshw.info/o/",
+    "http://usf.joshw.info/l/",
+    "http://usf.joshw.info/a/",
+    "http://usf.joshw.info/k/",
+    "http://usf.joshw.info/g/",
+    "http://usf.joshw.info/b/",
+    "http://usf.joshw.info/e/",
+    "http://usf.joshw.info/h/",
+    "http://usf.joshw.info/d/",
+    "http://usf.joshw.info/0-9/",
+    "http://usf.joshw.info/n/",
+    "http://usf.joshw.info/t/",
+    "http://usf.joshw.info/m/",
+    "http://usf.joshw.info/v/",
+    "http://usf.joshw.info/q/",
+    "http://usf.joshw.info/j/",
+    "http://usf.joshw.info/y/",
+    "http://usf.joshw.info/w/",
+    "http://usf.joshw.info/r/",
+    "http://usf.joshw.info/f/",
+    "http://usf.joshw.info/i/",
+    "http://usf.joshw.info/",
+    "http://usf.joshw.info/c/",
+    "http://usf.joshw.info/s/",
+    "http://usf.joshw.info/p/",
+    "http://usf.joshw.info/u/",
+    "http://usf.joshw.info/z/"
+  ]
+}

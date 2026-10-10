@@ -1,0 +1,1851 @@
+{
+  "entries": [
+    {
+      "name": "0-9",
+      "raw_name": "0-9",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/0-9/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "a",
+      "raw_name": "a",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/a/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "b",
+      "raw_name": "b",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/b/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "c",
+      "raw_name": "c",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/c/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "d",
+      "raw_name": "d",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/d/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "e",
+      "raw_name": "e",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/e/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "f",
+      "raw_name": "f",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/f/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "g",
+      "raw_name": "g",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/g/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "h",
+      "raw_name": "h",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/h/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "i",
+      "raw_name": "i",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/i/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "j",
+      "raw_name": "j",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/j/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "k",
+      "raw_name": "k",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/k/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "l",
+      "raw_name": "l",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/l/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "m",
+      "raw_name": "m",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/m/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "n",
+      "raw_name": "n",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/n/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "o",
+      "raw_name": "o",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/o/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "p",
+      "raw_name": "p",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/p/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "q",
+      "raw_name": "q",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/q/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "r",
+      "raw_name": "r",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/r/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "s",
+      "raw_name": "s",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/s/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "t",
+      "raw_name": "t",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/t/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "u",
+      "raw_name": "u",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/u/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "v",
+      "raw_name": "v",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/v/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "w",
+      "raw_name": "w",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/w/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "x",
+      "raw_name": "x",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/x/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "y",
+      "raw_name": "y",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/y/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "z",
+      "raw_name": "z",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/z/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "robots.txt",
+      "raw_name": "robots.txt",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/robots.txt",
+      "directory": false,
+      "size": 26
+    },
+    {
+      "name": "4D Sports Boxing",
+      "raw_name": "4D Sports Boxing (1991)(Distinctive Software)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/0-9/4D%20Sports%20Boxing%20(1991)(Distinctive%20Software)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 6589062
+    },
+    {
+      "name": "4D Sports Driving",
+      "raw_name": "4D Sports Driving (1992)(Distinctive Software)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/0-9/4D%20Sports%20Driving%20(1992)(Distinctive%20Software)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 8829581
+    },
+    {
+      "name": "4D Sports Tennis",
+      "raw_name": "4D Sports Tennis (1993)(Victor)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/0-9/4D%20Sports%20Tennis%20(1993)(Victor)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 4992780
+    },
+    {
+      "name": "4th Unit, The - Act 1+2 Towns Linkage",
+      "raw_name": "4th Unit, The - Act 1+2 Towns Linkage (1989)(Data West)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/0-9/4th%20Unit,%20The%20-%20Act%201+2%20Towns%20Linkage%20(1989)(Data%20West)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 30417764
+    },
+    {
+      "name": "4th Unit, The - Act 3 Dual Targets",
+      "raw_name": "4th Unit, The - Act 3 Dual Targets (1989)(Data West)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/0-9/4th%20Unit,%20The%20-%20Act%203%20Dual%20Targets%20(1989)(Data%20West)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 16644936
+    },
+    {
+      "name": "4th Unit, The - Act 4 Zero",
+      "raw_name": "4th Unit, The - Act 4 Zero (1990)(Data West)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/0-9/4th%20Unit,%20The%20-%20Act%204%20Zero%20(1990)(Data%20West)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 38728096
+    },
+    {
+      "name": "4th Unit, The - Act 5 D-Again",
+      "raw_name": "4th Unit, The - Act 5 D-Again (1990)(Data West)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/0-9/4th%20Unit,%20The%20-%20Act%205%20D-Again%20(1990)(Data%20West)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 37885223
+    },
+    {
+      "name": "4th Unit, The - Act 6 MerryGoRound (199x)(Data West)[FMTowns].7z",
+      "raw_name": "4th Unit, The - Act 6 MerryGoRound (199x)(Data West)[FMTowns].7z",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/0-9/4th%20Unit,%20The%20-%20Act%206%20MerryGoRound%20(199x)(Data%20West)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 36869322
+    },
+    {
+      "name": "4th Unit, The - Act 7 Wyatt (199x)(Data West)[FMTowns].7z",
+      "raw_name": "4th Unit, The - Act 7 Wyatt (199x)(Data West)[FMTowns].7z",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/0-9/4th%20Unit,%20The%20-%20Act%207%20Wyatt%20(199x)(Data%20West)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 38840606
+    },
+    {
+      "name": "AD&D - Dragons of Flame",
+      "raw_name": "AD&D - Dragons of Flame (1992)(PonyCanyon)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/a/AD&D%20-%20Dragons%20of%20Flame%20(1992)(PonyCanyon)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 32187033
+    },
+    {
+      "name": "Advantage Tennis",
+      "raw_name": "Advantage Tennis (1992)(Fujitsu)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/a/Advantage%20Tennis%20(1992)(Fujitsu)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 35612632
+    },
+    {
+      "name": "Aeternam",
+      "raw_name": "Aeternam (1993)(Fujitsu)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/a/Aeternam%20(1993)(Fujitsu)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 28480317
+    },
+    {
+      "name": "Afterburner",
+      "raw_name": "Afterburner (1987)(Sega)[FMTowns].7z",
+      "date": "1987",
+      "url": "http://fmtowns.joshw.info/a/Afterburner%20(1987)(Sega)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 32273013
+    },
+    {
+      "name": "Afterburner 2",
+      "raw_name": "Afterburner 2 (1989)(Sega)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/a/Afterburner%202%20(1989)(Sega)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 32271581
+    },
+    {
+      "name": "Afterburner 3",
+      "raw_name": "Afterburner 3 (1992)(Sega)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/a/Afterburner%203%20(1992)(Sega)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 51964627
+    },
+    {
+      "name": "Air Combat II Special",
+      "raw_name": "Air Combat II Special (1993)(Victor)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/a/Air%20Combat%20II%20Special%20(1993)(Victor)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 48295542
+    },
+    {
+      "name": "Alone in the Dark (19xx)(Infogrames)[FMTowns].7z",
+      "raw_name": "Alone in the Dark (19xx)(Infogrames)[FMTowns].7z",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/a/Alone%20in%20the%20Dark%20(19xx)(Infogrames)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 22796085
+    },
+    {
+      "name": "Alone in the Dark 2",
+      "raw_name": "Alone in the Dark 2 (1994)(AMT)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/a/Alone%20in%20the%20Dark%202%20(1994)(AMT)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 41421622
+    },
+    {
+      "name": "Alshark",
+      "raw_name": "Alshark (1991)(Right Stuff)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/a/Alshark%20(1991)(Right%20Stuff)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 41735737
+    },
+    {
+      "name": "American Oudan Ultra Quizz - King of Quiz",
+      "raw_name": "American Oudan Ultra Quizz - King of Quiz (1994)(NTV)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/a/American%20Oudan%20Ultra%20Quizz%20-%20King%20of%20Quiz%20(1994)(NTV)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 137396
+    },
+    {
+      "name": "Angel Halo",
+      "raw_name": "Angel Halo (1996)(Active)[FMTowns].7z",
+      "date": "1996",
+      "url": "http://fmtowns.joshw.info/a/Angel%20Halo%20(1996)(Active)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 108303
+    },
+    {
+      "name": "Aokiohkami to Sirokimejika Genchohishi",
+      "raw_name": "Aokiohkami to Sirokimejika Genchohishi (1993)(Koei)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/a/Aokiohkami%20to%20Sirokimejika%20Genchohishi%20(1993)(Koei)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 71255803
+    },
+    {
+      "name": "Atlas II,The",
+      "raw_name": "Atlas II,The (1993)(Artdink)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/a/Atlas%20II,The%20(1993)(Artdink)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 61973983
+    },
+    {
+      "name": "Ayumi-chan Monogatari Jissha ban",
+      "raw_name": "Ayumi-chan Monogatari Jissha ban (1995)(Byakuya Shobou)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/a/Ayumi-chan%20Monogatari%20Jissha%20ban%20(1995)(Byakuya%20Shobou)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 9453102
+    },
+    {
+      "name": "Bacta 1 + 2",
+      "raw_name": "Bacta 1 + 2 (1996)(Himeya)[FMTowns].7z",
+      "date": "1996",
+      "url": "http://fmtowns.joshw.info/b/Bacta%201%20+%202%20(1996)(Himeya)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 19527664
+    },
+    {
+      "name": "Best Play Baseball, The",
+      "raw_name": "Best Play Baseball, The (1992)(ASCII)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/b/Best%20Play%20Baseball,%20The%20(1992)(ASCII)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 41744542
+    },
+    {
+      "name": "Blue",
+      "raw_name": "Blue (1992)(Kinpukurin)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/b/Blue%20(1992)(Kinpukurin)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 2470809
+    },
+    {
+      "name": "Branmarker 2",
+      "raw_name": "Branmarker 2 (1995)(D.O.)[game disc only].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/b/Branmarker%202%20(1995)(D.O.)%5bgame%20disc%20only%5d.7z",
+      "directory": false,
+      "size": 15590433
+    },
+    {
+      "name": "Bubble Bobble",
+      "raw_name": "Bubble Bobble (1993)(Ving)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/b/Bubble%20Bobble%20(1993)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 20186434
+    },
+    {
+      "name": "Burai Joukan",
+      "raw_name": "Burai Joukan (1990)(Riverhillsoft)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/b/Burai%20Joukan%20(1990)(Riverhillsoft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 73344377
+    },
+    {
+      "name": "Burai Kanketsuhen",
+      "raw_name": "Burai Kanketsuhen (1991)(Riverhillsoft)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/b/Burai%20Kanketsuhen%20(1991)(Riverhillsoft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 50214994
+    },
+    {
+      "name": "Cal Towns",
+      "raw_name": "Cal Towns (1992)(Birdy Soft)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/c/Cal%20Towns%20(1992)(Birdy%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 4997809
+    },
+    {
+      "name": "Can Can Bunny Extra",
+      "raw_name": "Can Can Bunny Extra (1993)(Cocktail Soft)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/c/Can%20Can%20Bunny%20Extra%20(1993)(Cocktail%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 52122676
+    },
+    {
+      "name": "Castles",
+      "raw_name": "Castles (1992)(Victor)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/c/Castles%20(1992)(Victor)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 53316998
+    },
+    {
+      "name": "Centurion",
+      "raw_name": "Centurion (1993)(Victor)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/c/Centurion%20(1993)(Victor)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 60085328
+    },
+    {
+      "name": "Chase H.Q.",
+      "raw_name": "Chase H.Q. (1991)(Ving)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/c/Chase%20H.Q.%20(1991)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 32819248
+    },
+    {
+      "name": "Custom Mate 2 & Itsuka Dokoka de",
+      "raw_name": "Custom Mate 2 & Itsuka Dokoka de (1995-08-25)(Cocktail Soft)[FMTowns].7z",
+      "date": "1995-08-25",
+      "url": "http://fmtowns.joshw.info/c/Custom%20Mate%202%20&%20Itsuka%20Dokoka%20de%20(1995-08-25)(Cocktail%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 267145550
+    },
+    {
+      "name": "CY10 MIDI MUSIC SEQUENCER for TOWNS",
+      "raw_name": "CY10 MIDI MUSIC SEQUENCER for TOWNS (1995)(Kana)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/c/CY10%20MIDI%20MUSIC%20SEQUENCER%20for%20TOWNS%20(1995)(Kana)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 25637
+    },
+    {
+      "name": "Date, The",
+      "raw_name": "Date, The (1990)(Jamp)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/d/Date,%20The%20(1990)(Jamp)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 42701070
+    },
+    {
+      "name": "De.Fana",
+      "raw_name": "De.Fana (1995)(Himeya Soft)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/d/De.Fana%20(1995)(Himeya%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 50906017
+    },
+    {
+      "name": "Dead of the Brain",
+      "raw_name": "Dead of the Brain (1993)(Fairytale)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/d/Dead%20of%20the%20Brain%20(1993)(Fairytale)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 32066709
+    },
+    {
+      "name": "Death Brade",
+      "raw_name": "Death Brade (1992)(KID)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/d/Death%20Brade%20(1992)(KID)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 42065760
+    },
+    {
+      "name": "Deep",
+      "raw_name": "Deep (1995)(Jast)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/d/Deep%20(1995)(Jast)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 70321
+    },
+    {
+      "name": "Derby Stallion",
+      "raw_name": "Derby Stallion (1994)(ASCII)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/d/Derby%20Stallion%20(1994)(ASCII)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 31579411
+    },
+    {
+      "name": "Desire - Haitoku no Rasen",
+      "raw_name": "Desire - Haitoku no Rasen (1994)(C's Ware)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/d/Desire%20-%20Haitoku%20no%20Rasen%20(1994)(C's%20Ware)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 32062607
+    },
+    {
+      "name": "Die Gekirin",
+      "raw_name": "Die Gekirin (1995)(NAC)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/d/Die%20Gekirin%20(1995)(NAC)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 61154060
+    },
+    {
+      "name": "Doki Doki Disk CDban Vol.1",
+      "raw_name": "Doki Doki Disk CDban Vol.1 (1994)(D.O.)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/d/Doki%20Doki%20Disk%20CDban%20Vol.1%20(1994)(D.O.)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 9647895
+    },
+    {
+      "name": "Doll Using (19xx)(Forest)[Unknown].7z",
+      "raw_name": "Doll Using (19xx)(Forest)[Unknown].7z",
+      "date": "",
+      "url": "http://fmtowns.joshw.info/d/Doll%20Using%20(19xx)(Forest)%5bUnknown%5d.7z",
+      "directory": false,
+      "size": 6645
+    },
+    {
+      "name": "DPS Zenbu",
+      "raw_name": "DPS Zenbu (1995)(Alice Soft)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/d/DPS%20Zenbu%20(1995)(Alice%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 32417609
+    },
+    {
+      "name": "Dragon Half",
+      "raw_name": "Dragon Half (1994)(Microcabin)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/d/Dragon%20Half%20(1994)(Microcabin)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 23273575
+    },
+    {
+      "name": "Drakkhen",
+      "raw_name": "Drakkhen (1990)(Fujitsu)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/d/Drakkhen%20(1990)(Fujitsu)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 26990054
+    },
+    {
+      "name": "Dungeon Master",
+      "raw_name": "Dungeon Master (1987)(FTL)[FMTowns].7z",
+      "date": "1987",
+      "url": "http://fmtowns.joshw.info/d/Dungeon%20Master%20(1987)(FTL)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 42712812
+    },
+    {
+      "name": "Dungeon Master - Chaos Strikes Back",
+      "raw_name": "Dungeon Master - Chaos Strikes Back (1990)(Victor)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/d/Dungeon%20Master%20-%20Chaos%20Strikes%20Back%20(1990)(Victor)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 61116591
+    },
+    {
+      "name": "Dungeon Master II - Skull Keep",
+      "raw_name": "Dungeon Master II - Skull Keep (1993)(Victor)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/d/Dungeon%20Master%20II%20-%20Skull%20Keep%20(1993)(Victor)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 23831968
+    },
+    {
+      "name": "Eimmy to Yobanaide",
+      "raw_name": "Eimmy to Yobanaide (1995)(C's Ware)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/e/Eimmy%20to%20Yobanaide%20(1995)(C's%20Ware)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 22914920
+    },
+    {
+      "name": "Elm Knight",
+      "raw_name": "Elm Knight (1992)(Microcabin)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/e/Elm%20Knight%20(1992)(Microcabin)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 66198070
+    },
+    {
+      "name": "Emerald Dragon",
+      "raw_name": "Emerald Dragon (1992)(Glodia)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/e/Emerald%20Dragon%20(1992)(Glodia)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 867705
+    },
+    {
+      "name": "Etsuraku no Gakuen",
+      "raw_name": "Etsuraku no Gakuen (1994)(C's Ware)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/e/Etsuraku%20no%20Gakuen%20(1994)(C's%20Ware)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 42699386
+    },
+    {
+      "name": "Evolution",
+      "raw_name": "Evolution (1989)(System Sacom)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/e/Evolution%20(1989)(System%20Sacom)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 184584790
+    },
+    {
+      "name": "Eye of The Beholder II",
+      "raw_name": "Eye of The Beholder II (1991)(SSI)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/e/Eye%20of%20The%20Beholder%20II%20(1991)(SSI)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 30613965
+    },
+    {
+      "name": "F-BASIC386 Compiler V2.1L10",
+      "raw_name": "F-BASIC386 Compiler V2.1L10 (1990)(Metaware)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/f/F-BASIC386%20Compiler%20V2.1L10%20(1990)(Metaware)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 30873684
+    },
+    {
+      "name": "F29 Retaliator",
+      "raw_name": "F29 Retaliator (1993)(Ocean)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/f/F29%20Retaliator%20(1993)(Ocean)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 22210013
+    },
+    {
+      "name": "Final Blow",
+      "raw_name": "Final Blow (1990-03)(Taito)[FMTowns].7z",
+      "date": "1990-03",
+      "url": "http://fmtowns.joshw.info/f/Final%20Blow%20(1990-03)(Taito)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 114364485
+    },
+    {
+      "name": "Flying Shark",
+      "raw_name": "Flying Shark (1993)(Taito)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/f/Flying%20Shark%20(1993)(Taito)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 37094377
+    },
+    {
+      "name": "FM Towns Free Software Collection 06",
+      "raw_name": "FM Towns Free Software Collection 06 (1993)(Fujitsu)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/f/FM%20Towns%20Free%20Software%20Collection%2006%20(1993)(Fujitsu)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 5945632
+    },
+    {
+      "name": "FM Towns Marty BIOS",
+      "raw_name": "FM Towns Marty BIOS (1993-02-20)(Fujitsu)[FMTowns].7z",
+      "date": "1993-02-20",
+      "url": "http://fmtowns.joshw.info/f/FM%20Towns%20Marty%20BIOS%20(1993-02-20)(Fujitsu)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 56377
+    },
+    {
+      "name": "FM-TOWNS Super Technology Demo 1993",
+      "raw_name": "FM-TOWNS Super Technology Demo 1993 (1993)(Fujitsu)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/f/FM-TOWNS%20Super%20Technology%20Demo%201993%20(1993)(Fujitsu)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 22013112
+    },
+    {
+      "name": "Free Will - Knight of Argent",
+      "raw_name": "Free Will - Knight of Argent (1992)(Sofcom)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/f/Free%20Will%20-%20Knight%20of%20Argent%20(1992)(Sofcom)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 2562576
+    },
+    {
+      "name": "Gakuen King",
+      "raw_name": "Gakuen King (1996)(Alice Soft)[FMTowns].7z",
+      "date": "1996",
+      "url": "http://fmtowns.joshw.info/g/Gakuen%20King%20(1996)(Alice%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 74587373
+    },
+    {
+      "name": "Galaxy Force II",
+      "raw_name": "Galaxy Force II (1990)(CSK)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/g/Galaxy%20Force%20II%20(1990)(CSK)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 53350525
+    },
+    {
+      "name": "Game Technopolis Super Collection 1",
+      "raw_name": "Game Technopolis Super Collection 1 (1992)(Tokuma Shoten)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/g/Game%20Technopolis%20Super%20Collection%201%20(1992)(Tokuma%20Shoten)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 66655885
+    },
+    {
+      "name": "Gekirin",
+      "raw_name": "Gekirin (1994)(NAC)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/g/Gekirin%20(1994)(NAC)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 64981586
+    },
+    {
+      "name": "Giga Motion",
+      "raw_name": "Giga Motion (1995)(InterHeart)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/g/Giga%20Motion%20(1995)(InterHeart)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 72605328
+    },
+    {
+      "name": "Hana no Kioku",
+      "raw_name": "Hana no Kioku (1995)(Foster)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/h/Hana%20no%20Kioku%20(1995)(Foster)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 20609968
+    },
+    {
+      "name": "Heart de Ron",
+      "raw_name": "Heart de Ron (1995)(D.O.)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/h/Heart%20de%20Ron%20(1995)(D.O.)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 55900482
+    },
+    {
+      "name": "Horde, The",
+      "raw_name": "Horde, The (1995)(AMT)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/h/Horde,%20The%20(1995)(AMT)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 43329543
+    },
+    {
+      "name": "Hoshi no Suna Monogatari 3",
+      "raw_name": "Hoshi no Suna Monogatari 3 (1995)(D.O.)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/h/Hoshi%20no%20Suna%20Monogatari%203%20(1995)(D.O.)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 48553208
+    },
+    {
+      "name": "Idol Project",
+      "raw_name": "Idol Project (1995)(KSS)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/i/Idol%20Project%20(1995)(KSS)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 44216506
+    },
+    {
+      "name": "Image Fight",
+      "raw_name": "Image Fight (1990)(Ving)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/i/Image%20Fight%20(1990)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 46243898
+    },
+    {
+      "name": "Incredible Machine, The",
+      "raw_name": "Incredible Machine, The (1994)(Cybelle)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/i/Incredible%20Machine,%20The%20(1994)(Cybelle)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 64724228
+    },
+    {
+      "name": "Indiana Jones and the Last Crusade",
+      "raw_name": "Indiana Jones and the Last Crusade (1989)(Lucasarts)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/i/Indiana%20Jones%20and%20the%20Last%20Crusade%20(1989)(Lucasarts)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 47805046
+    },
+    {
+      "name": "Inju Gakuen",
+      "raw_name": "Inju Gakuen (1994)(Dez Soft Network)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/i/Inju%20Gakuen%20(1994)(Dez%20Soft%20Network)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 40675863
+    },
+    {
+      "name": "Jankirou",
+      "raw_name": "Jankirou (1994)(Fairytale)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/j/Jankirou%20(1994)(Fairytale)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 37202576
+    },
+    {
+      "name": "Jealousy",
+      "raw_name": "Jealousy (1995)(Inter Heart)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/j/Jealousy%20(1995)(Inter%20Heart)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 90330785
+    },
+    {
+      "name": "Joshikousei Shoujohatsunetsu",
+      "raw_name": "Joshikousei Shoujohatsunetsu (1993)(Byakuya Shobou)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/j/Joshikousei%20Shoujohatsunetsu%20(1993)(Byakuya%20Shobou)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 43542715
+    },
+    {
+      "name": "Kigen - Kagayaki no Hasha",
+      "raw_name": "Kigen - Kagayaki no Hasha (1991)(Riverhillsoft)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/k/Kigen%20-%20Kagayaki%20no%20Hasha%20(1991)(Riverhillsoft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 17438128
+    },
+    {
+      "name": "Kings Bounty",
+      "raw_name": "Kings Bounty (1994)(Star Craft)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/k/Kings%20Bounty%20(1994)(Star%20Craft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 51247232
+    },
+    {
+      "name": "Kyan Kyan Collection",
+      "raw_name": "Kyan Kyan Collection (1989)(Icell)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/k/Kyan%20Kyan%20Collection%20(1989)(Icell)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 35080170
+    },
+    {
+      "name": "Last Armageddon CD Special",
+      "raw_name": "Last Armageddon CD Special (1989)(Brain Grey)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/l/Last%20Armageddon%20CD%20Special%20(1989)(Brain%20Grey)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 57699930
+    },
+    {
+      "name": "Last Survivor",
+      "raw_name": "Last Survivor (1990)(CRI)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/l/Last%20Survivor%20(1990)(CRI)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 35627716
+    },
+    {
+      "name": "Legend of Kyrandia 2, The",
+      "raw_name": "Legend of Kyrandia 2, The (1993)(Westwood)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/l/Legend%20of%20Kyrandia%202,%20The%20(1993)(Westwood)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 57897185
+    },
+    {
+      "name": "Legend of Kyrandia, The",
+      "raw_name": "Legend of Kyrandia, The (1992)(Westwood)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/l/Legend%20of%20Kyrandia,%20The%20(1992)(Westwood)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 73993839
+    },
+    {
+      "name": "Legends of Valour",
+      "raw_name": "Legends of Valour (1994-03-10)(U.S. Gold)[FMTowns].7z",
+      "date": "1994-03-10",
+      "url": "http://fmtowns.joshw.info/l/Legends%20of%20Valour%20(1994-03-10)(U.S.%20Gold)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 56745310
+    },
+    {
+      "name": "Lettuce Cooking",
+      "raw_name": "Lettuce Cooking (1989)(Seibu Time)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/l/Lettuce%20Cooking%20(1989)(Seibu%20Time)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 14949529
+    },
+    {
+      "name": "Life & Death",
+      "raw_name": "Life & Death (1992)(Ving)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/l/Life%20&%20Death%20(1992)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 18574255
+    },
+    {
+      "name": "Life & Death II",
+      "raw_name": "Life & Death II (1992)(Ving)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/l/Life%20&%20Death%20II%20(1992)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 39693652
+    },
+    {
+      "name": "Lightning Warrior Raidy",
+      "raw_name": "Lightning Warrior Raidy (1994)(ZyX)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/l/Lightning%20Warrior%20Raidy%20(1994)(ZyX)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 54285387
+    },
+    {
+      "name": "Loom",
+      "raw_name": "Loom (1991)(Lucasfilm)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/l/Loom%20(1991)(Lucasfilm)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 70794416
+    },
+    {
+      "name": "Lunatic Dawn II",
+      "raw_name": "Lunatic Dawn II (1994)(Artdink)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/l/Lunatic%20Dawn%20II%20(1994)(Artdink)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 58936923
+    },
+    {
+      "name": "Mad Paradox",
+      "raw_name": "Mad Paradox (1994)(Queensoft)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/m/Mad%20Paradox%20(1994)(Queensoft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 57061750
+    },
+    {
+      "name": "Mad Stalker",
+      "raw_name": "Mad Stalker (1994-07)(Family Soft)[FMTowns].7z",
+      "date": "1994-07",
+      "url": "http://fmtowns.joshw.info/m/Mad%20Stalker%20(1994-07)(Family%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 168434555
+    },
+    {
+      "name": "Mahjong Houteiraoyui",
+      "raw_name": "Mahjong Houteiraoyui (1995)(Queensoft)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/m/Mahjong%20Houteiraoyui%20(1995)(Queensoft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 61005475
+    },
+    {
+      "name": "Mahou Daisakusen [Sorcerer Striker]",
+      "raw_name": "Mahou Daisakusen [Sorcerer Striker] (1993)(Electronic Arts)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/m/Mahou%20Daisakusen%20%5bSorcerer%20Striker%5d%20(1993)(Electronic%20Arts)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 93897571
+    },
+    {
+      "name": "Manhole, The",
+      "raw_name": "Manhole, The (1990)(Fujitsu)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/m/Manhole,%20The%20(1990)(Fujitsu)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 36307533
+    },
+    {
+      "name": "Marble Madness",
+      "raw_name": "Marble Madness (1991)(Homedata)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/m/Marble%20Madness%20(1991)(Homedata)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 68216170
+    },
+    {
+      "name": "Maria ni Sasageru Ballade",
+      "raw_name": "Maria ni Sasageru Ballade (1995)(Fairytale)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/m/Maria%20ni%20Sasageru%20Ballade%20(1995)(Fairytale)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 81567737
+    },
+    {
+      "name": "Mega Spectre",
+      "raw_name": "Mega Spectre (1993)(Fujitsu)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/m/Mega%20Spectre%20(1993)(Fujitsu)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 39841322
+    },
+    {
+      "name": "Microcosm",
+      "raw_name": "Microcosm (1993)(Psygnosis)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/m/Microcosm%20(1993)(Psygnosis)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 25305385
+    },
+    {
+      "name": "Might and Magic - Clouds of Xeen",
+      "raw_name": "Might and Magic - Clouds of Xeen (1992)(New World Computing)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/m/Might%20and%20Magic%20-%20Clouds%20of%20Xeen%20(1992)(New%20World%20Computing)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 30910466
+    },
+    {
+      "name": "Mirrors",
+      "raw_name": "Mirrors (1992)(Views)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/m/Mirrors%20(1992)(Views)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 67924764
+    },
+    {
+      "name": "Moon Light-chan Rinshan",
+      "raw_name": "Moon Light-chan Rinshan (1993)(D.O.)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/m/Moon%20Light-chan%20Rinshan%20(1993)(D.O.)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 13072632
+    },
+    {
+      "name": "Ms. Detective",
+      "raw_name": "Ms. Detective (1991)(Datawest)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/m/Ms.%20Detective%20(1991)(Datawest)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 18048879
+    },
+    {
+      "name": "Mugen Hoyo",
+      "raw_name": "Mugen Hoyo (1995)(Alice Soft)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/m/Mugen%20Hoyo%20(1995)(Alice%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 63149604
+    },
+    {
+      "name": "Murder Club DX",
+      "raw_name": "Murder Club DX (1992)(Riverhillsoft)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/m/Murder%20Club%20DX%20(1992)(Riverhillsoft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 13191725
+    },
+    {
+      "name": "Muscle Bomber",
+      "raw_name": "Muscle Bomber (1994)(Capcom)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/m/Muscle%20Bomber%20(1994)(Capcom)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 74576120
+    },
+    {
+      "name": "Nadia - The Secret of the Blue Water",
+      "raw_name": "Nadia - The Secret of the Blue Water (1991)(Toho)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/n/Nadia%20-%20The%20Secret%20of%20the%20Blue%20Water%20(1991)(Toho)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 59029
+    },
+    {
+      "name": "Necronomicon",
+      "raw_name": "Necronomicon (1994)(Fairytale Hardcover)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/n/Necronomicon%20(1994)(Fairytale%20Hardcover)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 82589590
+    },
+    {
+      "name": "Nihon no Rekishi Kizoku-hen",
+      "raw_name": "Nihon no Rekishi Kizoku-hen (1990)(CRI)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/n/Nihon%20no%20Rekishi%20Kizoku-hen%20(1990)(CRI)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 85912
+    },
+    {
+      "name": "Nihon no Rekishi Kodai-hen",
+      "raw_name": "Nihon no Rekishi Kodai-hen (1990)(CRI)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/n/Nihon%20no%20Rekishi%20Kodai-hen%20(1990)(CRI)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 267726
+    },
+    {
+      "name": "Nova - Miirareta Shitai",
+      "raw_name": "Nova - Miirareta Shitai (1993)(Cat's Pro)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/n/Nova%20-%20Miirareta%20Shitai%20(1993)(Cat's%20Pro)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 61847082
+    },
+    {
+      "name": "Oshare Cooking",
+      "raw_name": "Oshare Cooking (1989)(Misawa Home)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/o/Oshare%20Cooking%20(1989)(Misawa%20Home)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 3866691
+    },
+    {
+      "name": "Power Dolls 2",
+      "raw_name": "Power Dolls 2 (1995)(Kogado)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/p/Power%20Dolls%202%20(1995)(Kogado)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 50453674
+    },
+    {
+      "name": "Prince of Persia",
+      "raw_name": "Prince of Persia (1992)(Riverhillsoft)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/p/Prince%20of%20Persia%20(1992)(Riverhillsoft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 57668689
+    },
+    {
+      "name": "Pro Student G",
+      "raw_name": "Pro Student G (1993)(Alice Soft)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/p/Pro%20Student%20G%20(1993)(Alice%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 73175247
+    },
+    {
+      "name": "Providenza - Legenda la Spada di Alfa",
+      "raw_name": "Providenza - Legenda la Spada di Alfa (1991)(Sofcom)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/p/Providenza%20-%20Legenda%20la%20Spada%20di%20Alfa%20(1991)(Sofcom)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 5155357
+    },
+    {
+      "name": "Psychic Detective Final - Solitude Gekan",
+      "raw_name": "Psychic Detective Final - Solitude Gekan (1993)(Datawest)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/p/Psychic%20Detective%20Final%20-%20Solitude%20Gekan%20(1993)(Datawest)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 19882889
+    },
+    {
+      "name": "Psychic Detective Final - Solitude Jyoukan",
+      "raw_name": "Psychic Detective Final - Solitude Jyoukan (1992)(Datawest)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/p/Psychic%20Detective%20Final%20-%20Solitude%20Jyoukan%20(1992)(Datawest)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 22320277
+    },
+    {
+      "name": "Psychic Detective Vol. 1 - Invitation",
+      "raw_name": "Psychic Detective Vol. 1 - Invitation (1992)(Datawest)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/p/Psychic%20Detective%20Vol.%201%20-%20Invitation%20(1992)(Datawest)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 16523906
+    },
+    {
+      "name": "Psychic Detective Vol. 2 - Memories",
+      "raw_name": "Psychic Detective Vol. 2 - Memories (1989)(Datawest)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/p/Psychic%20Detective%20Vol.%202%20-%20Memories%20(1989)(Datawest)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 57747855
+    },
+    {
+      "name": "Psychic Detective Vol. 3 - Aya",
+      "raw_name": "Psychic Detective Vol. 3 - Aya (1990-05-26)(Datawest)[FMTowns].7z",
+      "date": "1990-05-26",
+      "url": "http://fmtowns.joshw.info/p/Psychic%20Detective%20Vol.%203%20-%20Aya%20(1990-05-26)(Datawest)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 114500353
+    },
+    {
+      "name": "Psychic Detective Vol. 4 - Orgel",
+      "raw_name": "Psychic Detective Vol. 4 - Orgel (1991)(Datawest)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/p/Psychic%20Detective%20Vol.%204%20-%20Orgel%20(1991)(Datawest)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 27106567
+    },
+    {
+      "name": "Psychic Detective Vol. 5 - Nightmare",
+      "raw_name": "Psychic Detective Vol. 5 - Nightmare (1994)(Datawest)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/p/Psychic%20Detective%20Vol.%205%20-%20Nightmare%20(1994)(Datawest)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 23730367
+    },
+    {
+      "name": "PuLiRuLa",
+      "raw_name": "PuLiRuLa (1994)(Taito)(Ving)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/p/PuLiRuLa%20(1994)(Taito)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 252725631
+    },
+    {
+      "name": "Puyo Puyo",
+      "raw_name": "Puyo Puyo (1994)(CRI)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/p/Puyo%20Puyo%20(1994)(CRI)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 52872556
+    },
+    {
+      "name": "Puyo Puyo",
+      "raw_name": "Puyo Puyo (1994-03-18)(Compile)(CRI)[FMTowns].7z",
+      "date": "1994-03-18",
+      "url": "http://fmtowns.joshw.info/p/Puyo%20Puyo%20(1994-03-18)(Compile)(CRI)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 204213964
+    },
+    {
+      "name": "Queen of Duelist Gaiden, The + Gaiden Alpha",
+      "raw_name": "Queen of Duelist Gaiden, The + Gaiden Alpha (1994-01-29)(Agumix)[FMTowns].7z",
+      "date": "1994-01-29",
+      "url": "http://fmtowns.joshw.info/q/Queen%20of%20Duelist%20Gaiden,%20The%20+%20Gaiden%20Alpha%20(1994-01-29)(Agumix)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 325747654
+    },
+    {
+      "name": "Queen of Duelist, The",
+      "raw_name": "Queen of Duelist, The (1993-02-09)(Agumix)[FMTowns].7z",
+      "date": "1993-02-09",
+      "url": "http://fmtowns.joshw.info/q/Queen%20of%20Duelist,%20The%20(1993-02-09)(Agumix)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 338202832
+    },
+    {
+      "name": "Raiden Densetsu",
+      "raw_name": "Raiden Densetsu (1991)(KID)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/r/Raiden%20Densetsu%20(1991)(KID)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 64513860
+    },
+    {
+      "name": "Rainbow Islands Extra",
+      "raw_name": "Rainbow Islands Extra (1992)(Ving)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/r/Rainbow%20Islands%20Extra%20(1992)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 36697963
+    },
+    {
+      "name": "Rance 3 - Fall of Lizath",
+      "raw_name": "Rance 3 - Fall of Lizath (1991)(Alice Soft)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/r/Rance%203%20-%20Fall%20of%20Lizath%20(1991)(Alice%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 74753473
+    },
+    {
+      "name": "Rance 4 - The Church's Heritage",
+      "raw_name": "Rance 4 - The Church's Heritage (1994)(Alice Soft)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/r/Rance%204%20-%20The%20Church's%20Heritage%20(1994)(Alice%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 48335860
+    },
+    {
+      "name": "Rance 4.1 - Help the Drug Company",
+      "raw_name": "Rance 4.1 - Help the Drug Company (1995)(Alice Soft)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/r/Rance%204.1%20-%20Help%20the%20Drug%20Company%20(1995)(Alice%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 82892447
+    },
+    {
+      "name": "Rance 4.2 - Angel Edition",
+      "raw_name": "Rance 4.2 - Angel Edition (1995)(Alice Soft)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/r/Rance%204.2%20-%20Angel%20Edition%20(1995)(Alice%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 95341947
+    },
+    {
+      "name": "Rayxanber",
+      "raw_name": "Rayxanber (1990)(Data West)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/r/Rayxanber%20(1990)(Data%20West)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 54744899
+    },
+    {
+      "name": "Record of Lodoss War",
+      "raw_name": "Record of Lodoss War (1991)(Humming Bird)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/r/Record%20of%20Lodoss%20War%20(1991)(Humming%20Bird)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 14133176
+    },
+    {
+      "name": "Rejection Dennou Shoujo",
+      "raw_name": "Rejection Dennou Shoujo (1992)(Takeru)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/r/Rejection%20Dennou%20Shoujo%20(1992)(Takeru)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 23368041
+    },
+    {
+      "name": "Return to Zork",
+      "raw_name": "Return to Zork (1994)(Data West)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/r/Return%20to%20Zork%20(1994)(Data%20West)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 29857411
+    },
+    {
+      "name": "Ring Out!!",
+      "raw_name": "Ring Out!! (1995)(ZyX)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/r/Ring%20Out!!%20(1995)(ZyX)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 40488947
+    },
+    {
+      "name": "Sayaka",
+      "raw_name": "Sayaka (1994)(Ides)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/s/Sayaka%20(1994)(Ides)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 81921134
+    },
+    {
+      "name": "Schwarzschild",
+      "raw_name": "Schwarzschild (1991)(Kogado)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/s/Schwarzschild%20(1991)(Kogado)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 27188028
+    },
+    {
+      "name": "Schwarzschild IV",
+      "raw_name": "Schwarzschild IV (1993)(Kogado)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/s/Schwarzschild%20IV%20(1993)(Kogado)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 82119008
+    },
+    {
+      "name": "Shadow of the Beast",
+      "raw_name": "Shadow of the Beast (1994)(Psygnosis)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/s/Shadow%20of%20the%20Beast%20(1994)(Psygnosis)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 30677781
+    },
+    {
+      "name": "Shounen Magazine History",
+      "raw_name": "Shounen Magazine History (1992)(Datt Japan)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/s/Shounen%20Magazine%20History%20(1992)(Datt%20Japan)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 39468204
+    },
+    {
+      "name": "Silent Mobius",
+      "raw_name": "Silent Mobius (1991)(Gainax)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/s/Silent%20Mobius%20(1991)(Gainax)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 130592
+    },
+    {
+      "name": "Sim City",
+      "raw_name": "Sim City (1990)(Maxis)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/s/Sim%20City%20(1990)(Maxis)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 37813715
+    },
+    {
+      "name": "Sim Earth",
+      "raw_name": "Sim Earth (1993)(Maxis)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/s/Sim%20Earth%20(1993)(Maxis)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 37737905
+    },
+    {
+      "name": "Sim Farm",
+      "raw_name": "Sim Farm (1994)(Fujitsu)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/s/Sim%20Farm%20(1994)(Fujitsu)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 50549
+    },
+    {
+      "name": "Sotsugyou '93 - Graduation",
+      "raw_name": "Sotsugyou '93 - Graduation (1993)(Headroom - JHV)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/s/Sotsugyou%20'93%20-%20Graduation%20(1993)(Headroom%20-%20JHV)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 14170358
+    },
+    {
+      "name": "Splatterhouse",
+      "raw_name": "Splatterhouse (1992)(Ving)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/s/Splatterhouse%20(1992)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 71594220
+    },
+    {
+      "name": "Star Cruiser II",
+      "raw_name": "Star Cruiser II (1994)(JHV)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/s/Star%20Cruiser%20II%20(1994)(JHV)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 27905135
+    },
+    {
+      "name": "Super Real Mahjong PII + PIII",
+      "raw_name": "Super Real Mahjong PII + PIII (1992)(Ving)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/s/Super%20Real%20Mahjong%20PII%20+%20PIII%20(1992)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 14587613
+    },
+    {
+      "name": "Super Real Mahjong PIV",
+      "raw_name": "Super Real Mahjong PIV (1994)(Ving)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/s/Super%20Real%20Mahjong%20PIV%20(1994)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 84337543
+    },
+    {
+      "name": "Super Shanghai II - Dragons Eye",
+      "raw_name": "Super Shanghai II - Dragons Eye (1991)(Hot-B)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/s/Super%20Shanghai%20II%20-%20Dragons%20Eye%20(1991)(Hot-B)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 62041894
+    },
+    {
+      "name": "Super Shooting Towns",
+      "raw_name": "Super Shooting Towns (1991)(Amorphous)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/s/Super%20Shooting%20Towns%20(1991)(Amorphous)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 48870842
+    },
+    {
+      "name": "Super Street Fighter II",
+      "raw_name": "Super Street Fighter II (1993)(Capcom)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/s/Super%20Street%20Fighter%20II%20(1993)(Capcom)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 57710469
+    },
+    {
+      "name": "T.D.F. - Terrestrial Defense Force",
+      "raw_name": "T.D.F. - Terrestrial Defense Force (1990)(Data West)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/t/T.D.F.%20-%20Terrestrial%20Defense%20Force%20(1990)(Data%20West)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 22007174
+    },
+    {
+      "name": "Taito Chase H.Q.",
+      "raw_name": "Taito Chase H.Q. (1993)(Taito)(Ving)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/t/Taito%20Chase%20H.Q.%20(1993)(Taito)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 156393002
+    },
+    {
+      "name": "Takamizawa Kyousuke Nekketsu!! Kyouikukenshu",
+      "raw_name": "Takamizawa Kyousuke Nekketsu!! Kyouikukenshu (1995)(ZyX)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/t/Takamizawa%20Kyousuke%20Nekketsu!!%20Kyouikukenshu%20(1995)(ZyX)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 286844085
+    },
+    {
+      "name": "Take the A-Train IV",
+      "raw_name": "Take the A-Train IV (1993)(Artdink)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/t/Take%20the%20A-Train%20IV%20(1993)(Artdink)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 45735065
+    },
+    {
+      "name": "Toushin Toshi II - Soshite Sorekara",
+      "raw_name": "Toushin Toshi II - Soshite Sorekara (1995)(Alice Soft)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/t/Toushin%20Toshi%20II%20-%20Soshite%20Sorekara%20(1995)(Alice%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 42708225
+    },
+    {
+      "name": "Towns Hyakunin Issyu",
+      "raw_name": "Towns Hyakunin Issyu (1989)(Fujitsu)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/t/Towns%20Hyakunin%20Issyu%20(1989)(Fujitsu)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 37840
+    },
+    {
+      "name": "Truxton II",
+      "raw_name": "Truxton II (1993)(Ving)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/t/Truxton%20II%20(1993)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 36449689
+    },
+    {
+      "name": "Turbo OutRun",
+      "raw_name": "Turbo OutRun (1989)(SEGA)[FMTowns].7z",
+      "date": "1989",
+      "url": "http://fmtowns.joshw.info/t/Turbo%20OutRun%20(1989)(SEGA)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 211287749
+    },
+    {
+      "name": "Uchuu Kaitou Funny Bee",
+      "raw_name": "Uchuu Kaitou Funny Bee (1994)(Alice Soft)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/u/Uchuu%20Kaitou%20Funny%20Bee%20(1994)(Alice%20Soft)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 71730445
+    },
+    {
+      "name": "Ultima Trilogy 1-3",
+      "raw_name": "Ultima Trilogy 1-3 (1990)(Origin)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/u/Ultima%20Trilogy%201-3%20(1990)(Origin)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 16550010
+    },
+    {
+      "name": "Ultima Underworld - The Stygian Abyss",
+      "raw_name": "Ultima Underworld - The Stygian Abyss (1993)(Origin)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/u/Ultima%20Underworld%20-%20The%20Stygian%20Abyss%20(1993)(Origin)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 1592025
+    },
+    {
+      "name": "Ultima V - Warriors of Destiny",
+      "raw_name": "Ultima V - Warriors of Destiny (1988)(Origin)[FMTowns].7z",
+      "date": "1988",
+      "url": "http://fmtowns.joshw.info/u/Ultima%20V%20-%20Warriors%20of%20Destiny%20(1988)(Origin)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 12776082
+    },
+    {
+      "name": "Uncharted Waters",
+      "raw_name": "Uncharted Waters (1990)(Koei)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/u/Uncharted%20Waters%20(1990)(Koei)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 63698308
+    },
+    {
+      "name": "Vain Dream",
+      "raw_name": "Vain Dream (1993)(Glodia)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/v/Vain%20Dream%20(1993)(Glodia)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 6168738
+    },
+    {
+      "name": "Vain Dream II",
+      "raw_name": "Vain Dream II (1993)(Glodia)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/v/Vain%20Dream%20II%20(1993)(Glodia)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 388755
+    },
+    {
+      "name": "Vanishing Point - Tenshi no Kieta Machi",
+      "raw_name": "Vanishing Point - Tenshi no Kieta Machi (1995-10-25)(Tiara)[FMTowns].7z",
+      "date": "1995-10-25",
+      "url": "http://fmtowns.joshw.info/v/Vanishing%20Point%20-%20Tenshi%20no%20Kieta%20Machi%20(1995-10-25)(Tiara)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 198203
+    },
+    {
+      "name": "Vastness",
+      "raw_name": "Vastness (1993)(CD Bros)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/v/Vastness%20(1993)(CD%20Bros)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 672612
+    },
+    {
+      "name": "Volfied",
+      "raw_name": "Volfied (1991)(Ving)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/v/Volfied%20(1991)(Ving)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 17727591
+    },
+    {
+      "name": "Wakoku Seiha Den",
+      "raw_name": "Wakoku Seiha Den (1994)(Mic)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/w/Wakoku%20Seiha%20Den%20(1994)(Mic)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 44899
+    },
+    {
+      "name": "Wing Commander + Secret Missions",
+      "raw_name": "Wing Commander + Secret Missions (1990)(Origin)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/w/Wing%20Commander%20+%20Secret%20Missions%20(1990)(Origin)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 77720403
+    },
+    {
+      "name": "Wing Commander II and Special Operations",
+      "raw_name": "Wing Commander II and Special Operations (1991)(Origin)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/w/Wing%20Commander%20II%20and%20Special%20Operations%20(1991)(Origin)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 69389601
+    },
+    {
+      "name": "Wizardry V - Heart of the Maelstrom",
+      "raw_name": "Wizardry V - Heart of the Maelstrom (1988)(Sir-Tech)[FMTowns].7z",
+      "date": "1988",
+      "url": "http://fmtowns.joshw.info/w/Wizardry%20V%20-%20Heart%20of%20the%20Maelstrom%20(1988)(Sir-Tech)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 28505426
+    },
+    {
+      "name": "Wizardry VI - Bane of the Cosmic Forge",
+      "raw_name": "Wizardry VI - Bane of the Cosmic Forge (1990)(Sir-Tech)[FMTowns].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/w/Wizardry%20VI%20-%20Bane%20of%20the%20Cosmic%20Forge%20(1990)(Sir-Tech)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 19085416
+    },
+    {
+      "name": "Wrestle Angels 3",
+      "raw_name": "Wrestle Angels 3 (1994)(Great)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/w/Wrestle%20Angels%203%20(1994)(Great)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 29204
+    },
+    {
+      "name": "Wrestle Angels Special",
+      "raw_name": "Wrestle Angels Special (1994)(Great)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/w/Wrestle%20Angels%20Special%20(1994)(Great)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 89449
+    },
+    {
+      "name": "Xak II - Rising of the Redmoon",
+      "raw_name": "Xak II - Rising of the Redmoon (1991)(Microcabin)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/x/Xak%20II%20-%20Rising%20of%20the%20Redmoon%20(1991)(Microcabin)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 93682447
+    },
+    {
+      "name": "Xak III - The Eternal Recurrence",
+      "raw_name": "Xak III - The Eternal Recurrence (1993)(Microcabin)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/x/Xak%20III%20-%20The%20Eternal%20Recurrence%20(1993)(Microcabin)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 20857095
+    },
+    {
+      "name": "Xenon ~Mugen no Shitai~",
+      "raw_name": "Xenon ~Mugen no Shitai~ (1994)(C's Ware)[FMTowns].7z",
+      "date": "1994",
+      "url": "http://fmtowns.joshw.info/x/Xenon%20~Mugen%20no%20Shitai~%20(1994)(C's%20Ware)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 14372606
+    },
+    {
+      "name": "Yami no Ketsuzoku Special",
+      "raw_name": "Yami no Ketsuzoku Special (1991)(System Sacom)[FMTowns].7z",
+      "date": "1991",
+      "url": "http://fmtowns.joshw.info/y/Yami%20no%20Ketsuzoku%20Special%20(1991)(System%20Sacom)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 85386272
+    },
+    {
+      "name": "Yumimi Mix",
+      "raw_name": "Yumimi Mix (1993)(CRI)[FMTowns].7z",
+      "date": "1993",
+      "url": "http://fmtowns.joshw.info/y/Yumimi%20Mix%20(1993)(CRI)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 8105200
+    },
+    {
+      "name": "Zak McKracken and The Alien Mindbenders",
+      "raw_name": "Zak McKracken and The Alien Mindbenders (1990)(Lucasarts)[Track24 bad].7z",
+      "date": "1990",
+      "url": "http://fmtowns.joshw.info/z/Zak%20McKracken%20and%20The%20Alien%20Mindbenders%20(1990)(Lucasarts)%5bTrack24%20bad%5d.7z",
+      "directory": false,
+      "size": 65607759
+    },
+    {
+      "name": "Zan 2 - Towns Special",
+      "raw_name": "Zan 2 - Towns Special (1992)(Wolfteam)[FMTowns].7z",
+      "date": "1992",
+      "url": "http://fmtowns.joshw.info/z/Zan%202%20-%20Towns%20Special%20(1992)(Wolfteam)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 28739571
+    },
+    {
+      "name": "Zatsuon Ryouiki",
+      "raw_name": "Zatsuon Ryouiki (1995)(D.O.)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/z/Zatsuon%20Ryouiki%20(1995)(D.O.)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 60804615
+    },
+    {
+      "name": "Zenith",
+      "raw_name": "Zenith (1995)(Himeya)[FMTowns].7z",
+      "date": "1995",
+      "url": "http://fmtowns.joshw.info/z/Zenith%20(1995)(Himeya)%5bFMTowns%5d.7z",
+      "directory": false,
+      "size": 17119830
+    }
+  ],
+  "dir_sizes": {},
+  "scanned_dirs": [
+    "http://fmtowns.joshw.info/x/",
+    "http://fmtowns.joshw.info/w/",
+    "http://fmtowns.joshw.info/v/",
+    "http://fmtowns.joshw.info/g/",
+    "http://fmtowns.joshw.info/e/",
+    "http://fmtowns.joshw.info/m/",
+    "http://fmtowns.joshw.info/i/",
+    "http://fmtowns.joshw.info/d/",
+    "http://fmtowns.joshw.info/b/",
+    "http://fmtowns.joshw.info/t/",
+    "http://fmtowns.joshw.info/k/",
+    "http://fmtowns.joshw.info/l/",
+    "http://fmtowns.joshw.info/q/",
+    "http://fmtowns.joshw.info/",
+    "http://fmtowns.joshw.info/a/",
+    "http://fmtowns.joshw.info/h/",
+    "http://fmtowns.joshw.info/n/",
+    "http://fmtowns.joshw.info/c/",
+    "http://fmtowns.joshw.info/r/",
+    "http://fmtowns.joshw.info/o/",
+    "http://fmtowns.joshw.info/s/",
+    "http://fmtowns.joshw.info/u/",
+    "http://fmtowns.joshw.info/0-9/",
+    "http://fmtowns.joshw.info/z/",
+    "http://fmtowns.joshw.info/j/",
+    "http://fmtowns.joshw.info/f/",
+    "http://fmtowns.joshw.info/p/",
+    "http://fmtowns.joshw.info/y/"
+  ]
+}
