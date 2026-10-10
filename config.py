@@ -41,7 +41,7 @@ DATE_PATTERN = re.compile(r'[\(\[](\d{4}(?:-\d{2}(?:-\d{2})?)?)[\)\]]')
 
 def is_emulated_file(filepath):
     ext = os.path.splitext(filepath)[1].lower()
-    return ext in {".spc", ".gbs", ".hes", ".kss", ".vgm", ".vgz", ".gym", ".ay", ".sap", ".nsf", ".nsfe", ".usf", ".miniusf"}
+    return ext in {".spc", ".gbs", ".hes", ".kss", ".vgm", ".vgz", ".gym", ".ay", ".sap", ".nsf", ".nsfe", ".usf", ".miniusf", ".sid"}
 
 def get_cache_directory():
     system_name = platform.system()

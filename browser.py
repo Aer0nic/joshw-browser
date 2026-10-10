@@ -14,8 +14,8 @@ from tkinter import ttk, filedialog, messagebox
 
 from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, is_emulated_file, format_size
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
-from players import VGMStreamPlayerWindow, MPVPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path, start_vgmstream_installation, start_lazyusf_installation
-from downloaders import DownloadProgressWindow, IndexAllWindow
+from players import VGMStreamPlayerWindow, MPVPlayerWindow, SIDPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path
+from downloaders import DownloadProgressWindow, IndexAllWindow, IndexPremadeWindow, install_dependencies_prompt
 
 
 class ToolTip:
@@ -68,59 +68,65 @@ class ToolTip:
 
 
 class JoshWBrowser(tk.Tk):
-    def has_lazyusf_installed(self):
-        return (
-            shutil.which("lazyusf") is not None 
-            or os.path.exists("/usr/local/bin/lazyusf") 
-            or os.path.exists("/usr/bin/lazyusf")
-            or os.path.exists(os.path.join(get_cache_directory(), "lazyusf"))
-        )
+    def check_dependency_status(self, dep_name):
+        cache_dir = get_cache_directory()
+        if dep_name == "lazyusf":
+            return (
+                shutil.which("lazyusf") is not None
+                or os.path.exists(os.path.join(cache_dir, "lazyusf"))
+            )
+        elif dep_name == "vgmstream":
+            return (
+                shutil.which("vgmstream123") is not None
+                or os.path.exists(os.path.join(cache_dir, "vgmstream123"))
+            )
+        elif dep_name == "sidplayfp":
+            return shutil.which("sidplayfp") is not None
+        elif dep_name == "nsf_tracks":
+            return (
+                shutil.which("nsf_tracks") is not None
+                or os.path.exists(os.path.join(cache_dir, "nsf_tracks"))
+            )
+        elif dep_name == "fluidsynth":
+            return (
+                shutil.which("fluidsynth") is not None
+                and os.path.exists(os.path.join(cache_dir, "FluidR3_GM.sf2"))
+            )
+        return False
 
-    def has_vgmstream_installed(self):
-        return (
-            shutil.which("vgmstream123") is not None 
-            or os.path.exists("/usr/local/bin/vgmstream123") 
-            or os.path.exists("/usr/bin/vgmstream123")
-            or os.path.exists(os.path.join(get_cache_directory(), "vgmstream123"))
-        )
+    def update_dependencies_submenu(self):
+        self.deps_menu.delete(0, tk.END)
+        deps = [
+            ("lazyusf", "lazyusf"),
+            ("vgmstream", "vgmstream123"),
+            ("sidplayfp", "sidplayfp"),
+            ("nsf_tracks", "nsf_tracks"),
+            ("fluidsynth", "FluidSynth & Soundfont")
+        ]
+        for key, label in deps:
+            installed = self.check_dependency_status(key)
+            display_text = f"✓ {label}" if installed else f"  {label}"
+            self.deps_menu.add_command(
+                label=display_text, 
+                state="disabled",
+                foreground="green" if installed else "black"
+            )
 
-    def has_fluidsynth_installed(self):
-        has_bin = (
-            shutil.which("fluidsynth") is not None
-            or os.path.exists("/bin/fluidsynth")
-            or os.path.exists("/usr/bin/fluidsynth")
-            or os.path.exists("/usr/local/bin/fluidsynth")
-        )
-        has_sf2 = os.path.exists(os.path.join(get_cache_directory(), "FluidR3_GM.sf2"))
-        return has_bin and has_sf2
+    def download_premade_indexes_prompt(self):
+        cache_dir = get_cache_directory()
+        existing_caches = [f for f in os.listdir(cache_dir) if f.endswith(".json") and f != "settings.json" and f != "search_history.json"]
+        
+        if existing_caches:
+            ans = messagebox.askokcancel("Are you sure?", "Are you sure? These are likely to be outdated!")
+            if not ans:
+                return
+            for f in existing_caches:
+                try:
+                    os.remove(os.path.join(cache_dir, f))
+                except Exception:
+                    pass
 
-    def install_fluidsynth_prompt(self):
-        ans = messagebox.askokcancel(
-            "FluidSynth Required",
-            "Midi playback requires Fluidsynth and a soundfont. Hit the OK button to open a terminal window to install both. Hit Cancel to skip this step. You can try again at any time from the option menu!"
-        )
-        if ans:
-            try:
-                sf2_path = os.path.join(get_cache_directory(), "FluidR3_GM.sf2")
-                install_cmd = f"sudo apt update && sudo apt install -y fluidsynth && wget -O '{sf2_path}' 'https://github.com/pianobooster/fluid-soundfont/releases/download/v3.1/FluidR3_GM.sf2'"
-                
-                terminals = ["gnome-terminal", "konsole", "xfce4-terminal", "xterm"]
-                launched = False
-                for term in terminals:
-                    if shutil.which(term):
-                        if term == "gnome-terminal":
-                            subprocess.Popen([term, "--", "bash", "-c", f"{install_cmd}; echo 'Done. Press Enter to close.'; read"])
-                        elif term == "konsole":
-                            subprocess.Popen([term, "-e", "bash", "-c", f"{install_cmd}; echo 'Done. Press Enter to close.'; read"])
-                        else:
-                            subprocess.Popen([term, "-e", f"bash -c \"{install_cmd}; echo 'Done. Press Enter to close.'; read\""])
-                        launched = True
-                        break
-                if not launched:
-                    subprocess.Popen(["x-terminal-emulator", "-e", install_cmd])
-                messagebox.showinfo("Installation Started", "Terminal window opened to install FluidSynth and download the soundfont.")
-            except Exception as e:
-                messagebox.showerror("Error", f"Could not open terminal:\n\n{e}")
+        IndexPremadeWindow(self, show_steps=self.shift_pressed)
 
     def __init__(self):
         super().__init__()
@@ -128,6 +134,12 @@ class JoshWBrowser(tk.Tk):
         self.geometry("1280x760")
         self.minsize(850, 560)
         self.protocol("WM_DELETE_WINDOW", self.on_close)
+
+        self.shift_pressed = False
+        self.bind("<KeyPress-Shift_L>", lambda e: setattr(self, "shift_pressed", True))
+        self.bind("<KeyPress-Shift_R>", lambda e: setattr(self, "shift_pressed", True))
+        self.bind("<KeyRelease-Shift_L>", lambda e: setattr(self, "shift_pressed", False))
+        self.bind("<KeyRelease-Shift_R>", lambda e: setattr(self, "shift_pressed", False))
 
         self.current_url = None
         self.current_entries = []
@@ -213,24 +225,16 @@ class JoshWBrowser(tk.Tk):
         self.options_dropdown.add_checkbutton(label="Enable Selection Checkboxes", variable=self.selection_checkboxes_enabled, command=self.on_toggle_checkboxes)
         self.options_dropdown.add_checkbutton(label="Keep Download Window Open After Completion", variable=self.keep_download_window_open)
         self.options_dropdown.add_command(label="Set Default Load Music Folder...", command=self.set_default_load_music_dir)
+        self.options_dropdown.add_command(label="Download Premade Indexes (may be outdated!)", command=self.download_premade_indexes_prompt)
         
-        # VGMstream option with installed status
-        vgm_installed = self.has_vgmstream_installed()
-        vgm_label = "Install VGMstream (installed)" if vgm_installed else "Install VGMstream"
-        vgm_state = "disabled" if vgm_installed else "normal"
-        self.options_dropdown.add_command(label=vgm_label, command=start_vgmstream_installation, state=vgm_state)
+        self.install_deps_item_index = self.options_dropdown.add_command(
+            label="Install Dependencies", 
+            command=lambda: install_dependencies_prompt(self)
+        )
 
-        # lazyusf option with installed status
-        usf_installed = self.has_lazyusf_installed()
-        usf_label = "Install lazyusf (installed)" if usf_installed else "Install lazyusf"
-        usf_state = "disabled" if usf_installed else "normal"
-        self.options_dropdown.add_command(label=usf_label, command=start_lazyusf_installation, state=usf_state)
-
-        # FluidSynth option with installed status
-        fluid_installed = self.has_fluidsynth_installed()
-        fluid_label = "Install FluidSynth & Soundfont (installed)" if fluid_installed else "Install FluidSynth & Soundfont"
-        fluid_state = "disabled" if fluid_installed else "normal"
-        self.options_dropdown.add_command(label=fluid_label, command=self.install_fluidsynth_prompt, state=fluid_state)
+        self.deps_menu = tk.Menu(self.options_dropdown, tearoff=0)
+        self.options_dropdown.add_cascade(label="Dependencies", menu=self.deps_menu)
+        self.update_dependencies_submenu()
 
         options_menu_btn["menu"] = self.options_dropdown
 
@@ -242,7 +246,6 @@ class JoshWBrowser(tk.Tk):
         self.search_combo.bind("<Return>", lambda event: self.on_search_submitted())
 
         ttk.Button(archive_frame, text="Clear", command=self.clear_search).pack(side="left", padx=2)
-        ttk.Button(archive_frame, text="Clear History", command=self.clear_search_history).pack(side="left", padx=2)
 
         progress_container = ttk.Frame(self, padding=(8, 0, 8, 4))
         progress_container.pack(fill="x")
@@ -321,7 +324,7 @@ class JoshWBrowser(tk.Tk):
             title="Select Music File",
             initialdir=self.default_load_music_dir.get(),
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID"),
                 ("All Files", "*.*")
             ]
         )
@@ -468,16 +471,19 @@ class JoshWBrowser(tk.Tk):
             ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
             ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra"
         }
-        if ext in (".mid", ".midi"):
-            if not self.has_fluidsynth_installed():
-                self.install_fluidsynth_prompt()
+        if ext == ".sid":
+            SIDPlayerWindow(self, audio_file)
+            return
+        elif ext in (".mid", ".midi"):
+            if not self.check_dependency_status("fluidsynth"):
+                messagebox.showerror("FluidSynth Required", "Midi playback requires FluidSynth and soundfont. Please install dependencies.")
                 return
             MPVPlayerWindow(self, audio_file)
             return
         elif ext in {".miniusf", ".usf"}:
             lazyusf_bin = get_lazyusf_path()
             if not lazyusf_bin or (not shutil.which(lazyusf_bin) and not os.path.exists(lazyusf_bin)):
-                messagebox.showerror("lazyusf Not Found", "lazyusf not found! Please install it from the Options menu.")
+                messagebox.showerror("lazyusf Not Found", "lazyusf not found! Please install dependencies.")
                 return
             folder, filename = os.path.dirname(audio_file), os.path.basename(audio_file)
             au_filepath = os.path.join(folder, filename + ".au")

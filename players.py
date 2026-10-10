@@ -26,6 +26,184 @@ def get_lazyusf_path():
     return "lazyusf"
 
 
+class SIDPlayerWindow(tk.Toplevel):
+    """Controller for streaming/playing .sid files using sidplayfp with subtrack parsing, playlist, and simulated keypresses."""
+    def __init__(self, parent, audio_file):
+        super().__init__(parent)
+        self.parent = parent
+        self.audio_file = audio_file
+        self.sid_proc = None
+        self.is_paused = False
+        self.subtracks = [1]
+        self.current_subtrack_idx = 0
+
+        self.status_var = tk.StringVar(value="Playing")
+        self.track_var = tk.StringVar()
+
+        self.parse_sid_subtracks()
+        self.build_ui()
+        self.protocol("WM_DELETE_WINDOW", self.close)
+        self.play_current_subtrack()
+
+    def parse_sid_subtracks(self):
+        """Checks the .sid file header for song count / subtracks and populates subtracks list."""
+        try:
+            with open(self.audio_file, "rb") as f:
+                header = f.read(0x7e)
+                if header.startswith(b'PSID') or header.startswith(b'RSID'):
+                    songs_count = int.from_bytes(header[0x0e:0x10], byteorder='big')
+                    if songs_count > 1:
+                        self.subtracks = list(range(1, songs_count + 1))
+        except Exception:
+            pass
+
+    def build_ui(self):
+        filename = os.path.basename(self.audio_file)
+        self.title(f"sidplayfp Controller - {filename}")
+        self.geometry("440x360")
+        self.minsize(400, 320)
+        self.transient(self.parent)
+
+        padding = ttk.Frame(self, padding=12)
+        padding.pack(fill="both", expand=True)
+
+        ttk.Label(padding, text=f"Now Playing (SID):\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=410).pack(pady=(0, 6))
+        
+        info_frame = ttk.Frame(padding)
+        info_frame.pack(fill="x", pady=(0, 6))
+        ttk.Label(info_frame, textvariable=self.status_var, font=("Arial", 9)).pack(side="left", padx=5)
+        ttk.Label(info_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="right", padx=5)
+        self.update_track_label()
+
+        # Playlist / Subtracks section
+        list_frame = ttk.LabelFrame(padding, text="Subtracks Playlist", padding=6)
+        list_frame.pack(fill="both", expand=True, pady=(0, 10))
+
+        self.subtrack_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
+        self.subtrack_listbox.pack(side="left", fill="both", expand=True)
+        scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.subtrack_listbox.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.subtrack_listbox.configure(yscrollcommand=scrollbar.set)
+        self.subtrack_listbox.bind("<<ListboxSelect>>", self.on_subtrack_select)
+        self.populate_subtrack_listbox()
+
+        controls = ttk.Frame(padding)
+        controls.pack(pady=4)
+
+        ttk.Button(controls, text="<< Prev", width=10, command=self.prev_track).grid(row=0, column=0, padx=2)
+        ttk.Button(controls, text="Play/Pause", width=12, command=self.toggle_play_pause).grid(row=0, column=1, padx=2)
+        ttk.Button(controls, text="Next >>", width=10, command=self.next_track).grid(row=0, column=2, padx=2)
+
+        btn_bottom = ttk.Frame(padding)
+        btn_bottom.pack(pady=(6, 0), fill="x")
+        ttk.Button(btn_bottom, text="Close", width=10, command=self.close).pack(side="right", padx=2)
+
+    def populate_subtrack_listbox(self):
+        if not self.winfo_exists():
+            return
+        self.subtrack_listbox.delete(0, tk.END)
+        for s in self.subtracks:
+            self.subtrack_listbox.insert(tk.END, f"Subtrack {s}")
+        self.update_listbox_selection()
+
+    def update_listbox_selection(self):
+        if not self.winfo_exists():
+            return
+        try:
+            self.subtrack_listbox.selection_clear(0, tk.END)
+            if 0 <= self.current_subtrack_idx < self.subtrack_listbox.size():
+                self.subtrack_listbox.selection_set(self.current_subtrack_idx)
+                self.subtrack_listbox.see(self.current_subtrack_idx)
+        except Exception:
+            pass
+
+    def update_track_label(self):
+        curr_sub = self.subtracks[self.current_subtrack_idx]
+        self.track_var.set(f"Subtrack: {curr_sub} / {len(self.subtracks)}")
+
+    def stop_current_playback(self):
+        """Stops the current playing song completely before starting/switching."""
+        if self.sid_proc:
+            try:
+                self.sid_proc.terminate()
+                self.sid_proc.wait(timeout=1)
+            except Exception:
+                try:
+                    self.sid_proc.kill()
+                except Exception:
+                    pass
+            self.sid_proc = None
+
+    def play_current_subtrack(self):
+        self.stop_current_playback()
+        sidplay_bin = shutil.which("sidplayfp") or "sidplayfp"
+        subtrack_num = self.subtracks[self.current_subtrack_idx]
+        
+        cmd = [sidplay_bin, "-s{0}".format(subtrack_num), self.audio_file] if len(self.subtracks) > 1 else [sidplay_bin, self.audio_file]
+
+        try:
+            # Spawn sidplayfp inside a silent pseudo-terminal or piped subprocess
+            self.sid_proc = subprocess.Popen(
+                cmd,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                text=True
+            )
+            self.is_paused = False
+            self.status_var.set("Playing")
+            self.update_track_label()
+            self.update_listbox_selection()
+        except Exception as e:
+            messagebox.showerror("sidplayfp Error", f"Could not launch sidplayfp:\n\n{e}")
+
+    def send_keypress(self, char_or_code):
+        """Simulates keypresses sent directly to the silent terminal window / process stdin."""
+        if self.sid_proc and self.sid_proc.poll() is None:
+            try:
+                if self.sid_proc.stdin:
+                    self.sid_proc.stdin.write(f"{char_or_code}\n")
+                    self.sid_proc.stdin.flush()
+            except Exception:
+                pass
+
+    def toggle_play_pause(self):
+        # Simulate pressing 'p' to toggle play/pause
+        self.send_keypress("p")
+        self.is_paused = not self.is_paused
+        self.status_var.set("Paused" if self.is_paused else "Playing")
+
+    def prev_track(self):
+        if len(self.subtracks) > 1:
+            # Simulate left arrow or switch subtrack via playlist index
+            self.send_keypress("\x1b[D")
+            self.current_subtrack_idx = (self.current_subtrack_idx - 1) % len(self.subtracks)
+            self.play_current_subtrack()
+
+    def next_track(self):
+        if len(self.subtracks) > 1:
+            # Simulate right arrow or switch subtrack via playlist index
+            self.send_keypress("\x1b[C")
+            self.current_subtrack_idx = (self.current_subtrack_idx + 1) % len(self.subtracks)
+            self.play_current_subtrack()
+
+    def on_subtrack_select(self, event):
+        selection = self.subtrack_listbox.curselection()
+        if not selection:
+            return
+        idx = selection[0]
+        if idx != self.current_subtrack_idx:
+            self.current_subtrack_idx = idx
+            self.play_current_subtrack()
+
+    def close(self):
+        self.stop_current_playback()
+        try:
+            self.destroy()
+        except Exception:
+            pass
+
+
 class ExtractedFilesBrowserWindow(tk.Toplevel):
     def __init__(self, parent, folder_path):
         super().__init__(parent)
@@ -44,7 +222,7 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
         self.files_list = []
         supported_extensions = {
             ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
-            ".usf", ".miniusf", ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma",
+            ".usf", ".miniusf", ".sid", ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma",
             ".ape", ".wv", ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".mid", ".MID"
         }
         for root, dirs, files in os.walk(self.folder_path):
@@ -716,6 +894,8 @@ class MPVPlayerWindow(tk.Toplevel):
                 class FluidSynthSocketWrapper:
                     def __init__(self, proc):
                         self.proc = proc
+                        self.is_paused = False
+
                     def sendall(self, data):
                         try:
                             msg = json.loads(data.decode().strip())
@@ -723,10 +903,12 @@ class MPVPlayerWindow(tk.Toplevel):
                             if cmd_list:
                                 action = cmd_list[0]
                                 if action == "cycle" and len(cmd_list) > 1 and cmd_list[1] == "pause":
-                                    if self.proc.poll() is None:
-                                        self.proc.stdin.write("player_stop\n")
-                                    else:
+                                    if self.is_paused:
                                         self.proc.stdin.write("player_cont\n")
+                                        self.is_paused = False
+                                    else:
+                                        self.proc.stdin.write("player_stop\n")
+                                        self.is_paused = True
                                     self.proc.stdin.flush()
                                 elif action == "set_property" and len(cmd_list) > 2 and cmd_list[1] == "volume":
                                     vol = float(cmd_list[2])
@@ -969,81 +1151,3 @@ class MPVPlayerWindow(tk.Toplevel):
             self.destroy()
         except Exception:
             pass
-
-
-def start_vgmstream_installation():
-    messagebox.showinfo("VGMstream Installation", "VGMstream installation helper:\nPlease build/install vgmstream123 and place it in your PATH or ~/.config/joshw/.")
-
-
-def start_lazyusf_installation():
-    install_dir = get_cache_directory()
-    os.makedirs(install_dir, exist_ok=True)
-    bin_path = os.path.join(install_dir, "lazyusf")
-
-    progress_win = tk.Toplevel()
-    progress_win.title("Installing lazyusf")
-    progress_win.geometry("420x160")
-    progress_win.resizable(False, False)
-    progress_win.transient()
-    progress_win.grab_set()
-
-    status_var = tk.StringVar(value="Preparing to build lazyusf...")
-    ttk.Label(progress_win, textvariable=status_var, wraplength=390, font=("Arial", 9, "bold")).pack(pady=20)
-    p_bar = ttk.Progressbar(progress_win, orient="horizontal", mode="indeterminate", length=360)
-    p_bar.pack(pady=5)
-    p_bar.start(10)
-
-    def build_worker():
-        temp_dir = tempfile.mkdtemp()
-        try:
-            env = os.environ.copy()
-            status_var.set("Cloning lazyusf repository...")
-            git_res = subprocess.run(
-                ["git", "clone", "https://github.com/derselbst/lazyusf.git", temp_dir],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env
-            )
-            if git_res.returncode != 0:
-                raise RuntimeError(f"git clone failed:\n{git_res.stderr.strip()}")
-            
-            build_dir = os.path.join(temp_dir, "build")
-            os.makedirs(build_dir, exist_ok=True)
-            
-            status_var.set("Running cmake...")
-            cmake_res = subprocess.run(
-                ["cmake", ".."],
-                cwd=build_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env
-            )
-            if cmake_res.returncode != 0:
-                raise RuntimeError(f"cmake failed:\n{cmake_res.stderr.strip()}")
-            
-            status_var.set("Compiling lazyusf...")
-            make_res = subprocess.run(
-                ["make"],
-                cwd=build_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env
-            )
-            if make_res.returncode != 0:
-                raise RuntimeError(f"make failed:\n{make_res.stderr.strip()}")
-            
-            built_binary = None
-            for root, dirs, files in os.walk(temp_dir):
-                if "lazyusf" in files:
-                    built_binary = os.path.join(root, "lazyusf")
-                    break
-            
-            if built_binary and os.path.exists(built_binary):
-                shutil.copy2(built_binary, bin_path)
-                os.chmod(bin_path, os.stat(bin_path).st_mode | stat.S_IXUSR)
-                progress_win.destroy()
-                messagebox.showinfo("Success", "lazyusf was successfully built and installed!")
-            else:
-                raise RuntimeError("Build finished, but the 'lazyusf' binary could not be found.")
-        except Exception as e:
-            progress_win.destroy()
-            messagebox.showerror(
-                "Installation Error",
-                f"Failed to build lazyusf:\n\n{e}\n\nMake sure 'build-essential', 'cmake', and 'git' are installed."
-            )
-        finally:
-            shutil.rmtree(temp_dir, ignore_errors=True)
-
-    threading.Thread(target=build_worker, daemon=True).start()

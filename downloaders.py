@@ -1,253 +1,421 @@
 import os
 import shutil
 import subprocess
-import threading
 import time
-import urllib.parse
+from pathlib import Path
+import threading
+import tempfile
 import urllib.request
 import tkinter as tk
 from tkinter import ttk, messagebox
-from config import get_cache_directory
-from network import fetch_directory, safe_filename, unique_path
+from config import get_cache_directory, USER_AGENT
 
 
-def format_download_size(num_bytes):
-    if num_bytes is None or num_bytes < 0:
-        return "0 B"
-    val = float(num_bytes)
-    units = ["B", "KB", "MB", "GB", "TB"]
-    unit_idx = 0
-    while val >= 1000 and unit_idx < len(units) - 1:
-        val /= 1000
-        unit_idx += 1
-    return f"{int(val)} {units[unit_idx]}" if unit_idx == 0 else f"{val:.1f} {units[unit_idx]}"
+def check_and_download_sid_firmware():
+    """Silently checks and downloads kernal and basic firmware files on startup if missing."""
+    try:
+        sidplayfp_dir = Path(os.path.expanduser("~/.local/share/sidplayfp"))
+        sidplayfp_dir.mkdir(parents=True, exist_ok=True)
+
+        kernal_file = sidplayfp_dir / "kernal"
+        basic_file = sidplayfp_dir / "basic"
+
+        if not kernal_file.exists():
+            url_kernal = "https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/kernal.901227-03.bin"
+            try:
+                urllib.request.urlretrieve(url_kernal, str(kernal_file))
+            except Exception:
+                pass
+
+        if not basic_file.exists():
+            url_basic = "https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/basic.901226-01.bin"
+            try:
+                urllib.request.urlretrieve(url_basic, str(basic_file))
+            except Exception:
+                pass
+    except Exception:
+        pass
 
 
-def format_speed(bytes_per_sec):
-    if bytes_per_sec < 1024:
-        return f"{bytes_per_sec:.1f} B/s"
-    elif bytes_per_sec < 1024 * 1024:
-        return f"{bytes_per_sec / 1024:.1f} KB/s"
-    else:
-        return f"{bytes_per_sec / (1024 * 1024):.1f} MB/s"
+def install_dependencies_prompt(parent):
+    prompt_text = (
+        "The Josh Archive Browser requires some dependencies to run its built-in music player properly, "
+        "please hit OK to start installation! This will open a terminal window and ask for your Sudo password. "
+        "Once entered, it will run:\n\n"
+        "sudo apt update\n"
+        "sudo apt install git cmake libgme0 build-essential sidplayfp -y\n\n"
+        "It will then grab the source files for Lazyusf and VGMStream and build them, placing the files into the ~/.config/joshw folder. "
+        "It will also grab my program nsf_tracks from my github, which helps the music player define the amount of tracks within a .nsf file.\n\n"
+        "If you agree to this, hit the OK button to start, otherwise hit Cancel. You can start this process at any time from the Options button on the main menu!"
+    )
+    ans = messagebox.askokcancel("Install Dependencies", prompt_text)
+    if ans:
+        InstallDependenciesWorker(parent)
 
 
-def format_eta(seconds):
-    if seconds is None or seconds < 0 or seconds > 86400:
-        return "Calculations..."
-    secs = int(seconds)
-    if secs < 60:
-        return f"{secs}s"
-    elif secs < 3600:
-        return f"{secs // 60}m {secs % 60}s"
-    else:
-        return f"{secs // 3600}h {(secs % 3600) // 60}m"
+class InstallDependenciesWorker:
+    def __init__(self, parent):
+        self.parent = parent
+        threading.Thread(target=self.run_installation, daemon=True).start()
+
+    def run_installation(self):
+        cache_dir = Path(get_cache_directory())
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        sidplayfp_dir = Path(os.path.expanduser("~/.local/share/sidplayfp"))
+        sidplayfp_dir.mkdir(parents=True, exist_ok=True)
+
+        script_lines = [
+            "sudo apt update",
+            "sudo apt install git cmake libgme0 build-essential sidplayfp -y"
+        ]
+
+        temp_build_dir = Path(tempfile.mkdtemp(prefix="joshw_dep_"))
+        try:
+            lazyusf_bin = cache_dir / "lazyusf"
+            if not lazyusf_bin.exists():
+                script_lines.append(f"git clone https://github.com/derselbst/lazyusf.git {temp_build_dir / 'lazyusf'}")
+                script_lines.append(f"cd {temp_build_dir / 'lazyusf'} && mkdir build && cd build && cmake .. && make")
+                script_lines.append(f"find {temp_build_dir / 'lazyusf'} -name 'lazyusf' -type f -exec cp {{}} {cache_dir} \\\\;")
+                script_lines.append(f"chmod +x {lazyusf_bin}")
+
+            vgmstream_bin = cache_dir / "vgmstream123"
+            if not vgmstream_bin.exists():
+                script_lines.append(f"git clone https://github.com/vgmstream/vgmstream.git {temp_build_dir / 'vgmstream'}")
+                script_lines.append(f"cd {temp_build_dir / 'vgmstream'} && bash make-build-cmake.sh")
+                script_lines.append(f"find {temp_build_dir / 'vgmstream'} -name 'vgmstream123' -type f -exec cp {{}} {cache_dir} \\\\;")
+                script_lines.append(f"chmod +x {vgmstream_bin}")
+
+            nsf_tracks_bin = cache_dir / "nsf_tracks"
+            if not nsf_tracks_bin.exists():
+                script_lines.append(f"wget -O {nsf_tracks_bin} https://raw.githubusercontent.com/Aer0nic/joshw-browser/main/tools/nsf_tracks || echo 'nsf_tracks fetch optional'")
+                script_lines.append(f"chmod +x {nsf_tracks_bin} || true")
+
+            kernal_file = sidplayfp_dir / "kernal"
+            if not kernal_file.exists():
+                script_lines.append(f"wget -O {kernal_file} https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/kernal.901227-03.bin")
+
+            basic_file = sidplayfp_dir / "basic"
+            if not basic_file.exists():
+                script_lines.append(f"wget -O {basic_file} https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/basic.901226-01.bin")
+
+            full_script = " && \\\n".join(script_lines)
+
+            terminals = ["gnome-terminal", "konsole", "xfce4-terminal", "xterm"]
+            launched = False
+            for term in terminals:
+                if shutil.which(term):
+                    if term == "gnome-terminal":
+                        subprocess.Popen([term, "--", "bash", "-c", f"{full_script}; echo 'Installation complete. Press Enter to close.'; read"])
+                    elif term == "konsole":
+                        subprocess.Popen([term, "-e", "bash", "-c", f"{full_script}; echo 'Installation complete. Press Enter to close.'; read"])
+                    else:
+                        subprocess.Popen([term, "-e", f"bash -c \"{full_script}; echo 'Installation complete. Press Enter to close.'; read\""])
+                    launched = True
+                    break
+            if not launched:
+                subprocess.Popen(["x-terminal-emulator", "-e", f"bash -c \"{full_script}; echo 'Installation complete. Press Enter to close.'; read\""])
+
+            if self.parent.winfo_exists():
+                self.parent.after(0, self.post_install_check)
+
+        except Exception as e:
+            if self.parent.winfo_exists():
+                self.parent.after(0, lambda err=e: messagebox.showerror("Installation Error", f"An error occurred during dependency installation:\n\n{err}"))
+        finally:
+            shutil.rmtree(temp_build_dir, ignore_errors=True)
+
+    def post_install_check(self):
+        self.parent.update_dependencies_submenu()
+        if (
+            self.parent.check_dependency_status("lazyusf")
+            and self.parent.check_dependency_status("vgmstream")
+            and self.parent.check_dependency_status("sidplayfp")
+        ):
+            try:
+                self.parent.options_dropdown.entryconfig(self.parent.install_deps_item_index, state="disabled")
+            except Exception:
+                pass
+        messagebox.showinfo("Dependencies", "Dependency installation routine completed. Check the Dependencies submenu for visual confirmation.")
 
 
-class DownloadProgressWindow(tk.Toplevel):
-    def __init__(self, parent, title="Downloading Files"):
+class StepLogDialog(tk.Toplevel):
+    def __init__(self, parent, title, error_message, terminal_cmd):
         super().__init__(parent)
         self.title(title)
-        self.geometry("450x220")
+        self.geometry("540x320")
         self.resizable(False, False)
-        self.transient(parent)
-        try:
-            self.update_idletasks()
-            self.grab_set()
-        except Exception:
-            pass
-
-        self.file_label_text = tk.StringVar(value="Pre-indexing files to download...")
-        self.progress_val = tk.DoubleVar(value=0.0)
-        self.size_progress_text = tk.StringVar(value="0 B / 0 B")
-        self.speed_text = tk.StringVar(value="Speed: 0 KB/s")
-        self.eta_text = tk.StringVar(value="ETA: --")
-        self.count_text = tk.StringVar(value="")
-
-        padding_frame = ttk.Frame(self, padding=15)
-        padding_frame.pack(fill="both", expand=True)
-
-        ttk.Label(padding_frame, textvariable=self.file_label_text, wraplength=410, font=("Arial", 10, "bold")).pack(anchor="w", pady=(0, 4))
-        
-        count_size_frame = ttk.Frame(padding_frame)
-        count_size_frame.pack(fill="x", pady=(0, 8))
-        ttk.Label(count_size_frame, textvariable=self.count_text, font=("Arial", 9)).pack(side="left")
-        ttk.Label(count_size_frame, textvariable=self.size_progress_text, font=("Arial", 9)).pack(side="right")
-
-        self.p_bar = ttk.Progressbar(padding_frame, orient="horizontal", mode="determinate", variable=self.progress_val, length=410, maximum=100)
-        self.p_bar.pack(fill="x", pady=(0, 10))
-
-        info_frame = ttk.Frame(padding_frame)
-        info_frame.pack(fill="x", pady=(0, 12))
-        ttk.Label(info_frame, textvariable=self.speed_text, font=("Arial", 9)).pack(side="left")
-        ttk.Label(info_frame, textvariable=self.eta_text, font=("Arial", 9)).pack(side="right")
-
-        self.cancel_btn = ttk.Button(padding_frame, text="Cancel Download", command=self.on_cancel)
-        self.cancel_btn.pack(anchor="center")
-        self.is_cancelled = False
-
-    def on_cancel(self):
-        self.is_cancelled = True
-        self.cancel_btn.configure(state="disabled")
-        self.file_label_text.set("Cancelling downloads...")
-
-    def update_progress(self, filename, downloaded_bytes, total_bytes, current_file_idx, total_files, speed_bps, eta_seconds):
-        self.file_label_text.set(f"Downloading: {filename}")
-        self.count_text.set(f"File {current_file_idx} of {total_files}")
-        d_str = format_download_size(downloaded_bytes)
-        t_str = format_download_size(total_bytes) if total_bytes and total_bytes > 0 else "Unknown"
-        self.size_progress_text.set(f"{d_str} / {t_str}")
-
-        if total_bytes and total_bytes > 0:
-            pct = min(max((downloaded_bytes / total_bytes) * 100, 0), 100)
-            self.progress_val.set(pct)
-        else:
-            self.progress_val.set(0)
-
-        self.speed_text.set(f"Speed: {format_speed(speed_bps)}")
-        self.eta_text.set(f"ETA: {format_eta(eta_seconds)}")
-
-
-class IndexAllWindow(tk.Toplevel):
-    def __init__(self, parent, domains_dict):
-        super().__init__(parent)
-        self.title("Index All Domains")
-        self.geometry("680x580")
         self.transient(parent)
         self.grab_set()
 
+        self.terminal_cmd = terminal_cmd
+
+        ttk.Label(self, text="Premade Indexes Not Found", font=("Arial", 10, "bold"), foreground="red").pack(anchor="w", padx=12, pady=(12, 4))
+        ttk.Label(self, text=error_message, font=("Arial", 9), wraplength=510, justify="left").pack(anchor="w", padx=12, pady=(0, 10))
+
+        info_frame = ttk.Frame(self, padding=12)
+        info_frame.pack(fill="both", expand=True)
+
+        text_widget = tk.Text(info_frame, wrap="word", font=("Courier", 9), height=5)
+        text_widget.pack(side="left", fill="both", expand=True)
+        text_widget.insert("1.0", f"Command to be run in terminal:\n\n{self.terminal_cmd}")
+        text_widget.configure(state="disabled")
+
+        scrollbar = ttk.Scrollbar(info_frame, orient="vertical", command=text_widget.yview)
+        scrollbar.pack(side="right", fill="y")
+        text_widget.configure(yscrollcommand=scrollbar.set)
+
+        btn_frame = ttk.Frame(self, padding=12)
+        btn_frame.pack(fill="x")
+        ttk.Button(btn_frame, text="OK", command=self.on_ok_clicked, width=12).pack(side="right")
+
+    def on_ok_clicked(self):
+        try:
+            terminals = ["gnome-terminal", "konsole", "xfce4-terminal", "xterm"]
+            launched = False
+            for term in terminals:
+                if shutil.which(term):
+                    if term == "gnome-terminal":
+                        subprocess.Popen([term, "--", "bash", "-c", f"{self.terminal_cmd}; echo 'Done. Press Enter to close.'; read"])
+                    elif term == "konsole":
+                        subprocess.Popen([term, "-e", "bash", "-c", f"{self.terminal_cmd}; echo 'Done. Press Enter to close.'; read"])
+                    else:
+                        subprocess.Popen([term, "-e", f"bash -c \"{self.terminal_cmd}; echo 'Done. Press Enter to close.'; read\""])
+                    launched = True
+                    break
+            if not launched:
+                subprocess.Popen(["x-terminal-emulator", "-e", f"bash -c \"{self.terminal_cmd}; echo 'Done. Press Enter to close.'; read\""])
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not open terminal:\n\n{e}")
+        
+        self.destroy()
+
+
+class IndexPremadeWindow:
+    def __init__(self, parent, show_steps=False):
         self.parent = parent
-        self.stop_event = threading.Event()
-        self.domain_items = list(domains_dict.items())
+        self.show_steps = show_steps
+        threading.Thread(target=self.git_clone_worker, daemon=True).start()
 
-        container = ttk.Frame(self, padding=12)
-        container.pack(fill="both", expand=True)
+    def git_clone_worker(self):
+        cache_dir = Path(get_cache_directory())
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        
+        repo_dir = cache_dir / "joshw-browser"
+        indexes_src_dir = repo_dir / "indexes"
+        clone_url = "https://github.com/Aer0nic/joshw-browser.git"
 
-        self.canvas = tk.Canvas(container, highlightthickness=0)
-        scrollbar = ttk.Scrollbar(container, orient="vertical", command=self.canvas.yview)
-        self.scrollable_frame = ttk.Frame(self.canvas)
+        try:
+            if repo_dir.exists():
+                shutil.rmtree(repo_dir, ignore_errors=True)
 
-        self.scrollable_frame.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
-        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
-        self.canvas.configure(yscrollcommand=scrollbar.set)
+            subprocess.run(["git", "clone", clone_url, str(repo_dir)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-        self.canvas.pack(side="left", fill="both", expand=True)
+            if indexes_src_dir.exists():
+                for f in indexes_src_dir.glob("domain_cache*"):
+                    if f.is_file():
+                        shutil.copy2(f, cache_dir / f.name)
+
+            if repo_dir.exists():
+                shutil.rmtree(repo_dir, ignore_errors=True)
+
+            found_caches = list(cache_dir.glob("*domain_cache*"))
+
+            if found_caches:
+                if self.parent.winfo_exists():
+                    self.parent.after(0, lambda: messagebox.showinfo(
+                        "Success", 
+                        "Premade indexes downloaded and installed successfully!"
+                    ))
+            else:
+                terminal_cmd = f"cd {cache_dir} && git clone {clone_url} && cd joshw-browser/indexes/ && cp domain_cache* {cache_dir}"
+                error_msg = "Premade index files containing 'domain_cache' were not found after cloning. Please do it manually. A terminal will now open when you click OK."
+                if self.parent.winfo_exists():
+                    self.parent.after(0, lambda: StepLogDialog(self.parent, "Installation Error", error_msg, terminal_cmd))
+
+        except Exception as e:
+            terminal_cmd = f"cd {cache_dir} && git clone {clone_url} && cd joshw-browser/indexes/ && cp domain_cache* {cache_dir}"
+            error_msg = f"An error occurred during git clone or file copying:\n\n{e}\n\nPlease perform it manually. A terminal will now open when you click OK."
+            if self.parent.winfo_exists():
+                self.parent.after(0, lambda: StepLogDialog(self.parent, "Installation Error", error_msg, terminal_cmd))
+
+
+class IndexAllWindow(tk.Toplevel):
+    def __init__(self, parent, domains):
+        super().__init__(parent)
+        self.parent = parent
+        self.domains = domains
+        self.title("Index All Domains")
+        self.geometry("580x520")
+        self.minsize(520, 400)
+        self.transient(parent)
+        self.grab_set()
+
+        self.domain_rows = {}
+        self.total_start_time = time.time()
+        self.is_running = True
+
+        self.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.build_ui()
+
+        threading.Thread(target=self.index_all_worker, daemon=True).start()
+        self.update_timers()
+
+    def format_hms(self, seconds):
+        s = int(seconds)
+        hours = s // 3600
+        minutes = (s % 3600) // 60
+        secs = s % 60
+        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+
+    def build_ui(self):
+        main_frame = ttk.Frame(self, padding=10)
+        main_frame.pack(fill="both", expand=True)
+
+        ttk.Label(main_frame, text="Indexing all domains sequentially...", font=("Arial", 10, "bold")).pack(anchor="w", pady=(0, 8))
+
+        container = ttk.Frame(main_frame)
+        container.pack(fill="both", expand=True, pady=(0, 10))
+
+        canvas = tk.Canvas(container, highlightthickness=0)
+        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-        self.rows = []
-        for domain_name, url in self.domain_items:
-            row_frame = ttk.Frame(self.scrollable_frame, padding=4)
-            row_frame.pack(fill="x", anchor="w")
+        for domain_name in self.domains.keys():
+            row_frame = ttk.Frame(scrollable_frame, padding=(2, 4))
+            row_frame.pack(fill="x", expand=True)
 
-            lbl_name = tk.Label(row_frame, text=domain_name, anchor="w", width=24, font=("Arial", 9, "bold"))
-            lbl_name.pack(side="left", padx=5)
+            lbl = ttk.Label(row_frame, text=domain_name, font=("Arial", 9), width=24, anchor="w")
+            lbl.pack(side="left", padx=(0, 6))
 
-            p_bar = ttk.Progressbar(row_frame, orient="horizontal", mode="indeterminate", length=120)
-            lbl_status = ttk.Label(row_frame, text="Waiting...", font=("Arial", 9), width=32, anchor="w")
-            lbl_status.pack(side="left", padx=5)
+            pbar_container = tk.Frame(row_frame, width=160, height=18)
+            pbar_container.pack_propagate(False)
+            pbar_container.pack(side="left", padx=6)
 
-            self.rows.append({"name": domain_name, "url": url, "lbl_name": lbl_name, "lbl_status": lbl_status, "p_bar": p_bar})
+            pbar = ttk.Progressbar(pbar_container, orient="horizontal", mode="determinate", maximum=100)
+            pbar.pack(fill="both", expand=True)
 
-        bottom_frame = ttk.Frame(self, padding=12)
-        bottom_frame.pack(fill="x", side="bottom")
+            pct_lbl = tk.Label(pbar_container, text="0%", font=("Arial", 8, "bold"), bg="white", fg="black")
+            pct_lbl.place(relx=0.5, rely=0.5, anchor="center")
 
-        self.final_time_label = ttk.Label(bottom_frame, text="Total Time: 00:00:00", font=("Arial", 10, "bold"))
-        self.final_time_label.pack(side="left", padx=5)
+            time_lbl = ttk.Label(row_frame, text="00:00:00", font=("Arial", 9), width=10, anchor="e")
+            time_lbl.pack(side="right", padx=(6, 0))
 
-        self.close_cancel_btn = ttk.Button(bottom_frame, text="Cancel", command=self.on_cancel)
-        self.close_cancel_btn.pack(side="right", padx=5)
+            self.domain_rows[domain_name] = {
+                "label": lbl,
+                "progress": pbar,
+                "pct_label": pct_lbl,
+                "time_label": time_lbl,
+                "start_time": None,
+                "elapsed": 0.0,
+                "completed": False
+            }
 
-        self.is_finished = False
-        self.total_elapsed = 0.0
-        self.current_active_row = None
-        self.current_domain_start_time = 0.0
-        self.timer_job = None
+        bottom_frame = ttk.Frame(main_frame)
+        bottom_frame.pack(fill="x", pady=(4, 0))
 
-        threading.Thread(target=self.run_indexing, daemon=True).start()
-        self.tick_timer()
+        self.total_time_var = tk.StringVar(value="Total Elapsed: 00:00:00")
+        total_time_lbl = ttk.Label(bottom_frame, textvariable=self.total_time_var, font=("Arial", 9, "bold"))
+        total_time_lbl.pack(side="right")
 
-    def tick_timer(self):
-        if not self.is_finished and self.current_active_row:
-            elapsed = time.time() - self.current_domain_start_time
-            hours, mins, secs = int(elapsed // 3600), int((elapsed % 3600) // 60), int(elapsed % 60)
-            curr_text = self.current_active_row.get("last_status_msg", "Indexing...")
-            self.current_active_row["lbl_status"].configure(text=f"{curr_text} ({hours:02d}:{mins:02d}:{secs:02d})")
-        if not self.is_finished:
-            self.timer_job = self.after(250, self.tick_timer)
+    def update_timers(self):
+        if not self.is_running or not self.winfo_exists():
+            return
 
-    def on_cancel(self):
-        if self.timer_job:
-            self.after_cancel(self.timer_job)
-        if self.is_finished:
-            self.destroy()
-        else:
-            self.stop_event.set()
-            self.close_cancel_btn.configure(state="disabled")
-            for r in self.rows:
-                if r["lbl_status"].cget("text").startswith("Indexing"):
-                    r["p_bar"].stop()
-                    r["p_bar"].pack_forget()
-                    r["lbl_status"].configure(text="Cancelled")
-            self.final_time_label.configure(text=f"Cancelled. Total Time: {self.format_total_time(self.total_elapsed)}")
-            self.close_cancel_btn.configure(text="Close", state="normal", command=self.destroy)
+        total_elapsed = time.time() - self.total_start_time
+        self.total_time_var.set(f"Total Elapsed: {self.format_hms(total_elapsed)}")
 
-    def format_total_time(self, seconds):
-        return f"{int(seconds // 3600):02d}:{int((seconds % 3600) // 60):02d}:{int(seconds % 60):02d}"
+        for data in self.domain_rows.values():
+            if data["start_time"] is not None and not data["completed"]:
+                elapsed = time.time() - data["start_time"]
+                data["time_label"].configure(text=self.format_hms(elapsed))
 
-    def run_indexing(self):
-        self.parent.stop_event.clear()
-        total_time_sum = 0.0
-        for row in self.rows:
-            if self.stop_event.is_set():
+        self.after(500, self.update_timers)
+
+    def index_all_worker(self):
+        for domain_name, root_url in self.domains.items():
+            if not self.is_running or not self.winfo_exists():
                 break
-            domain_name, url = row["name"], row["url"]
-            self.current_active_row = row
-            self.current_domain_start_time = time.time()
-            self.after(0, lambda r=row: self.start_row_indexing(r))
 
-            def progress_cb(scanned_dirs, total_dirs, files_count):
-                if self.stop_event.is_set():
+            row_data = self.domain_rows[domain_name]
+            row_data["start_time"] = time.time()
+
+            def progress_cb(scanned, discovered, total_files):
+                if not self.winfo_exists():
                     return
-                row["last_status_msg"] = f"Scanned {scanned_dirs}/{total_dirs} dirs ({files_count} files)"
+                val = min(99.0, (scanned / max(1, discovered)) * 100)
+                row_data["progress"]["value"] = val
+                pct_str = f"{int(val)}%"
+                row_data["pct_label"].configure(text=pct_str)
 
-            start_t = time.time()
-            entries = self.parent.crawl_domain_remote(domain_name, url, report_progress=False, progress_callback=progress_cb, stop_event=self.stop_event, incremental=True)
-            elapsed = time.time() - start_t
-            self.current_active_row = None
+            try:
+                all_entries = self.parent.crawl_domain_remote(
+                    domain_name, root_url, report_progress=True, progress_callback=progress_cb, incremental=True
+                )
+                if all_entries is not None and self.is_running and self.winfo_exists():
+                    self.parent.domain_full_entries = all_entries
+                    self.parent.save_cache(domain_name)
+            except Exception:
+                pass
 
-            if self.stop_event.is_set():
-                break
+            if self.winfo_exists():
+                elapsed = time.time() - row_data["start_time"]
+                row_data["elapsed"] = elapsed
+                row_data["completed"] = True
+                row_data["progress"]["value"] = 100
+                row_data["pct_label"].configure(text="100%")
+                row_data["time_label"].configure(text=self.format_hms(elapsed))
+                row_data["label"].configure(text=f"✓ {domain_name}", foreground="green")
 
-            if entries is not None:
-                self.parent.domain_full_entries = entries
-                self.parent.cached_dir_sizes = {}
-                self.parent.save_cache(domain_name)
+        if self.is_running and self.winfo_exists():
+            self.parent.after(0, self.finish_indexing)
 
-            total_time_sum += elapsed
-            self.after(0, lambda r=row, el=elapsed, t_sum=total_time_sum, count=(len(entries) if entries else 0): self.finish_row_indexing(r, el, t_sum, count))
+    def finish_indexing(self):
+        self.is_running = False
+        try:
+            messagebox.showinfo("Success", "All domains have been successfully indexed sequentially!")
+        except Exception:
+            pass
+        self.destroy()
 
-        if not self.stop_event.is_set():
-            self.is_finished = True
-            if self.timer_job:
-                self.after_cancel(self.timer_job)
-            self.after(0, lambda: self.all_finished(total_time_sum))
+    def on_close(self):
+        self.is_running = False
+        self.destroy()
 
-    def start_row_indexing(self, row):
-        row["last_status_msg"] = "Indexing..."
-        row["lbl_status"].configure(text="Indexing... (00:00:00)")
-        row["p_bar"].pack(side="left", padx=5)
-        row["p_bar"].start(10)
 
-    def finish_row_indexing(self, row, elapsed, total_sum, files_count):
-        row["p_bar"].stop()
-        row["p_bar"].pack_forget()
-        row["lbl_name"].configure(fg="green")
-        hours_e, mins_e, secs_e = int(elapsed // 3600), int((elapsed % 3600) // 60), int(elapsed % 60)
-        row["lbl_status"].configure(text=f"✓ Done ({files_count} files, {hours_e:02d}:{mins_e:02d}:{secs_e:02d})")
-        self.total_elapsed = total_sum
-        self.final_time_label.configure(text=f"Total Time: {self.format_total_time(total_sum)}")
+class DownloadProgressWindow(tk.Toplevel):
+    def __init__(self, parent, title="Downloading..."):
+        super().__init__(parent)
+        self.title(title)
+        self.geometry("380x130")
+        self.resizable(False, False)
+        self.transient(parent)
+        self.is_cancelled = False
 
-    def all_finished(self, total_sum):
-        self.is_finished = True
-        self.final_time_label.configure(text=f"Total Time: {self.format_total_time(total_sum)}")
-        self.close_cancel_btn.configure(text="Close", command=self.destroy)
+        self.file_label_text = tk.StringVar(value="Preparing download...")
+        ttk.Label(self, textvariable=self.file_label_text, font=("Arial", 9)).pack(pady=15)
+        self.pbar = ttk.Progressbar(self, orient="horizontal", mode="determinate", length=340)
+        self.pbar.pack(pady=5)
+        ttk.Button(self, text="Cancel", command=self.cancel).pack(pady=5)
+
+    def update_progress(self, filename, downloaded, total, c_idx, t_idx, speed, eta):
+        self.file_label_text.set(f"Downloading: {filename} ({downloaded}/{total} bytes)")
+        if total > 0:
+            self.pbar["value"] = (downloaded / total) * 100
+
+    def cancel(self):
+        self.is_cancelled = True
+        self.destroy()
+
+
+# Trigger silent startup check for kernal and basic firmware files
+check_and_download_sid_firmware()
