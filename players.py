@@ -45,7 +45,7 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
         supported_extensions = {
             ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
             ".usf", ".miniusf", ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma",
-            ".ape", ".wv", ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra"
+            ".ape", ".wv", ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".mid", ".MID"
         }
         for root, dirs, files in os.walk(self.folder_path):
             for f in sorted(files):
@@ -100,6 +100,7 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         self.vgmstream_proc = None
         self.is_paused = False
         self.current_position_seconds = 0.0
+        self.m3u_path = None
 
         is_emu = is_emulated_file(self.audio_file)
         self.loop_chk_var = tk.BooleanVar(value=is_emu)
@@ -136,7 +137,7 @@ class VGMStreamPlayerWindow(tk.Toplevel):
                     f.write(f"{os.path.basename(p)}\n")
             self.m3u_path = m3u_path
         except Exception:
-            self.m3u_path = self.audio_file
+            self.m3u_path = None
 
     def load_playlist_files(self):
         self.total_chapters = 1
@@ -366,6 +367,11 @@ class VGMStreamPlayerWindow(tk.Toplevel):
 
     def close(self):
         self.stop()
+        if self.m3u_path and os.path.exists(self.m3u_path):
+            try:
+                os.remove(self.m3u_path)
+            except Exception:
+                pass
         try:
             self.destroy()
         except Exception:
@@ -379,6 +385,7 @@ class MPVPlayerWindow(tk.Toplevel):
         self.audio_file = audio_file
         self.mpv = None
         self.sock = None
+        self.m3u_path = None
         self.socket_path = os.path.join(tempfile.gettempdir(), f"mpv-python-{os.getpid()}-{threading.get_ident()}.sock")
 
         is_emu = is_emulated_file(self.audio_file)
@@ -406,7 +413,7 @@ class MPVPlayerWindow(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", self.close)
 
         ext = os.path.splitext(self.audio_file)[1].lower()
-        if ext not in (".hes", ".nsf", ".nsfe", ".miniusf", ".usf"):
+        if ext not in (".hes", ".nsf", ".nsfe", ".miniusf", ".usf", ".mid", ".midi"):
             self.generate_m3u_playlist()
 
         if self.playlist:
@@ -479,12 +486,13 @@ class MPVPlayerWindow(tk.Toplevel):
         audio_basename = os.path.splitext(os.path.basename(self.audio_file))[0]
         audio_filename = os.path.basename(self.audio_file)
 
-        if ext in (".hes", ".nsf", ".nsfe", ".gbs", ".miniusf", ".usf"):
+        if ext in (".hes", ".nsf", ".nsfe", ".gbs", ".miniusf", ".usf", ".mid", ".midi"):
             self.playlist = []
-            if ext in (".miniusf", ".usf"):
+            if ext in (".miniusf", ".usf", ".mid", ".midi"):
                 try:
+                    target_exts = (".miniusf", ".usf") if ext in (".miniusf", ".usf") else (".mid", ".midi", ".MID")
                     for f in sorted(os.listdir(folder)):
-                        if f.lower().endswith((".miniusf", ".usf")):
+                        if f.lower().endswith(target_exts):
                             self.playlist.append(os.path.join(folder, f))
                     if not self.playlist:
                         self.playlist = [self.audio_file]
@@ -555,7 +563,7 @@ class MPVPlayerWindow(tk.Toplevel):
                 audio_exts = {
                     ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
                     ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-                    ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".miniusf", ".usf"
+                    ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".miniusf", ".usf", ".mid", ".midi", ".MID"
                 }
                 for f in files:
                     full_p = os.path.join(folder, f)
@@ -580,8 +588,9 @@ class MPVPlayerWindow(tk.Toplevel):
                 for p in self.playlist:
                     if isinstance(p, str):
                         f.write(f"{os.path.basename(p)}\n")
+            self.m3u_path = m3u_path
         except Exception:
-            pass
+            self.m3u_path = None
 
     def build_ui(self):
         filename = os.path.basename(self.audio_file)
@@ -676,6 +685,9 @@ class MPVPlayerWindow(tk.Toplevel):
     def start_mpv(self):
         if self.mpv:
             try:
+                if isinstance(self.mpv, subprocess.Popen) and self.mpv.stdin:
+                    self.mpv.stdin.write("quit\n")
+                    self.mpv.stdin.flush()
                 self.mpv.terminate()
             except Exception:
                 pass
@@ -684,6 +696,58 @@ class MPVPlayerWindow(tk.Toplevel):
                 os.unlink(self.socket_path)
         except FileNotFoundError:
             pass
+
+        ext = os.path.splitext(self.audio_file)[1].lower()
+        if ext in (".mid", ".midi"):
+            sf2_path = os.path.join(get_cache_directory(), "FluidR3_GM.sf2")
+            cmd = [
+                "fluidsynth", "-n", "-g", "0.2",
+                sf2_path,
+                self.audio_file
+            ]
+            try:
+                self.mpv = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
+                try:
+                    self.mpv.stdin.write("gain 0.5\n")
+                    self.mpv.stdin.flush()
+                except Exception:
+                    pass
+
+                class FluidSynthSocketWrapper:
+                    def __init__(self, proc):
+                        self.proc = proc
+                    def sendall(self, data):
+                        try:
+                            msg = json.loads(data.decode().strip())
+                            cmd_list = msg.get("command", [])
+                            if cmd_list:
+                                action = cmd_list[0]
+                                if action == "cycle" and len(cmd_list) > 1 and cmd_list[1] == "pause":
+                                    if self.proc.poll() is None:
+                                        self.proc.stdin.write("player_stop\n")
+                                    else:
+                                        self.proc.stdin.write("player_cont\n")
+                                    self.proc.stdin.flush()
+                                elif action == "set_property" and len(cmd_list) > 2 and cmd_list[1] == "volume":
+                                    vol = float(cmd_list[2])
+                                    gain_val = max(0.0, min(2.0, vol / 100.0 * 0.5))
+                                    self.proc.stdin.write(f"gain {gain_val}\n")
+                                    self.proc.stdin.flush()
+                        except Exception:
+                            pass
+                    def recv(self, size):
+                        return b""
+                    def close(self):
+                        try:
+                            self.proc.stdin.write("quit\n")
+                            self.proc.stdin.flush()
+                        except Exception:
+                            pass
+
+                self.sock = FluidSynthSocketWrapper(self.mpv)
+            except Exception as e:
+                messagebox.showerror("FluidSynth Error", f"Could not launch fluidsynth:\n\n{e}")
+            return
 
         mpv_bin = "/bin/mpv" if os.path.exists("/bin/mpv") else (shutil.which("mpv") or "mpv")
         cmd = [
@@ -819,9 +883,13 @@ class MPVPlayerWindow(tk.Toplevel):
     def stop(self):
         if self.mpv:
             try:
+                if isinstance(self.mpv, subprocess.Popen) and self.mpv.stdin:
+                    self.mpv.stdin.write("quit\n")
+                    self.mpv.stdin.flush()
                 self.mpv.terminate()
             except Exception:
                 pass
+            self.mpv = None
         self.status_var.set("Stopped")
 
     def poll_status(self):
@@ -878,8 +946,17 @@ class MPVPlayerWindow(tk.Toplevel):
             pass
 
     def close(self):
+        self.stop()
+        if self.m3u_path and os.path.exists(self.m3u_path):
+            try:
+                os.remove(self.m3u_path)
+            except Exception:
+                pass
         if self.mpv:
             try:
+                if isinstance(self.mpv, subprocess.Popen) and self.mpv.stdin:
+                    self.mpv.stdin.write("quit\n")
+                    self.mpv.stdin.flush()
                 self.mpv.terminate()
             except Exception:
                 pass

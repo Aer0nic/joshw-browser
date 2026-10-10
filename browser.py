@@ -18,6 +18,55 @@ from players import VGMStreamPlayerWindow, MPVPlayerWindow, ExtractedFilesBrowse
 from downloaders import DownloadProgressWindow, IndexAllWindow
 
 
+class ToolTip:
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tip_window = None
+        self.id = None
+        self.widget.bind("<Enter>", self.enter)
+        self.widget.bind("<Leave>", self.leave)
+        self.widget.bind("<ButtonPress>", self.leave)
+
+    def enter(self, event=None):
+        self.schedule()
+
+    def leave(self, event=None):
+        self.unschedule()
+        self.hide_tip()
+
+    def schedule(self):
+        self.unschedule()
+        self.id = self.widget.after(1000, self.show_tip)
+
+    def unschedule(self):
+        id_val = self.id
+        self.id = None
+        if id_val:
+            self.widget.after_cancel(id_val)
+
+    def show_tip(self):
+        if self.tip_window or not self.widget.winfo_exists():
+            return
+        x = self.widget.winfo_rootx() + 20
+        y = self.widget.winfo_rooty() + self.widget.winfo_height() + 5
+        self.tip_window = tw = tk.Toplevel(self.widget)
+        tw.wm_overrideredirect(True)
+        tw.wm_geometry(f"+{x}+{y}")
+        label = ttk.Label(
+            tw, text=self.text, justify="left",
+            background="#ffffe0", relief="solid", borderwidth=1,
+            font=("Arial", 9), padding=(4, 2)
+        )
+        label.pack(ipadx=1)
+
+    def hide_tip(self):
+        tw = self.tip_window
+        self.tip_window = None
+        if tw:
+            tw.destroy()
+
+
 class JoshWBrowser(tk.Tk):
     def has_lazyusf_installed(self):
         return (
@@ -34,6 +83,44 @@ class JoshWBrowser(tk.Tk):
             or os.path.exists("/usr/bin/vgmstream123")
             or os.path.exists(os.path.join(get_cache_directory(), "vgmstream123"))
         )
+
+    def has_fluidsynth_installed(self):
+        has_bin = (
+            shutil.which("fluidsynth") is not None
+            or os.path.exists("/bin/fluidsynth")
+            or os.path.exists("/usr/bin/fluidsynth")
+            or os.path.exists("/usr/local/bin/fluidsynth")
+        )
+        has_sf2 = os.path.exists(os.path.join(get_cache_directory(), "FluidR3_GM.sf2"))
+        return has_bin and has_sf2
+
+    def install_fluidsynth_prompt(self):
+        ans = messagebox.askokcancel(
+            "FluidSynth Required",
+            "Midi playback requires Fluidsynth and a soundfont. Hit the OK button to open a terminal window to install both. Hit Cancel to skip this step. You can try again at any time from the option menu!"
+        )
+        if ans:
+            try:
+                sf2_path = os.path.join(get_cache_directory(), "FluidR3_GM.sf2")
+                install_cmd = f"sudo apt update && sudo apt install -y fluidsynth && wget -O '{sf2_path}' 'https://github.com/pianobooster/fluid-soundfont/releases/download/v3.1/FluidR3_GM.sf2'"
+                
+                terminals = ["gnome-terminal", "konsole", "xfce4-terminal", "xterm"]
+                launched = False
+                for term in terminals:
+                    if shutil.which(term):
+                        if term == "gnome-terminal":
+                            subprocess.Popen([term, "--", "bash", "-c", f"{install_cmd}; echo 'Done. Press Enter to close.'; read"])
+                        elif term == "konsole":
+                            subprocess.Popen([term, "-e", "bash", "-c", f"{install_cmd}; echo 'Done. Press Enter to close.'; read"])
+                        else:
+                            subprocess.Popen([term, "-e", f"bash -c \"{install_cmd}; echo 'Done. Press Enter to close.'; read\""])
+                        launched = True
+                        break
+                if not launched:
+                    subprocess.Popen(["x-terminal-emulator", "-e", install_cmd])
+                messagebox.showinfo("Installation Started", "Terminal window opened to install FluidSynth and download the soundfont.")
+            except Exception as e:
+                messagebox.showerror("Error", f"Could not open terminal:\n\n{e}")
 
     def __init__(self):
         super().__init__()
@@ -60,9 +147,11 @@ class JoshWBrowser(tk.Tk):
         self._initial_settings = self.load_settings()
         saved_dest = self._initial_settings.get("default_destination", os.path.expanduser("~/Downloads"))
         saved_use_default = self._initial_settings.get("use_default_dest", False)
+        saved_load_dir = self._initial_settings.get("default_load_music_dir", os.path.expanduser("~"))
 
         self.destination = tk.StringVar(value=saved_dest)
         self.use_default_dest = tk.BooleanVar(value=saved_use_default)
+        self.default_load_music_dir = tk.StringVar(value=saved_load_dir)
         self.path_7z = tk.StringVar(value="/bin/7z")
         self.path_mpv = tk.StringVar(value="/bin/mpv")
 
@@ -106,6 +195,11 @@ class JoshWBrowser(tk.Tk):
         self.domain_combo.current(0)
 
         ttk.Button(archive_frame, text="Open", command=self.open_archive).pack(side="left", padx=2)
+        
+        load_music_btn = ttk.Button(archive_frame, text="Load Music...", command=self.load_local_music)
+        load_music_btn.pack(side="left", padx=2)
+        ToolTip(load_music_btn, "click to find and play locally stored music with the built in player")
+
         ttk.Button(archive_frame, text="Index Current", command=self.index_current_domain).pack(side="left", padx=2)
         ttk.Button(archive_frame, text="Index All", command=self.index_all_domains).pack(side="left", padx=2)
 
@@ -118,8 +212,26 @@ class JoshWBrowser(tk.Tk):
         self.options_dropdown = tk.Menu(options_menu_btn, tearoff=0)
         self.options_dropdown.add_checkbutton(label="Enable Selection Checkboxes", variable=self.selection_checkboxes_enabled, command=self.on_toggle_checkboxes)
         self.options_dropdown.add_checkbutton(label="Keep Download Window Open After Completion", variable=self.keep_download_window_open)
-        self.options_dropdown.add_command(label="Install VGMstream", command=start_vgmstream_installation)
-        self.options_dropdown.add_command(label="Install lazyusf", command=start_lazyusf_installation)
+        self.options_dropdown.add_command(label="Set Default Load Music Folder...", command=self.set_default_load_music_dir)
+        
+        # VGMstream option with installed status
+        vgm_installed = self.has_vgmstream_installed()
+        vgm_label = "Install VGMstream (installed)" if vgm_installed else "Install VGMstream"
+        vgm_state = "disabled" if vgm_installed else "normal"
+        self.options_dropdown.add_command(label=vgm_label, command=start_vgmstream_installation, state=vgm_state)
+
+        # lazyusf option with installed status
+        usf_installed = self.has_lazyusf_installed()
+        usf_label = "Install lazyusf (installed)" if usf_installed else "Install lazyusf"
+        usf_state = "disabled" if usf_installed else "normal"
+        self.options_dropdown.add_command(label=usf_label, command=start_lazyusf_installation, state=usf_state)
+
+        # FluidSynth option with installed status
+        fluid_installed = self.has_fluidsynth_installed()
+        fluid_label = "Install FluidSynth & Soundfont (installed)" if fluid_installed else "Install FluidSynth & Soundfont"
+        fluid_state = "disabled" if fluid_installed else "normal"
+        self.options_dropdown.add_command(label=fluid_label, command=self.install_fluidsynth_prompt, state=fluid_state)
+
         options_menu_btn["menu"] = self.options_dropdown
 
         ttk.Label(archive_frame, text="Search:").pack(side="left", padx=(8, 4))
@@ -204,6 +316,25 @@ class JoshWBrowser(tk.Tk):
         ttk.Button(button_frame, text="Stop", command=self.stop_operations).pack(side="left", padx=6)
         ttk.Label(button_frame, textvariable=self.status_text).pack(side="right")
 
+    def load_local_music(self):
+        file_path = filedialog.askopenfilename(
+            title="Select Music File",
+            initialdir=self.default_load_music_dir.get(),
+            filetypes=[
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID"),
+                ("All Files", "*.*")
+            ]
+        )
+        if file_path:
+            self.play_audio_file(file_path)
+
+    def set_default_load_music_dir(self):
+        folder = filedialog.askdirectory(title="Choose Default Load Music Folder", initialdir=self.default_load_music_dir.get())
+        if folder:
+            self.default_load_music_dir.set(folder)
+            self.save_settings()
+            messagebox.showinfo("Default Folder Saved", f"Default load music folder set to:\n{folder}")
+
     def show_help(self):
         help_win = tk.Toplevel(self)
         help_win.title("Help - JoshW Emulated Music Browser & Player")
@@ -242,7 +373,7 @@ class JoshWBrowser(tk.Tk):
             "N64\n\n"
             "I hope to add more in the future with more updates\n\n"
             "All streamed songs are saved in a temporary folder within ~/.config/joshw/temp_extracted and will be deleted once the program is closed.\n\n"
-            "I hope you really enjoy this program! It was 100% vibe coded but i did a lot of research on how to get the various music player functions working!"
+            "I hope you really enjoy this program! It was 100% vibe coded but i did a lot of research on how to get the various music player functions working"
         )
 
         text_widget.insert("1.0", help_text)
@@ -337,7 +468,13 @@ class JoshWBrowser(tk.Tk):
             ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
             ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra"
         }
-        if ext in {".miniusf", ".usf"}:
+        if ext in (".mid", ".midi"):
+            if not self.has_fluidsynth_installed():
+                self.install_fluidsynth_prompt()
+                return
+            MPVPlayerWindow(self, audio_file)
+            return
+        elif ext in {".miniusf", ".usf"}:
             lazyusf_bin = get_lazyusf_path()
             if not lazyusf_bin or (not shutil.which(lazyusf_bin) and not os.path.exists(lazyusf_bin)):
                 messagebox.showerror("lazyusf Not Found", "lazyusf not found! Please install it from the Options menu.")
@@ -440,7 +577,8 @@ class JoshWBrowser(tk.Tk):
         settings.update({
             "default_destination": self.destination.get(),
             "use_default_dest": self.use_default_dest.get(),
-            "destination_history": self.load_destination_history()
+            "destination_history": self.load_destination_history(),
+            "default_load_music_dir": self.default_load_music_dir.get()
         })
         try:
             with open(self.get_settings_path(), "w", encoding="utf-8") as f:
