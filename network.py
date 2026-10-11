@@ -140,6 +140,11 @@ def fetch_directory(url):
             "size": None,
         })
 
+    # Restrict C64 music archives root directory to specified folders only
+    if url.rstrip("/") == "https://hvsc.brona.dk/HVSC/C64Music".rstrip("/"):
+        allowed_roots = {"DEMOS", "DOCUMENTS", "GAMES", "MUSICIANS"}
+        entries = [e for e in entries if e["directory"] and e["raw_name"].rstrip("/").upper() in allowed_roots]
+
     files = [entry for entry in entries if not entry["directory"]]
     with ThreadPoolExecutor(max_workers=8) as executor:
         future_map = {executor.submit(get_remote_file_size, entry["url"]): entry for entry in files}

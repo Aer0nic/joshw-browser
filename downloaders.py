@@ -43,7 +43,7 @@ def install_dependencies_prompt(parent):
         "please hit OK to start installation! This will open a terminal window and ask for your Sudo password. "
         "Once entered, it will run:\n\n"
         "sudo apt update\n"
-        "sudo apt install git cmake libgme0 build-essential sidplayfp -y\n\n"
+        "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool -y\n\n"
         "It will then grab the source files for Lazyusf and VGMStream and build them, placing the files into the ~/.config/joshw folder. "
         "It will also grab my program nsf_tracks from my github, which helps the music player define the amount of tracks within a .nsf file.\n\n"
         "If you agree to this, hit the OK button to start, otherwise hit Cancel. You can start this process at any time from the Options button on the main menu!"
@@ -66,7 +66,7 @@ class InstallDependenciesWorker:
 
         script_lines = [
             "sudo apt update",
-            "sudo apt install git cmake libgme0 build-essential sidplayfp -y"
+            "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool -y"
         ]
 
         temp_build_dir = Path(tempfile.mkdtemp(prefix="joshw_dep_"))
@@ -417,5 +417,4 @@ class DownloadProgressWindow(tk.Toplevel):
         self.destroy()
 
 
-# Trigger silent startup check for kernal and basic firmware files
 check_and_download_sid_firmware()

@@ -169,16 +169,18 @@
       "size": 1724033117
     }
   ],
-  "dir_sizes": {},
+  "dir_sizes": {
+    "https://hvsc.brona.dk/HVSC/C64Music/": 0
+  },
   "scanned_dirs": [
-    "http://psf5.joshw.info/l/",
-    "http://psf5.joshw.info/m/",
-    "http://psf5.joshw.info/r/",
-    "http://psf5.joshw.info/d/",
-    "http://psf5.joshw.info/n/",
     "http://psf5.joshw.info/",
-    "http://psf5.joshw.info/s/",
     "http://psf5.joshw.info/p/",
-    "http://psf5.joshw.info/a/"
+    "http://psf5.joshw.info/d/",
+    "http://psf5.joshw.info/l/",
+    "http://psf5.joshw.info/r/",
+    "http://psf5.joshw.info/n/",
+    "http://psf5.joshw.info/a/",
+    "http://psf5.joshw.info/m/",
+    "http://psf5.joshw.info/s/"
   ]
 }

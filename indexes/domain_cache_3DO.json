@@ -1129,32 +1129,34 @@
       "size": 48772626
     }
   ],
-  "dir_sizes": {},
+  "dir_sizes": {
+    "https://hvsc.brona.dk/HVSC/C64Music/": 0
+  },
   "scanned_dirs": [
-    "http://3do.joshw.info/l/",
-    "http://3do.joshw.info/u/",
     "http://3do.joshw.info/o/",
-    "http://3do.joshw.info/i/",
-    "http://3do.joshw.info/s/",
-    "http://3do.joshw.info/m/",
-    "http://3do.joshw.info/p/",
-    "http://3do.joshw.info/k/",
+    "http://3do.joshw.info/",
+    "http://3do.joshw.info/l/",
     "http://3do.joshw.info/g/",
-    "http://3do.joshw.info/w/",
-    "http://3do.joshw.info/y/",
-    "http://3do.joshw.info/a/",
-    "http://3do.joshw.info/e/",
-    "http://3do.joshw.info/d/",
+    "http://3do.joshw.info/n/",
     "http://3do.joshw.info/c/",
     "http://3do.joshw.info/t/",
     "http://3do.joshw.info/b/",
-    "http://3do.joshw.info/f/",
-    "http://3do.joshw.info/h/",
-    "http://3do.joshw.info/q/",
     "http://3do.joshw.info/r/",
+    "http://3do.joshw.info/s/",
+    "http://3do.joshw.info/u/",
     "http://3do.joshw.info/v/",
+    "http://3do.joshw.info/w/",
+    "http://3do.joshw.info/i/",
+    "http://3do.joshw.info/q/",
+    "http://3do.joshw.info/y/",
+    "http://3do.joshw.info/p/",
+    "http://3do.joshw.info/e/",
     "http://3do.joshw.info/j/",
-    "http://3do.joshw.info/",
-    "http://3do.joshw.info/n/"
+    "http://3do.joshw.info/k/",
+    "http://3do.joshw.info/a/",
+    "http://3do.joshw.info/d/",
+    "http://3do.joshw.info/f/",
+    "http://3do.joshw.info/m/",
+    "http://3do.joshw.info/h/"
   ]
 }

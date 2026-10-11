@@ -785,7 +785,9 @@
       "size": 215151822
     }
   ],
-  "dir_sizes": {},
+  "dir_sizes": {
+    "https://hvsc.brona.dk/HVSC/C64Music/": 0
+  },
   "scanned_dirs": [
     "http://ncd.joshw.info/"
   ]

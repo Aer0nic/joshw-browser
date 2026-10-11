@@ -27,7 +27,7 @@ def get_lazyusf_path():
 
 
 class SIDPlayerWindow(tk.Toplevel):
-    """Controller for streaming/playing .sid files using sidplayfp with subtrack parsing, playlist, and simulated keypresses."""
+    """Controller for playing .sid files using sidplayfp silently with parsed status display and robust track control."""
     def __init__(self, parent, audio_file):
         super().__init__(parent)
         self.parent = parent
@@ -36,6 +36,7 @@ class SIDPlayerWindow(tk.Toplevel):
         self.is_paused = False
         self.subtracks = [1]
         self.current_subtrack_idx = 0
+        self.last_displayed_text = ""
 
         self.status_var = tk.StringVar(value="Playing")
         self.track_var = tk.StringVar()
@@ -43,10 +44,10 @@ class SIDPlayerWindow(tk.Toplevel):
         self.parse_sid_subtracks()
         self.build_ui()
         self.protocol("WM_DELETE_WINDOW", self.close)
-        self.play_current_subtrack()
+        
+        self.start_sidplay()
 
     def parse_sid_subtracks(self):
-        """Checks the .sid file header for song count / subtracks and populates subtracks list."""
         try:
             with open(self.audio_file, "rb") as f:
                 header = f.read(0x7e)
@@ -60,50 +61,59 @@ class SIDPlayerWindow(tk.Toplevel):
     def build_ui(self):
         filename = os.path.basename(self.audio_file)
         self.title(f"sidplayfp Controller - {filename}")
-        self.geometry("440x360")
-        self.minsize(400, 320)
+        self.geometry("560x460")
+        self.minsize(520, 420)
         self.transient(self.parent)
 
         padding = ttk.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
 
-        ttk.Label(padding, text=f"Now Playing (SID):\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=410).pack(pady=(0, 6))
+        ttk.Label(padding, text=f"Now Playing (SID):\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=520).pack(pady=(0, 6))
         
         info_frame = ttk.Frame(padding)
-        info_frame.pack(fill="x", pady=(0, 6))
+        info_frame.pack(fill="x", pady=(0, 4))
         ttk.Label(info_frame, textvariable=self.status_var, font=("Arial", 9)).pack(side="left", padx=5)
         ttk.Label(info_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="right", padx=5)
         self.update_track_label()
 
-        # Playlist / Subtracks section
-        list_frame = ttk.LabelFrame(padding, text="Subtracks Playlist", padding=6)
-        list_frame.pack(fill="both", expand=True, pady=(0, 10))
+        term_container = ttk.LabelFrame(padding, text="sidplayfp Track Status", padding=4)
+        term_container.pack(fill="both", expand=True, pady=(4, 8))
 
-        self.subtrack_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
-        self.subtrack_listbox.pack(side="left", fill="both", expand=True)
-        scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.subtrack_listbox.yview)
+        log_frame = ttk.Frame(term_container)
+        log_frame.pack(fill="both", expand=True)
+
+        self.log_text = tk.Text(log_frame, wrap="word", bg="black", fg="yellow", font=("Monospace", 10), state="disabled", height=10)
+        self.log_text.pack(side="left", fill="both", expand=True)
+        
+        scrollbar = ttk.Scrollbar(log_frame, orient="vertical", command=self.log_text.yview)
         scrollbar.pack(side="right", fill="y")
-        self.subtrack_listbox.configure(yscrollcommand=scrollbar.set)
-        self.subtrack_listbox.bind("<<ListboxSelect>>", self.on_subtrack_select)
+        self.log_text.configure(yscrollcommand=scrollbar.set)
+
+        list_frame = ttk.LabelFrame(padding, text="Subtracks Playlist", padding=6)
+        list_frame.pack(fill="x", pady=(0, 8))
+
+        self.subtrack_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False, height=3)
+        self.subtrack_listbox.pack(side="left", fill="both", expand=True)
+        list_scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.subtrack_listbox.yview)
+        list_scrollbar.pack(side="right", fill="y")
+        self.subtrack_listbox.configure(yscrollcommand=list_scrollbar.set)
+        self.subtrack_listbox.bind("<<ListboxSelect>>", self.on_listbox_select)
         self.populate_subtrack_listbox()
 
         controls = ttk.Frame(padding)
         controls.pack(pady=4)
 
-        ttk.Button(controls, text="<< Prev", width=10, command=self.prev_track).grid(row=0, column=0, padx=2)
-        ttk.Button(controls, text="Play/Pause", width=12, command=self.toggle_play_pause).grid(row=0, column=1, padx=2)
-        ttk.Button(controls, text="Next >>", width=10, command=self.next_track).grid(row=0, column=2, padx=2)
-
-        btn_bottom = ttk.Frame(padding)
-        btn_bottom.pack(pady=(6, 0), fill="x")
-        ttk.Button(btn_bottom, text="Close", width=10, command=self.close).pack(side="right", padx=2)
+        ttk.Button(controls, text="<< Prev", width=10, command=self.prev_track).grid(row=0, column=0, padx=4)
+        ttk.Button(controls, text="Play/Pause", width=12, command=self.toggle_play_pause).grid(row=0, column=1, padx=4)
+        ttk.Button(controls, text="Next >>", width=10, command=self.next_track).grid(row=0, column=2, padx=4)
+        ttk.Button(controls, text="Close", width=10, command=self.close).grid(row=0, column=3, padx=(16, 4))
 
     def populate_subtrack_listbox(self):
         if not self.winfo_exists():
             return
         self.subtrack_listbox.delete(0, tk.END)
-        for s in self.subtracks:
-            self.subtrack_listbox.insert(tk.END, f"Subtrack {s}")
+        for idx, s in enumerate(self.subtracks, start=1):
+            self.subtrack_listbox.insert(tk.END, f"Track {idx}")
         self.update_listbox_selection()
 
     def update_listbox_selection(self):
@@ -117,12 +127,29 @@ class SIDPlayerWindow(tk.Toplevel):
         except Exception:
             pass
 
+    def on_listbox_select(self, event):
+        selection = self.subtrack_listbox.curselection()
+        if not selection:
+            return
+        idx = selection[0]
+        if idx != self.current_subtrack_idx:
+            self.current_subtrack_idx = idx
+            self.start_sidplay()
+
     def update_track_label(self):
         curr_sub = self.subtracks[self.current_subtrack_idx]
         self.track_var.set(f"Subtrack: {curr_sub} / {len(self.subtracks)}")
 
+    def update_textbox(self, text):
+        if not self.winfo_exists() or text == self.last_displayed_text:
+            return
+        self.last_displayed_text = text
+        self.log_text.configure(state="normal")
+        self.log_text.delete("1.0", tk.END)
+        self.log_text.insert(tk.END, text)
+        self.log_text.configure(state="disabled")
+
     def stop_current_playback(self):
-        """Stops the current playing song completely before starting/switching."""
         if self.sid_proc:
             try:
                 self.sid_proc.terminate()
@@ -134,67 +161,106 @@ class SIDPlayerWindow(tk.Toplevel):
                     pass
             self.sid_proc = None
 
-    def play_current_subtrack(self):
+    def start_sidplay(self):
         self.stop_current_playback()
         sidplay_bin = shutil.which("sidplayfp") or "sidplayfp"
         subtrack_num = self.subtracks[self.current_subtrack_idx]
         
-        cmd = [sidplay_bin, "-s{0}".format(subtrack_num), self.audio_file] if len(self.subtracks) > 1 else [sidplay_bin, self.audio_file]
+        cmd_args = [sidplay_bin]
+        if len(self.subtracks) > 1:
+            cmd_args.append(f"-o{subtrack_num}")
+        cmd_args.append(self.audio_file)
 
         try:
-            # Spawn sidplayfp inside a silent pseudo-terminal or piped subprocess
             self.sid_proc = subprocess.Popen(
-                cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                text=True
+                cmd_args,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
             )
             self.is_paused = False
             self.status_var.set("Playing")
             self.update_track_label()
             self.update_listbox_selection()
+            threading.Thread(target=self.read_sid_output, daemon=True).start()
         except Exception as e:
             messagebox.showerror("sidplayfp Error", f"Could not launch sidplayfp:\n\n{e}")
 
-    def send_keypress(self, char_or_code):
-        """Simulates keypresses sent directly to the silent terminal window / process stdin."""
-        if self.sid_proc and self.sid_proc.poll() is None:
-            try:
-                if self.sid_proc.stdin:
-                    self.sid_proc.stdin.write(f"{char_or_code}\n")
-                    self.sid_proc.stdin.flush()
-            except Exception:
-                pass
+    def read_sid_output(self):
+        proc = self.sid_proc
+        if not proc or not proc.stdout:
+            return
+        
+        title = "UNKNOWN"
+        author = "UNKNOWN"
+        released = "UNKNOWN"
+        song_length = "UNKNOWN"
+        playtime = "00:00"
+
+        buffer = ""
+        try:
+            while proc.poll() is None:
+                char = proc.stdout.read(1)
+                if not char:
+                    break
+                if char == '\r' or char == '\n':
+                    line = buffer.strip()
+                    buffer = ""
+                    if line:
+                        if "Title" in line and ":" in line:
+                            title = line.split(":", 1)[1].strip()
+                        elif "Author" in line and ":" in line:
+                            author = line.split(":", 1)[1].strip()
+                        elif "Released" in line and ":" in line:
+                            released = line.split(":", 1)[1].strip()
+                        elif "Song Length" in line and ":" in line:
+                            song_length = line.split(":", 1)[1].strip()
+                        
+                        m_time = re.search(r'(\d{2}:\d{2})', line)
+                        if m_time:
+                            playtime = m_time.group(1)
+
+                        current_playlist_str = f"{self.subtracks[self.current_subtrack_idx]}/{len(self.subtracks)}"
+                        formatted_text = (
+                            f"Title: {title}\n"
+                            f"Author: {author}\n"
+                            f"Released: {released}\n\n"
+                            f"Playlist: {current_playlist_str}\n"
+                            f"Song Length: {song_length}\n\n"
+                            f"Playtime: {playtime}"
+                        )
+                        if self.winfo_exists():
+                            self.after(0, lambda t=formatted_text: self.update_textbox(t))
+                else:
+                    buffer += char
+        except Exception:
+            pass
 
     def toggle_play_pause(self):
-        # Simulate pressing 'p' to toggle play/pause
-        self.send_keypress("p")
-        self.is_paused = not self.is_paused
-        self.status_var.set("Paused" if self.is_paused else "Playing")
+        if not self.sid_proc:
+            return
+        try:
+            if self.is_paused:
+                os.kill(self.sid_proc.pid, signal.SIGCONT)
+                self.is_paused = False
+                self.status_var.set("Playing")
+            else:
+                os.kill(self.sid_proc.pid, signal.SIGSTOP)
+                self.is_paused = True
+                self.status_var.set("Paused")
+        except Exception:
+            pass
 
     def prev_track(self):
         if len(self.subtracks) > 1:
-            # Simulate left arrow or switch subtrack via playlist index
-            self.send_keypress("\x1b[D")
             self.current_subtrack_idx = (self.current_subtrack_idx - 1) % len(self.subtracks)
-            self.play_current_subtrack()
+            self.start_sidplay()
 
     def next_track(self):
         if len(self.subtracks) > 1:
-            # Simulate right arrow or switch subtrack via playlist index
-            self.send_keypress("\x1b[C")
             self.current_subtrack_idx = (self.current_subtrack_idx + 1) % len(self.subtracks)
-            self.play_current_subtrack()
-
-    def on_subtrack_select(self, event):
-        selection = self.subtrack_listbox.curselection()
-        if not selection:
-            return
-        idx = selection[0]
-        if idx != self.current_subtrack_idx:
-            self.current_subtrack_idx = idx
-            self.play_current_subtrack()
+            self.start_sidplay()
 
     def close(self):
         self.stop_current_playback()
@@ -209,7 +275,7 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
         super().__init__(parent)
         self.parent = parent
         self.folder_path = folder_path
-        self.title(f"Extracted Files - {os.path.basename(folder_path)}")
+        self.title(f"Select Music File - {os.path.basename(folder_path)}")
         self.geometry("520x450")
         self.minsize(400, 300)
         self.transient(parent)
@@ -1127,7 +1193,7 @@ class MPVPlayerWindow(tk.Toplevel):
         except (BlockingIOError, ConnectionResetError, OSError):
             pass
 
-    def close(self):
+    def close(self, event=None):
         self.stop()
         if self.m3u_path and os.path.exists(self.m3u_path):
             try:

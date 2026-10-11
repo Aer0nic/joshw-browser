@@ -82,6 +82,10 @@ class JoshWBrowser(tk.Tk):
             )
         elif dep_name == "sidplayfp":
             return shutil.which("sidplayfp") is not None
+        elif dep_name == "xterm":
+            return shutil.which("xterm") is not None
+        elif dep_name == "xdotool":
+            return shutil.which("xdotool") is not None
         elif dep_name == "nsf_tracks":
             return (
                 shutil.which("nsf_tracks") is not None
@@ -100,6 +104,8 @@ class JoshWBrowser(tk.Tk):
             ("lazyusf", "lazyusf"),
             ("vgmstream", "vgmstream123"),
             ("sidplayfp", "sidplayfp"),
+            ("xterm", "xterm"),
+            ("xdotool", "xdotool"),
             ("nsf_tracks", "nsf_tracks"),
             ("fluidsynth", "FluidSynth & Soundfont")
         ]
@@ -360,6 +366,8 @@ class JoshWBrowser(tk.Tk):
             "After that finishes, you can use the dropdown and choose a domain to load. click Open to show the directory listing of that domain, and once you find a file you want, you can double click to try and stream the files or download them directly. You may also shift click to choose multiple files to download, or use the \"Download Every File Here\" button to grab everything.\n\n"
             "You may set a default download location and enable it by clicking the little box to the left of the textbox. Otherwise when downloading it will ask you where you want the files.\n\n"
             "If you know the name of the file you want, log into the appropriate domain and go to the search bar. Start typing and it will filter it down instantly! If you hit enter, it will save the search in the search history, which can be seen with the dropdown arrow on the search bar.\n\n"
+            "Dependencies / Terminal Player Note:\n"
+            "For .sid playback via sidplayfp, ensure you have installed dependencies including sidplayfp, xterm, and xdotool via the Options menu.\n\n"
             "Currently, the only fully supported streamable domains are the following:\n\n"
             "PC\n"
             "FM Towns\n"
@@ -878,6 +886,45 @@ class JoshWBrowser(tk.Tk):
     def download_and_open_temp_worker(self, url, temp_dir, progress_win):
         parsed = urllib.parse.urlparse(url)
         filename = safe_filename(urllib.parse.unquote(posixpath.basename(parsed.path))) or "archive_file"
+        ext = os.path.splitext(filename)[1].lower()
+        compressed_exts = {".7z", ".zip", ".tar", ".gz", ".bz2"}
+
+        if ext not in compressed_exts:
+            output_path = os.path.join(temp_dir, filename)
+            if os.path.exists(output_path):
+                if progress_win.winfo_exists():
+                    self.messages.put(("close_progress", progress_win))
+                self.messages.put(("play_audio", output_path))
+                return
+
+            request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            try:
+                with urllib.request.urlopen(request, timeout=60) as response:
+                    total_bytes = int(response.headers.get("Content-Length", 0))
+                    downloaded_bytes, start_time = 0, time.time()
+                    with open(output_path, "wb") as output:
+                        while True:
+                            if self.stop_event.is_set() or progress_win.is_cancelled:
+                                return
+                            chunk = response.read(64 * 1024)
+                            if not chunk:
+                                break
+                            output.write(chunk)
+                            downloaded_bytes += len(chunk)
+                            elapsed = time.time() - start_time
+                            speed = (downloaded_bytes / elapsed) if elapsed > 0 else 0
+                            eta = ((total_bytes - downloaded_bytes) / speed) if speed > 0 and total_bytes > 0 else 0
+                            self.messages.put(("update_progress", progress_win, filename, downloaded_bytes, total_bytes, 1, 1, speed, eta))
+            except Exception as error:
+                self.messages.put(("error", f"Failed to download file:\n\n{error}"))
+                self.messages.put(("close_progress", progress_win))
+                return
+
+            if progress_win.winfo_exists():
+                self.messages.put(("close_progress", progress_win))
+            self.messages.put(("play_audio", output_path))
+            return
+
         base_name = os.path.splitext(filename)[0]
         extract_dir = os.path.join(temp_dir, base_name + "_extracted")
 
@@ -984,6 +1031,8 @@ class JoshWBrowser(tk.Tk):
                     self.display_entries(msg[1], msg[2], msg[3])
                 elif msg[0] == "open_file_browser":
                     self.open_file_browser(msg[1])
+                elif msg[0] == "play_audio":
+                    self.play_audio_file(msg[1])
                 elif msg[0] == "scraper_finished":
                     self.status_text.set(f"Indexed {msg[1]} successfully.")
                 elif msg[0] == "update_progress":

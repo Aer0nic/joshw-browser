@@ -10,6 +10,7 @@ DOMAINS = {
     "MSX music archives": "http://kss.joshw.info/",
     "NES music archives": "http://nsf.joshw.info/",
     "SNES music archives": "http://spc.joshw.info/",
+    "c64 music archives": "https://hvsc.brona.dk/HVSC/C64Music/",
     "Nintendo 64": "http://usf.joshw.info/",
     "GameCube": "http://gcn.joshw.info/",
     "Nintendo Wii": "http://wii.joshw.info/",
