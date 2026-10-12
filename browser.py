@@ -14,14 +14,15 @@ from tkinter import ttk, filedialog, messagebox
 
 from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, is_emulated_file, format_size
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
-from players import VGMStreamPlayerWindow, MPVPlayerWindow, SIDPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path
+from players import VGMStreamPlayerWindow, MPVPlayerWindow, SIDPlayerWindow, GSFPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path
 from downloaders import DownloadProgressWindow, IndexAllWindow, IndexPremadeWindow, install_dependencies_prompt
 
 
 class ToolTip:
-    def __init__(self, widget, text):
+    def __init__(self, widget, text, delay=500):
         self.widget = widget
         self.text = text
+        self.delay = delay
         self.tip_window = None
         self.id = None
         self.widget.bind("<Enter>", self.enter)
@@ -37,7 +38,7 @@ class ToolTip:
 
     def schedule(self):
         self.unschedule()
-        self.id = self.widget.after(1000, self.show_tip)
+        self.id = self.widget.after(self.delay, self.show_tip)
 
     def unschedule(self):
         id_val = self.id
@@ -82,6 +83,11 @@ class JoshWBrowser(tk.Tk):
             )
         elif dep_name == "sidplayfp":
             return shutil.which("sidplayfp") is not None
+        elif dep_name == "playgsf":
+            return (
+                shutil.which("playgsf") is not None
+                or os.path.exists(os.path.join(cache_dir, "playgsf"))
+            )
         elif dep_name == "xterm":
             return shutil.which("xterm") is not None
         elif dep_name == "xdotool":
@@ -104,6 +110,7 @@ class JoshWBrowser(tk.Tk):
             ("lazyusf", "lazyusf"),
             ("vgmstream", "vgmstream123"),
             ("sidplayfp", "sidplayfp"),
+            ("playgsf", "playgsf"),
             ("xterm", "xterm"),
             ("xdotool", "xdotool"),
             ("nsf_tracks", "nsf_tracks"),
@@ -170,6 +177,8 @@ class JoshWBrowser(tk.Tk):
         self.destination = tk.StringVar(value=saved_dest)
         self.use_default_dest = tk.BooleanVar(value=saved_use_default)
         self.default_load_music_dir = tk.StringVar(value=saved_load_dir)
+        self._last_loaded_music_dir = saved_load_dir
+
         self.path_7z = tk.StringVar(value="/bin/7z")
         self.path_mpv = tk.StringVar(value="/bin/mpv")
 
@@ -214,7 +223,7 @@ class JoshWBrowser(tk.Tk):
 
         ttk.Button(archive_frame, text="Open", command=self.open_archive).pack(side="left", padx=2)
         
-        load_music_btn = ttk.Button(archive_frame, text="Load Music...", command=self.load_local_music)
+        load_music_btn = ttk.Button(archive_frame, text="Load Music...", command=lambda: self.load_local_music(is_default=True))
         load_music_btn.pack(side="left", padx=2)
         ToolTip(load_music_btn, "click to find and play locally stored music with the built in player")
 
@@ -251,7 +260,9 @@ class JoshWBrowser(tk.Tk):
         self.search_combo.bind("<<ComboboxSelected>>", lambda event: self.on_search_selected())
         self.search_combo.bind("<Return>", lambda event: self.on_search_submitted())
 
-        ttk.Button(archive_frame, text="Clear", command=self.clear_search).pack(side="left", padx=2)
+        clear_search_btn = ttk.Button(archive_frame, text="Clear", command=self.clear_search_history)
+        clear_search_btn.pack(side="left", padx=2)
+        ToolTip(clear_search_btn, "Click to clear search history")
 
         progress_container = ttk.Frame(self, padding=(8, 0, 8, 4))
         progress_container.pack(fill="x")
@@ -325,22 +336,26 @@ class JoshWBrowser(tk.Tk):
         ttk.Button(button_frame, text="Stop", command=self.stop_operations).pack(side="left", padx=6)
         ttk.Label(button_frame, textvariable=self.status_text).pack(side="right")
 
-    def load_local_music(self):
+    def load_local_music(self, is_default=False):
+        initial_dir = self.default_load_music_dir.get() if is_default else self._last_loaded_music_dir
         file_path = filedialog.askopenfilename(
             title="Select Music File",
-            initialdir=self.default_load_music_dir.get(),
+            initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID"),
                 ("All Files", "*.*")
             ]
         )
         if file_path:
+            folder = os.path.dirname(file_path)
+            self._last_loaded_music_dir = folder
             self.play_audio_file(file_path)
 
     def set_default_load_music_dir(self):
         folder = filedialog.askdirectory(title="Choose Default Load Music Folder", initialdir=self.default_load_music_dir.get())
         if folder:
             self.default_load_music_dir.set(folder)
+            self._last_loaded_music_dir = folder
             self.save_settings()
             messagebox.showinfo("Default Folder Saved", f"Default load music folder set to:\n{folder}")
 
@@ -367,7 +382,7 @@ class JoshWBrowser(tk.Tk):
             "You may set a default download location and enable it by clicking the little box to the left of the textbox. Otherwise when downloading it will ask you where you want the files.\n\n"
             "If you know the name of the file you want, log into the appropriate domain and go to the search bar. Start typing and it will filter it down instantly! If you hit enter, it will save the search in the search history, which can be seen with the dropdown arrow on the search bar.\n\n"
             "Dependencies / Terminal Player Note:\n"
-            "For .sid playback via sidplayfp, ensure you have installed dependencies including sidplayfp, xterm, and xdotool via the Options menu.\n\n"
+            "For .sid playback via sidplayfp and .gsf playback via playgsf, ensure you have installed dependencies including sidplayfp, playgsf, xterm, and xdotool via the Options menu.\n\n"
             "Currently, the only fully supported streamable domains are the following:\n\n"
             "PC\n"
             "FM Towns\n"
@@ -379,12 +394,13 @@ class JoshWBrowser(tk.Tk):
             "Neo Geo\n"
             "Xbox\n"
             "3DO\n"
-            "Game Boy\n\n"
+            "Game Boy\n"
+            "Game Boy Advance\n\n"
             "Partially working domains are:\n\n"
             "N64\n\n"
             "I hope to add more in the future with more updates\n\n"
             "All streamed songs are saved in a temporary folder within ~/.config/joshw/temp_extracted and will be deleted once the program is closed.\n\n"
-            "I hope you really enjoy this program! It was 100% vibe coded but i did a lot of research on how to get the various music player functions working"
+            "I hope you really enjoy this program!"
         )
 
         text_widget.insert("1.0", help_text)
@@ -482,6 +498,12 @@ class JoshWBrowser(tk.Tk):
         if ext == ".sid":
             SIDPlayerWindow(self, audio_file)
             return
+        elif ext in (".gsf", ".minigsf"):
+            if not self.check_dependency_status("playgsf"):
+                messagebox.showerror("playgsf Not Found", "playgsf not found! Please install dependencies.")
+                return
+            GSFPlayerWindow(self, audio_file)
+            return
         elif ext in (".mid", ".midi"):
             if not self.check_dependency_status("fluidsynth"):
                 messagebox.showerror("FluidSynth Required", "Midi playback requires FluidSynth and soundfont. Please install dependencies.")
@@ -559,6 +581,8 @@ class JoshWBrowser(tk.Tk):
                 os.remove(self.get_search_history_path())
             if hasattr(self, "search_combo"):
                 self.search_combo.configure(values=[])
+            self.search_text.set("")
+            self.apply_filter()
             self.status_text.set("Search history cleared.")
         except Exception as e:
             self.status_text.set(f"Could not clear search history: {e}")
@@ -637,10 +661,6 @@ class JoshWBrowser(tk.Tk):
             self.status_text.set("Destination history cleared.")
         except Exception as e:
             self.status_text.set(f"Could not clear destination history: {e}")
-
-    def clear_search(self):
-        self.search_text.set("")
-        self.apply_filter()
 
     def open_archive(self):
         selected_name = self.domain_combo.get()
@@ -1005,19 +1025,104 @@ class JoshWBrowser(tk.Tk):
 
     def get_selected_files(self):
         target_ids = self.selected_item_ids if self.selection_checkboxes_enabled.get() else self.tree.selection()
-        return [self.visible_entries[int(item_id)]["url"] for item_id in target_ids if not self.visible_entries[int(item_id)]["directory"]]
+        urls = []
+        for item_id in target_ids:
+            try:
+                entry = self.visible_entries[int(item_id)]
+                if not entry["directory"]:
+                    urls.append(entry["url"])
+            except Exception:
+                pass
+        return urls
 
     def download_selected(self):
         urls = self.get_selected_files()
         if not urls:
+            selection = self.tree.selection()
+            if selection:
+                for item_id in selection:
+                    try:
+                        entry = self.visible_entries[int(item_id)]
+                        if not entry["directory"]:
+                            urls.append(entry["url"])
+                    except Exception:
+                        pass
+        if not urls:
             messagebox.showinfo("No files selected", "Please select files to download.")
             return
-        folder = filedialog.askdirectory(title="Choose destination folder")
-        if folder:
-            messagebox.showinfo("Download", f"Downloading {len(urls)} files to {folder}")
+
+        dest_dir = self.destination.get().strip() if self.use_default_dest.get() else ""
+        if not dest_dir or not os.path.isdir(dest_dir):
+            dest_dir = filedialog.askdirectory(title="Choose destination folder", initialdir=self.destination.get())
+            if not dest_dir:
+                return
+            self.destination.set(dest_dir)
+            self.save_destination_history(dest_dir)
+
+        self.stop_event.clear()
+        progress_win = DownloadProgressWindow(self, title="Downloading Selected Files...")
+        threading.Thread(
+            target=self.download_files_worker,
+            args=(urls, dest_dir, progress_win),
+            daemon=True
+        ).start()
 
     def download_current_directory(self):
-        messagebox.showinfo("Download Directory", "Directory download triggered.")
+        urls = [e["url"] for e in self.current_entries if not e["directory"] and not e.get("is_parent_nav")]
+        if not urls:
+            messagebox.showinfo("No files", "No files found in the current directory.")
+            return
+
+        dest_dir = self.destination.get().strip() if self.use_default_dest.get() else ""
+        if not dest_dir or not os.path.isdir(dest_dir):
+            dest_dir = filedialog.askdirectory(title="Choose destination folder", initialdir=self.destination.get())
+            if not dest_dir:
+                return
+            self.destination.set(dest_dir)
+            self.save_destination_history(dest_dir)
+
+        self.stop_event.clear()
+        progress_win = DownloadProgressWindow(self, title="Downloading Directory Files...")
+        threading.Thread(
+            target=self.download_files_worker,
+            args=(urls, dest_dir, progress_win),
+            daemon=True
+        ).start()
+
+    def download_files_worker(self, urls, dest_dir, progress_win):
+        total_files = len(urls)
+        for idx, url in enumerate(urls, start=1):
+            if self.stop_event.is_set() or (progress_win.winfo_exists() and progress_win.is_cancelled):
+                break
+            parsed = urllib.parse.urlparse(url)
+            filename = safe_filename(urllib.parse.unquote(posixpath.basename(parsed.path))) or "file"
+            output_path = unique_path(os.path.join(dest_dir, filename))
+
+            request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            try:
+                with urllib.request.urlopen(request, timeout=60) as response:
+                    total_bytes = int(response.headers.get("Content-Length", 0))
+                    downloaded_bytes, start_time = 0, time.time()
+                    with open(output_path, "wb") as output:
+                        while True:
+                            if self.stop_event.is_set() or (progress_win.winfo_exists() and progress_win.is_cancelled):
+                                break
+                            chunk = response.read(64 * 1024)
+                            if not chunk:
+                                break
+                            output.write(chunk)
+                            downloaded_bytes += len(chunk)
+                            elapsed = time.time() - start_time
+                            speed = (downloaded_bytes / elapsed) if elapsed > 0 else 0
+                            eta = ((total_bytes - downloaded_bytes) / speed) if speed > 0 and total_bytes > 0 else 0
+                            if progress_win.winfo_exists():
+                                self.messages.put(("update_progress", progress_win, f"[{idx}/{total_files}] {filename}", downloaded_bytes, total_bytes, idx, total_files, speed, eta))
+            except Exception as error:
+                self.messages.put(("error", f"Failed to download {filename}:\n\n{error}"))
+
+        if progress_win.winfo_exists():
+            self.messages.put(("close_progress", progress_win))
+        self.messages.put(("status", f"Finished downloading {total_files} files."))
 
     def stop_operations(self):
         self.stop_event.set()
@@ -1035,6 +1140,8 @@ class JoshWBrowser(tk.Tk):
                     self.play_audio_file(msg[1])
                 elif msg[0] == "scraper_finished":
                     self.status_text.set(f"Indexed {msg[1]} successfully.")
+                elif msg[0] == "status":
+                    self.status_text.set(msg[1])
                 elif msg[0] == "update_progress":
                     win, fname, d_bytes, t_bytes, c_idx, t_idx, speed, eta = msg[1:]
                     if win.winfo_exists():

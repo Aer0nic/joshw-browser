@@ -43,10 +43,9 @@ def install_dependencies_prompt(parent):
         "please hit OK to start installation! This will open a terminal window and ask for your Sudo password. "
         "Once entered, it will run:\n\n"
         "sudo apt update\n"
-        "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool -y\n\n"
-        "It will then grab the source files for Lazyusf and VGMStream and build them, placing the files into the ~/.config/joshw folder. "
-        "It will also grab my program nsf_tracks from my github, which helps the music player define the amount of tracks within a .nsf file.\n\n"
-        "If you agree to this, hit the OK button to start, otherwise hit Cancel. You can start this process at any time from the Options button on the main menu!"
+        "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev -y\n\n"
+        "It will then grab the source files for Lazyusf, VGMStream, and PlayGSF, download the FluidSynth soundfont, and build them into ~/.config/joshw/.\n\n"
+        "If you agree to this, hit the OK button to start, otherwise hit Cancel."
     )
     ans = messagebox.askokcancel("Install Dependencies", prompt_text)
     if ans:
@@ -66,7 +65,7 @@ class InstallDependenciesWorker:
 
         script_lines = [
             "sudo apt update",
-            "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool -y"
+            "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev -y"
         ]
 
         temp_build_dir = Path(tempfile.mkdtemp(prefix="joshw_dep_"))
@@ -82,8 +81,30 @@ class InstallDependenciesWorker:
             if not vgmstream_bin.exists():
                 script_lines.append(f"git clone https://github.com/vgmstream/vgmstream.git {temp_build_dir / 'vgmstream'}")
                 script_lines.append(f"cd {temp_build_dir / 'vgmstream'} && bash make-build-cmake.sh")
-                script_lines.append(f"find {temp_build_dir / 'vgmstream'} -name 'vgmstream123' -type f -exec cp {{}} {cache_dir} \\\\;")
+                script_lines.append(f"cp {temp_build_dir / 'vgmstream' / 'build' / 'cli' / 'vgmstream123'} {cache_dir}/")
                 script_lines.append(f"chmod +x {vgmstream_bin}")
+
+            playgsf_bin = cache_dir / "playgsf"
+            if not playgsf_bin.exists():
+                script_lines.append(f"cd {cache_dir}")
+                script_lines.append("git clone https://github.com/yshui/playgsf.git playgsfbuild")
+                script_lines.append("cd playgsfbuild && ./configure")
+                script_lines.append("make || true")
+                script_lines.append("g++ -fPIC -no-pie "
+    "gsf.o VBA/GBA.o VBA/Globals.o VBA/Sound.o VBA/Util.o "
+    "VBA/bios.o VBA/memgzio.o VBA/snd_interp.o VBA/unzip.o "
+    "linuxmain.o VBA/psftag.o "
+    "libresample/src/filterkit.o libresample/src/resample.o "
+    "libresample/src/resamplesubs.o "
+    "-lz -lao -lSDL2 -o playgsf")
+
+                script_lines.append(f"mv playgsf {cache_dir}/ && cd ..")
+                script_lines.append(f"rm -rf playgsfbuild")
+                script_lines.append(f"chmod +x {playgsf_bin}")
+
+            soundfont_file = cache_dir / "FluidR3_GM.sf2"
+            if not soundfont_file.exists():
+                script_lines.append(f"wget -O {soundfont_file} https://github.com/pianobooster/fluid-soundfont/releases/download/v3.1/FluidR3_GM.sf2")
 
             nsf_tracks_bin = cache_dir / "nsf_tracks"
             if not nsf_tracks_bin.exists():
@@ -98,44 +119,38 @@ class InstallDependenciesWorker:
             if not basic_file.exists():
                 script_lines.append(f"wget -O {basic_file} https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/basic.901226-01.bin")
 
-            full_script = " && \\\n".join(script_lines)
+            script_file = temp_build_dir / "install_deps.sh"
+            with open(script_file, "w", encoding="utf-8") as f:
+                f.write("#!/bin/bash\n")
+                f.write("\n".join(script_lines) + "\n")
+                f.write("echo '----------------------------------------'\n")
+                f.write("echo 'Installation complete. Press Enter to close.'\n")
+                f.write("read\n")
+            os.chmod(script_file, 0o755)
 
-            terminals = ["gnome-terminal", "konsole", "xfce4-terminal", "xterm"]
+            terminals = [
+                ("gnome-terminal", ["gnome-terminal", "--", "bash", "-c", str(script_file)]),
+                ("konsole", ["konsole", "-e", "bash", "-c", str(script_file)]),
+                ("xfce4-terminal", ["xfce4-terminal", "-e", f"bash -c '{script_file}'"]),
+                ("xterm", ["xterm", "-hold", "-e", str(script_file)]),
+                ("x-terminal-emulator", ["x-terminal-emulator", "-e", f"bash -c '{script_file}'"])
+            ]
+
             launched = False
-            for term in terminals:
-                if shutil.which(term):
-                    if term == "gnome-terminal":
-                        subprocess.Popen([term, "--", "bash", "-c", f"{full_script}; echo 'Installation complete. Press Enter to close.'; read"])
-                    elif term == "konsole":
-                        subprocess.Popen([term, "-e", "bash", "-c", f"{full_script}; echo 'Installation complete. Press Enter to close.'; read"])
-                    else:
-                        subprocess.Popen([term, "-e", f"bash -c \"{full_script}; echo 'Installation complete. Press Enter to close.'; read\""])
-                    launched = True
-                    break
+            for term_name, term_cmd in terminals:
+                if shutil.which(term_name):
+                    try:
+                        subprocess.Popen(term_cmd)
+                        launched = True
+                        break
+                    except Exception:
+                        pass
             if not launched:
-                subprocess.Popen(["x-terminal-emulator", "-e", f"bash -c \"{full_script}; echo 'Installation complete. Press Enter to close.'; read\""])
-
-            if self.parent.winfo_exists():
-                self.parent.after(0, self.post_install_check)
+                subprocess.Popen(["x-terminal-emulator", "-e", f"bash -c '{script_file}'"])
 
         except Exception as e:
             if self.parent.winfo_exists():
                 self.parent.after(0, lambda err=e: messagebox.showerror("Installation Error", f"An error occurred during dependency installation:\n\n{err}"))
-        finally:
-            shutil.rmtree(temp_build_dir, ignore_errors=True)
-
-    def post_install_check(self):
-        self.parent.update_dependencies_submenu()
-        if (
-            self.parent.check_dependency_status("lazyusf")
-            and self.parent.check_dependency_status("vgmstream")
-            and self.parent.check_dependency_status("sidplayfp")
-        ):
-            try:
-                self.parent.options_dropdown.entryconfig(self.parent.install_deps_item_index, state="disabled")
-            except Exception:
-                pass
-        messagebox.showinfo("Dependencies", "Dependency installation routine completed. Check the Dependencies submenu for visual confirmation.")
 
 
 class StepLogDialog(tk.Toplevel):
