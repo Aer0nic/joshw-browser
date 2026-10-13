@@ -253,17 +253,6 @@ class JoshWBrowser(tk.Tk):
 
         options_menu_btn["menu"] = self.options_dropdown
 
-        ttk.Label(archive_frame, text="Search:").pack(side="left", padx=(8, 4))
-        self.search_combo = ttk.Combobox(archive_frame, textvariable=self.search_text, width=16, values=self.load_search_history())
-        self.search_combo.pack(side="left")
-        self.search_combo.bind("<KeyRelease>", lambda event: self.apply_filter())
-        self.search_combo.bind("<<ComboboxSelected>>", lambda event: self.on_search_selected())
-        self.search_combo.bind("<Return>", lambda event: self.on_search_submitted())
-
-        clear_search_btn = ttk.Button(archive_frame, text="Clear", command=self.clear_search_history)
-        clear_search_btn.pack(side="left", padx=2)
-        ToolTip(clear_search_btn, "Click to clear search history")
-
         progress_container = ttk.Frame(self, padding=(8, 0, 8, 4))
         progress_container.pack(fill="x")
         progress_container.columnconfigure(0, weight=1)
@@ -292,7 +281,22 @@ class JoshWBrowser(tk.Tk):
         self.path_label.pack(side="left", fill="x", expand=True, padx=6)
         ttk.Button(path_frame, text="Up", command=self.go_up).pack(side="right")
 
-        ttk.Label(self, text="Double click on a file to either download or stream it", font=("Arial", 9, "italic")).pack(anchor="w", padx=10, pady=(0, 2))
+        info_search_frame = ttk.Frame(self, padding=(8, 0, 8, 2))
+        info_search_frame.pack(fill="x", padx=2)
+
+        ttk.Label(info_search_frame, text="Double click on a file to either download or stream it", font=("Arial", 9, "italic")).pack(side="left")
+
+        clear_search_btn = ttk.Button(info_search_frame, text="Clear", command=self.clear_search_history)
+        clear_search_btn.pack(side="right", padx=2)
+        ToolTip(clear_search_btn, "Click to clear search history")
+
+        self.search_combo = ttk.Combobox(info_search_frame, textvariable=self.search_text, width=18, values=self.load_search_history())
+        self.search_combo.pack(side="right", padx=4)
+        self.search_combo.bind("<KeyRelease>", lambda event: self.apply_filter())
+        self.search_combo.bind("<<ComboboxSelected>>", lambda event: self.on_search_selected())
+        self.search_combo.bind("<Return>", lambda event: self.on_search_submitted())
+
+        ttk.Label(info_search_frame, text="Search:").pack(side="right", padx=(4, 2))
 
         tree_frame = ttk.Frame(self, padding=(8, 0, 8, 8))
         tree_frame.pack(fill="both", expand=True)
@@ -342,7 +346,7 @@ class JoshWBrowser(tk.Tk):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA"),
                 ("All Files", "*.*")
             ]
         )
@@ -393,6 +397,7 @@ class JoshWBrowser(tk.Tk):
             "PC Engine\n"
             "Neo Geo\n"
             "Xbox\n"
+            "Xbox 360\n"
             "3DO\n"
             "Game Boy\n"
             "Game Boy Advance\n\n"
@@ -493,7 +498,7 @@ class JoshWBrowser(tk.Tk):
         supported_extensions = {
             ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
             ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-            ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra"
+            ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".xma", ".XMA"
         }
         if ext == ".sid":
             SIDPlayerWindow(self, audio_file)
@@ -527,7 +532,7 @@ class JoshWBrowser(tk.Tk):
             else:
                 messagebox.showerror("Playback Error", "Could not find generated output file.")
             return
-        elif ext in supported_extensions or ext in (".hes", ".nsf", ".nsfe"):
+        elif ext in supported_extensions or ext in (".hes", ".nsf", ".nsfe", ".xma", ".XMA"):
             mpv_path = self.path_mpv.get().strip() or "/bin/mpv"
             if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
                 messagebox.showerror("mpv Not Found", "mpv not found!")

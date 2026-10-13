@@ -26,6 +26,7 @@ DOMAINS = {
     "Playstation 4": "http://psf4.joshw.info/",
     "Playstation 5": "http://psf5.joshw.info/",
     "Xbox": "http://xbox.joshw.info/",
+    "Xbox 360": "http://x360.joshw.info/",
     "3DO": "http://3do.joshw.info/",
     "Game Boy": "http://gbs.joshw.info/",
     "Game Boy Advance": "http://gsf.joshw.info/",
@@ -42,7 +43,7 @@ DATE_PATTERN = re.compile(r'[\(\[](\d{4}(?:-\d{2}(?:-\d{2})?)?)[\)\]]')
 
 def is_emulated_file(filepath):
     ext = os.path.splitext(filepath)[1].lower()
-    return ext in {".spc", ".gbs", ".hes", ".kss", ".vgm", ".vgz", ".gym", ".ay", ".sap", ".nsf", ".nsfe", ".usf", ".miniusf", ".sid"}
+    return ext in {".spc", ".gbs", ".hes", ".kss", ".vgm", ".vgz", ".gym", ".ay", ".sap", ".nsf", ".nsfe", ".usf", ".miniusf", ".sid", ".xma"}
 
 def get_cache_directory():
     system_name = platform.system()
