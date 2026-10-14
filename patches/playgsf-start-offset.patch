@@ -1,0 +1,31 @@
+diff --git a/linuxmain.cpp b/linuxmain.cpp
+index 7e58745..f79eb21 100644
+--- a/linuxmain.cpp
++++ b/linuxmain.cpp
+@@ -75,0 +76 @@ int seek_needed; // if != -1, it is the point that the decode thread should seek
++int start_time_ms = 0;
+@@ -216 +217,2 @@ extern "C" void writeSound(void)
+-	ao_play(snd_ao, (char*)soundFinalWave, ret);
++	if (seek_needed < 0 || decode_pos_ms >= seek_needed)
++		ao_play(snd_ao, (char*)soundFinalWave, ret);
+@@ -218,0 +221,2 @@ extern "C" void writeSound(void)
++	if (seek_needed >= 0 && decode_pos_ms >= seek_needed)
++		seek_needed = -1;
+@@ -291 +295 @@ int main(int argc, char **argv)
+-	while((r=getopt(argc, argv, "chlsrieqW:L:t:"))>=0)
++	while((r=getopt(argc, argv, "b:chlsrieqW:L:t:"))>=0)
+@@ -295,0 +300,9 @@ int main(int argc, char **argv)
++			case 'b': {
++				long start_time = strtol(optarg, &e, 10);
++				if (e == optarg || start_time < 0 || start_time > 2147483647L) {
++					fprintf(stderr, "Bad start time\n");
++					return 1;
++				}
++				start_time_ms = static_cast<int>(start_time);
++				break;
++			}
+@@ -303,0 +317 @@ int main(int argc, char **argv)
++				printf("  -b<num>   Start playback at <num> milliseconds\n");
+@@ -384 +398 @@ int main(int argc, char **argv)
+-		seek_needed = -1;
++		seek_needed = start_time_ms;

@@ -9,8 +9,70 @@ import tempfile
 import threading
 import time
 import tkinter as tk
+import weakref
 from tkinter import ttk, messagebox, filedialog
 from config import get_cache_directory, is_emulated_file
+
+
+_active_volume_players = weakref.WeakSet()
+_syncing_player_volume = False
+
+
+def get_saved_player_volume():
+    try:
+        with open(os.path.join(get_cache_directory(), "settings.json"), "r", encoding="utf-8") as settings_file:
+            settings = json.load(settings_file)
+        if not isinstance(settings, dict):
+            return 100
+        volume = int(settings.get("player_volume", 100))
+        return max(0, min(150, volume))
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        return 100
+
+
+def register_volume_player(player):
+    _active_volume_players.add(player)
+
+
+def set_player_volume(value):
+    global _syncing_player_volume
+    if _syncing_player_volume:
+        return
+
+    volume = max(0, min(150, int(value)))
+    settings_path = os.path.join(get_cache_directory(), "settings.json")
+    try:
+        try:
+            with open(settings_path, "r", encoding="utf-8") as settings_file:
+                settings = json.load(settings_file)
+            if not isinstance(settings, dict):
+                settings = {}
+        except (OSError, ValueError, TypeError, json.JSONDecodeError):
+            settings = {}
+        settings["player_volume"] = volume
+        temporary_path = settings_path + ".tmp"
+        with open(temporary_path, "w", encoding="utf-8") as settings_file:
+            json.dump(settings, settings_file, ensure_ascii=False, indent=2)
+        os.replace(temporary_path, settings_path)
+    except OSError:
+        pass
+
+    _syncing_player_volume = True
+    try:
+        for player in list(_active_volume_players):
+            try:
+                if not player.winfo_exists():
+                    _active_volume_players.discard(player)
+                    continue
+                player.volume_var.set(volume)
+                player.volume_label_var.set(f"Volume: {volume}%")
+                if hasattr(player, "volume_slider"):
+                    player.volume_slider.set(volume)
+                player.apply_live_volume()
+            except (AttributeError, tk.TclError):
+                _active_volume_players.discard(player)
+    finally:
+        _syncing_player_volume = False
 
 
 class ToolTip:
@@ -203,10 +265,105 @@ def get_lazyusf_path():
 
 
 def get_playgsf_path():
-    for p in [shutil.which("playgsf"), "/usr/local/bin/playgsf", "/usr/bin/playgsf", os.path.expanduser("~/.config/joshw/playgsf")]:
+    for p in [os.path.join(get_cache_directory(), "playgsf"), shutil.which("playgsf"), "/usr/local/bin/playgsf", "/usr/bin/playgsf"]:
         if p and os.path.exists(p):
             return p
-    return os.path.expanduser("~/.config/joshw/playgsf")
+    return os.path.join(get_cache_directory(), "playgsf")
+
+
+def get_2sfplay_path():
+    for p in [os.path.join(get_cache_directory(), "2sfPlay"), shutil.which("2sfPlay"), "/usr/local/bin/2sfPlay", "/usr/bin/2sfPlay"]:
+        if p and os.path.exists(p):
+            return p
+    return os.path.join(get_cache_directory(), "2sfPlay")
+
+
+def get_next_track_index(current_index, track_count, loop_forever):
+    if loop_forever:
+        return current_index if track_count else None
+    next_index = current_index + 1
+    if next_index < track_count:
+        return next_index
+    return None
+
+
+def get_midi_info(file_path):
+    try:
+        with open(file_path, "rb") as f:
+            header = f.read(14)
+            if not header.startswith(b"MThd"):
+                return 180.0, 480, 500000
+            num_tracks = int.from_bytes(header[10:12], "big")
+            division = int.from_bytes(header[12:14], "big")
+            if division & 0x8000:
+                return 180.0, 480, 500000
+            ticks_per_quarter = division
+            default_tempo = 500000
+            max_duration_us = 0
+            
+            for _ in range(num_tracks):
+                trk_header = f.read(8)
+                if len(trk_header) < 8:
+                    break
+                if not trk_header.startswith(b"MTrk"):
+                    chunk_len = int.from_bytes(trk_header[4:8], "big")
+                    f.read(chunk_len)
+                    continue
+                chunk_len = int.from_bytes(trk_header[4:8], "big")
+                chunk_data = f.read(chunk_len)
+                
+                pos = 0
+                current_tick = 0
+                current_tempo = default_tempo
+                track_us = 0
+                
+                def read_vlq(data, p):
+                    val = 0
+                    while p < len(data):
+                        b = data[p]
+                        p += 1
+                        val = (val << 7) | (b & 0x7F)
+                        if not (b & 0x80):
+                            break
+                    return val, p
+
+                while pos < len(chunk_data):
+                    delta, pos = read_vlq(chunk_data, pos)
+                    current_tick += delta
+                    track_us += delta * (current_tempo / ticks_per_quarter)
+                    if pos >= len(chunk_data):
+                        break
+                    status = chunk_data[pos]
+                    if status == 0xFF:
+                        pos += 1
+                        if pos >= len(chunk_data): break
+                        meta_type = chunk_data[pos]
+                        pos += 1
+                        length, pos = read_vlq(chunk_data, pos)
+                        if meta_type == 0x51 and length == 3:
+                            if pos + 3 <= len(chunk_data):
+                                current_tempo = int.from_bytes(chunk_data[pos:pos+3], "big")
+                        pos += length
+                    elif status == 0xF0 or status == 0xF7:
+                        pos += 1
+                        length, pos = read_vlq(chunk_data, pos)
+                        pos += length
+                    else:
+                        if status & 0x80:
+                            cmd = status & 0xF0
+                            pos += 1
+                        if cmd in (0x80, 0x90, 0xA0, 0xB0, 0xE0):
+                            pos += 2
+                        elif cmd in (0xc0, 0xd0):
+                            pos += 1
+                if track_us > max_duration_us:
+                    max_duration_us = track_us
+            
+            dur = (max_duration_us / 1000000.0) if max_duration_us > 0 else 180.0
+            return dur, ticks_per_quarter, default_tempo
+    except Exception:
+        pass
+    return 180.0, 480, 500000
 
 
 class SIDPlayerWindow(tk.Toplevel):
@@ -221,10 +378,17 @@ class SIDPlayerWindow(tk.Toplevel):
         self.last_displayed_text = ""
         self.current_position_seconds = 0.0
         self.total_duration_seconds = 180.0
+        self.is_dragging_volume = False
+        self.volume_update_id = None
+        self.loop_forever_var = tk.BooleanVar(value=False)
 
         self.status_var = tk.StringVar(value="Playing")
         self.track_var = tk.StringVar()
         self.seek_pct_var = tk.StringVar(value="0%")
+        saved_volume = get_saved_player_volume()
+        self.volume_var = tk.IntVar(value=saved_volume)
+        self.volume_label_var = tk.StringVar(value=f"Volume: {saved_volume}%")
+        register_volume_player(self)
 
         self.parse_sid_subtracks()
         self.build_ui()
@@ -247,8 +411,8 @@ class SIDPlayerWindow(tk.Toplevel):
     def build_ui(self):
         filename = os.path.basename(self.audio_file)
         self.title(f"sidplayfp Controller - {filename}")
-        self.geometry("560x560")
-        self.minsize(520, 500)
+        self.geometry("560x610")
+        self.minsize(520, 540)
         self.transient(self.parent)
 
         padding = ttk.Frame(self, padding=12)
@@ -290,13 +454,22 @@ class SIDPlayerWindow(tk.Toplevel):
         )
         self.progress_bar_widget.frame.pack(fill="x", expand=True)
 
+        vol_frame = ttk.Frame(padding)
+        vol_frame.pack(fill="x", pady=(0, 8))
+        ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
+        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
+        self.volume_slider.set(self.volume_var.get())
+        self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
+        self.volume_slider.bind("<ButtonPress-1>", self.on_volume_press)
+        self.volume_slider.bind("<ButtonRelease-1>", self.on_volume_release)
+
         term_container = ttk.LabelFrame(padding, text="sidplayfp Track Status", padding=4)
         term_container.pack(fill="both", expand=True, pady=(4, 8))
 
         log_frame = ttk.Frame(term_container)
         log_frame.pack(fill="both", expand=True)
 
-        self.log_text = tk.Text(log_frame, wrap="word", bg="black", fg="yellow", font=("Monospace", 10), state="disabled", height=10)
+        self.log_text = tk.Text(log_frame, wrap="word", bg="black", fg="yellow", font=("Monospace", 10), state="disabled", height=8)
         self.log_text.pack(side="left", fill="both", expand=True)
         
         scrollbar = ttk.Scrollbar(log_frame, orient="vertical", command=self.log_text.yview)
@@ -321,6 +494,57 @@ class SIDPlayerWindow(tk.Toplevel):
         ttk.Button(controls, text="Play/Pause", width=12, command=self.toggle_play_pause).grid(row=0, column=1, padx=4)
         ttk.Button(controls, text="Next >>", width=10, command=self.next_track).grid(row=0, column=2, padx=4)
         ttk.Button(controls, text="Close", width=10, command=self.close).grid(row=0, column=3, padx=(16, 4))
+        ttk.Checkbutton(controls, text="Loop forever", variable=self.loop_forever_var).grid(row=1, column=0, columnspan=4, pady=(6, 0))
+
+    def on_volume_press(self, event):
+        self.is_dragging_volume = True
+
+    def on_volume_release(self, event):
+        self.is_dragging_volume = False
+        set_player_volume(self.volume_slider.get())
+
+    def on_volume_slide(self, val):
+        set_player_volume(float(val))
+
+    def queue_sid_volume_update(self):
+        if self.volume_update_id is None:
+            self.volume_update_id = self.after(75, self.apply_sid_volume)
+
+    def apply_live_volume(self):
+        self.queue_sid_volume_update()
+
+    def apply_sid_volume(self):
+        self.volume_update_id = None
+        if not self.sid_proc or self.sid_proc.poll() is not None:
+            return
+
+        pactl_bin = shutil.which("pactl")
+        if not pactl_bin:
+            return
+
+        try:
+            result = subprocess.run(
+                [pactl_bin, "--format=json", "list", "sink-inputs"],
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=2
+            )
+            sink_inputs = json.loads(result.stdout)
+            process_id = str(self.sid_proc.pid)
+            volume = f"{self.volume_var.get()}%"
+            for sink_input in sink_inputs:
+                properties = sink_input.get("properties", {})
+                if properties.get("application.process.id") == process_id:
+                    subprocess.run(
+                        [pactl_bin, "set-sink-input-volume", str(sink_input["index"]), volume],
+                        check=True,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        timeout=2
+                    )
+        except (OSError, subprocess.SubprocessError, ValueError, KeyError, TypeError):
+            pass
 
     def start_timer_thread(self):
         def timer_loop():
@@ -341,6 +565,7 @@ class SIDPlayerWindow(tk.Toplevel):
             pct = int((self.current_position_seconds / self.total_duration_seconds) * 100)
             self.seek_pct_var.set(f"{pct}%")
         self.progress_bar_widget.update_progress(self.current_position_seconds, self.total_duration_seconds)
+        self.start_sidplay(preserve_time=True)
 
     def on_browse_clicked(self):
         parent = self.parent
@@ -413,25 +638,38 @@ class SIDPlayerWindow(tk.Toplevel):
                     pass
             self.sid_proc = None
 
-    def start_sidplay(self):
+    def start_sidplay(self, preserve_time=False):
         self.stop_current_playback()
-        self.current_position_seconds = 0.0
+        if not preserve_time:
+            self.current_position_seconds = 0.0
+
         sidplay_bin = shutil.which("sidplayfp") or "sidplayfp"
         subtrack_num = self.subtracks[self.current_subtrack_idx]
         
+        env = os.environ.copy()
+        env["SDL_VIDEODRIVER"] = "dummy"
+
         cmd_args = [sidplay_bin]
         if len(self.subtracks) > 1:
             cmd_args.append(f"-o{subtrack_num}")
+        
+        if self.current_position_seconds > 0:
+            minutes = int(self.current_position_seconds // 60)
+            seconds = self.current_position_seconds % 60
+            cmd_args.append(f"-b{minutes}:{seconds:06.3f}")
+
         cmd_args.append(self.audio_file)
 
         try:
             self.sid_proc = subprocess.Popen(
                 cmd_args,
+                env=env,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
                 bufsize=1
             )
+            self.queue_sid_volume_update()
             self.is_paused = False
             self.status_var.set("Playing")
             self.update_track_label()
@@ -496,6 +734,24 @@ class SIDPlayerWindow(tk.Toplevel):
         except Exception:
             pass
 
+        return_code = proc.wait()
+        if not self.winfo_exists() or self.sid_proc is not proc or self.status_var.get() != "Playing":
+            return
+        if return_code != 0:
+            self.status_var.set("Playback Error")
+            return
+        next_index = get_next_track_index(
+            self.current_subtrack_idx,
+            len(self.subtracks),
+            self.loop_forever_var.get()
+        )
+        if next_index is None:
+            self.sid_proc = None
+            self.status_var.set("Stopped")
+            return
+        self.current_subtrack_idx = next_index
+        self.start_sidplay()
+
     def toggle_play_pause(self):
         if not self.sid_proc:
             return
@@ -541,10 +797,17 @@ class GSFPlayerWindow(tk.Toplevel):
         self.last_displayed_text = ""
         self.current_position_seconds = 0.0
         self.total_duration_seconds = 180.0
+        self.is_dragging_volume = False
+        self.volume_update_id = None
+        self.loop_forever_var = tk.BooleanVar(value=False)
 
         self.status_var = tk.StringVar(value="Playing")
         self.track_var = tk.StringVar()
         self.seek_pct_var = tk.StringVar(value="0%")
+        saved_volume = get_saved_player_volume()
+        self.volume_var = tk.IntVar(value=saved_volume)
+        self.volume_label_var = tk.StringVar(value=f"Volume: {saved_volume}%")
+        register_volume_player(self)
 
         self.load_playlist_files()
         self.build_ui()
@@ -572,8 +835,8 @@ class GSFPlayerWindow(tk.Toplevel):
     def build_ui(self):
         filename = os.path.basename(self.audio_file)
         self.title(f"playgsf Controller - {filename}")
-        self.geometry("560x580")
-        self.minsize(520, 520)
+        self.geometry("560x630")
+        self.minsize(520, 560)
         self.transient(self.parent)
 
         padding = ttk.Frame(self, padding=12)
@@ -615,13 +878,22 @@ class GSFPlayerWindow(tk.Toplevel):
         )
         self.progress_bar_widget.frame.pack(fill="x", expand=True)
 
+        vol_frame = ttk.Frame(padding)
+        vol_frame.pack(fill="x", pady=(0, 8))
+        ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
+        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
+        self.volume_slider.set(self.volume_var.get())
+        self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
+        self.volume_slider.bind("<ButtonPress-1>", self.on_volume_press)
+        self.volume_slider.bind("<ButtonRelease-1>", self.on_volume_release)
+
         term_container = ttk.LabelFrame(padding, text="playgsf Track Status", padding=4)
         term_container.pack(fill="both", expand=True, pady=(4, 8))
 
         log_frame = ttk.Frame(term_container)
         log_frame.pack(fill="both", expand=True)
 
-        self.log_text = tk.Text(log_frame, wrap="word", bg="black", fg="yellow", font=("Monospace", 9), state="disabled", height=14)
+        self.log_text = tk.Text(log_frame, wrap="word", bg="black", fg="yellow", font=("Monospace", 9), state="disabled", height=10)
         self.log_text.pack(side="left", fill="both", expand=True)
         
         scrollbar = ttk.Scrollbar(log_frame, orient="vertical", command=self.log_text.yview)
@@ -646,6 +918,57 @@ class GSFPlayerWindow(tk.Toplevel):
         ttk.Button(controls, text="Play/Pause", width=12, command=self.toggle_play_pause).grid(row=0, column=1, padx=4)
         ttk.Button(controls, text="Next >>", width=10, command=self.next_track).grid(row=0, column=2, padx=4)
         ttk.Button(controls, text="Close", width=10, command=self.close).grid(row=0, column=3, padx=(16, 4))
+        ttk.Checkbutton(controls, text="Loop forever", variable=self.loop_forever_var).grid(row=1, column=0, columnspan=4, pady=(6, 0))
+
+    def on_volume_press(self, event):
+        self.is_dragging_volume = True
+
+    def on_volume_release(self, event):
+        self.is_dragging_volume = False
+        set_player_volume(self.volume_slider.get())
+
+    def on_volume_slide(self, val):
+        set_player_volume(float(val))
+
+    def queue_gsf_volume_update(self):
+        if self.volume_update_id is None:
+            self.volume_update_id = self.after(75, self.apply_gsf_volume)
+
+    def apply_live_volume(self):
+        self.queue_gsf_volume_update()
+
+    def apply_gsf_volume(self):
+        self.volume_update_id = None
+        if not self.gsf_proc or self.gsf_proc.poll() is not None:
+            return
+
+        pactl_bin = shutil.which("pactl")
+        if not pactl_bin:
+            return
+
+        try:
+            result = subprocess.run(
+                [pactl_bin, "--format=json", "list", "sink-inputs"],
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=2
+            )
+            sink_inputs = json.loads(result.stdout)
+            process_id = str(self.gsf_proc.pid)
+            volume = f"{self.volume_var.get()}%"
+            for sink_input in sink_inputs:
+                properties = sink_input.get("properties", {})
+                if properties.get("application.process.id") == process_id:
+                    subprocess.run(
+                        [pactl_bin, "set-sink-input-volume", str(sink_input["index"]), volume],
+                        check=True,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        timeout=2
+                    )
+        except (OSError, subprocess.SubprocessError, ValueError, KeyError, TypeError):
+            pass
 
     def start_timer_thread(self):
         def timer_loop():
@@ -661,11 +984,13 @@ class GSFPlayerWindow(tk.Toplevel):
         threading.Thread(target=timer_loop, daemon=True).start()
 
     def seek_to_position(self, target_time):
+        target_time = max(0.0, min(target_time, self.total_duration_seconds))
         self.current_position_seconds = target_time
         if self.total_duration_seconds > 0:
             pct = int((self.current_position_seconds / self.total_duration_seconds) * 100)
             self.seek_pct_var.set(f"{pct}%")
         self.progress_bar_widget.update_progress(self.current_position_seconds, self.total_duration_seconds)
+        self.start_playgsf(preserve_time=True)
 
     def on_browse_clicked(self):
         parent = self.parent
@@ -675,7 +1000,7 @@ class GSFPlayerWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.2sf *.mini2sf"),
                 ("All Files", "*.*")
             ]
         )
@@ -737,15 +1062,24 @@ class GSFPlayerWindow(tk.Toplevel):
                     pass
             self.gsf_proc = None
 
-    def start_playgsf(self):
+    def start_playgsf(self, preserve_time=False):
         self.stop_current_playback()
-        self.current_position_seconds = 0.0
+        if not preserve_time:
+            self.current_position_seconds = 0.0
+
         playgsf_bin = get_playgsf_path()
         self.audio_file = self.playlist[self.current_index]
 
         env = os.environ.copy()
         env["SDL_VIDEODRIVER"] = "dummy"
-        cmd_args = [playgsf_bin, self.audio_file]
+        
+        vol_gain = max(0, min(200, self.volume_var.get())) / 100.0
+        env["SDL_AUDIO_VOLUME"] = str(vol_gain)
+
+        cmd_args = [playgsf_bin]
+        if self.current_position_seconds > 0:
+            cmd_args.append(f"-b{int(round(self.current_position_seconds * 1000))}")
+        cmd_args.append(self.audio_file)
 
         try:
             self.gsf_proc = subprocess.Popen(
@@ -756,16 +1090,16 @@ class GSFPlayerWindow(tk.Toplevel):
                 text=True,
                 bufsize=1
             )
+            self.queue_gsf_volume_update()
             self.is_paused = False
             self.status_var.set("Playing")
             self.update_track_label()
             self.update_listbox_selection()
-            threading.Thread(target=self.read_gsf_output, daemon=True).start()
+            threading.Thread(target=self.read_gsf_output, args=(self.gsf_proc,), daemon=True).start()
         except Exception as e:
             messagebox.showerror("playgsf Error", f"Could not launch playgsf:\n\n{e}")
 
-    def read_gsf_output(self):
-        proc = self.gsf_proc
+    def read_gsf_output(self, proc):
         if not proc or not proc.stdout:
             return
         
@@ -795,12 +1129,15 @@ class GSFPlayerWindow(tk.Toplevel):
                     pass
         self.after(300, hide_win)
 
+        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+
         try:
             while proc.poll() is None:
                 line = proc.stdout.readline()
                 if not line:
                     break
-                line_str = line.strip().replace(" [0m", "")
+                clean_line = ansi_escape.sub('', line)
+                line_str = clean_line.strip().replace(" [0m", "")
                 if not line_str:
                     continue
                 
@@ -868,6 +1205,23 @@ class GSFPlayerWindow(tk.Toplevel):
         except Exception:
             pass
 
+        return_code = proc.wait()
+        if self.winfo_exists() and self.gsf_proc == proc:
+            if return_code == 0 and self.status_var.get() == "Playing":
+                next_index = get_next_track_index(
+                    self.current_index,
+                    len(self.playlist),
+                    self.loop_forever_var.get()
+                )
+                if next_index is None:
+                    self.gsf_proc = None
+                    self.status_var.set("Stopped")
+                else:
+                    self.current_index = next_index
+                    self.after(0, self.start_playgsf)
+            elif return_code is not None and return_code != 0:
+                self.after(0, lambda: self.status_var.set("Playback Error"))
+
     def toggle_play_pause(self):
         if not self.gsf_proc:
             return
@@ -901,6 +1255,436 @@ class GSFPlayerWindow(tk.Toplevel):
             pass
 
 
+class TwoSFPlayerWindow(tk.Toplevel):
+    def __init__(self, parent, audio_file):
+        super().__init__(parent)
+        self.parent = parent
+        self.audio_file = audio_file
+        self.proc = None
+        self.is_paused = False
+        self.playlist = []
+        self.current_index = 0
+        self.current_position_seconds = 0.0
+        self.total_duration_seconds = 180.0
+        self.is_dragging_volume = False
+        self.is_scrubbing = False
+        self.volume_update_id = None
+        self.track_repeat_count = 0
+
+        is_emu = is_emulated_file(self.audio_file)
+        self.loop_chk_var = tk.BooleanVar(value=is_emu)
+        self.loop_count_var = tk.IntVar(value=1 if is_emu else 1)
+        self.loop_forever_var = tk.BooleanVar(value=False)
+
+        saved_volume = get_saved_player_volume()
+        self.volume_var = tk.IntVar(value=saved_volume)
+        self.volume_label_var = tk.StringVar(value=f"Volume: {saved_volume}%")
+        register_volume_player(self)
+        self.position_var = tk.StringVar(value="Position: 00:00:00")
+        self.duration_var = tk.StringVar(value="Duration: 00:00:00")
+        self.status_var = tk.StringVar(value="Stopped")
+        self.track_var = tk.StringVar()
+        self.seek_pct_var = tk.StringVar(value="0%")
+
+        self.load_playlist_files()
+        self.build_ui()
+        self.protocol("WM_DELETE_WINDOW", self.close)
+
+        if self.playlist:
+            self.play_current_track()
+            self.start_timer_thread()
+
+    def format_time(self, seconds):
+        if seconds is None or seconds < 0:
+            return "00:00:00"
+        total_seconds = int(seconds)
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        secs = total_seconds % 60
+        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+
+    def load_playlist_files(self):
+        folder = os.path.dirname(self.audio_file)
+        self.playlist = []
+        try:
+            for f in sorted(os.listdir(folder)):
+                if f.lower().endswith((".mini2sf", ".2sf")):
+                    self.playlist.append(os.path.join(folder, f))
+            if self.audio_file in self.playlist:
+                self.current_index = self.playlist.index(self.audio_file)
+            else:
+                self.playlist = [self.audio_file]
+                self.current_index = 0
+        except Exception:
+            self.playlist = [self.audio_file]
+            self.current_index = 0
+
+    def build_ui(self):
+        filename = os.path.basename(self.audio_file)
+        self.title(f"2sfPlay Controller - {filename}")
+        self.geometry("480x580")
+        self.minsize(440, 500)
+        self.transient(self.parent)
+
+        padding = ttk.Frame(self, padding=12)
+        padding.pack(fill="both", expand=True)
+
+        browse_frame = ttk.Frame(padding)
+        browse_frame.pack(side="top", anchor="w", pady=(0, 6))
+
+        browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn.pack(side="top", anchor="w")
+        ToolTip(browse_btn, "Find and play a local file", delay=500)
+
+        browse_lbl = ttk.Label(browse_frame, text="Browse", font=("Arial", 8))
+        browse_lbl.pack(side="top", anchor="w")
+
+        self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=450, justify="center")
+        self.title_label.pack(pady=(0, 6))
+
+        info_frame = ttk.Frame(padding)
+        info_frame.pack(fill="x", pady=(0, 4))
+        
+        status_sub_frame = ttk.Frame(info_frame)
+        status_sub_frame.pack(side="left", padx=5)
+        ttk.Label(status_sub_frame, textvariable=self.status_var, font=("Arial", 9)).pack(side="left")
+        ttk.Label(status_sub_frame, text=" (", font=("Arial", 9)).pack(side="left")
+        ttk.Label(status_sub_frame, textvariable=self.seek_pct_var, font=("Arial", 9, "bold")).pack(side="left")
+        ttk.Label(status_sub_frame, text=")", font=("Arial", 9)).pack(side="left")
+
+        ttk.Label(info_frame, textvariable=self.position_var, font=("Arial", 9)).pack(side="right", padx=5)
+
+        progress_container = ttk.Frame(padding)
+        progress_container.pack(fill="x", pady=(2, 6))
+        self.progress_bar_widget = InteractiveProgressBar(
+            progress_container,
+            get_duration_func=lambda: self.total_duration_seconds,
+            seek_func=self.seek_to_position,
+            seek_start_func=self.on_seek_start,
+            seek_release_func=self.on_seek_release
+        )
+        self.progress_bar_widget.frame.pack(fill="x", expand=True)
+
+        meta_frame = ttk.Frame(padding)
+        meta_frame.pack(fill="x", pady=(0, 8))
+        ttk.Label(meta_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="left", padx=5)
+        ttk.Label(meta_frame, textvariable=self.duration_var, font=("Arial", 9)).pack(side="right", padx=5)
+
+        vol_frame = ttk.Frame(padding)
+        vol_frame.pack(fill="x", pady=(0, 8))
+        ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
+        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
+        self.volume_slider.set(self.volume_var.get())
+        self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
+        self.volume_slider.bind("<ButtonPress-1>", self.on_volume_press)
+        self.volume_slider.bind("<ButtonRelease-1>", self.on_volume_release)
+
+        list_frame = ttk.LabelFrame(padding, text="Playlist Files", padding=6)
+        list_frame.pack(fill="both", expand=True, pady=(0, 10))
+
+        self.playlist_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
+        self.playlist_listbox.pack(side="left", fill="both", expand=True)
+        scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.playlist_listbox.configure(yscrollcommand=scrollbar.set)
+        self.playlist_listbox.bind("<<ListboxSelect>>", self.on_playlist_select)
+        self.populate_playlist_listbox()
+
+        controls = ttk.Frame(padding)
+        controls.pack(pady=4)
+
+        ttk.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=0, padx=2)
+        ttk.Button(controls, text="-10s", width=6, command=lambda: self.seek_relative(-10)).grid(row=0, column=1, padx=2)
+        ttk.Button(controls, text="Play/Pause", width=10, command=self.toggle_play_pause).grid(row=0, column=2, padx=2)
+        ttk.Button(controls, text="+10s", width=6, command=lambda: self.seek_relative(10)).grid(row=0, column=3, padx=2)
+        ttk.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=4, padx=2)
+
+        btn_bottom = ttk.Frame(padding)
+        btn_bottom.pack(pady=(6, 0), fill="x")
+
+        ttk.Checkbutton(btn_bottom, variable=self.loop_chk_var, command=self.on_loop_settings_changed).pack(side="left", padx=(0, 2))
+        ttk.Spinbox(btn_bottom, from_=1, to=99, width=3, textvariable=self.loop_count_var, command=self.on_loop_settings_changed).pack(side="left", padx=(0, 6))
+        ttk.Button(btn_bottom, text="Stop", width=8, command=self.stop).pack(side="left", padx=2)
+        ttk.Checkbutton(btn_bottom, text="Loop forever", variable=self.loop_forever_var, command=self.on_loop_settings_changed).pack(side="right", padx=(4, 0))
+        ttk.Button(btn_bottom, text="Close", width=8, command=self.close).pack(side="right", padx=2)
+
+    def on_seek_start(self):
+        self.is_scrubbing = True
+
+    def on_seek_release(self):
+        self.is_scrubbing = False
+
+    def seek_to_position(self, target_time):
+        self.current_position_seconds = max(0.0, min(target_time, self.total_duration_seconds))
+        if self.total_duration_seconds > 0:
+            pct = int((self.current_position_seconds / self.total_duration_seconds) * 100)
+            self.seek_pct_var.set(f"{pct}%")
+        self.progress_bar_widget.update_progress(self.current_position_seconds, self.total_duration_seconds)
+        self.start_2sfplay(preserve_time=True)
+
+    def seek_relative(self, seconds):
+        new_pos = max(0.0, min(self.current_position_seconds + seconds, self.total_duration_seconds))
+        self.seek_to_position(new_pos)
+
+    def on_browse_clicked(self):
+        parent = self.parent
+        initial_dir = getattr(parent, "_last_loaded_music_dir", None) or parent.default_load_music_dir.get()
+        file_path = filedialog.askopenfilename(
+            parent=self,
+            title="Select Music File",
+            initialdir=initial_dir,
+            filetypes=[
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.2sf *.mini2sf"),
+                ("All Files", "*.*")
+            ]
+        )
+        if file_path:
+            folder = os.path.dirname(file_path)
+            parent._last_loaded_music_dir = folder
+            self.close()
+            parent.play_audio_file(file_path)
+
+    def on_loop_settings_changed(self):
+        self.start_2sfplay(preserve_time=True)
+
+    def on_volume_press(self, event):
+        self.is_dragging_volume = True
+
+    def on_volume_release(self, event):
+        self.is_dragging_volume = False
+        set_player_volume(self.volume_slider.get())
+
+    def on_volume_slide(self, val):
+        set_player_volume(float(val))
+
+    def queue_2sf_volume_update(self):
+        if self.volume_update_id is None:
+            self.volume_update_id = self.after(75, self.apply_2sf_volume)
+
+    def apply_live_volume(self):
+        self.queue_2sf_volume_update()
+
+    def apply_2sf_volume(self):
+        self.volume_update_id = None
+        if not self.proc or self.proc.poll() is not None:
+            return
+
+        pactl_bin = shutil.which("pactl")
+        if not pactl_bin:
+            return
+
+        try:
+            result = subprocess.run(
+                [pactl_bin, "--format=json", "list", "sink-inputs"],
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=2
+            )
+            sink_inputs = json.loads(result.stdout)
+            process_id = str(self.proc.pid)
+            volume = f"{self.volume_var.get()}%"
+            for sink_input in sink_inputs:
+                properties = sink_input.get("properties", {})
+                if properties.get("application.process.id") == process_id:
+                    subprocess.run(
+                        [pactl_bin, "set-sink-input-volume", str(sink_input["index"]), volume],
+                        check=True,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        timeout=2
+                    )
+        except (OSError, subprocess.SubprocessError, ValueError, KeyError, TypeError):
+            pass
+
+    def populate_playlist_listbox(self):
+        if not self.winfo_exists():
+            return
+        self.playlist_listbox.delete(0, tk.END)
+        for p in self.playlist:
+            self.playlist_listbox.insert(tk.END, os.path.basename(p))
+        self.update_listbox_selection()
+
+    def update_listbox_selection(self):
+        if not self.winfo_exists():
+            return
+        try:
+            self.playlist_listbox.selection_clear(0, tk.END)
+            if 0 <= self.current_index < self.playlist_listbox.size():
+                self.playlist_listbox.selection_set(self.current_index)
+                self.playlist_listbox.see(self.current_index)
+        except Exception:
+            pass
+
+    def on_playlist_select(self, event):
+        selection = self.playlist_listbox.curselection()
+        if not selection:
+            return
+        idx = selection[0]
+        if idx != self.current_index:
+            self.current_index = idx
+            self.play_current_track()
+
+    def stop_current_playback(self):
+        if self.proc:
+            try:
+                self.proc.terminate()
+                self.proc.wait(timeout=1)
+            except Exception:
+                try:
+                    self.proc.kill()
+                except Exception:
+                    pass
+            self.proc = None
+
+    def start_2sfplay(self, preserve_time=False):
+        self.stop_current_playback()
+        if not preserve_time:
+            self.current_position_seconds = 0.0
+
+        twosf_bin = get_2sfplay_path()
+        self.audio_file = self.playlist[self.current_index]
+
+        env = os.environ.copy()
+        env["SDL_VIDEODRIVER"] = "dummy"
+        vol_gain = max(0, min(200, self.volume_var.get())) / 100.0
+        env["SDL_AUDIO_VOLUME"] = str(vol_gain)
+
+        cmd_args = [twosf_bin]
+        if self.current_position_seconds > 0:
+            cmd_args.append(f"-b{int(round(self.current_position_seconds * 1000))}")
+        cmd_args.append(self.audio_file)
+
+        try:
+            self.proc = subprocess.Popen(
+                cmd_args,
+                env=env,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
+            )
+            self.queue_2sf_volume_update()
+            self.is_paused = False
+            self.status_var.set("Playing")
+            self.track_var.set(f"Track: {self.current_index + 1} / {len(self.playlist)}")
+            filename = os.path.basename(self.audio_file)
+            if hasattr(self, "title_label") and self.winfo_exists():
+                self.title_label.configure(text=f"Now Playing:\n{filename}")
+            self.title(f"2sfPlay Controller - {filename}")
+            self.update_listbox_selection()
+            threading.Thread(target=self.read_output, daemon=True).start()
+        except Exception as e:
+            messagebox.showerror("2sfPlay Error", f"Could not launch 2sfPlay:\n\n{e}")
+
+    def play_current_track(self):
+        self.track_repeat_count = 0
+        self.start_2sfplay(preserve_time=False)
+
+    def start_timer_thread(self):
+        def timer_loop():
+            while self.winfo_exists():
+                if self.status_var.get() == "Playing" and not self.is_scrubbing:
+                    self.current_position_seconds = min(
+                        self.current_position_seconds + 1.0,
+                        self.total_duration_seconds
+                    )
+                    if self.total_duration_seconds > 0:
+                        pct = int((self.current_position_seconds / self.total_duration_seconds) * 100)
+                        self.seek_pct_var.set(f"{pct}%")
+                    self.position_var.set(f"Position: {self.format_time(self.current_position_seconds)}")
+                    if self.winfo_exists():
+                        self.after(0, lambda: self.progress_bar_widget.update_progress(self.current_position_seconds, self.total_duration_seconds))
+                time.sleep(1.0)
+        threading.Thread(target=timer_loop, daemon=True).start()
+
+    def toggle_play_pause(self):
+        if not self.proc:
+            return
+        try:
+            if self.is_paused:
+                os.kill(self.proc.pid, signal.SIGCONT)
+                self.is_paused = False
+                self.status_var.set("Playing")
+            else:
+                os.kill(self.proc.pid, signal.SIGSTOP)
+                self.is_paused = True
+                self.status_var.set("Paused")
+        except Exception:
+            pass
+
+    def prev_track(self):
+        if len(self.playlist) > 1:
+            self.current_index = (self.current_index - 1) % len(self.playlist)
+            self.play_current_track()
+
+    def next_track(self):
+        if len(self.playlist) > 1:
+            self.current_index = (self.current_index + 1) % len(self.playlist)
+            self.play_current_track()
+
+    def read_output(self):
+        proc = self.proc
+        if not proc or not proc.stdout:
+            return
+        try:
+            while proc.poll() is None:
+                line = proc.stdout.readline()
+                if not line:
+                    break
+                if "Remaining:" in line:
+                    m = re.search(r'Remaining:\s*(\d+)s\s*/\s*(\d+)s', line)
+                    if m and self.winfo_exists():
+                        rem = int(m.group(1))
+                        tot = int(m.group(2))
+                        self.total_duration_seconds = float(tot)
+                        curr = float(tot - rem)
+                        if not self.is_scrubbing:
+                            self.current_position_seconds = max(0.0, curr)
+                            self.duration_var.set(f"Duration: {self.format_time(tot)}")
+        except Exception:
+            pass
+
+        return_code = proc.wait()
+        if not self.winfo_exists() or self.proc is not proc or self.status_var.get() != "Playing":
+            return
+        if return_code != 0:
+            self.status_var.set("Playback Error")
+            return
+        self.after(0, self.advance_after_end)
+
+    def advance_after_end(self):
+        if self.status_var.get() != "Playing":
+            return
+        if self.loop_forever_var.get():
+            self.start_2sfplay(preserve_time=False)
+            return
+        repeat_limit = max(1, int(self.loop_count_var.get()))
+        if self.loop_chk_var.get() and self.track_repeat_count < repeat_limit - 1:
+            self.track_repeat_count += 1
+            self.start_2sfplay(preserve_time=False)
+            return
+
+        next_index = get_next_track_index(self.current_index, len(self.playlist), False)
+        if next_index is None:
+            self.proc = None
+            self.status_var.set("Stopped")
+            return
+        self.current_index = next_index
+        self.play_current_track()
+
+    def stop(self):
+        self.stop_current_playback()
+        self.status_var.set("Stopped")
+
+    def close(self):
+        self.stop()
+        try:
+            self.destroy()
+        except Exception:
+            pass
+
+
 class ExtractedFilesBrowserWindow(tk.Toplevel):
     def __init__(self, parent, folder_path):
         super().__init__(parent)
@@ -920,7 +1704,7 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
         supported_extensions = {
             ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
             ".usf", ".miniusf", ".gsf", ".minigsf", ".sid", ".adx", ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma",
-            ".ape", ".wv", ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".mid", ".MID", ".xma", ".XMA"
+            ".ape", ".wv", ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".mid", ".MID", ".xma", ".XMA", ".2sf", ".mini2sf"
         }
         for root, dirs, files in os.walk(self.folder_path):
             for f in sorted(files):
@@ -956,6 +1740,7 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
         btn_frame.pack(fill="x")
 
         ttk.Button(btn_frame, text="Play / Stream Selected", command=self.play_selected).pack(side="left", padx=5)
+        ttk.Button(btn_frame, text="Browse Extracted Files", command=self.browse_extracted_folder).pack(side="left", expand=True, padx=5)
         ttk.Button(btn_frame, text="Close", command=self.destroy).pack(side="right", padx=5)
 
     def play_selected(self):
@@ -965,6 +1750,13 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
         idx = selection[0]
         _, audio_file = self.files_list[idx]
         self.parent.play_audio_file(audio_file)
+
+    def browse_extracted_folder(self):
+        try:
+            if os.path.exists(self.folder_path):
+                subprocess.Popen(["xdg-open", self.folder_path])
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not open folder:\n\n{e}")
 
 
 class VGMStreamPlayerWindow(tk.Toplevel):
@@ -977,6 +1769,11 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         self.current_position_seconds = 0.0
         self.total_duration_seconds = 180.0
         self.m3u_path = None
+        self.volume_update_id = None
+        saved_volume = get_saved_player_volume()
+        self.volume_var = tk.IntVar(value=saved_volume)
+        self.volume_label_var = tk.StringVar(value=f"Volume: {saved_volume}%")
+        register_volume_player(self)
 
         is_emu = is_emulated_file(self.audio_file)
         self.loop_chk_var = tk.BooleanVar(value=is_emu)
@@ -1099,6 +1896,24 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         )
         self.progress_bar_widget.frame.pack(fill="x", expand=True)
 
+        vol_frame = ttk.Frame(padding)
+        vol_frame.pack(fill="x", pady=(0, 8))
+        ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
+        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
+        self.volume_slider.set(self.volume_var.get())
+        self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
+        self.volume_slider.bind("<ButtonPress-1>", self.on_volume_press)
+        self.volume_slider.bind("<ButtonRelease-1>", self.on_volume_release)
+
+        vol_frame = ttk.Frame(padding)
+        vol_frame.pack(fill="x", pady=(0, 8))
+        ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
+        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
+        self.volume_slider.set(self.volume_var.get())
+        self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
+        self.volume_slider.bind("<ButtonPress-1>", self.on_volume_press)
+        self.volume_slider.bind("<ButtonRelease-1>", self.on_volume_release)
+
         meta_frame = ttk.Frame(padding)
         meta_frame.pack(fill="x", pady=(0, 8))
         ttk.Label(meta_frame, textvariable=self.chapter_var, font=("Arial", 9, "bold")).pack(side="left", padx=5)
@@ -1141,7 +1956,7 @@ class VGMStreamPlayerWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.2sf *.mini2sf"),
                 ("All Files", "*.*")
             ]
         )
@@ -1153,6 +1968,54 @@ class VGMStreamPlayerWindow(tk.Toplevel):
 
     def on_loop_settings_changed(self):
         self.play_current_track(start_time=self.current_position_seconds)
+
+    def on_volume_press(self, event):
+        self.is_dragging_volume = True
+
+    def on_volume_release(self, event):
+        self.is_dragging_volume = False
+        set_player_volume(self.volume_slider.get())
+
+    def on_volume_slide(self, value):
+        set_player_volume(float(value))
+
+    def queue_vgmstream_volume_update(self):
+        if self.volume_update_id is None:
+            self.volume_update_id = self.after(75, self.apply_vgmstream_volume)
+
+    def apply_live_volume(self):
+        self.queue_vgmstream_volume_update()
+
+    def apply_vgmstream_volume(self):
+        self.volume_update_id = None
+        if not self.vgmstream_proc or self.vgmstream_proc.poll() is not None:
+            return
+        pactl_bin = shutil.which("pactl")
+        if not pactl_bin:
+            return
+        try:
+            result = subprocess.run(
+                [pactl_bin, "--format=json", "list", "sink-inputs"],
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=2
+            )
+            sink_inputs = json.loads(result.stdout)
+            process_id = str(self.vgmstream_proc.pid)
+            volume = f"{self.volume_var.get()}%"
+            for sink_input in sink_inputs:
+                properties = sink_input.get("properties", {})
+                if properties.get("application.process.id") == process_id:
+                    subprocess.run(
+                        [pactl_bin, "set-sink-input-volume", str(sink_input["index"]), volume],
+                        check=True,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        timeout=2
+                    )
+        except (OSError, subprocess.SubprocessError, ValueError, KeyError, TypeError):
+            pass
 
     def populate_playlist_listbox(self):
         if not self.winfo_exists():
@@ -1199,6 +2062,7 @@ class VGMStreamPlayerWindow(tk.Toplevel):
 
         try:
             self.vgmstream_proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            self.queue_vgmstream_volume_update()
             self.is_paused = False
             self.status_var.set("Playing")
             threading.Thread(target=self.read_output, daemon=True).start()
@@ -1227,8 +2091,30 @@ class VGMStreamPlayerWindow(tk.Toplevel):
                             pct = int((self.current_position_seconds / self.total_duration_seconds) * 100)
                             self.seek_pct_var.set(f"{pct}%")
                         self.progress_bar_widget.update_progress(self.current_position_seconds, self.total_duration_seconds)
+            
         except Exception:
             pass
+
+        return_code = proc.wait()
+        if self.winfo_exists() and self.vgmstream_proc == proc and self.status_var.get() == "Playing":
+            if return_code != 0:
+                self.status_var.set("Playback Error")
+            else:
+                self.after(0, self.advance_after_end, proc)
+
+    def advance_after_end(self, proc):
+        if not self.winfo_exists() or self.vgmstream_proc != proc or self.status_var.get() != "Playing":
+            return
+        if self.loop_forever_var.get():
+            self.play_current_track(start_time=0.0)
+            return
+        next_index = get_next_track_index(self.current_index, len(self.playlist), False)
+        if next_index is None:
+            self.vgmstream_proc = None
+            self.status_var.set("Stopped")
+            return
+        self.current_index = next_index
+        self.play_current_track()
 
     def seek_to_position(self, target_time):
         self.play_current_track(start_time=target_time)
@@ -1335,10 +2221,14 @@ class MPVPlayerWindow(tk.Toplevel):
         self.playlist = []
         self.current_index = 0
         self.current_track_index = None
+        self.track_repeat_count = 0
+        self.end_of_track_handled = False
         self.load_playlist_files()
 
-        self.volume_var = tk.IntVar(value=100)
-        self.volume_label_var = tk.StringVar(value="Volume: 100%")
+        saved_volume = get_saved_player_volume()
+        self.volume_var = tk.IntVar(value=saved_volume)
+        self.volume_label_var = tk.StringVar(value=f"Volume: {saved_volume}%")
+        register_volume_player(self)
         self.position_var = tk.StringVar(value="Position: 00:00:00")
         self.duration_var = tk.StringVar(value="Duration: 00:00:00")
         self.status_var = tk.StringVar(value="Stopped")
@@ -1349,7 +2239,7 @@ class MPVPlayerWindow(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", self.close)
 
         ext = os.path.splitext(self.audio_file)[1].lower()
-        if ext not in (".miniusf", ".usf", ".mid", ".midi", ".xma", ".XMA", ".adx"):
+        if ext not in (".miniusf", ".usf", ".mid", ".midi", ".xma", ".XMA", ".adx", ".2sf", ".mini2sf"):
             self.generate_m3u_playlist()
 
         if self.playlist:
@@ -1370,13 +2260,15 @@ class MPVPlayerWindow(tk.Toplevel):
         ext = os.path.splitext(self.audio_file)[1].lower()
         audio_basename = os.path.splitext(os.path.basename(self.audio_file))[0]
 
-        if ext in (".hes", ".nsf", ".nsfe", ".gbs", ".miniusf", ".usf", ".mid", ".midi", ".xma", ".XMA", ".adx"):
+        if ext in (".hes", ".nsf", ".nsfe", ".gbs", ".miniusf", ".usf", ".mid", ".midi", ".xma", ".XMA", ".adx", ".2sf", ".mini2sf"):
             self.playlist = []
-            if ext in (".miniusf", ".usf", ".mid", ".midi", ".xma", ".XMA", ".adx"):
+            if ext in (".miniusf", ".usf", ".mid", ".midi", ".xma", ".XMA", ".adx", ".2sf", ".mini2sf"):
                 try:
                     target_exts = (".miniusf", ".usf") if ext in (".miniusf", ".usf") else (
                         (".mid", ".midi", ".MID") if ext in (".mid", ".midi") else (
-                            (".xma", ".XMA") if ext in (".xma", ".XMA") else (".adx", ".ADX")
+                            (".xma", ".XMA") if ext in (".xma", ".XMA") else (
+                                (".2sf", ".mini2sf") if ext in (".2sf", ".mini2sf") else (".adx", ".ADX")
+                            )
                         )
                     )
                     for f in sorted(os.listdir(folder)):
@@ -1463,7 +2355,7 @@ class MPVPlayerWindow(tk.Toplevel):
                 audio_exts = {
                     ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
                     ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-                    ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".miniusf", ".usf", ".mid", ".midi", ".MID", ".xma", ".XMA", ".adx"
+                    ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".miniusf", ".usf", ".mid", ".midi", ".MID", ".xma", ".XMA", ".adx", ".2sf", ".mini2sf"
                 }
                 for f in files:
                     full_p = os.path.join(folder, f)
@@ -1591,10 +2483,25 @@ class MPVPlayerWindow(tk.Toplevel):
         self.is_scrubbing = False
 
     def seek_to_position(self, target_time):
-        self.command("seek", float(target_time), "absolute")
-        if self.status_var.get() == "Paused":
-            self.command("set", "pause", "no")
-            self.status_var.set("Playing")
+        ext = os.path.splitext(self.audio_file)[1].lower()
+        if ext in (".mid", ".midi"):
+            self.midi_elapsed_offset = float(target_time)
+            self.midi_start_time = time.time()
+            self.raw_position_seconds = float(target_time)
+            ticks = int((float(target_time) / (self.midi_tempo / 1000000.0)) * self.midi_tpq)
+            try:
+                if self.mpv and self.mpv.stdin:
+                    self.mpv.stdin.write(f"seek {ticks}\n")
+                    self.mpv.stdin.flush()
+            except Exception:
+                pass
+            if self.status_var.get() == "Paused":
+                self.status_var.set("Playing")
+        else:
+            self.command("seek", float(target_time), "absolute")
+            if self.status_var.get() == "Paused":
+                self.command("set", "pause", "no")
+                self.status_var.set("Playing")
 
     def on_browse_clicked(self):
         parent = self.parent
@@ -1604,7 +2511,7 @@ class MPVPlayerWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.2sf *.mini2sf"),
                 ("All Files", "*.*")
             ]
         )
@@ -1622,15 +2529,13 @@ class MPVPlayerWindow(tk.Toplevel):
 
     def on_volume_release(self, event):
         self.is_dragging_volume = False
-        val = self.volume_slider.get()
-        self.command("set_property", "volume", float(val))
+        set_player_volume(self.volume_slider.get())
 
     def on_volume_slide(self, val):
-        vol_int = int(float(val))
-        self.volume_var.set(vol_int)
-        self.volume_label_var.set(f"Volume: {vol_int}%")
-        if self.is_dragging_volume:
-            self.command("set_property", "volume", float(vol_int))
+        set_player_volume(float(val))
+
+    def apply_live_volume(self):
+        self.command("set_property", "volume", float(self.volume_var.get()))
 
     def populate_playlist_listbox(self):
         if not self.winfo_exists():
@@ -1672,6 +2577,13 @@ class MPVPlayerWindow(tk.Toplevel):
         ext = os.path.splitext(self.audio_file)[1].lower()
         if ext in (".mid", ".midi"):
             sf2_path = os.path.join(get_cache_directory(), "FluidR3_GM.sf2")
+            dur, tpq, tempo = get_midi_info(self.audio_file)
+            self.raw_duration_seconds = dur
+            self.midi_tpq = tpq
+            self.midi_tempo = tempo
+            self.midi_start_time = time.time()
+            self.midi_elapsed_offset = 0.0
+            
             cmd = [
                 "fluidsynth", "-n",
                 "-g", "0.8",
@@ -1683,7 +2595,6 @@ class MPVPlayerWindow(tk.Toplevel):
             ]
             try:
                 self.mpv = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
-                self.midi_start_time = time.time()
                 try:
                     vol = float(self.volume_var.get())
                     gain_val = max(0.0, min(2.0, vol / 100.0 * 0.8))
@@ -1693,8 +2604,9 @@ class MPVPlayerWindow(tk.Toplevel):
                     pass
 
                 class FluidSynthSocketWrapper:
-                    def __init__(self, proc):
+                    def __init__(self, proc, outer):
                         self.proc = proc
+                        self.outer = outer
                         self.is_paused = False
 
                     def sendall(self, data):
@@ -1707,15 +2619,24 @@ class MPVPlayerWindow(tk.Toplevel):
                                     if self.is_paused:
                                         self.proc.stdin.write("player_cont\n")
                                         self.is_paused = False
+                                        self.outer.status_var.set("Playing")
                                     else:
                                         self.proc.stdin.write("player_stop\n")
                                         self.is_paused = True
+                                        self.outer.status_var.set("Paused")
                                     self.proc.stdin.flush()
                                 elif action == "set_property" and len(cmd_list) > 2 and cmd_list[1] == "volume":
                                     vol = float(cmd_list[2])
                                     gain_val = max(0.0, min(2.0, vol / 100.0 * 0.8))
                                     self.proc.stdin.write(f"gain {gain_val}\n")
                                     self.proc.stdin.flush()
+                                elif action == "seek" and len(cmd_list) > 1:
+                                    target = float(cmd_list[1])
+                                    mode = cmd_list[2] if len(cmd_list) > 2 else "absolute"
+                                    curr = self.outer.raw_position_seconds
+                                    new_pos = (curr + target) if mode == "relative" else target
+                                    new_pos = max(0.0, min(new_pos, self.outer.raw_duration_seconds))
+                                    self.outer.seek_to_position(new_pos)
                         except Exception:
                             pass
                     def recv(self, size):
@@ -1727,7 +2648,7 @@ class MPVPlayerWindow(tk.Toplevel):
                         except Exception:
                             pass
 
-                self.sock = FluidSynthSocketWrapper(self.mpv)
+                self.sock = FluidSynthSocketWrapper(self.mpv, self)
             except Exception as e:
                 messagebox.showerror("FluidSynth Error", f"Could not launch fluidsynth:\n\n{e}")
             return
@@ -1779,6 +2700,8 @@ class MPVPlayerWindow(tk.Toplevel):
                 break
 
     def play_current_track(self):
+        self.track_repeat_count = 0
+        self.end_of_track_handled = False
         item = self.playlist[self.current_index]
         if isinstance(item, dict):
             f_path = item["file"]
@@ -1839,6 +2762,33 @@ class MPVPlayerWindow(tk.Toplevel):
             self.current_index = (self.current_index + 1) % len(self.playlist)
             self.play_current_track()
 
+    def advance_after_end(self):
+        if self.status_var.get() != "Playing":
+            return
+
+        ext = os.path.splitext(self.audio_file)[1].lower()
+        if ext in (".mid", ".midi"):
+            repeat_limit = max(1, int(self.loop_count_var.get()))
+            if self.loop_forever_var.get() or (self.loop_chk_var.get() and self.track_repeat_count < repeat_limit - 1):
+                if not self.loop_forever_var.get():
+                    self.track_repeat_count += 1
+                self.midi_elapsed_offset = 0.0
+                self.midi_start_time = time.time()
+                self.raw_position_seconds = 0.0
+                try:
+                    self.mpv.stdin.write("seek 0\n")
+                    self.mpv.stdin.flush()
+                except Exception:
+                    pass
+                return
+
+        next_index = get_next_track_index(self.current_index, len(self.playlist), False)
+        if next_index is None:
+            self.stop()
+            return
+        self.current_index = next_index
+        self.play_current_track()
+
     def on_playlist_select(self, event):
         selection = self.playlist_listbox.curselection()
         if not selection:
@@ -1875,10 +2825,30 @@ class MPVPlayerWindow(tk.Toplevel):
         
         ext = os.path.splitext(self.audio_file)[1].lower()
         if ext in (".mid", ".midi"):
-            if hasattr(self, "midi_start_time") and self.status_var.get() == "Playing":
-                elapsed = time.time() - self.midi_start_time
-                self.position_var.set(f"Position: {self.format_time(elapsed)}")
+            if hasattr(self, "midi_start_time") and self.status_var.get() == "Playing" and not getattr(self, "is_scrubbing", False):
+                elapsed = self.midi_elapsed_offset + (time.time() - self.midi_start_time)
                 self.raw_position_seconds = elapsed
+                
+                if self.raw_duration_seconds > 0 and elapsed >= self.raw_duration_seconds:
+                    repeat_limit = max(1, int(self.loop_count_var.get()))
+                    if self.loop_forever_var.get() or (self.loop_chk_var.get() and self.track_repeat_count < repeat_limit - 1):
+                        if not self.loop_forever_var.get():
+                            self.track_repeat_count += 1
+                        self.midi_start_time = time.time()
+                        self.midi_elapsed_offset = 0.0
+                        self.raw_position_seconds = 0.0
+                        try:
+                            self.mpv.stdin.write("seek 0\n")
+                            self.mpv.stdin.flush()
+                        except Exception:
+                            self.play_current_track()
+                    else:
+                        if not self.end_of_track_handled:
+                            self.end_of_track_handled = True
+                            self.after(0, self.advance_after_end)
+                        return
+
+                self.position_var.set(f"Position: {self.format_time(self.raw_position_seconds)}")
                 if self.raw_duration_seconds > 0:
                     pct = int((self.raw_position_seconds / self.raw_duration_seconds) * 100)
                     self.seek_pct_var.set(f"{pct}%")
@@ -1895,6 +2865,7 @@ class MPVPlayerWindow(tk.Toplevel):
         self.request_property("time-pos")
         self.request_property("duration")
         self.request_property("pause")
+        self.request_property("eof-reached")
         
         if not self.is_dragging_volume:
             self.request_property("volume")
@@ -1924,10 +2895,17 @@ class MPVPlayerWindow(tk.Toplevel):
                         if not self.is_scrubbing:
                             self.progress_bar_widget.update_progress(self.raw_position_seconds, self.raw_duration_seconds)
                     elif rid == "duration" and val is not None:
-                        self.raw_duration_seconds = float(val)
-                        self.duration_var.set(f"Duration: {self.format_time(self.raw_duration_seconds)}")
+                        ext = os.path.splitext(self.audio_file)[1].lower()
+                        if ext not in (".nsf", ".nsfe", ".gbs", ".hes", ".kss"):
+                            self.raw_duration_seconds = float(val)
                     elif rid == "pause" and val is not None and self.status_var.get() != "Stopped":
                         self.status_var.set("Paused" if val else "Playing")
+                    elif rid == "eof-reached" and val is True and self.status_var.get() == "Playing":
+                        if self.loop_forever_var.get():
+                            continue
+                        if not self.end_of_track_handled:
+                            self.end_of_track_handled = True
+                            self.after(0, self.advance_after_end)
                     elif rid == "volume" and val is not None and not self.is_dragging_volume:
                         vol_val = int(float(val))
                         if vol_val != self.volume_var.get():

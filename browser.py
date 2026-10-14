@@ -14,7 +14,7 @@ from tkinter import ttk, filedialog, messagebox
 
 from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, is_emulated_file, format_size
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
-from players import VGMStreamPlayerWindow, MPVPlayerWindow, SIDPlayerWindow, GSFPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path
+from players import VGMStreamPlayerWindow, MPVPlayerWindow, SIDPlayerWindow, GSFPlayerWindow, TwoSFPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path, get_2sfplay_path
 from downloaders import DownloadProgressWindow, IndexAllWindow, IndexPremadeWindow, install_dependencies_prompt
 
 
@@ -88,6 +88,11 @@ class JoshWBrowser(tk.Tk):
                 shutil.which("playgsf") is not None
                 or os.path.exists(os.path.join(cache_dir, "playgsf"))
             )
+        elif dep_name == "2sfplay":
+            return (
+                shutil.which("2sfPlay") is not None
+                or os.path.exists(os.path.join(cache_dir, "2sfPlay"))
+            )
         elif dep_name == "xterm":
             return shutil.which("xterm") is not None
         elif dep_name == "xdotool":
@@ -111,6 +116,7 @@ class JoshWBrowser(tk.Tk):
             ("vgmstream", "vgmstream123"),
             ("sidplayfp", "sidplayfp"),
             ("playgsf", "playgsf"),
+            ("2sfplay", "2sfPlay"),
             ("xterm", "xterm"),
             ("xdotool", "xdotool"),
             ("nsf_tracks", "nsf_tracks"),
@@ -186,6 +192,8 @@ class JoshWBrowser(tk.Tk):
         self.keep_download_window_open = tk.BooleanVar(value=True)
 
         self.search_text = tk.StringVar()
+        self.search_all_indexes_var = tk.BooleanVar(value=False)
+        self.all_index_entries = []
         self.status_text = tk.StringVar(value="Choose an archive.")
         self.indexer_status_text = tk.StringVar(value="")
         self.auto_index_enabled = True
@@ -295,18 +303,25 @@ class JoshWBrowser(tk.Tk):
         self.search_combo.bind("<KeyRelease>", lambda event: self.apply_filter())
         self.search_combo.bind("<<ComboboxSelected>>", lambda event: self.on_search_selected())
         self.search_combo.bind("<Return>", lambda event: self.on_search_submitted())
+        ttk.Checkbutton(
+            info_search_frame,
+            text="Search all indexes",
+            variable=self.search_all_indexes_var,
+            command=self.on_search_scope_changed
+        ).pack(side="right", padx=4)
 
         ttk.Label(info_search_frame, text="Search:").pack(side="right", padx=(4, 2))
 
         tree_frame = ttk.Frame(self, padding=(8, 0, 8, 8))
         tree_frame.pack(fill="both", expand=True)
 
-        self.tree = ttk.Treeview(tree_frame, columns=("select", "type", "name", "date", "size", "url"), show="headings", selectmode="extended")
+        self.tree = ttk.Treeview(tree_frame, columns=("select", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
         self.tree.heading("select", text="[ ]")
         self.tree.heading("type", text="Type", command=lambda: self.sort_by_column("type"))
         self.tree.heading("name", text="Name ▲", command=lambda: self.sort_by_column("name"))
         self.tree.heading("date", text="Date", command=lambda: self.sort_by_column("date"))
         self.tree.heading("size", text="Size", command=lambda: self.sort_by_column("size"))
+        self.tree.heading("domain", text="Domain", command=lambda: self.sort_by_column("domain"))
         self.tree.heading("url", text="URL", command=lambda: self.sort_by_column("url"))
 
         self.tree.column("select", width=50, anchor="center", stretch=False)
@@ -314,7 +329,9 @@ class JoshWBrowser(tk.Tk):
         self.tree.column("name", width=280)
         self.tree.column("date", width=110, anchor="center", stretch=False)
         self.tree.column("size", width=100, anchor="e", stretch=False)
+        self.tree.column("domain", width=90, anchor="center", stretch=False)
         self.tree.column("url", width=520)
+        self.tree["displaycolumns"] = ("select", "type", "name", "date", "size", "url")
 
         scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscrollcommand=scrollbar.set)
@@ -346,7 +363,7 @@ class JoshWBrowser(tk.Tk):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.2sf *.mini2sf"),
                 ("All Files", "*.*")
             ]
         )
@@ -381,7 +398,7 @@ class JoshWBrowser(tk.Tk):
 
         help_text = (
             "Welcome to the JoshW emulated music browser & player!\n\n"
-            "It is pretty simple to use, first, i highly recommend that you click the Index All button, this will go thru each domain of the joshw website and index every file and directory and save it to the joshw folder found under ~/.config/joshw. Once a domain is indexed, it will load instantly rather than having to get reloaded from the server every time.\n\n"
+            "It is pretty simple to use, first, i highly recommend that you click the Index All button, this will go thru each domain of the joshw website and index every file and directory and save it to the joshw folder found under ~/.config/joshw/. Once a domain is indexed, it will load instantly rather than having to get reloaded from the server every time.\n\n"
             "After that finishes, you can use the dropdown and choose a domain to load. click Open to show the directory listing of that domain, and once you find a file you want, you can double click to try and stream the files or download them directly. You may also shift click to choose multiple files to download, or use the \"Download Every File Here\" button to grab everything.\n\n"
             "You may set a default download location and enable it by clicking the little box to the left of the textbox. Otherwise when downloading it will ask you where you want the files.\n\n"
             "If you know the name of the file you want, log into the appropriate domain and go to the search bar. Start typing and it will filter it down instantly! If you hit enter, it will save the search in the search history, which can be seen with the dropdown arrow on the search bar.\n\n"
@@ -412,7 +429,7 @@ class JoshWBrowser(tk.Tk):
         text_widget.configure(state="disabled")
 
     def update_sort_headers(self):
-        base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "url": "URL"}
+        base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "domain": "Domain", "url": "URL"}
         for k in base_titles:
             arrow = ""
             if k == self.current_sort_column:
@@ -443,6 +460,8 @@ class JoshWBrowser(tk.Tk):
                 return (1, 0 if d_val else 1, d_val.lower())
             elif col == "size":
                 return (1, -1 if entry["directory"] else (entry.get("size") if entry.get("size") is not None else float('inf')))
+            elif col == "domain":
+                return (1, entry.get("domain", "").lower())
             elif col == "url":
                 return (1, entry["url"].lower())
             return (1, entry["name"].lower())
@@ -508,6 +527,12 @@ class JoshWBrowser(tk.Tk):
                 messagebox.showerror("playgsf Not Found", "playgsf not found! Please install dependencies.")
                 return
             GSFPlayerWindow(self, audio_file)
+            return
+        elif ext in (".2sf", ".mini2sf"):
+            if not self.check_dependency_status("2sfplay"):
+                messagebox.showerror("2sfPlay Not Found", "2sfPlay not found! Please install dependencies.")
+                return
+            TwoSFPlayerWindow(self, audio_file)
             return
         elif ext in (".mid", ".midi"):
             if not self.check_dependency_status("fluidsynth"):
@@ -830,11 +855,65 @@ class JoshWBrowser(tk.Tk):
         self.apply_filter()
         self.status_text.set(f"{len(self.visible_entries)} shown | Total Size: {format_size(folder_size)}")
 
+    def load_all_index_entries(self):
+        bundled_root = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+        index_directories = (
+            os.path.join(bundled_root, "indexes"),
+            get_cache_directory(),
+        )
+        index_files = {}
+        for directory in index_directories:
+            try:
+                for filename in os.listdir(directory):
+                    if filename.startswith("domain_cache_") and filename.endswith(".json"):
+                        index_files[filename] = os.path.join(directory, filename)
+            except OSError:
+                continue
+
+        entries_by_url = {}
+        for index_path in index_files.values():
+            try:
+                with open(index_path, "r", encoding="utf-8") as index_file:
+                    index_data = json.load(index_file)
+                entries = index_data.get("entries", []) if isinstance(index_data, dict) else index_data
+                if not isinstance(entries, list):
+                    continue
+                for entry in entries:
+                    if not isinstance(entry, dict) or not entry.get("url"):
+                        continue
+                    indexed_entry = dict(entry)
+                    hostname = urllib.parse.urlparse(indexed_entry["url"]).hostname or ""
+                    host_parts = hostname.lower().split(".")
+                    domain = host_parts[1] if len(host_parts) > 1 and host_parts[0] == "www" else host_parts[0]
+                    indexed_entry["domain"] = domain
+                    entries_by_url[indexed_entry["url"]] = indexed_entry
+            except (OSError, json.JSONDecodeError, TypeError, ValueError):
+                continue
+        return list(entries_by_url.values())
+
+    def on_search_scope_changed(self):
+        if self.search_all_indexes_var.get():
+            self.all_index_entries = self.load_all_index_entries()
+        else:
+            self.all_index_entries = []
+        self.apply_filter()
+
     def apply_filter(self):
         search = self.search_text.get().lower().strip()
         self.tree.delete(*self.tree.get_children())
-        source = self.domain_full_entries if (search and self.domain_full_entries) else self.current_entries
-        filtered = [e for e in source if not search or search in e["name"].lower() or e.get("is_parent_nav")]
+        if self.search_all_indexes_var.get():
+            self.tree["displaycolumns"] = ("select", "type", "name", "date", "size", "domain", "url")
+            source = self.all_index_entries
+            filtered = [
+                entry for entry in source
+                if search
+                and not entry.get("directory")
+                and (search in entry["name"].lower() or search in entry["url"].lower() or search in entry.get("domain", "").lower())
+            ]
+        else:
+            self.tree["displaycolumns"] = ("select", "type", "name", "date", "size", "url")
+            source = self.domain_full_entries if (search and self.domain_full_entries) else self.current_entries
+            filtered = [e for e in source if not search or search in e["name"].lower() or e.get("is_parent_nav")]
         self.visible_entries = self.apply_sorting(filtered)
 
         for index, entry in enumerate(self.visible_entries):
@@ -853,6 +932,7 @@ class JoshWBrowser(tk.Tk):
                 entry["name"],
                 entry.get("date", ""),
                 item_size,
+                entry.get("domain", ""),
                 urllib.parse.unquote(entry["url"])
             ))
 
