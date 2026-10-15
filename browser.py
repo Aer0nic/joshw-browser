@@ -14,7 +14,7 @@ from tkinter import ttk, filedialog, messagebox
 
 from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, is_emulated_file, format_size
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
-from players import VGMStreamPlayerWindow, MPVPlayerWindow, SIDPlayerWindow, GSFPlayerWindow, TwoSFPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path, get_2sfplay_path
+from players import VGMStreamPlayerWindow, MPVPlayerWindow, SIDPlayerWindow, GSFPlayerWindow, TwoSFPlayerWindow, PSFPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path, get_2sfplay_path, get_aosdk_path
 from downloaders import DownloadProgressWindow, IndexAllWindow, IndexPremadeWindow, install_dependencies_prompt
 
 
@@ -107,6 +107,13 @@ class JoshWBrowser(tk.Tk):
                 shutil.which("fluidsynth") is not None
                 and os.path.exists(os.path.join(cache_dir, "FluidR3_GM.sf2"))
             )
+        elif dep_name in ("aosdk", "psfplay"):
+            try:
+                from psf_ctypes import find_aosdk_lib
+                find_aosdk_lib()
+                return True
+            except Exception:
+                return False
         return False
 
     def update_dependencies_submenu(self):
@@ -117,6 +124,7 @@ class JoshWBrowser(tk.Tk):
             ("sidplayfp", "sidplayfp"),
             ("playgsf", "playgsf"),
             ("2sfplay", "2sfPlay"),
+            ("psfplay", "AOSDK (PSF/PSF2)"),
             ("xterm", "xterm"),
             ("xdotool", "xdotool"),
             ("nsf_tracks", "nsf_tracks"),
@@ -363,7 +371,7 @@ class JoshWBrowser(tk.Tk):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.2sf *.mini2sf"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2"),
                 ("All Files", "*.*")
             ]
         )
@@ -517,7 +525,7 @@ class JoshWBrowser(tk.Tk):
         supported_extensions = {
             ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
             ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-            ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".xma", ".XMA"
+            ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".xma", ".XMA", ".xmd"
         }
         if ext == ".sid":
             SIDPlayerWindow(self, audio_file)
@@ -533,6 +541,15 @@ class JoshWBrowser(tk.Tk):
                 messagebox.showerror("2sfPlay Not Found", "2sfPlay not found! Please install dependencies.")
                 return
             TwoSFPlayerWindow(self, audio_file)
+            return
+        elif ext in (".psf", ".minipsf", ".psf2", ".minipsf2"):
+            if not self.check_dependency_status("psfplay"):
+                messagebox.showerror(
+                    "AOSDK Library Not Found",
+                    "libaosdk.so not found! Please run ./build_aosdk.sh to build the PSF/PSF2 playback library."
+                )
+                return
+            PSFPlayerWindow(self, audio_file)
             return
         elif ext in (".mid", ".midi"):
             if not self.check_dependency_status("fluidsynth"):
