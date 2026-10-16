@@ -300,7 +300,7 @@ class JoshWBrowser(tk.Tk):
         info_search_frame = ttk.Frame(self, padding=(8, 0, 8, 2))
         info_search_frame.pack(fill="x", padx=2)
 
-        ttk.Label(info_search_frame, text="Double click on a file to either download or stream it", font=("Arial", 9, "italic")).pack(side="left")
+        ttk.Label(info_search_frame, text="Double click or hit Enter on a file to stream or download it", font=("Arial", 9, "italic")).pack(side="left")
 
         clear_search_btn = ttk.Button(info_search_frame, text="Clear", command=self.clear_search_history)
         clear_search_btn.pack(side="right", padx=2)
@@ -347,6 +347,7 @@ class JoshWBrowser(tk.Tk):
         scrollbar.pack(side="right", fill="y")
 
         self.tree.bind("<Double-1>", self.double_click_entry)
+        self.tree.bind("<Return>", self.double_click_entry)
         self.tree.bind("<Button-1>", self.click_tree_item)
 
         destination_frame = ttk.Frame(self, padding=8)
@@ -371,7 +372,7 @@ class JoshWBrowser(tk.Tk):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.aifc *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.ast *.brstm *.rstm *.brwav *.rwav *.brsar *.rsar *.bfstm *.fstm *.bfwav *.fwav *.bfsar *.fsar"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.aifc *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.ast *.brstm *.rstm *.brwav *.rwav *.brsar *.rsar *.bfstm *.fstm *.bfwav *.fwav *.bfsar *.fsar *.vag *.adpcm *.at3"),
                 ("All Files", "*.*")
             ]
         )
@@ -406,28 +407,38 @@ class JoshWBrowser(tk.Tk):
 
         help_text = (
             "Welcome to the JoshW emulated music browser & player!\n\n"
-            "It is pretty simple to use, first, i highly recommend that you click the Index All button, this will go thru each domain of the joshw website and index every file and directory and save it to the joshw folder found under ~/.config/joshw/. Once a domain is indexed, it will load instantly rather than having to get reloaded from the server every time.\n\n"
-            "After that finishes, you can use the dropdown and choose a domain to load. click Open to show the directory listing of that domain, and once you find a file you want, you can double click to try and stream the files or download them directly. You may also shift click to choose multiple files to download, or use the \"Download Every File Here\" button to grab everything.\n\n"
+            "It is pretty simple to use, first, i highly recommend that you click the Options button and choose the Download Premade Indexes option. Once a domain is indexed, it will load instantly rather than having to get reloaded from the server every time.\n\n"
+            "After that finishes, you can use the dropdown and choose a domain to load. click Open to show the directory listing of that domain, and once you find a file you want, you can double click or press Enter to try and stream the files or download them directly. You may also shift click to choose multiple files to download, or use the \"Download Every File Here\" button to grab everything.\n\n"
             "You may set a default download location and enable it by clicking the little box to the left of the textbox. Otherwise when downloading it will ask you where you want the files.\n\n"
-            "If you know the name of the file you want, log into the appropriate domain and go to the search bar. Start typing and it will filter it down instantly! If you hit enter, it will save the search in the search history, which can be seen with the dropdown arrow on the search bar.\n\n"
-            "Dependencies / Terminal Player Note:\n"
-            "For .sid playback via sidplayfp and .gsf playback via playgsf, ensure you have installed dependencies including sidplayfp, playgsf, xterm, and xdotool via the Options menu.\n\n"
+            "If you know the name of the file you want, log into the appropriate domain and go to the search bar. Start typing and it will filter it down instantly! If you hit enter, it will save the search in the search history, which can be seen with the dropdown arrow on the search bar. Alternatively, you can click the option next to the search bar named search all indexes to then have your search term go thru every domain at once! This will be laggy however.\n\n"
+            "Dependencies Note:\n"
+            "If you ever need to check or install dependencies, open the options menu and either install or view the installed dependencies.\n\n"
             "Currently, the only fully supported streamable domains are the following:\n\n"
-            "PC\n"
-            "FM Towns\n"
-            "NES\n"
-            "SNES\n"
-            "SEGA CD / Mega Drive\n"
-            "Saturn\n"
-            "PC Engine\n"
-            "Neo Geo\n"
-            "Xbox\n"
-            "Xbox 360\n"
-            "3DO\n"
-            "Game Boy\n"
-            "Game Boy Advance\n\n"
+            "PC (.7z, Various Rips)\n"
+            "FM Towns (.7z, Various Rips)\n"
+            "NES (.nsf, .nsfe)\n"
+            "SNES (.spc)\n"
+            "c64 (.sid)\n"
+            "GameCube (.ast, .dsp, .brstm)\n"
+            "Nintendo Wii (.brstm, .rstm, .bfsar)\n"
+            "Nintendo WiiU (.bfstm, .bfwav, .fsar)\n"
+            "SEGA CD / Mega Drive (.vgm, .vgz, .gym)\n"
+            "Saturn (.ssf)\n"
+            "Dreamcast (.dsf)\n"
+            "PC Engine (.hes)\n"
+            "Neo Geo (.kss)\n"
+            "Playstation (.psf, .minipsf)\n"
+            "Playstation 2 (.psf2, .minipsf2)\n"
+            "Xbox (.xma, .xmd)\n"
+            "Xbox 360 (.xma, .xmd)\n"
+            "3DO (.vag, .adpcm)\n"
+            "Game Boy (.gbs)\n"
+            "Game Boy Advance (.gsf, .minigsf)\n"
+            "Nintendo DS (.2sf, .mini2sf)\n"
+            "Playstation Portable (.vag, .at3)\n"
+            "Playstation Vita (.vag, .at3)\n\n"
             "Partially working domains are:\n\n"
-            "N64\n\n"
+            "N64 (.usf, .usfmini, .usflib)\n\n"
             "I hope to add more in the future with more updates\n\n"
             "All streamed songs are saved in a temporary folder within ~/.config/joshw/temp_extracted and will be deleted once the program is closed.\n\n"
             "I hope you really enjoy this program!"
@@ -526,7 +537,8 @@ class JoshWBrowser(tk.Tk):
             ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
             ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
             ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".aifc", ".au", ".ra", ".xma", ".XMA", ".xmd",
-            ".dsp", ".ast", ".brstm", ".rstm", ".brwav", ".rwav", ".brsar", ".rsar", ".bfstm", ".fstm", ".bfwav", ".fwav", ".bfsar", ".fsar"
+            ".dsp", ".ast", ".brstm", ".rstm", ".brwav", ".rwav", ".brsar", ".rsar", ".bfstm", ".fstm", ".bfwav", ".fwav", ".bfsar", ".fsar",
+            ".vag", ".adpcm", ".at3"
         }
         if ext == ".sid":
             SIDPlayerWindow(self, audio_file)
@@ -563,17 +575,31 @@ class JoshWBrowser(tk.Tk):
             if not lazyusf_bin or (not shutil.which(lazyusf_bin) and not os.path.exists(lazyusf_bin)):
                 messagebox.showerror("lazyusf Not Found", "lazyusf not found! Please install dependencies.")
                 return
-            folder, filename = os.path.dirname(audio_file), os.path.basename(audio_file)
-            au_filepath = os.path.join(folder, filename + ".au")
-            try:
-                subprocess.run([lazyusf_bin, filename], cwd=folder, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            except Exception as e:
-                messagebox.showerror("Decoding Error", f"Failed to decode USF:\n\n{e}")
+            
+            mpv_path = self.path_mpv.get().strip() or "/bin/mpv"
+            if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
+                messagebox.showerror("mpv Not Found", "mpv not found!")
                 return
-            if os.path.exists(au_filepath):
-                MPVPlayerWindow(self, au_filepath)
-            else:
-                messagebox.showerror("Playback Error", "Could not find generated output file.")
+
+            folder, filename = os.path.dirname(audio_file), os.path.basename(audio_file)
+            
+            # Spawn lazyusf streaming to stdout and pipe directly into mpv for instant zero-latency playback
+            try:
+                lazy_proc = subprocess.Popen(
+                    [lazyusf_bin, filename],
+                    cwd=folder,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL
+                )
+                mpv_proc = subprocess.Popen(
+                    [mpv_path, "--demuxer=rawaudio", "--demuxer-rawaudio-rate=44100", "--demuxer-rawaudio-channels=2", "--demuxer-rawaudio-format=s16be", "-"],
+                    stdin=lazy_proc.stdout,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
+                lazy_proc.stdout.close()
+            except Exception as e:
+                messagebox.showerror("Playback Error", f"Failed to stream USF file:\n\n{e}")
             return
         elif ext in (".aiff", ".aifc"):
             mpv_path = self.path_mpv.get().strip() or "/bin/mpv"
@@ -993,8 +1019,38 @@ class JoshWBrowser(tk.Tk):
             btn_frame = ttk.Frame(dialog)
             btn_frame.pack(pady=5)
 
-            ttk.Button(btn_frame, text="Stream", width=12, command=lambda: [dialog.destroy(), self.download_and_open_temp()]).pack(side="left", padx=8)
-            ttk.Button(btn_frame, text="Download", width=12, command=lambda: [dialog.destroy(), self.download_selected()]).pack(side="left", padx=8)
+            stream_btn = ttk.Button(btn_frame, text="Stream", width=12, command=lambda: [dialog.destroy(), self.download_and_open_temp()])
+            stream_btn.pack(side="left", padx=8)
+            download_btn = ttk.Button(btn_frame, text="Download", width=12, command=lambda: [dialog.destroy(), self.download_selected()])
+            download_btn.pack(side="left", padx=8)
+
+            stream_btn.focus_set()
+
+            def focus_stream(e):
+                stream_btn.focus_set()
+                return "break"
+
+            def focus_download(e):
+                download_btn.focus_set()
+                return "break"
+
+            dialog.bind("<Left>", focus_stream)
+            dialog.bind("<Right>", focus_download)
+            stream_btn.bind("<Left>", focus_stream)
+            stream_btn.bind("<Right>", focus_download)
+            download_btn.bind("<Left>", focus_stream)
+            download_btn.bind("<Right>", focus_download)
+
+            def confirm_action(e):
+                if dialog.focus_get() == stream_btn:
+                    dialog.destroy()
+                    self.download_and_open_temp()
+                elif dialog.focus_get() == download_btn:
+                    dialog.destroy()
+                    self.download_selected()
+                return "break"
+
+            dialog.bind("<Return>", confirm_action)
 
     def download_and_open_temp(self):
         urls = self.get_selected_files()
@@ -1090,7 +1146,7 @@ class JoshWBrowser(tk.Tk):
             return
 
         if progress_win.winfo_exists():
-            progress_win.file_label_text.set("Extracting archive...")
+            self.messages.put(("start_extracting", progress_win))
 
         os.makedirs(extract_dir, exist_ok=True)
         ext = os.path.splitext(output_path)[1].lower()
@@ -1098,6 +1154,10 @@ class JoshWBrowser(tk.Tk):
 
         if ext == ".7z":
             try:
+                def extract_progress_cb(current, total):
+                    if progress_win.winfo_exists():
+                        self.messages.put(("update_extraction_progress", progress_win, filename, current, total))
+                
                 subprocess.run([self.path_7z.get().strip() or "7z", "x", output_path, f"-o{extract_dir}", "-y"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 extracted = True
             except Exception as e:
@@ -1256,6 +1316,14 @@ class JoshWBrowser(tk.Tk):
                     win, fname, d_bytes, t_bytes, c_idx, t_idx, speed, eta = msg[1:]
                     if win.winfo_exists():
                         win.update_progress(fname, d_bytes, t_bytes, c_idx, t_idx, speed, eta)
+                elif msg[0] == "start_extracting":
+                    win = msg[1]
+                    if win.winfo_exists():
+                        win.start_extraction_mode()
+                elif msg[0] == "update_extraction_progress":
+                    win, fname, current, total = msg[1:]
+                    if win.winfo_exists():
+                        win.update_extraction_progress(fname, current, total)
                 elif msg[0] == "close_progress":
                     win = msg[1]
                     if win.winfo_exists():

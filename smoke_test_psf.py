@@ -75,7 +75,7 @@ def run_smoke_test(filepath: str, duration_sec: float = 3.0, volume: float = 1.0
             chunk_size = 2048
             samples_rendered = 0
 
-            with sd.RawOutputStream(samplerate=44100, channels=2, dtype='int16') as stream:
+            with sd.RawOutputStream(samplerate=44100, channels=2, dtype='int16', device=0) as stream:
                 print(f"  Playing {duration_sec:.1f} seconds of audio directly to output device...")
                 playback_start = time.time()
 

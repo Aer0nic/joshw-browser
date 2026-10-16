@@ -65,17 +65,142 @@ class InstallDependenciesWorker:
 
         script_lines = [
             "sudo apt update",
-            "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev pkg-config pulseaudio-utils -y"
+            "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev libflac-dev pkg-config pulseaudio-utils -y"
         ]
 
         temp_build_dir = Path(tempfile.mkdtemp(prefix="joshw_dep_"))
         try:
             lazyusf_bin = cache_dir / "lazyusf"
             if not lazyusf_bin.exists():
-                script_lines.append(f"git clone https://github.com/derselbst/lazyusf.git {temp_build_dir / 'lazyusf'}")
-                script_lines.append(f"cd {temp_build_dir / 'lazyusf'} && mkdir build && cd build && cmake .. && make")
-                script_lines.append(f"find {temp_build_dir / 'lazyusf'} -name 'lazyusf' -type f -exec cp {{}} {cache_dir} \\\\;")
-                script_lines.append(f"chmod +x {lazyusf_bin}")
+                lazyusf_src_dir = temp_build_dir / "lazyusf"
+                lazyusf_sh_path = temp_build_dir / "build_lazyusf.sh"
+                
+                # 1. Write a python inline-patcher script using a regular raw string (r""") to avoid f-string brace parsing
+                patcher_script_path = temp_build_dir / "patch_source.py"
+                with open(patcher_script_path, "w", encoding="utf-8") as pf:
+                    pf.write(r"""import pathlib
+
+src_dir = pathlib.Path(r"%s")
+
+# Patch main.c to remove file extension suffix logic
+main_c = src_dir / "main.c"
+if main_c.exists():
+    content = main_c.read_text(encoding="utf-8")
+    
+    old_target = '''            if(formatStr)
+            {
+                formatOutFileName(filename, formatStr);
+            }
+
+            if(useFlac)
+            {
+                strcat(filename,".flac");
+            }
+            else
+            {
+                strcat(filename,".au");
+            }'''
+            
+    new_target = '''            if(formatStr)
+            {
+                formatOutFileName(filename, formatStr);
+            }'''
+            
+    if old_target in content:
+        content = content.replace(old_target, new_target)
+        main_c.write_text(content, encoding="utf-8")
+        print("Successfully patched main.c")
+    else:
+        print("Warning: Could not find target block in main.c")
+
+# Patch audio.c to redirect raw PCM output to stdout
+audio_c = src_dir / "audio.c"
+if audio_c.exists():
+    content = audio_c.read_text(encoding="utf-8")
+    
+    old_audio_open = '''    if (!useFlac)
+    {
+        fd = open(filename, O_RDWR|O_CREAT,0644);
+        if (fd < 0)
+        {
+            char perrormsg[256];
+            strcat(perrormsg, "open of ");
+            strcat(perrormsg, filename);
+            strcat(perrormsg, " failed");
+            perror(perrormsg);
+            StopEmulation();
+            return;
+        }
+
+        audioFileHeader AUheader;
+
+        AUheader.magic=0x2e736e64;
+        // the au format uses big endian
+        AUheader.magic=bswap_32(AUheader.magic);
+
+        // offset where data starts
+        AUheader.hdr_size=24;
+        AUheader.hdr_size=bswap_32(AUheader.hdr_size);
+
+        // size of data is unknown
+        AUheader.data_size=0xffffffff;
+
+        // encoding is 16 bit linear pcm
+        AUheader.encoding=3;
+        AUheader.encoding=bswap_32(AUheader.encoding);
+
+        AUheader.sample_rate=SampleRate;
+        AUheader.sample_rate=bswap_32(AUheader.sample_rate);
+
+        // stereo
+        AUheader.channels=2;
+        AUheader.channels=bswap_32(AUheader.channels);
+
+        if (write(fd,&AUheader,sizeof(AUheader))<0)
+        {
+            DisplayError("An Error occurred when writing the Header for .au file! Exiting...\\n");
+            StopEmulation();
+            Release_Memory();
+            exit(3);
+        }
+    }'''
+
+    new_audio_open = '''    if (!useFlac)
+    {
+        fd = STDOUT_FILENO;
+    }'''
+
+    content = content.replace(old_audio_open, new_audio_open)
+    
+    old_close = '''    if(!useFlac)
+    {
+        close(fd);
+    }'''
+    
+    new_close = '''    if(!useFlac && fd != STDOUT_FILENO)
+    {
+        close(fd);
+    }'''
+    
+    content = content.replace(old_close, new_close)
+    audio_c.write_text(content, encoding="utf-8")
+    print("Successfully patched audio.c")
+""" % lazyusf_src_dir)
+
+                # 2. Write the runner shell script
+                with open(lazyusf_sh_path, "w", encoding="utf-8") as sf:
+                    sf.write("#!/bin/bash\n")
+                    sf.write(f"rm -rf \"{lazyusf_src_dir}\"\n")
+                    sf.write(f"git clone https://github.com/derselbst/lazyusf.git \"{lazyusf_src_dir}\"\n")
+                    sf.write(f"python3 \"{patcher_script_path}\"\n")
+                    sf.write(f"cd \"{lazyusf_src_dir}\"\n")
+                    sf.write("mkdir build && cd build\n")
+                    sf.write("cmake .. && make\n")
+                    sf.write(f"find . -name 'lazyusf' -type f -exec cp {{}} \"{cache_dir}\" \\;\n")
+                    sf.write(f"chmod +x \"{lazyusf_bin}\"\n")
+                
+                os.chmod(lazyusf_sh_path, 0o755)
+                script_lines.append(str(lazyusf_sh_path))
 
             vgmstream_bin = cache_dir / "vgmstream123"
             if not vgmstream_bin.exists():
@@ -665,21 +790,119 @@ class DownloadProgressWindow(tk.Toplevel):
     def __init__(self, parent, title="Downloading..."):
         super().__init__(parent)
         self.title(title)
-        self.geometry("380x130")
+        self.geometry("460x140")
         self.resizable(False, False)
         self.transient(parent)
         self.is_cancelled = False
 
+        self.start_time = time.time()
+        self.mode = "downloading" # downloading or extracting
+
         self.file_label_text = tk.StringVar(value="Preparing download...")
-        ttk.Label(self, textvariable=self.file_label_text, font=("Arial", 9)).pack(pady=15)
-        self.pbar = ttk.Progressbar(self, orient="horizontal", mode="determinate", length=340)
-        self.pbar.pack(pady=5)
-        ttk.Button(self, text="Cancel", command=self.cancel).pack(pady=5)
+        ttk.Label(self, textvariable=self.file_label_text, font=("Arial", 9)).pack(pady=(10, 5))
+        
+        pbar_container = tk.Frame(self, width=420, height=20)
+        pbar_container.pack_propagate(False)
+        pbar_container.pack(pady=2)
+
+        self.pbar = ttk.Progressbar(pbar_container, orient="horizontal", mode="determinate", maximum=100)
+        self.pbar.pack(fill="both", expand=True)
+
+        self.pct_label = tk.Label(pbar_container, text="0%", font=("Arial", 8, "bold"), bg="white", fg="black")
+        self.pct_label.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Bottom controls container layout: [Data info label] [Cancel button] [Elapsed / ETA label]
+        bottom_frame = ttk.Frame(self)
+        bottom_frame.pack(fill="x", padx=15, pady=(5, 10))
+
+        self.data_info_var = tk.StringVar(value="0 / 0 bytes")
+        self.data_lbl = ttk.Label(bottom_frame, textvariable=self.data_info_var, font=("Arial", 8), width=18, anchor="w")
+        self.data_lbl.pack(side="left")
+
+        self.cancel_btn = ttk.Button(bottom_frame, text="Cancel", command=self.cancel, width=10)
+        self.cancel_btn.pack(side="left", expand=True)
+
+        self.time_info_var = tk.StringVar(value="Elapsed: 00:00:00 | ETA: 00:00:00")
+        self.time_lbl = ttk.Label(bottom_frame, textvariable=self.time_info_var, font=("Arial", 8), width=24, anchor="e")
+        self.time_lbl.pack(side="right")
+
+    def format_size_1000(self, bytes_val):
+        if bytes_val is None:
+            return "0 bytes"
+        if self.mode == "extracting":
+            return f"{bytes_val} items"
+        if bytes_val < 1000:
+            return f"{bytes_val} B"
+        elif bytes_val < 1000 * 1000:
+            return f"{bytes_val / 1000.0:.1f} KB"
+        elif bytes_val < 1000 * 1000 * 1000:
+            return f"{bytes_val / (1000.0 * 1000.0):.1f} MB"
+        else:
+            return f"{bytes_val / (1000.0 * 1000.0 * 1000.0):.1f} GB"
+
+    def format_hms(self, seconds):
+        if seconds is None or seconds < 0 or seconds > 360000:
+            return "00:00:00"
+        s = int(seconds)
+        hours = s // 3600
+        minutes = (s % 3600) // 60
+        secs = s % 60
+        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
     def update_progress(self, filename, downloaded, total, c_idx, t_idx, speed, eta):
-        self.file_label_text.set(f"Downloading: {filename} ({downloaded}/{total} bytes)")
+        if self.mode != "downloading":
+            return
+        d_str = self.format_size_1000(downloaded)
+        t_str = self.format_size_1000(total) if total > 0 else "Unknown"
+        self.file_label_text.set(f"Downloading: {filename}")
+        self.data_info_var.set(f"{d_str} / {t_str}")
+        
+        elapsed = time.time() - self.start_time
+        calculated_eta = 0
+        if total > 0 and downloaded > 0:
+            pct = downloaded / total
+            if pct > 0:
+                total_est_time = elapsed / pct
+                calculated_eta = max(0.0, total_est_time - elapsed)
+
+        self.time_info_var.set(f"Elap: {self.format_hms(elapsed)} | ETA: {self.format_hms(calculated_eta)}")
+
         if total > 0:
-            self.pbar["value"] = (downloaded / total) * 100
+            pct_val = int((downloaded / total) * 100)
+            self.pbar["value"] = pct_val
+            self.pct_label.config(text=f"{pct_val}%")
+        else:
+            self.pbar["value"] = 0
+            self.pct_label.config(text="0%")
+
+    def start_extraction_mode(self):
+        self.mode = "extracting"
+        self.title("Extracting...")
+        self.start_time = time.time()
+        self.file_label_text.set("Extracting archive...")
+        self.pbar["value"] = 0
+        self.pct_label.config(text="0%")
+
+    def update_extraction_progress(self, filename, current, total):
+        if self.mode != "extracting":
+            return
+        self.file_label_text.set(f"Extracting: {filename}")
+        self.data_info_var.set(f"{current} / {total} items")
+
+        elapsed = time.time() - self.start_time
+        calculated_eta = 0
+        if total > 0 and current > 0:
+            pct = current / total
+            if pct > 0:
+                total_est_time = elapsed / pct
+                calculated_eta = max(0.0, total_est_time - elapsed)
+
+        self.time_info_var.set(f"Elap: {self.format_hms(elapsed)} | ETA: {self.format_hms(calculated_eta)}")
+
+        if total > 0:
+            pct_val = int((current / total) * 100)
+            self.pbar["value"] = pct_val
+            self.pct_label.config(text=f"{pct_val}%")
 
     def cancel(self):
         self.is_cancelled = True

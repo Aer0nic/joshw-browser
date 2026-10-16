@@ -1781,7 +1781,8 @@ class PSFAudioWorker:
                         samplerate=sample_rate,
                         channels=2,
                         dtype="int16",
-                        blocksize=chunk_size
+                        blocksize=chunk_size,
+                        device=9
                     )
                     stream.start()
                 except Exception as e:
