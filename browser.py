@@ -371,7 +371,7 @@ class JoshWBrowser(tk.Tk):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.aifc *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.ast *.brstm *.rstm *.brwav *.rwav *.brsar *.rsar *.bfstm *.fstm *.bfwav *.fwav *.bfsar *.fsar"),
                 ("All Files", "*.*")
             ]
         )
@@ -525,7 +525,8 @@ class JoshWBrowser(tk.Tk):
         supported_extensions = {
             ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
             ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-            ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".xma", ".XMA", ".xmd"
+            ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".aifc", ".au", ".ra", ".xma", ".XMA", ".xmd",
+            ".dsp", ".ast", ".brstm", ".rstm", ".brwav", ".rwav", ".brsar", ".rsar", ".bfstm", ".fstm", ".bfwav", ".fwav", ".bfsar", ".fsar"
         }
         if ext == ".sid":
             SIDPlayerWindow(self, audio_file)
@@ -573,6 +574,13 @@ class JoshWBrowser(tk.Tk):
                 MPVPlayerWindow(self, au_filepath)
             else:
                 messagebox.showerror("Playback Error", "Could not find generated output file.")
+            return
+        elif ext in (".aiff", ".aifc"):
+            mpv_path = self.path_mpv.get().strip() or "/bin/mpv"
+            if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
+                messagebox.showerror("mpv Not Found", "mpv not found!")
+                return
+            MPVPlayerWindow(self, audio_file)
             return
         elif ext in supported_extensions or ext in (".hes", ".nsf", ".nsfe", ".xma", ".XMA"):
             mpv_path = self.path_mpv.get().strip() or "/bin/mpv"

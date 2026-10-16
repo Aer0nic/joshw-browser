@@ -585,7 +585,7 @@ class SIDPlayerWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.DSP *.ast *.AST *.brstm *.BRSTM *.rstm *.RSTM *.brwav *.BRWAV *.rwav *.RWAV *.brsar *.BRSAR *.rsar *.RSAR *.bfstm *.BFSTM *.fstm *.FSTM *.bfwav *.BFWAV *.fwav *.FWAV *.bfsar *.BFSAR *.fsar *.FSAR *.pdt *.PDT"),
                 ("All Files", "*.*")
             ]
         )
@@ -1010,7 +1010,7 @@ class GSFPlayerWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.DSP *.ast *.AST *.brstm *.BRSTM *.rstm *.RSTM *.brwav *.BRWAV *.rwav *.RWAV *.brsar *.BRSAR *.rsar *.RSAR *.bfstm *.BFSTM *.fstm *.FSTM *.bfwav *.BFWAV *.fwav *.FWAV *.bfsar *.BFSAR *.fsar *.FSAR *.pdt *.PDT"),
                 ("All Files", "*.*")
             ]
         )
@@ -1444,7 +1444,7 @@ class TwoSFPlayerWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.DSP *.ast *.AST *.brstm *.BRSTM *.rstm *.RSTM *.brwav *.BRWAV *.rwav *.RWAV *.brsar *.BRSAR *.rsar *.RSAR *.bfstm *.BFSTM *.fstm *.FSTM *.bfwav *.BFWAV *.fwav *.FWAV *.bfsar *.BFSAR *.fsar *.FSAR *.pdt *.PDT"),
                 ("All Files", "*.*")
             ]
         )
@@ -2244,7 +2244,7 @@ class PSFPlayerWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.DSP *.ast *.AST *.brstm *.BRSTM *.rstm *.RSTM *.brwav *.BRWAV *.rwav *.RWAV *.brsar *.BRSAR *.rsar *.RSAR *.bfstm *.BFSTM *.fstm *.FSTM *.bfwav *.BFWAV *.fwav *.FWAV *.bfsar *.BFSAR *.fsar *.FSAR *.pdt *.PDT"),
                 ("All Files", "*.*")
             ]
         )
@@ -2291,7 +2291,9 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
         supported_extensions = {
             ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
             ".usf", ".miniusf", ".gsf", ".minigsf", ".sid", ".adx", ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma",
-            ".ape", ".wv", ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".mid", ".MID", ".xma", ".XMA", ".xmd", ".2sf", ".mini2sf"
+            ".ape", ".wv", ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".mid", ".MID", ".xma", ".XMA", ".xmd", ".2sf", ".mini2sf",
+            ".psf", ".minipsf", ".psf2", ".minipsf2",
+            ".dsp", ".ast", ".brstm", ".rstm", ".brwav", ".rwav", ".brsar", ".rsar", ".bfstm", ".fstm", ".bfwav", ".fwav", ".bfsar", ".fsar", ".pdt"
         }
         for root, dirs, files in os.walk(self.folder_path):
             for f in sorted(files):
@@ -2551,7 +2553,7 @@ class VGMStreamPlayerWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.DSP *.ast *.AST *.brstm *.BRSTM *.rstm *.RSTM *.brwav *.BRWAV *.rwav *.RWAV *.brsar *.BRSAR *.rsar *.RSAR *.bfstm *.BFSTM *.fstm *.FSTM *.bfwav *.BFWAV *.fwav *.FWAV *.bfsar *.BFSAR *.fsar *.FSAR *.pdt *.PDT"),
                 ("All Files", "*.*")
             ]
         )
@@ -2950,7 +2952,9 @@ class MPVPlayerWindow(tk.Toplevel):
                 audio_exts = {
                     ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
                     ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-                    ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".miniusf", ".usf", ".mid", ".midi", ".MID", ".xma", ".XMA", ".adx", ".2sf", ".mini2sf"
+                    ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".miniusf", ".usf", ".mid", ".midi", ".MID", ".xma", ".XMA", ".adx", ".2sf", ".mini2sf",
+                    ".psf", ".minipsf", ".psf2", ".minipsf2",
+                    ".dsp", ".ast", ".brstm", ".rstm", ".brwav", ".rwav", ".brsar", ".rsar", ".bfstm", ".fstm", ".bfwav", ".fwav", ".bfsar", ".fsar", ".pdt"
                 }
                 for f in files:
                     full_p = os.path.join(folder, f)
@@ -3106,7 +3110,7 @@ class MPVPlayerWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf"),
+                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.adx *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.DSP *.ast *.AST *.brstm *.BRSTM *.rstm *.RSTM *.brwav *.BRWAV *.rwav *.RWAV *.brsar *.BRSAR *.rsar *.RSAR *.bfstm *.BFSTM *.fstm *.FSTM *.bfwav *.BFWAV *.fwav *.FWAV *.bfsar *.BFSAR *.fsar *.FSAR *.pdt *.PDT"),
                 ("All Files", "*.*")
             ]
         )

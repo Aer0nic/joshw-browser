@@ -1,6 +1,7 @@
 import os
-import platform
 import re
+import json
+import platform
 
 DOMAINS = {
     "PC music archives": "http://pc.joshw.info/",
@@ -41,10 +42,6 @@ DOMAINS = {
 USER_AGENT = "JoshW-Archive-Browser/1.0"
 DATE_PATTERN = re.compile(r'[\(\[](\d{4}(?:-\d{2}(?:-\d{2})?)?)[\)\]]')
 
-def is_emulated_file(filepath):
-    ext = os.path.splitext(filepath)[1].lower()
-    return ext in {".spc", ".gbs", ".hes", ".kss", ".vgm", ".vgz", ".gym", ".ay", ".sap", ".nsf", ".nsfe", ".usf", ".miniusf", ".sid", ".xma", ".psf", ".minipsf", ".psf2", ".minipsf2"}
-
 def get_cache_directory():
     system_name = platform.system()
     if system_name == "Linux":
@@ -81,3 +78,11 @@ def format_size(size):
             return f"{value:,.1f} {unit}"
         value /= 1024
     return "Unknown"
+
+def is_emulated_file(file_path):
+    ext = os.path.splitext(file_path)[1].lower()
+    emulated_exts = {
+        ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
+        ".usf", ".miniusf", ".gsf", ".minigsf", ".sid", ".2sf", ".mini2sf", ".psf", ".minipsf", ".psf2", ".minipsf2"
+    }
+    return ext in emulated_exts
