@@ -14,7 +14,7 @@ from tkinter import ttk, filedialog, messagebox
 
 from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, is_emulated_file, format_size
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
-from players import VGMStreamPlayerWindow, MPVPlayerWindow, SIDPlayerWindow, GSFPlayerWindow, TwoSFPlayerWindow, PSFPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path, get_2sfplay_path, get_aosdk_path
+from players import VGMStreamPlayerWindow, MPVPlayerWindow, SIDPlayerWindow, GSFPlayerWindow, TwoSFPlayerWindow, PSFPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path, get_2sfplay_path
 from downloaders import DownloadProgressWindow, IndexAllWindow, IndexPremadeWindow, install_dependencies_prompt
 
 
@@ -531,29 +531,40 @@ class JoshWBrowser(tk.Tk):
                         self.selected_item_ids.add(item_id)
                     self.apply_filter()
 
-    def play_audio_file(self, audio_file):
+    def play_audio_file(self, audio_file, playlist=None, start_index=None):
         ext = os.path.splitext(audio_file)[1].lower()
+
+        # Force vgmstream123 for these specific formats
+        vgmstream_formats = {".ast", ".dsp", ".brstm", ".rstm", ".bfsar", ".bfwav", ".adp", ".str", ".thp", ".was", ".h4m", ".vag", ".wem"}
+        if ext in vgmstream_formats:
+            vgm_bin = get_vgmstream_path()
+            if not vgm_bin or (not shutil.which(vgm_bin) and not os.path.exists(vgm_bin)):
+                messagebox.showerror("vgmstream123 Not Found", "vgmstream123 not found!")
+                return
+            VGMStreamPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
+            return
+
         supported_extensions = {
             ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
             ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
             ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".aifc", ".au", ".ra", ".xma", ".XMA", ".xmd",
             ".dsp", ".ast", ".brstm", ".rstm", ".brwav", ".rwav", ".brsar", ".rsar", ".bfstm", ".fstm", ".bfwav", ".fwav", ".bfsar", ".fsar",
-            ".vag", ".adpcm", ".at3"
+            ".vag", ".adpcm", ".at3", ".adp", ".str", ".thp", ".was", ".h4m", ".wem"
         }
         if ext == ".sid":
-            SIDPlayerWindow(self, audio_file)
+            SIDPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
         elif ext in (".gsf", ".minigsf"):
             if not self.check_dependency_status("playgsf"):
                 messagebox.showerror("playgsf Not Found", "playgsf not found! Please install dependencies.")
                 return
-            GSFPlayerWindow(self, audio_file)
+            GSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
         elif ext in (".2sf", ".mini2sf"):
             if not self.check_dependency_status("2sfplay"):
                 messagebox.showerror("2sfPlay Not Found", "2sfPlay not found! Please install dependencies.")
                 return
-            TwoSFPlayerWindow(self, audio_file)
+            TwoSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
         elif ext in (".psf", ".minipsf", ".psf2", ".minipsf2"):
             if not self.check_dependency_status("psfplay"):
@@ -562,64 +573,26 @@ class JoshWBrowser(tk.Tk):
                     "libaosdk.so not found! Please run ./build_aosdk.sh to build the PSF/PSF2 playback library."
                 )
                 return
-            PSFPlayerWindow(self, audio_file)
+            PSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
         elif ext in (".mid", ".midi"):
             if not self.check_dependency_status("fluidsynth"):
                 messagebox.showerror("FluidSynth Required", "Midi playback requires FluidSynth and soundfont. Please install dependencies.")
                 return
-            MPVPlayerWindow(self, audio_file)
+            MPVPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
-        elif ext in {".miniusf", ".usf"}:
-            lazyusf_bin = get_lazyusf_path()
-            if not lazyusf_bin or (not shutil.which(lazyusf_bin) and not os.path.exists(lazyusf_bin)):
-                messagebox.showerror("lazyusf Not Found", "lazyusf not found! Please install dependencies.")
-                return
-            
+        elif ext in supported_extensions or ext in (".hes", ".nsf", ".nsfe", ".xma", ".XMA", ".miniusf", ".usf"):
             mpv_path = self.path_mpv.get().strip() or "/bin/mpv"
             if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
                 messagebox.showerror("mpv Not Found", "mpv not found!")
                 return
-
-            folder, filename = os.path.dirname(audio_file), os.path.basename(audio_file)
-            
-            # Spawn lazyusf streaming to stdout and pipe directly into mpv for instant zero-latency playback
-            try:
-                lazy_proc = subprocess.Popen(
-                    [lazyusf_bin, filename],
-                    cwd=folder,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.DEVNULL
-                )
-                mpv_proc = subprocess.Popen(
-                    [mpv_path, "--demuxer=rawaudio", "--demuxer-rawaudio-rate=44100", "--demuxer-rawaudio-channels=2", "--demuxer-rawaudio-format=s16be", "-"],
-                    stdin=lazy_proc.stdout,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
-                lazy_proc.stdout.close()
-            except Exception as e:
-                messagebox.showerror("Playback Error", f"Failed to stream USF file:\n\n{e}")
-            return
-        elif ext in (".aiff", ".aifc"):
-            mpv_path = self.path_mpv.get().strip() or "/bin/mpv"
-            if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
-                messagebox.showerror("mpv Not Found", "mpv not found!")
-                return
-            MPVPlayerWindow(self, audio_file)
-            return
-        elif ext in supported_extensions or ext in (".hes", ".nsf", ".nsfe", ".xma", ".XMA"):
-            mpv_path = self.path_mpv.get().strip() or "/bin/mpv"
-            if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
-                messagebox.showerror("mpv Not Found", "mpv not found!")
-                return
-            MPVPlayerWindow(self, audio_file)
+            MPVPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
         else:
             vgm_bin = get_vgmstream_path()
             if not vgm_bin or (not shutil.which(vgm_bin) and not os.path.exists(vgm_bin)):
                 messagebox.showerror("vgmstream123 Not Found", "vgmstream123 not found!")
                 return
-            VGMStreamPlayerWindow(self, audio_file)
+            VGMStreamPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
 
     def toggle_auto_indexing(self):
         self.auto_index_enabled = not self.auto_index_enabled

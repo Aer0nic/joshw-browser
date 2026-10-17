@@ -75,19 +75,18 @@ class InstallDependenciesWorker:
                 lazyusf_src_dir = temp_build_dir / "lazyusf"
                 lazyusf_sh_path = temp_build_dir / "build_lazyusf.sh"
                 
-                # 1. Write a python inline-patcher script using a regular raw string (r""") to avoid f-string brace parsing
                 patcher_script_path = temp_build_dir / "patch_source.py"
-                with open(patcher_script_path, "w", encoding="utf-8") as pf:
-                    pf.write(r"""import pathlib
+                
+                patcher_code = r'''import pathlib
 
-src_dir = pathlib.Path(r"%s")
+src_dir = pathlib.Path(r"___SRC_DIR___")
 
-# Patch main.c to remove file extension suffix logic
+# 1. Patch main.c to remove file extension suffix logic
 main_c = src_dir / "main.c"
 if main_c.exists():
     content = main_c.read_text(encoding="utf-8")
     
-    old_target = '''            if(formatStr)
+    old_target = """            if(formatStr)
             {
                 formatOutFileName(filename, formatStr);
             }
@@ -99,12 +98,12 @@ if main_c.exists():
             else
             {
                 strcat(filename,".au");
-            }'''
+            }"""
             
-    new_target = '''            if(formatStr)
+    new_target = """            if(formatStr)
             {
                 formatOutFileName(filename, formatStr);
-            }'''
+            }"""
             
     if old_target in content:
         content = content.replace(old_target, new_target)
@@ -113,79 +112,118 @@ if main_c.exists():
     else:
         print("Warning: Could not find target block in main.c")
 
-# Patch audio.c to redirect raw PCM output to stdout
+# 2. Patch audio.c to redirect raw PCM output to stdout, add fixed-block buffering, and print stderr meta
 audio_c = src_dir / "audio.c"
 if audio_c.exists():
     content = audio_c.read_text(encoding="utf-8")
     
-    old_audio_open = '''    if (!useFlac)
-    {
-        fd = open(filename, O_RDWR|O_CREAT,0644);
-        if (fd < 0)
-        {
-            char perrormsg[256];
-            strcat(perrormsg, "open of ");
-            strcat(perrormsg, filename);
-            strcat(perrormsg, " failed");
-            perror(perrormsg);
-            StopEmulation();
-            return;
-        }
-
-        audioFileHeader AUheader;
-
-        AUheader.magic=0x2e736e64;
-        // the au format uses big endian
-        AUheader.magic=bswap_32(AUheader.magic);
-
-        // offset where data starts
-        AUheader.hdr_size=24;
-        AUheader.hdr_size=bswap_32(AUheader.hdr_size);
-
-        // size of data is unknown
-        AUheader.data_size=0xffffffff;
-
-        // encoding is 16 bit linear pcm
-        AUheader.encoding=3;
-        AUheader.encoding=bswap_32(AUheader.encoding);
-
-        AUheader.sample_rate=SampleRate;
-        AUheader.sample_rate=bswap_32(AUheader.sample_rate);
-
-        // stereo
-        AUheader.channels=2;
-        AUheader.channels=bswap_32(AUheader.channels);
-
-        if (write(fd,&AUheader,sizeof(AUheader))<0)
-        {
-            DisplayError("An Error occurred when writing the Header for .au file! Exiting...\\n");
-            StopEmulation();
-            Release_Memory();
-            exit(3);
-        }
-    }'''
-
-    new_audio_open = '''    if (!useFlac)
+    # Replace the file writing block safely using exact substring matching
+    if "open(" in content:
+        start_idx = content.find("if (!useFlac)")
+        if start_idx != -1:
+            brace_count = 0
+            end_idx = start_idx
+            found_start = False
+            for i, char in enumerate(content[start_idx:]):
+                if char == '{':
+                    brace_count += 1
+                    found_start = True
+                elif char == '}':
+                    brace_count -= 1
+                if found_start and brace_count == 0:
+                    end_idx = start_idx + i + 1
+                    break
+            
+            if end_idx > start_idx:
+                replacement = """    if (!useFlac)
     {
         fd = STDOUT_FILENO;
-    }'''
+        #ifdef _WIN32
+        _setmode(_fileno(stdout), _O_BINARY);
+        #endif
+        static char stdout_buffer[8192];
+        setvbuf(stdout, stdout_buffer, _IOFBF, sizeof(stdout_buffer));
 
-    content = content.replace(old_audio_open, new_audio_open)
-    
-    old_close = '''    if(!useFlac)
+        int endian_flag = 1;
+        fprintf(stderr, "LAZYUSF_META:%d:%d\\n", SampleRate, endian_flag);
+        fflush(stderr);
+    }"""
+                content = content[:start_idx] + replacement + content[end_idx:]
+
+    # Inject fixed-block PCM buffering static variables and flush logic into audio.c
+    if "static unsigned char pcm_out_buf" not in content:
+        buffer_globals = """
+static unsigned char pcm_out_buf[8192];
+static size_t pcm_out_pos = 0;
+"""
+        include_pos = content.find("#include \"registers.h\"")
+        if include_pos != -1:
+            content = content[:include_pos] + buffer_globals + "\n" + content[include_pos:]
+
+    # Replace the direct write(fd, buf, length) block inside AddBuffer with our fixed-block queue
+    old_write_block = """        // write raw pcm to au file
+        unsigned int status = write(fd, buf, length);
+        if (status != length)
+        {
+            perror("wrote wrong number of bytes\\n");
+        }"""
+
+    new_write_block = """        // Write into fixed-block buffer to smooth out erratic N64 DMA chunk sizes
+        size_t offset = 0;
+        while (offset < length) {
+            size_t chunk = length - offset;
+            if (chunk > (sizeof(pcm_out_buf) - pcm_out_pos)) {
+                chunk = sizeof(pcm_out_buf) - pcm_out_pos;
+            }
+            memcpy(pcm_out_buf + pcm_out_pos, buf + offset, chunk);
+            pcm_out_pos += chunk;
+            offset += chunk;
+
+            if (pcm_out_pos >= 4096) {
+                write(fd, pcm_out_buf, 4096);
+                size_t leftover = pcm_out_pos - 4096;
+                if (leftover > 0) {
+                    memmove(pcm_out_buf, pcm_out_buf + 4096, leftover);
+                }
+                pcm_out_pos = leftover;
+            }
+        }"""
+
+    if old_write_block in content:
+        content = content.replace(old_write_block, new_write_block)
+
+    # Safely replace CloseSound to flush buffer contents before closing/exiting
+    old_close_sound = """void CloseSound(void)
+{
+    if(!useFlac && fd != STDOUT_FILENO)
     {
         close(fd);
-    }'''
-    
-    new_close = '''    if(!useFlac && fd != STDOUT_FILENO)
+    }"""
+
+    new_close_sound = """void CloseSound(void)
+{
+    if (!useFlac && pcm_out_pos > 0) {
+        write(fd, pcm_out_buf, pcm_out_pos);
+        pcm_out_pos = 0;
+    }
+
+    if(!useFlac && fd != STDOUT_FILENO)
     {
         close(fd);
-    }'''
-    
-    content = content.replace(old_close, new_close)
+    }"""
+
+    if old_close_sound in content:
+        content = content.replace(old_close_sound, new_close_sound)
+
     audio_c.write_text(content, encoding="utf-8")
-    print("Successfully patched audio.c")
-""" % lazyusf_src_dir)
+    print("Successfully patched audio.c with fixed-block PCM smoothing")
+'''
+
+                # Safely replace the placeholder with the actual source path string
+                patcher_code = patcher_code.replace("___SRC_DIR___", str(lazyusf_src_dir))
+
+                with open(patcher_script_path, "w", encoding="utf-8") as pf:
+                    pf.write(patcher_code)
 
                 # 2. Write the runner shell script
                 with open(lazyusf_sh_path, "w", encoding="utf-8") as sf:
