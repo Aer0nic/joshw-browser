@@ -10,7 +10,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
-            "python": "/usr/bin/python3",
+            "python": "/home/emily/.github/joshw-browser/.venv/bin/python3",
             "console": "integratedTerminal"
         }
     ]

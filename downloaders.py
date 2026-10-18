@@ -43,7 +43,7 @@ def install_dependencies_prompt(parent):
         "please hit OK to start installation! This will open a terminal window and ask for your Sudo password. "
         "Once entered, it will run:\n\n"
         "sudo apt update\n"
-        "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev pkg-config pulseaudio-utils -y\n\n"
+        "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev pkg-config pulseaudio-utils fluidsynth -y\n\n"
         "It will then grab the source files for Lazyusf, VGMStream, PlayGSF, 2sfPlay, download the FluidSynth soundfont, and build them into ~/.config/joshw/.\n\n"
         "If you agree to this, hit the OK button to start, otherwise hit Cancel."
     )
@@ -65,7 +65,7 @@ class InstallDependenciesWorker:
 
         script_lines = [
             "sudo apt update",
-            "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev libflac-dev pkg-config pulseaudio-utils -y"
+            "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev libflac-dev pkg-config pulseaudio-utils fluidsynth -y"
         ]
 
         temp_build_dir = Path(tempfile.mkdtemp(prefix="joshw_dep_"))

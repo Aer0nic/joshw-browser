@@ -13,9 +13,8 @@ import time
 import tkinter as tk
 import weakref
 import sounddevice as sd
-from tkinter import ttk, messagebox, filedialog
 from config import get_cache_directory, is_emulated_file
-
+from tkinter import ttk
 
 _active_volume_players = weakref.WeakSet()
 _syncing_player_volume = False
@@ -431,7 +430,7 @@ class SIDPlayerWindow(tk.Toplevel):
         browse_frame = ttk.Frame(padding)
         browse_frame.pack(side="top", anchor="w", pady=(0, 6))
 
-        browse_btn = tk.Button(browse_frame, text="刀", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="top", anchor="w")
 
         ttk.Label(padding, text=f"Now Playing (SID):\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=520).pack(pady=(0, 6))
@@ -780,7 +779,7 @@ class GSFPlayerWindow(tk.Toplevel):
         browse_frame = ttk.Frame(padding)
         browse_frame.pack(side="top", anchor="w", pady=(0, 6))
 
-        browse_btn = tk.Button(browse_frame, text="刀", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="top", anchor="w")
 
         ttk.Label(padding, text=f"Now Playing (GSF):\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=520).pack(pady=(0, 6))
@@ -1128,7 +1127,7 @@ class TwoSFPlayerWindow(tk.Toplevel):
         browse_frame = ttk.Frame(padding)
         browse_frame.pack(side="top", anchor="w", pady=(0, 6))
 
-        browse_btn = tk.Button(browse_frame, text="刀", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="top", anchor="w")
 
         self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=450, justify="center")
@@ -1635,7 +1634,7 @@ class PSFPlayerWindow(tk.Toplevel):
         browse_frame = ttk.Frame(padding)
         browse_frame.pack(side="top", anchor="w", pady=(0, 6))
 
-        browse_btn = tk.Button(browse_frame, text="刀", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="top", anchor="w")
 
         self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=480, justify="center")
@@ -2158,6 +2157,9 @@ class VGMStreamPlayerWindow(tk.Toplevel):
 
         cmd = [vgm_bin, "-m"]
         if self.loop_forever_var.get():
+            cmd.append("-c")
+
+        if self.loop_forever_var.get():
             cmd.extend(["-l", "0"])
         elif self.loop_chk_var.get():
             cmd.extend(["-l", str(self.loop_count_var.get())])
@@ -2347,8 +2349,6 @@ class MPVPlayerWindow(tk.Toplevel):
         self.audio_file = audio_file
         self.mpv = None
         self.lazy_proc = None
-        self.usf_thread = None
-        self.usf_stop_event = None
         self.sock = None
         self.m3u_path = None
         self.socket_path = os.path.join(tempfile.gettempdir(), f"mpv-python-{os.getpid()}-{threading.get_ident()}.sock")
@@ -2470,7 +2470,7 @@ class MPVPlayerWindow(tk.Toplevel):
         browse_frame = ttk.Frame(padding)
         browse_frame.pack(side="top", anchor="w", pady=(0, 6))
 
-        browse_btn = tk.Button(browse_frame, text="刀", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="top", anchor="w")
 
         self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=450, justify="center")
@@ -2556,7 +2556,6 @@ class MPVPlayerWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.aifc *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.ast *.brstm *.rstm *.brwav *.rwav *.brsar *.rsar *.bfstm *.fstm *.bfwav *.fwav *.bfsar *.fsar *.vag *.adpcm *.at3"),
                 ("All Files", "*.*")
             ]
         )
@@ -2638,18 +2637,23 @@ class MPVPlayerWindow(tk.Toplevel):
                 pass
             self.mpv = None
 
+        if hasattr(self, "lazy_proc") and self.lazy_proc:
+            try:
+                self.lazy_proc.terminate()
+                self.lazy_proc.wait(timeout=1)
+            except Exception:
+                try:
+                    self.lazy_proc.kill()
+                except Exception:
+                    pass
+            self.lazy_proc = None
+
         if hasattr(self, "sock") and self.sock:
             try:
                 self.sock.close()
             except Exception:
                 pass
             self.sock = None
-
-        if hasattr(self, "usf_stop_event") and self.usf_stop_event:
-            self.usf_stop_event.set()
-        if hasattr(self, "usf_thread") and self.usf_thread and self.usf_thread.is_alive():
-            self.usf_thread.join(timeout=0.5)
-            self.usf_thread = None
 
         try:
             if os.path.exists(self.socket_path):
@@ -2674,64 +2678,60 @@ class MPVPlayerWindow(tk.Toplevel):
                     detected_rate = 32000
                     detected_format = "s16be"
                     
-                    err_fd, err_path = tempfile.mkstemp()
-                    os.close(err_fd)
-                    try:
-                        probe_proc = subprocess.Popen(
-                            ['stdbuf', '-o0', lazyusf_bin, filename],
-                            cwd=folder,
-                            stdout=subprocess.PIPE,
-                            stderr=open(err_path, "w")
-                        )
-                        raw_sample_data = probe_proc.stdout.read(25600)
-                        
-                        start_time = time.time()
-                        while time.time() - start_time < 0.5:
-                            if probe_proc.poll() is not None:
-                                break
-                            try:
-                                with open(err_path, "r", encoding="utf-8", errors="ignore") as ef:
-                                    content = ef.read()
-                                    if "LAZYUSF_META:" in content:
-                                        for line in content.splitlines():
-                                            if "LAZYUSF_META:" in line:
-                                                parts = line.split(":")
-                                                if len(parts) >= 2 and parts[1].isdigit():
-                                                    detected_rate = int(parts[1])
-                                                    break
-                                        break
-                            except Exception:
-                                pass
-                            time.sleep(0.01)
-                        try:
-                            probe_proc.terminate()
-                            probe_proc.wait(timeout=0.2)
-                        except Exception:
-                            probe_proc.kill()
-                    finally:
-                        try:
-                            os.remove(err_path)
-                        except Exception:
-                            pass
-
-                    if len(raw_sample_data) > 1000:
-                        try:
-                            samples = array.array("h")
-                            samples.frombytes(raw_sample_data[:len(raw_sample_data) & ~1])
-                            if len(samples) > 1:
-                                total_diff = sum(abs(samples[i+1] - samples[i]) for i in range(len(samples)-1))
-                                if (total_diff / (len(samples) - 1)) > 11000:
-                                    detected_format = "s16le"
-                        except Exception:
-                            pass
-
-                    self.usf_stop_event = threading.Event()
-                    self.usf_thread = threading.Thread(
-                        target=play_usf_via_sounddevice,
-                        args=(lazyusf_bin, filename, folder, detected_rate, detected_format, self.volume_var, self.usf_stop_event, lambda: self.after(0, self.advance_after_end)),
-                        daemon=True
+                    lazyusf_proc = subprocess.Popen(
+                        ['stdbuf', '-o0', lazyusf_bin, filename],
+                        cwd=folder,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=False
                     )
-                    self.usf_thread.start()
+                    self.lazy_proc = lazyusf_proc
+
+                    start_time = time.time()
+                    while time.time() - start_time < 0.5:
+                        if lazyusf_proc.poll() is not None:
+                            break
+                        try:
+                            line = lazyusf_proc.stderr.readline()
+                            if line:
+                                line_str = line.decode("utf-8", errors="ignore")
+                                if "LAZYUSF_META:" in line_str:
+                                    parts = line_str.strip().split(":")
+                                    if len(parts) >= 2 and parts[1].isdigit():
+                                        detected_rate = int(parts[1])
+                                        if len(parts) >= 3 and parts[2].isdigit():
+                                            endian_val = int(parts[2])
+                                            detected_format = "s16le" if endian_val == 1 else "s16be"
+                                        break
+                        except Exception:
+                            pass
+                        time.sleep(0.01)
+
+                    mpv_bin = "/bin/mpv" if os.path.exists("/bin/mpv") else (shutil.which("mpv") or "mpv")
+                    
+                    cmd = [
+                        mpv_bin,
+                        "--no-video",
+                        f"--input-ipc-server={self.socket_path}",
+                        f"--volume={self.volume_var.get()}",
+                    ]
+
+                    if self.loop_forever_var.get():
+                        cmd.append("--loop-file=inf")
+                    elif self.loop_chk_var.get():
+                        cmd.append(f"--loop-file={self.loop_count_var.get()}")
+                    else:
+                        cmd.append("--loop-file=1")
+
+                    cmd.extend([
+                        "--demuxer=rawaudio",
+                        f"--demuxer-rawaudio-rate={detected_rate}",
+                        "--demuxer-rawaudio-channels=2",
+                        f"--demuxer-rawaudio-format={detected_format}",
+                        "-"
+                    ])
+
+                    self.mpv = subprocess.Popen(cmd, stdin=lazyusf_proc.stdout, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     self.status_var.set("Playing")
                     return
                 except Exception:
@@ -2854,11 +2854,16 @@ class MPVPlayerWindow(tk.Toplevel):
             self.sock = None
 
     def stop(self):
-        if hasattr(self, "usf_stop_event") and self.usf_stop_event:
-            self.usf_stop_event.set()
-        if hasattr(self, "usf_thread") and self.usf_thread and self.usf_thread.is_alive():
-            self.usf_thread.join(timeout=0.5)
-            self.usf_thread = None
+        if hasattr(self, "lazy_proc") and self.lazy_proc:
+            try:
+                self.lazy_proc.terminate()
+                self.lazy_proc.wait(timeout=1)
+            except Exception:
+                try:
+                    self.lazy_proc.kill()
+                except Exception:
+                    pass
+            self.lazy_proc = None
 
         if hasattr(self, "mpv") and self.mpv:
             try:
@@ -2880,19 +2885,6 @@ class MPVPlayerWindow(tk.Toplevel):
         if not self.winfo_exists():
             return
         
-        ext = os.path.splitext(self.audio_file)[1].lower()
-        if ext in (".miniusf", ".usf"):
-            if self.usf_thread and self.usf_thread.is_alive():
-                self.raw_position_seconds += 0.5
-                self.position_var.set(f"Position: {self.format_time(self.raw_position_seconds)}")
-                if self.raw_duration_seconds > 0 and not self.is_scrubbing:
-                    pct = int((self.raw_position_seconds / self.raw_duration_seconds) * 100)
-                    self.seek_pct_var.set(f"{pct}%")
-                    self.progress_bar_widget.update_progress(self.raw_position_seconds, self.raw_duration_seconds)
-            if self.winfo_exists():
-                self.after(500, self.poll_status)
-            return
-
         if not self.sock:
             if self.winfo_exists():
                 self.after(500, self.poll_status)
@@ -3078,7 +3070,6 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.aifc *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.ast *.brstm *.rstm *.brwav *.rwav *.brsar *.rsar *.bfstm *.fstm *.bfwav *.fwav *.bfsar *.fsar *.vag *.adpcm *.at3"),
                 ("All Files", "*.*")
             ]
         )

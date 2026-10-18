@@ -372,7 +372,6 @@ class JoshWBrowser(tk.Tk):
             title="Select Music File",
             initialdir=initial_dir,
             filetypes=[
-                ("Audio & Emulated Files", "*.ay *.gbs *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz *.usf *.miniusf *.gsf *.minigsf *.sid *.mp3 *.ogg *.flac *.wav *.m4a *.aac *.opus *.wma *.ape *.wv *.mod *.s3m *.xm *.it *.mka *.tta *.ac3 *.dts *.aiff *.aifc *.au *.ra *.mid *.MID *.xma *.XMA *.xmd *.XMD *.2sf *.mini2sf *.psf *.minipsf *.psf2 *.minipsf2 *.dsp *.ast *.brstm *.rstm *.brwav *.rwav *.brsar *.rsar *.bfstm *.fstm *.bfwav *.fwav *.bfsar *.fsar *.vag *.adpcm *.at3"),
                 ("All Files", "*.*")
             ]
         )
