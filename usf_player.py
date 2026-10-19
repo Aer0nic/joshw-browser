@@ -6,6 +6,7 @@ import threading
 import json
 import re
 import signal
+import random
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
@@ -138,8 +139,8 @@ class USFPlayerWindow(tk.Toplevel):
     def build_ui(self):
         filename = os.path.basename(self.audio_file) if self.audio_file else "No file"
         self.title(f"USF Player - {filename}")
-        self.geometry("480x580")
-        self.minsize(440, 500)
+        self.geometry("480x620")
+        self.minsize(440, 540)
         if self.parent:
             try:
                 self.transient(self.parent)
@@ -149,13 +150,39 @@ class USFPlayerWindow(tk.Toplevel):
         padding = ttk.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
 
-        browse_frame = ttk.Frame(padding)
-        browse_frame.pack(side="top", anchor="w", pady=(0, 6))
+        # Header frame holding the browse button and banner side-by-side
+        header_frame = ttk.Frame(padding)
+        header_frame.pack(side="top", fill="x", pady=(0, 6))
 
-        browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
-        browse_btn.pack(side="top", anchor="w")
+        # Browse button sitting next to the banner
+        browse_btn = tk.Button(header_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn.pack(side="left", anchor="center", padx=(0, 8))
 
-        self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=250, justify="center")
+        # Canvas banner header taking up the remaining width
+        self.banner_canvas = tk.Canvas(header_frame, height=85, highlightthickness=0)
+        self.banner_canvas.pack(side="left", fill="x", expand=True)
+
+        # Load, stretch, and render banner image across the canvas dynamically while keeping transparency
+        try:
+            banner_path = Path(get_cache_directory()) / "usfbanner.png"
+            if not banner_path.exists():
+                banner_path = Path(os.path.expanduser("~/.config/joshw/usfbanner.png"))
+            if banner_path.exists():
+                from PIL import Image, ImageTk
+                self.raw_banner_img = Image.open(str(banner_path)).convert("RGBA")
+                self.banner_image_item = self.banner_canvas.create_image(0, 0, anchor="nw")
+
+                def resize_banner(event):
+                    if event.width > 1 and event.height > 1:
+                        resized_pil = self.raw_banner_img.resize((event.width, event.height), Image.Resampling.LANCZOS)
+                        self.banner_photo = ImageTk.PhotoImage(resized_pil)
+                        self.banner_canvas.itemconfig(self.banner_image_item, image=self.banner_photo)
+
+                self.banner_canvas.bind("<Configure>", resize_banner)
+        except Exception as e:
+            print(f"[USFPlayer] Could not load banner image: {e}")
+
+        self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=350, justify="center")
         self.title_label.pack(pady=(0, 6))
 
         info_frame = ttk.Frame(padding)
@@ -201,20 +228,51 @@ class USFPlayerWindow(tk.Toplevel):
         self.playlist_listbox.bind("<<ListboxSelect>>", self.on_playlist_select)
         self.populate_playlist_listbox()
 
+       
         controls = ttk.Frame(padding)
         controls.pack(pady=4)
 
         ttk.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=0, padx=2)
         ttk.Button(controls, text="Stop", width=8, command=self.stop).grid(row=0, column=1, padx=2)
         ttk.Button(controls, text="Play/Pause", width=10, command=self.toggle_play_pause).grid(row=0, column=2, padx=2)
-        ttk.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=4, padx=2)
-        ttk.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=5, padx=2)
-        
+        ttk.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=3, padx=2)
+        ttk.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=4, padx=2)
+                
         btn_bottom = ttk.Frame(padding)
-        btn_bottom.pack(pady=(6, 0), fill="x")
-        
-        ttk.Checkbutton(btn_bottom, text="Loop forever", variable=self.loop_forever_var, command=self.on_loop_settings_changed).pack(side="right", padx=(4, 0))
+        btn_bottom.pack(pady=(6, 4), fill="x")
 
+        ttk.Checkbutton(
+        btn_bottom,
+        variable=self.loop_chk_var,
+        command=self.on_loop_checkbox_changed
+        ).grid(row=0, column=0, padx=(0, 2), sticky="w")
+
+        ttk.Spinbox(
+            btn_bottom,
+            from_=1,
+            to=99,
+            width=3,
+            textvariable=self.loop_count_var,
+            command=self.on_loop_spinbox_changed
+        ).grid(row=0, column=1, padx=(0, 6), sticky="w")
+
+        ttk.Button(
+            btn_bottom,
+            text="Random",
+            width=12,
+            command=self.random_track
+        ).grid(row=0, column=2, padx=2)
+
+        ttk.Checkbutton(
+            btn_bottom,
+            text="Loop forever",
+            variable=self.loop_forever_var,
+            command=self.on_loop_forever_changed
+        ).grid(row=0, column=3, padx=2, sticky="e")
+
+        btn_bottom.grid_columnconfigure(2, weight=1)
+          
+        
     def populate_playlist_listbox(self):
         self.playlist_listbox.delete(0, "end")
         for p in self.playlist:
@@ -229,7 +287,7 @@ class USFPlayerWindow(tk.Toplevel):
                 pass
 
     def on_browse_clicked(self):
-        """Opens file dialog starting at default_load_music_dir, then spawns a new player for the selected folder."""
+        """Opens file dialog and populates playlist with strictly .miniusf files only."""
         initial_dir = os.path.expanduser("~")
         try:
             from config import load_settings
@@ -257,10 +315,10 @@ class USFPlayerWindow(tk.Toplevel):
         chosen_path = Path(chosen_file)
         target_dir = chosen_path.parent
 
-        # Strictly filter for .miniusf files only
+        # Strictly filter for .miniusf files only, ignoring everything else
         new_playlist = sorted([
             str(p) for p in target_dir.glob("*") 
-            if p.suffix.lower() == ".miniusf"
+            if p.is_file() and p.suffix.lower() == ".miniusf"
         ])
 
         if not new_playlist:
@@ -288,9 +346,27 @@ class USFPlayerWindow(tk.Toplevel):
                 self.current_index = idx
                 self.load_and_play_current()
 
-    def on_loop_settings_changed(self):
+    def on_loop_checkbox_changed(self):
+        if self.loop_chk_var.get():
+            self.loop_forever_var.set(False)
+        if self.playlist and 0 <= self.current_index < len(self.playlist):
+            self.load_and_play_current()
+
+    def on_loop_forever_changed(self):
         if self.loop_forever_var.get():
             self.loop_chk_var.set(False)
+        if self.playlist and 0 <= self.current_index < len(self.playlist):
+            self.load_and_play_current()
+
+    def on_loop_spinbox_changed(self):
+        # Dynamically recalculate visual duration on spinbox change without restarting the process
+        if not self.loop_forever_var.get() and self.audio_file:
+            parsed_length, parsed_fade = self.parse_length_and_fade_from_strings(self.audio_file)
+            multiplier = 1 + self.loop_count_var.get() if self.loop_chk_var.get() else 1
+            effective_length = parsed_length * multiplier
+            self.raw_duration_seconds = effective_length + parsed_fade
+            formatted_dur = self.format_time(self.raw_duration_seconds)
+            self.duration_var.set(formatted_dur)
 
     def on_volume_slide(self, val):
         vol = float(val)
@@ -424,8 +500,9 @@ class USFPlayerWindow(tk.Toplevel):
         is_forever = self.loop_forever_var.get() or not has_explicit_length
 
         if not is_forever:
-            # Artificially extend duration visually by the fade amount so progress hits 100% when fade completes
-            self.raw_duration_seconds = parsed_length + parsed_fade
+            multiplier = 1 + self.loop_count_var.get() if self.loop_chk_var.get() else 1
+            effective_length = parsed_length * multiplier
+            self.raw_duration_seconds = effective_length + parsed_fade
             formatted_dur = self.format_time(self.raw_duration_seconds)
             self.duration_var.set(formatted_dur)
             self.position_var.set(f"00:00 / {formatted_dur}")
@@ -443,7 +520,7 @@ class USFPlayerWindow(tk.Toplevel):
 
         self.playback_thread = threading.Thread(
             target=self._playback_worker, 
-            args=(self.audio_file, is_forever), 
+            args=(self.audio_file, is_forever, self.playback_session_id), 
             daemon=True
         )
         self.playback_thread.start()
@@ -477,7 +554,7 @@ class USFPlayerWindow(tk.Toplevel):
                 pass
             time.sleep(0.1)
 
-    def _playback_worker(self, file_path, is_forever):
+    def _playback_worker(self, file_path, is_forever, session_id):
         cache_dir = Path(get_cache_directory())
         lazyusf_bin = cache_dir / "lazyusf"
         if not lazyusf_bin.exists():
@@ -493,7 +570,7 @@ class USFPlayerWindow(tk.Toplevel):
         cmd.append(str(file_path))
 
         try:
-            self.process = subprocess.Popen(
+            proc = subprocess.Popen(
                 cmd, 
                 stdout=subprocess.PIPE, 
                 stderr=subprocess.DEVNULL, 
@@ -501,6 +578,16 @@ class USFPlayerWindow(tk.Toplevel):
                 bufsize=1
             )
             
+            # Guard against race conditions if session changed before Popen completed
+            if session_id != self.playback_session_id:
+                try:
+                    proc.terminate()
+                    proc.wait(timeout=0.2)
+                except Exception:
+                    pass
+                return
+
+            self.process = proc
             threading.Thread(target=self._resolve_wpctl_stream_id, daemon=True).start()
 
             while self.process and self.process.poll() is None:
@@ -539,10 +626,15 @@ class USFPlayerWindow(tk.Toplevel):
                     except ValueError:
                         pass
 
-            self.process.wait()
+            if self.process is not None:
+                try:
+                    self.process.wait()
+                except Exception:
+                    pass
+
             self.cleanup_au_file(file_path)
 
-            if self.is_playing and not self.is_paused:
+            if self.is_playing and not self.is_paused and session_id == self.playback_session_id:
                 self.after(0, self.next_track)
 
         except Exception as e:
@@ -613,6 +705,17 @@ class USFPlayerWindow(tk.Toplevel):
         if not self.playlist:
             return
         self.current_index = (self.current_index - 1) % len(self.playlist)
+        self.load_and_play_current()
+
+    def random_track(self):
+        if len(self.playlist) <= 1:
+            return
+        
+        new_index = self.current_index
+        while new_index == self.current_index:
+            new_index = random.randint(0, len(self.playlist) - 1)
+            
+        self.current_index = new_index
         self.load_and_play_current()
 
     def close(self):
