@@ -15,6 +15,7 @@ import weakref
 import sounddevice as sd
 from config import get_cache_directory, is_emulated_file
 from tkinter import ttk
+from usf_player import USFPlayerWindow
 
 _active_volume_players = weakref.WeakSet()
 _syncing_player_volume = False
@@ -2473,8 +2474,23 @@ class MPVPlayerWindow(tk.Toplevel):
         browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="top", anchor="w")
 
-        self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=450, justify="center")
+        # Top-left icon or placeholder container (if you have one)
+        # ...
+
+        self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=250, justify="center")
         self.title_label.pack(pady=(0, 6))
+
+        # Positioned in the top-right corner where your red rectangle is
+        self.details_frame = ttk.Frame(self, relief="flat") # placed relative to the main window container
+        self.sample_rate_var = tk.StringVar(value="Sample Rate: --")
+        self.format_var = tk.StringVar(value="Format: --")
+        
+        # Stack them neatly inside the top-right box
+        ttk.Label(self.details_frame, textvariable=self.sample_rate_var, font=("Ubuntu Mono", 8)).pack(anchor="e")
+        ttk.Label(self.details_frame, textvariable=self.format_var, font=("Ubuntu Mono", 8)).pack(anchor="e")
+        
+        # Keep hidden initially until a miniusf file is loaded
+        # (We will use .place() when a miniusf file plays)
 
         info_frame = ttk.Frame(padding)
         info_frame.pack(fill="x", pady=(0, 4))
@@ -2671,71 +2687,81 @@ class MPVPlayerWindow(tk.Toplevel):
                 active_item = self.playlist[self.current_index] if self.playlist else self.audio_file
                 target_path = active_item["file"] if isinstance(active_item, dict) else active_item
                 
-                folder = os.path.dirname(target_path)
-                filename = os.path.basename(target_path)
-                try:
-                    self.stop()
-                    detected_rate = 32000
-                    detected_format = "s16be"
-                    
-                    lazyusf_proc = subprocess.Popen(
-                        ['stdbuf', '-o0', lazyusf_bin, filename],
-                        cwd=folder,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        text=False
-                    )
-                    self.lazy_proc = lazyusf_proc
+                # Build list of file paths from playlist if available
+                playlist_paths = []
+                for item in self.playlist:
+                    p = item["file"] if isinstance(item, dict) else item
+                    if p not in playlist_paths:
+                        playlist_paths.append(p)
+                if not playlist_paths:
+                    playlist_paths = [target_path]
 
-                    start_time = time.time()
-                    while time.time() - start_time < 0.5:
-                        if lazyusf_proc.poll() is not None:
-                            break
+                try:
+                    self.stop() # Stop any currently running stream
+                    
+                    # Close the parent MPV player window so only the USF player shows
+                    self.destroy()
+                    
+                    # Extract playlist file paths and find current index
+                    idx = playlist_paths.index(target_path) if target_path in playlist_paths else 0
+
+                    # Launch our standalone USFPlayerWindow with full playlist support
+                    self.native_usf_player = USFPlayerWindow(
+                        playlist=playlist_paths,
+                        initial_index=idx
+                    )
+                    return
+                    
+                except Exception as e:
+                    print(f"Error launching native USF player: {e}")
+
+        # Fallback for standard files handled by mpv directly...
+        mpv_bin = "/bin/mpv" if os.path.exists("/bin/mpv") else (shutil.which("mpv") or "mpv")
+        
+        cmd = [
+            mpv_bin,
+            "--no-video",
+            f"--input-ipc-server={self.socket_path}",
+            f"--volume={self.volume_var.get()}",
+        ]
+
+        if self.loop_forever_var.get():
+            cmd.append("--loop-file=inf")
+        elif self.loop_chk_var.get():
+            cmd.append(f"--loop-file={self.loop_count_var.get()}")
+        else:
+            cmd.append("--loop-file=1")
+
+        if self.current_track_index is not None:
+            cmd.append("--demuxer-lavf-format=libgme")
+            cmd.append(f"--demuxer-lavf-o=track_index={self.current_track_index}")
+            
+        cmd.append(self.audio_file)
+
+        try:
+            self.mpv = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except Exception as e:
+            messagebox.showerror("mpv Error", f"Could not launch mpv process:\n\n{e}")
+            return
+
+        for _ in range(200):
+            if os.path.exists(self.socket_path):
+                try:
+                    self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+                    self.sock.connect(self.socket_path)
+                    break
+                except Exception:
+                    if self.sock:
                         try:
-                            line = lazyusf_proc.stderr.readline()
-                            if line:
-                                line_str = line.decode("utf-8", errors="ignore")
-                                if "LAZYUSF_META:" in line_str:
-                                    parts = line_str.strip().split(":")
-                                    if len(parts) >= 2 and parts[1].isdigit():
-                                        detected_rate = int(parts[1])
-                                        if len(parts) >= 3 and parts[2].isdigit():
-                                            endian_val = int(parts[2])
-                                            detected_format = "s16le" if endian_val == 1 else "s16be"
-                                        break
+                            self.sock.close()
                         except Exception:
                             pass
-                        time.sleep(0.01)
-
-                    mpv_bin = "/bin/mpv" if os.path.exists("/bin/mpv") else (shutil.which("mpv") or "mpv")
-                    
-                    cmd = [
-                        mpv_bin,
-                        "--no-video",
-                        f"--input-ipc-server={self.socket_path}",
-                        f"--volume={self.volume_var.get()}",
-                    ]
-
-                    if self.loop_forever_var.get():
-                        cmd.append("--loop-file=inf")
-                    elif self.loop_chk_var.get():
-                        cmd.append(f"--loop-file={self.loop_count_var.get()}")
-                    else:
-                        cmd.append("--loop-file=1")
-
-                    cmd.extend([
-                        "--demuxer=rawaudio",
-                        f"--demuxer-rawaudio-rate={detected_rate}",
-                        "--demuxer-rawaudio-channels=2",
-                        f"--demuxer-rawaudio-format={detected_format}",
-                        "-"
-                    ])
-
-                    self.mpv = subprocess.Popen(cmd, stdin=lazyusf_proc.stdout, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    self.status_var.set("Playing")
-                    return
-                except Exception:
-                    pass
+                        self.sock = None
+            try:
+                self.update_idletasks()
+                self.after(15)
+            except Exception:
+                break
 
         mpv_bin = "/bin/mpv" if os.path.exists("/bin/mpv") else (shutil.which("mpv") or "mpv")
         
@@ -3047,7 +3073,17 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
         if is_dir:
             self.populate_files(full_path)
         else:
-            all_files = [p for _, p, is_d in self.entries_list if not is_d]
+            ext = os.path.splitext(full_path)[1].lower()
+            
+            # If it's a miniusf file, restrict the playlist to strictly .miniusf files in this folder
+            if ext == ".miniusf":
+                all_files = sorted([
+                    p for _, p, is_d in self.entries_list 
+                    if not is_d and p.lower().endswith(".miniusf")
+                ])
+            else:
+                all_files = [p for _, p, is_d in self.entries_list if not is_d]
+
             try:
                 file_idx = all_files.index(full_path)
             except ValueError:
@@ -3060,8 +3096,8 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
             if handler and hasattr(handler, "play_audio_file"):
                 handler.play_audio_file(full_path, playlist=all_files, start_index=file_idx)
             else:
-                ext = os.path.splitext(full_path)[1].lower()
-                if ext in (".nsf", ".nsfe"):
+                ext_file = os.path.splitext(full_path)[1].lower()
+                if ext_file in (".nsf", ".nsfe"):
                     MPVPlayerWindow(self.parent, full_path)
 
     def open_file_picker(self):

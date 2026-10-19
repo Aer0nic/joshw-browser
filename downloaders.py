@@ -75,166 +75,33 @@ class InstallDependenciesWorker:
                 lazyusf_src_dir = temp_build_dir / "lazyusf"
                 lazyusf_sh_path = temp_build_dir / "build_lazyusf.sh"
                 
-                patcher_script_path = temp_build_dir / "patch_source.py"
-                
-                patcher_code = r'''import pathlib
-
-src_dir = pathlib.Path(r"___SRC_DIR___")
-
-# 1. Patch main.c to remove file extension suffix logic
-main_c = src_dir / "main.c"
-if main_c.exists():
-    content = main_c.read_text(encoding="utf-8")
-    
-    old_target = """            if(formatStr)
-            {
-                formatOutFileName(filename, formatStr);
-            }
-
-            if(useFlac)
-            {
-                strcat(filename,".flac");
-            }
-            else
-            {
-                strcat(filename,".au");
-            }"""
-            
-    new_target = """            if(formatStr)
-            {
-                formatOutFileName(filename, formatStr);
-            }"""
-            
-    if old_target in content:
-        content = content.replace(old_target, new_target)
-        main_c.write_text(content, encoding="utf-8")
-        print("Successfully patched main.c")
-    else:
-        print("Warning: Could not find target block in main.c")
-
-# 2. Patch audio.c to redirect raw PCM output to stdout, add fixed-block buffering, and print stderr meta
-audio_c = src_dir / "audio.c"
-if audio_c.exists():
-    content = audio_c.read_text(encoding="utf-8")
-    
-    # Replace the file writing block safely using exact substring matching
-    if "open(" in content:
-        start_idx = content.find("if (!useFlac)")
-        if start_idx != -1:
-            brace_count = 0
-            end_idx = start_idx
-            found_start = False
-            for i, char in enumerate(content[start_idx:]):
-                if char == '{':
-                    brace_count += 1
-                    found_start = True
-                elif char == '}':
-                    brace_count -= 1
-                if found_start and brace_count == 0:
-                    end_idx = start_idx + i + 1
-                    break
-            
-            if end_idx > start_idx:
-                replacement = """    if (!useFlac)
-    {
-        fd = STDOUT_FILENO;
-        #ifdef _WIN32
-        _setmode(_fileno(stdout), _O_BINARY);
-        #endif
-        static char stdout_buffer[8192];
-        setvbuf(stdout, stdout_buffer, _IOFBF, sizeof(stdout_buffer));
-
-        int endian_flag = 1;
-        fprintf(stderr, "LAZYUSF_META:%d:%d\\n", SampleRate, endian_flag);
-        fflush(stderr);
-    }"""
-                content = content[:start_idx] + replacement + content[end_idx:]
-
-    # Inject fixed-block PCM buffering static variables and flush logic into audio.c
-    if "static unsigned char pcm_out_buf" not in content:
-        buffer_globals = """
-static unsigned char pcm_out_buf[8192];
-static size_t pcm_out_pos = 0;
-"""
-        include_pos = content.find("#include \"registers.h\"")
-        if include_pos != -1:
-            content = content[:include_pos] + buffer_globals + "\n" + content[include_pos:]
-
-    # Replace the direct write(fd, buf, length) block inside AddBuffer with our fixed-block queue
-    old_write_block = """        // write raw pcm to au file
-        unsigned int status = write(fd, buf, length);
-        if (status != length)
-        {
-            perror("wrote wrong number of bytes\\n");
-        }"""
-
-    new_write_block = """        // Write into fixed-block buffer to smooth out erratic N64 DMA chunk sizes
-        size_t offset = 0;
-        while (offset < length) {
-            size_t chunk = length - offset;
-            if (chunk > (sizeof(pcm_out_buf) - pcm_out_pos)) {
-                chunk = sizeof(pcm_out_buf) - pcm_out_pos;
-            }
-            memcpy(pcm_out_buf + pcm_out_pos, buf + offset, chunk);
-            pcm_out_pos += chunk;
-            offset += chunk;
-
-            if (pcm_out_pos >= 4096) {
-                write(fd, pcm_out_buf, 4096);
-                size_t leftover = pcm_out_pos - 4096;
-                if (leftover > 0) {
-                    memmove(pcm_out_buf, pcm_out_buf + 4096, leftover);
-                }
-                pcm_out_pos = leftover;
-            }
-        }"""
-
-    if old_write_block in content:
-        content = content.replace(old_write_block, new_write_block)
-
-    # Safely replace CloseSound to flush buffer contents before closing/exiting
-    old_close_sound = """void CloseSound(void)
-{
-    if(!useFlac && fd != STDOUT_FILENO)
-    {
-        close(fd);
-    }"""
-
-    new_close_sound = """void CloseSound(void)
-{
-    if (!useFlac && pcm_out_pos > 0) {
-        write(fd, pcm_out_buf, pcm_out_pos);
-        pcm_out_pos = 0;
-    }
-
-    if(!useFlac && fd != STDOUT_FILENO)
-    {
-        close(fd);
-    }"""
-
-    if old_close_sound in content:
-        content = content.replace(old_close_sound, new_close_sound)
-
-    audio_c.write_text(content, encoding="utf-8")
-    print("Successfully patched audio.c with fixed-block PCM smoothing")
-'''
-
-                # Safely replace the placeholder with the actual source path string
-                patcher_code = patcher_code.replace("___SRC_DIR___", str(lazyusf_src_dir))
-
-                with open(patcher_script_path, "w", encoding="utf-8") as pf:
-                    pf.write(patcher_code)
-
-                # 2. Write the runner shell script
                 with open(lazyusf_sh_path, "w", encoding="utf-8") as sf:
                     sf.write("#!/bin/bash\n")
                     sf.write(f"rm -rf \"{lazyusf_src_dir}\"\n")
                     sf.write(f"git clone https://github.com/derselbst/lazyusf.git \"{lazyusf_src_dir}\"\n")
-                    sf.write(f"python3 \"{patcher_script_path}\"\n")
                     sf.write(f"cd \"{lazyusf_src_dir}\"\n")
+                    
+                    sf.write("python3 - <<'EOF'\n")
+                    sf.write("import glob\n\n")
+                    sf.write("target = r'printf(\"\\r%f\",(play_time/60000));'\n")
+                    sf.write("replacement = 'printf(\"\\\\r%.7f\", play_time / 60000.0);\\nfflush(stdout);'\n\n")
+                    sf.write("found = False\n")
+                    sf.write("for f in glob.glob('**/audio.c', recursive=True):\n")
+                    sf.write("    with open(f, 'r', encoding='utf-8') as file:\n")
+                    sf.write("        content = file.read()\n\n")
+                    sf.write("    if target in content:\n")
+                    sf.write("        content = content.replace(target, replacement)\n")
+                    sf.write("        with open(f, 'w', encoding='utf-8') as file:\n")
+                    sf.write("            file.write(content)\n")
+                    sf.write("        print(f'Successfully patched {f}')\n")
+                    sf.write("        found = True\n\n")
+                    sf.write("if not found:\n")
+                    sf.write("    raise SystemExit('Patch failed: target text not found in any audio.c')\n")
+                    sf.write("EOF\n")
+
                     sf.write("mkdir build && cd build\n")
                     sf.write("cmake .. && make\n")
-                    sf.write(f"find . -name 'lazyusf' -type f -exec cp {{}} \"{cache_dir}\" \\;\n")
+                    sf.write(f"cp lazyusf \"{cache_dir}/\"\n")
                     sf.write(f"chmod +x \"{lazyusf_bin}\"\n")
                 
                 os.chmod(lazyusf_sh_path, 0o755)
@@ -570,6 +437,76 @@ EOF""")
                 self.parent.after(0, lambda err=e: messagebox.showerror("Installation Error", f"An error occurred during dependency installation:\n\n{err}"))
 
 
+def install_single_dependency(dep_name, parent):
+    """Triggers an isolated build/download for a single dependency without running full system apt updates."""
+    threading.Thread(target=_run_single_installer, args=(dep_name, parent), daemon=True).start()
+
+
+def _run_single_installer(dep_name, parent):
+    cache_dir = Path(get_cache_directory())
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    temp_build_dir = Path(tempfile.mkdtemp(prefix=f"joshw_single_{dep_name}_"))
+
+    try:
+        script_lines = []
+        
+        if dep_name == "lazyusf":
+            lazyusf_src_dir = temp_build_dir / "lazyusf"
+            lazyusf_bin = cache_dir / "lazyusf"
+            build_sh = temp_build_dir / "build_single.sh"
+            
+            with open(build_sh, "w", encoding="utf-8") as sf:
+                sf.write("#!/bin/bash\n")
+                sf.write(f"rm -rf \"{lazyusf_src_dir}\"\n")
+                sf.write(f"git clone https://github.com/derselbst/lazyusf.git \"{lazyusf_src_dir}\"\n")
+                sf.write(f"cd \"{lazyusf_src_dir}\"\n")
+                
+                sf.write("python3 - <<'EOF'\n")
+                sf.write("import glob\n\n")
+                sf.write("target = r'printf(\"\\r%f\",(play_time/60000));'\n")
+                sf.write("replacement = 'printf(\"\\\\r%.7f\", play_time / 60000.0);\\nfflush(stdout);'\n\n")
+                sf.write("found = False\n")
+                sf.write("for f in glob.glob('**/audio.c', recursive=True):\n")
+                sf.write("    with open(f, 'r', encoding='utf-8') as file:\n")
+                sf.write("        content = file.read()\n\n")
+                sf.write("    if target in content:\n")
+                sf.write("        content = content.replace(target, replacement)\n")
+                sf.write("        with open(f, 'w', encoding='utf-8') as file:\n")
+                sf.write("            file.write(content)\n")
+                sf.write("        print(f'Successfully patched {f}')\n")
+                sf.write("        found = True\n\n")
+                sf.write("if not found:\n")
+                sf.write("    raise SystemExit('Patch failed: target text not found in any audio.c')\n")
+                sf.write("EOF\n")
+
+                sf.write("mkdir build && cd build\n")
+                sf.write("cmake .. && make\n")
+                sf.write(f"cp lazyusf \"{cache_dir}/\"\n")
+                sf.write(f"chmod +x \"{lazyusf_bin}\"\n")
+                sf.write("echo 'Lazyusf built successfully!'\n")
+            
+            os.chmod(build_sh, 0o755)
+            script_lines.append(str(build_sh))
+
+        if script_lines:
+            terminal_script = temp_build_dir / "run_term.sh"
+            with open(terminal_script, "w", encoding="utf-8") as tf:
+                tf.write("#!/bin/bash\n" + "\n".join(script_lines) + "\nread -p 'Press Enter to close.'\n")
+            os.chmod(terminal_script, 0o755)
+            
+            for term in ["gnome-terminal", "konsole", "xfce4-terminal", "xterm", "x-terminal-emulator"]:
+                if shutil.which(term):
+                    if term == "gnome-terminal":
+                        subprocess.Popen([term, "--", "bash", "-c", str(terminal_script)])
+                    elif term == "konsole":
+                        subprocess.Popen([term, "-e", "bash", "-c", str(terminal_script)])
+                    else:
+                        subprocess.Popen([term, "-e", f"bash -c '{terminal_script}'"])
+                    break
+    except Exception as e:
+        print(f"Single dependency build error: {e}")
+
+
 class StepLogDialog(tk.Toplevel):
     def __init__(self, parent, title, error_message, terminal_cmd):
         super().__init__(parent)
@@ -834,7 +771,7 @@ class DownloadProgressWindow(tk.Toplevel):
         self.is_cancelled = False
 
         self.start_time = time.time()
-        self.mode = "downloading" # downloading or extracting
+        self.mode = "downloading"
 
         self.file_label_text = tk.StringVar(value="Preparing download...")
         ttk.Label(self, textvariable=self.file_label_text, font=("Arial", 9)).pack(pady=(10, 5))
@@ -849,7 +786,6 @@ class DownloadProgressWindow(tk.Toplevel):
         self.pct_label = tk.Label(pbar_container, text="0%", font=("Arial", 8, "bold"), bg="white", fg="black")
         self.pct_label.place(relx=0.5, rely=0.5, anchor="center")
 
-        # Bottom controls container layout: [Data info label] [Cancel button] [Elapsed / ETA label]
         bottom_frame = ttk.Frame(self)
         bottom_frame.pack(fill="x", padx=15, pady=(5, 10))
 

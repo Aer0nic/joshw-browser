@@ -10,7 +10,9 @@ import time
 import urllib.parse
 import urllib.request
 import tkinter as tk
+from downloaders import install_single_dependency
 from tkinter import ttk, filedialog, messagebox
+from pathlib import Path
 
 from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, is_emulated_file, format_size
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
@@ -118,26 +120,37 @@ class JoshWBrowser(tk.Tk):
 
     def update_dependencies_submenu(self):
         self.deps_menu.delete(0, tk.END)
+        
+        # Tuple structure: (Display Name, Unique Key, Binary/File Name)
         deps = [
-            ("lazyusf", "lazyusf"),
-            ("vgmstream", "vgmstream123"),
-            ("sidplayfp", "sidplayfp"),
-            ("playgsf", "playgsf"),
-            ("2sfplay", "2sfPlay"),
-            ("psfplay", "AOSDK (PSF/PSF2)"),
-            ("xterm", "xterm"),
-            ("xdotool", "xdotool"),
-            ("nsf_tracks", "nsf_tracks"),
-            ("fluidsynth", "FluidSynth & Soundfont")
+            ("Lazyusf", "lazyusf", "lazyusf"),
+            ("VGMStream", "vgmstream", "vgmstream123"),
+            ("SIDPlayFP", "sidplayfp", "sidplayfp"),
+            ("PlayGSF", "playgsf", "playgsf"),
+            ("2sfPlay", "2sfplay", "2sfPlay"),
+            ("AOSDK (PSF/PSF2)", "psfplay", "libaosdk.so"),
+            ("nsf_tracks", "nsf_tracks", "nsf_tracks"),
+            ("FluidSynth & Soundfont", "fluidsynth", "FluidR3_GM.sf2")
         ]
-        for key, label in deps:
-            installed = self.check_dependency_status(key)
-            display_text = f"✓ {label}" if installed else f"  {label}"
-            self.deps_menu.add_command(
-                label=display_text, 
-                state="disabled",
-                foreground="green" if installed else "black"
-            )
+        
+        cache_dir = Path(get_cache_directory())
+
+        for display_name, key, bin_name in deps:
+            is_installed = (cache_dir / bin_name).exists() or shutil.which(bin_name)
+            if key == "lazyusf":
+                is_installed = is_installed and (cache_dir / "liblazyusf.so").exists()
+
+            if is_installed:
+                self.deps_menu.add_command(
+                    label=f"✓ {display_name} (Installed)", 
+                    state="disabled"
+                )
+            else:
+                self.deps_menu.add_command(
+                    label=f"Install / Rebuild {display_name}", 
+                    state="normal",
+                    command=lambda k=key: install_single_dependency(k, self)
+                )
 
     def download_premade_indexes_prompt(self):
         cache_dir = get_cache_directory()
