@@ -10,13 +10,15 @@ import time
 import urllib.parse
 import urllib.request
 import tkinter as tk
+import ttkbootstrap as tb
 from downloaders import install_single_dependency
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
-
-from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, is_emulated_file, format_size
+from usf_player import USFPlayerWindow
+from mpv_player import MPVPlayerWindow
+from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, is_emulated_file, format_size, resource_path
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
-from players import VGMStreamPlayerWindow, MPVPlayerWindow, SIDPlayerWindow, GSFPlayerWindow, TwoSFPlayerWindow, PSFPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path, get_2sfplay_path
+from players import VGMStreamPlayerWindow, SIDPlayerWindow, GSFPlayerWindow, TwoSFPlayerWindow, PSFPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path, get_2sfplay_path
 from downloaders import DownloadProgressWindow, IndexAllWindow, IndexPremadeWindow, install_dependencies_prompt
 
 
@@ -70,7 +72,216 @@ class ToolTip:
             tw.destroy()
 
 
-class JoshWBrowser(tk.Tk):
+class JoshWBrowser(tb.Window):
+    
+    def on_toggle_animation_setting(self):
+        # If disabled via options, cancel animation loop and reset button background to default
+        if not self.stream_random_animation_enabled.get():
+            if self.stream_random_anim_id:
+                try:
+                    self.after_cancel(self.stream_random_anim_id)
+                except Exception:
+                    pass
+                self.stream_random_anim_id = None
+            if hasattr(self, "stream_random_btn") and str(self.stream_random_btn["state"]) == "normal":
+                self.stream_random_btn.configure(bg="#f0f0f0")
+        else:
+            # If enabled and button is normal, restart the loop
+            if hasattr(self, "stream_random_btn") and str(self.stream_random_btn["state"]) == "normal":
+                if not self.stream_random_anim_id:
+                    self.animate_stream_random_button()
+
+    def animate_stream_random_button(self):
+        if not hasattr(self, "stream_random_btn") or not self.stream_random_btn.winfo_exists():
+            return
+        
+        # Keep animating as long as the button is enabled and animations are turned on in settings
+        if str(self.stream_random_btn["state"]) == "normal" and self.stream_random_animation_enabled.get():
+            color = self.fade_colors[self.fade_index]
+            try:
+                self.stream_random_btn.configure(bg=color)
+            except Exception:
+                pass
+            self.fade_index = (self.fade_index + 1) % len(self.fade_colors)
+            
+            # Slower delay (450ms per step) for a slow, relaxing gradient fade transition
+            self.stream_random_anim_id = self.after(450, self.animate_stream_random_button)
+        else:
+            self.stream_random_anim_id = None
+
+    def update_stream_random_state(self, enable):
+        if not hasattr(self, "stream_random_btn"):
+            return
+        
+        if enable:
+            self.stream_random_btn.configure(state="normal")
+            # Start the animation loop if enabled in settings and not already running
+            if self.stream_random_animation_enabled.get() and not self.stream_random_anim_id:
+                self.animate_stream_random_button()
+        else:
+            self.stream_random_btn.configure(state="disabled", bg="#f0f0f0")
+            if self.stream_random_anim_id:
+                try:
+                    self.after_cancel(self.stream_random_anim_id)
+                except Exception:
+                    pass
+                self.stream_random_anim_id = None
+    
+    
+    def stream_random_file(self):
+        source_pool = self.domain_full_entries if self.domain_full_entries else self.current_entries
+        files = [e for e in source_pool if not e.get("directory") and not e.get("is_parent_nav")]
+        
+        if not files:
+            messagebox.showinfo("No Files", "No files available in the current domain to pick from!")
+            return
+
+        import random
+        
+        rand_win = tk.Toplevel(self)
+        rand_win.title("Stream Random!")
+        rand_win.geometry("500x220")
+        rand_win.resizable(False, False)
+        rand_win.transient(self)
+        try:
+            rand_win.grab_set()
+        except Exception:
+            pass
+
+        content_frame = ttk.Frame(rand_win, padding=15)
+        content_frame.pack(fill="both", expand=True)
+        content_frame.columnconfigure(0, weight=1)
+
+        # Text label locked to the top (Row 0)
+        text_label = ttk.Label(content_frame, text="Rolling the dice...", font=("Arial", 11, "bold"), justify="center", anchor="center")
+        text_label.grid(row=0, column=0, pady=(5, 10), sticky="ew")
+
+        # Image label locked to the bottom (Row 1)
+        img_label = ttk.Label(content_frame, anchor="center")
+        img_label.grid(row=1, column=0, pady=(5, 5))
+
+        bottom_frame = ttk.Frame(rand_win, padding=10)
+
+        # Generate clean dice images for faces 1 through 6 programmatically using Pillow
+        from PIL import Image, ImageTk, ImageDraw
+        dice_size = 64
+
+        def create_dice_face(pip_coords):
+            img = Image.new("RGBA", (dice_size, dice_size), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(img)
+            draw.rounded_rectangle([4, 4, dice_size-4, dice_size-4], radius=12, fill="white", outline="#333333", width=3)
+            pip_r = 5
+            for cx, cy in pip_coords:
+                draw.ellipse([cx-pip_r, cy-pip_r, cx+pip_r, cy+pip_r], fill="#222222")
+            return img
+
+        dice_faces = {
+            1: create_dice_face([(32, 32)]),
+            2: create_dice_face([(18, 18), (46, 46)]),
+            3: create_dice_face([(18, 18), (32, 32), (46, 46)]),
+            4: create_dice_face([(18, 18), (46, 18), (18, 46), (46, 46)]),
+            5: create_dice_face([(18, 18), (46, 18), (32, 32), (18, 46), (46, 46)]),
+            6: create_dice_face([(18, 18), (18, 32), (18, 46), (46, 18), (46, 32), (46, 46)])
+        }
+
+        state = {
+            "chosen": None,
+            "angle": 0,
+            "face_num": 1,
+            "steps_left": 0,
+            "next_face_steps": 0
+        }
+
+        def pick_and_spin():
+            state["chosen"] = random.choice(files)
+            state["angle"] = 0
+            state["face_num"] = random.randint(1, 6)
+            state["steps_left"] = 70  # Total duration of the smooth spin (~2.1 seconds)
+            state["next_face_steps"] = random.randint(12, 25)  # Random interval between 0.34s and 0.74s (12-25 ticks at 30ms)
+            
+            bottom_frame.pack_forget()
+            text_label.configure(text="Rolling the dice...", font=("Arial", 11, "bold"), justify="center", anchor="center")
+            img_label.grid()
+            
+            spin_tick()
+
+        def spin_tick():
+            if not rand_win.winfo_exists():
+                return
+            
+            if state["steps_left"] > 0:
+                state["steps_left"] -= 1
+                state["next_face_steps"] -= 1
+                
+                # Keep the smooth rotation going continuously
+                state["angle"] = (state["angle"] + 15) % 360
+                
+                # Randomly replace the dice face at intervals matching 0.34s to 0.74s
+                if state["next_face_steps"] <= 0:
+                    state["face_num"] = random.randint(1, 6)
+                    state["next_face_steps"] = random.randint(12, 25)
+                
+                current_face = dice_faces[state["face_num"]]
+                rotated = current_face.rotate(state["angle"], resample=Image.BICUBIC, expand=False)
+                photo = ImageTk.PhotoImage(rotated)
+                img_label.configure(image=photo)
+                img_label.image = photo  # Keep reference to prevent garbage collection
+                
+                rand_win.after(30, spin_tick)
+            else:
+                # Animation finished: hide dice image cleanly, format text at the top, and show buttons
+                img_label.grid_remove()
+                chosen = state["chosen"]
+                filename = chosen["name"]
+                size_str = format_size(chosen.get("size", 0) or 0)
+                
+                final_text = (
+                    f"You rolled and you got... {filename}! it is {size_str}.\n\n"
+                    f"Do you want to stream it? It will download to the temp folder "
+                    f"and unzip there, so make sure you have enough space before accepting!"
+                )
+                text_label.configure(
+                    text=final_text,
+                    font=("Arial", 10),
+                    justify="left",
+                    anchor="w",
+                    wraplength=460
+                )
+                bottom_frame.pack(fill="x", side="bottom")
+
+        def on_accept():
+            chosen = state["chosen"]
+            rand_win.destroy()
+            self.selected_item_ids.clear()
+            self.download_specific_url_to_temp(chosen["url"])
+
+        def on_cancel():
+            rand_win.destroy()
+
+        # Layout buttons: OK on left, Roll Again! in middle, Cancel on right
+        ok_btn = ttk.Button(bottom_frame, text="OK", command=on_accept, width=10)
+        ok_btn.pack(side="left")
+
+        cancel_btn = ttk.Button(bottom_frame, text="Cancel", command=on_cancel, width=10)
+        cancel_btn.pack(side="right")
+
+        roll_again_btn = ttk.Button(bottom_frame, text="Roll Again!", command=pick_and_spin, width=12)
+        roll_again_btn.pack(side="left", expand=True)
+
+        # Start initial roll
+        pick_and_spin()
+
+    def download_specific_url_to_temp(self, url):
+        temp_dir = get_temp_directory()
+        self.stop_event.clear()
+        progress_win = DownloadProgressWindow(self, title="Downloading to Temp...")
+
+        threading.Thread(
+            target=self.download_and_open_temp_worker,
+            args=(url, temp_dir, progress_win),
+            daemon=True
+        ).start()    
+    
     def check_dependency_status(self, dep_name):
         cache_dir = get_cache_directory()
         if dep_name == "lazyusf":
@@ -138,18 +349,12 @@ class JoshWBrowser(tk.Tk):
         for display_name, key, bin_name in deps:
             is_installed = (cache_dir / bin_name).exists() or shutil.which(bin_name)
             if key == "lazyusf":
-                is_installed = is_installed and (cache_dir / "liblazyusf.so").exists()
+                is_installed = is_installed
 
             if is_installed:
                 self.deps_menu.add_command(
                     label=f"✓ {display_name} (Installed)", 
                     state="disabled"
-                )
-            else:
-                self.deps_menu.add_command(
-                    label=f"Install / Rebuild {display_name}", 
-                    state="normal",
-                    command=lambda k=key: install_single_dependency(k, self)
                 )
 
     def download_premade_indexes_prompt(self):
@@ -169,11 +374,17 @@ class JoshWBrowser(tk.Tk):
         IndexPremadeWindow(self, show_steps=self.shift_pressed)
 
     def __init__(self):
-        super().__init__()
+        super().__init__(themename="sandstone-light")
         self.title("JoshW Archive Browser")
         self.geometry("1280x760")
         self.minsize(850, 560)
-        self.protocol("WM_DELETE_WINDOW", self.on_close)
+        # Add your icon here:
+        try:
+            icon_file = resource_path("assets/icons/browser.png")
+            self.iconphoto(False, tk.PhotoImage(file=icon_file))
+        except Exception as e:
+            print(f"Could not load icon: {e}")
+        self.protocol("WM_DELETE_WINDOW", self.on_window_close)
 
         self.shift_pressed = False
         self.bind("<KeyPress-Shift_L>", lambda e: setattr(self, "shift_pressed", True))
@@ -225,8 +436,13 @@ class JoshWBrowser(tk.Tk):
         self.build_gui()
         self.after(100, self.process_messages)
 
-    def on_close(self):
+    def on_window_close(self, callback=None):
         self.stop_event.set()
+        if hasattr(self, "stream_random_anim_id") and self.stream_random_anim_id:
+            try:
+                self.after_cancel(self.stream_random_anim_id)
+            except Exception:
+                pass
         try:
             temp_dir = get_temp_directory()
             if os.path.exists(temp_dir):
@@ -237,6 +453,8 @@ class JoshWBrowser(tk.Tk):
             self.destroy()
         except Exception:
             sys.exit(0)
+        if callback:
+            return callback()
 
     def build_gui(self):
         archive_frame = ttk.Frame(self, padding=8)
@@ -268,10 +486,19 @@ class JoshWBrowser(tk.Tk):
         self.options_dropdown = tk.Menu(options_menu_btn, tearoff=0)
         self.options_dropdown.add_checkbutton(label="Enable Selection Checkboxes", variable=self.selection_checkboxes_enabled, command=self.on_toggle_checkboxes)
         self.options_dropdown.add_checkbutton(label="Keep Download Window Open After Completion", variable=self.keep_download_window_open)
+        
+        # Add animation toggle option variable and checkbutton
+        self.stream_random_animation_enabled = tk.BooleanVar(value=True)
+        self.options_dropdown.add_checkbutton(
+            label="Stream Random Button Animation", 
+            variable=self.stream_random_animation_enabled, 
+            command=self.on_toggle_animation_setting
+        )
+
         self.options_dropdown.add_command(label="Set Default Load Music Folder...", command=self.set_default_load_music_dir)
         self.options_dropdown.add_command(label="Download Premade Indexes (may be outdated!)", command=self.download_premade_indexes_prompt)
         
-        self.install_deps_item_index = self.options_dropdown.add_command(
+        self.options_dropdown.add_command(
             label="Install Dependencies", 
             command=lambda: install_dependencies_prompt(self)
         )
@@ -377,6 +604,31 @@ class JoshWBrowser(tk.Tk):
         ttk.Button(button_frame, text="Download Selected File(s)", command=self.download_selected).pack(side="left")
         ttk.Button(button_frame, text="Download Every File Here", command=self.download_current_directory).pack(side="left", padx=6)
         ttk.Button(button_frame, text="Stop", command=self.stop_operations).pack(side="left", padx=6)
+        
+        # Stream Random! button (using tk.Button to allow smooth color fade animations)
+        self.stream_random_btn = tk.Button(
+            button_frame, 
+            text="Stream Random!", 
+            command=self.stream_random_file, 
+            state="disabled",
+            bg="#f0f0f0",
+            fg="#000000",
+            activebackground="#e0f2fe",
+            activeforeground="#000000",
+            relief="raised",
+            font=("Arial", 9)
+        )
+        self.stream_random_btn.pack(side="left", padx=6)
+        
+        # Initialize animation tracking attributes
+        self.stream_random_anim_id = None
+        self.fade_colors = [
+            "#e0f2fe", "#e8f0fe", "#ede9fe", "#f3e8ff", 
+            "#fae8ff", "#fce7f3", "#fee2e2", "#fef3c7", 
+            "#fef9c3", "#ecfccb", "#d1fae5", "#ccfbf1", "#cffafe"
+        ]
+        self.fade_index = 0
+
         ttk.Label(button_frame, textvariable=self.status_text).pack(side="right")
 
     def load_local_music(self, is_default=False):
@@ -566,6 +818,14 @@ class JoshWBrowser(tk.Tk):
         if ext == ".sid":
             SIDPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
+
+        elif ext in (".usf", ".miniusf"):
+            if not self.check_dependency_status("lazyusf"):
+                messagebox.showerror("Lazyusf Not Found", "Lazyusf not found! Please install dependencies.")
+                return
+            USFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
+            return
+        
         elif ext in (".gsf", ".minigsf"):
             if not self.check_dependency_status("playgsf"):
                 messagebox.showerror("playgsf Not Found", "playgsf not found! Please install dependencies.")
@@ -891,6 +1151,27 @@ class JoshWBrowser(tk.Tk):
         self.apply_filter()
         self.status_text.set(f"{len(self.visible_entries)} shown | Total Size: {format_size(folder_size)}")
 
+        # Enable/disable Stream Random! button and manage its gradient fade animation loop
+        has_files = any(not e.get("directory") for e in (self.domain_full_entries if self.domain_full_entries else entries))
+        self.update_stream_random_state(has_files)
+        if hasattr(self, "stream_random_btn"):
+            self.stream_random_btn.configure(state="normal" if has_files else "disabled")
+
+        domain_name = self.domain_combo.get()
+        root_url = DOMAINS.get(domain_name, "").rstrip("/")
+        parsed_current, parsed_root = urllib.parse.urlparse(url), urllib.parse.urlparse(root_url)
+
+        if parsed_current.path.rstrip("/") != parsed_root.path.rstrip("/"):
+            parent_path = posixpath.dirname(parsed_current.path.rstrip("/")) + "/"
+            parent_url = urllib.parse.urlunparse((parsed_current.scheme, parsed_current.netloc, parent_path, "", "", ""))
+            entries = [{
+                "name": "..", "raw_name": "..", "date": "", "url": parent_url, "directory": True, "size": None, "is_parent_nav": True
+            }] + entries
+
+        self.path_label.configure(text=urllib.parse.unquote(url))
+        self.apply_filter()
+        self.status_text.set(f"{len(self.visible_entries)} shown | Total Size: {format_size(folder_size)}")
+
     def load_all_index_entries(self):
         bundled_root = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
         index_directories = (
@@ -1156,6 +1437,13 @@ class JoshWBrowser(tk.Tk):
         else:
             extract_dir = temp_dir
             extracted = True
+
+        # Delete the original compressed archive file to save space immediately after extraction
+        try:
+            if os.path.exists(output_path):
+                os.remove(output_path)
+        except Exception as cleanup_error:
+            print(f"Could not remove temporary archive file: {cleanup_error}")
 
         self.messages.put(("close_progress", progress_win))
         if extracted:

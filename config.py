@@ -1,7 +1,22 @@
+"""Configuration and path helpers for JoshW Archive Browser."""
+
 import os
-import re
-import json
 import platform
+import re
+import shutil
+import sys
+from pathlib import Path
+
+
+if getattr(sys, "frozen", False):
+    # PyInstaller's bundled-resource directory.
+    app_dir = Path(
+        getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent)
+    )
+else:
+    # Directory containing config.py while developing.
+    app_dir = Path(__file__).resolve().parent
+
 
 DOMAINS = {
     "PC music archives": "http://pc.joshw.info/",
@@ -40,9 +55,24 @@ DOMAINS = {
 }
 
 USER_AGENT = "JoshW-Archive-Browser/1.0"
-DATE_PATTERN = re.compile(r'[\(\[](\d{4}(?:-\d{2}(?:-\d{2})?)?)[\)\]]')
+DATE_PATTERN = re.compile(r"[\(\[](\d{4}(?:-\d{2}(?:-\d{2})?)?)[\)\]]")
+
+
+def get_ffmpeg_path():
+    """Find the bundled, development, or system FFmpeg executable."""
+    bundled_path = Path(resource_path("ffmpeg"))
+    if bundled_path.exists():
+        return str(bundled_path)
+
+    dev_ffmpeg = Path(__file__).resolve().parent / "ffmpeg"
+    if dev_ffmpeg.exists():
+        return str(dev_ffmpeg)
+
+    return shutil.which("ffmpeg") or "ffmpeg"
+
 
 def get_cache_directory():
+    """Create and return the application's cache directory."""
     system_name = platform.system()
     if system_name == "Linux":
         base_dir = os.path.expanduser("~/.config")
@@ -55,34 +85,73 @@ def get_cache_directory():
     os.makedirs(cache_dir, exist_ok=True)
     return cache_dir
 
+
+def resource_path(relative_path):
+    """Return an absolute path to a bundled or project resource."""
+    return str(app_dir / relative_path)
+
+
 def get_temp_directory():
+    """Create and return the directory used for extracted temporary files."""
     cache_dir = get_cache_directory()
     temp_dir = os.path.join(cache_dir, "temp_extracted")
     os.makedirs(temp_dir, exist_ok=True)
     return temp_dir
 
+
 def get_cache_path(domain_name):
-    safe_name = "".join(c if c.isalnum() else "_" for c in domain_name)
+    """Return the cache-file path for a domain name."""
+    safe_name = "".join(
+        character if character.isalnum() else "_"
+        for character in domain_name
+    )
     cache_dir = get_cache_directory()
     return os.path.join(cache_dir, f"domain_cache_{safe_name}.json")
 
+
 def format_size(size):
+    """Format a byte count as a readable size, or 'Unknown' if absent."""
     if size is None:
         return "Unknown"
+
     value = float(size)
     units = ["B", "KB", "MB", "GB", "TB"]
+
     for unit in units:
         if value < 1024 or unit == units[-1]:
             if unit == "B":
                 return f"{int(value):,} {unit}"
             return f"{value:,.1f} {unit}"
         value /= 1024
+
     return "Unknown"
 
+
 def is_emulated_file(file_path):
-    ext = os.path.splitext(file_path)[1].lower()
-    emulated_exts = {
-        ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
-        ".usf", ".miniusf", ".gsf", ".minigsf", ".sid", ".2sf", ".mini2sf", ".psf", ".minipsf", ".psf2", ".minipsf2"
+    """Return whether the file extension is for an emulated audio file."""
+    extension = os.path.splitext(file_path)[1].lower()
+    emulated_extensions = {
+        ".ay",
+        ".gbs",
+        ".gym",
+        ".hes",
+        ".kss",
+        ".nsf",
+        ".nsfe",
+        ".sap",
+        ".spc",
+        ".vgm",
+        ".vgz",
+        ".usf",
+        ".miniusf",
+        ".gsf",
+        ".minigsf",
+        ".sid",
+        ".2sf",
+        ".mini2sf",
+        ".psf",
+        ".minipsf",
+        ".psf2",
+        ".minipsf2",
     }
-    return ext in emulated_exts
+    return extension in emulated_extensions

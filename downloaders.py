@@ -2,13 +2,14 @@ import os
 import shutil
 import subprocess
 import time
+import urllib.error
 from pathlib import Path
 import threading
 import tempfile
 import urllib.request
 import tkinter as tk
 from tkinter import ttk, messagebox
-from config import get_cache_directory, USER_AGENT
+import config
 
 
 def check_and_download_sid_firmware():
@@ -24,16 +25,16 @@ def check_and_download_sid_firmware():
             url_kernal = "https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/kernal.901227-03.bin"
             try:
                 urllib.request.urlretrieve(url_kernal, str(kernal_file))
-            except Exception:
+            except (urllib.error.URLError, OSError):
                 pass
 
         if not basic_file.exists():
             url_basic = "https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/basic.901226-01.bin"
             try:
-                urllib.request.urlretrieve(url_basic, str(basic_file))
-            except Exception:
+                urllib.request.urlretrieve(url_basic, str(basic_file))  # Fixed variables here
+            except (urllib.error.URLError, OSError):
                 pass
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         pass
 
 
@@ -58,7 +59,7 @@ class InstallDependenciesWorker:
         threading.Thread(target=self.run_installation, daemon=True).start()
 
     def run_installation(self):
-        cache_dir = Path(get_cache_directory())
+        cache_dir = Path(config.get_cache_directory())
         cache_dir.mkdir(parents=True, exist_ok=True)
         sidplayfp_dir = Path(os.path.expanduser("~/.local/share/sidplayfp"))
         sidplayfp_dir.mkdir(parents=True, exist_ok=True)
@@ -153,12 +154,7 @@ class InstallDependenciesWorker:
             twosf_needs_seek_support = not twosf_play_bin.exists()
             if twosf_play_bin.exists():
                 try:
-                    twosf_help = subprocess.run(
-                        [str(twosf_play_bin), "--help"],
-                        capture_output=True,
-                        text=True,
-                        timeout=3
-                    ).stdout
+                    twosf_help = subprocess.run([str(twosf_play_bin), "--help"], capture_output=True, text=True, timeout=3).stdout
                     twosf_needs_seek_support = "-b<ms>" not in twosf_help
                 except (OSError, subprocess.SubprocessError):
                     twosf_needs_seek_support = True
@@ -443,7 +439,7 @@ def install_single_dependency(dep_name, parent):
 
 
 def _run_single_installer(dep_name, parent):
-    cache_dir = Path(get_cache_directory())
+    cache_dir = Path(config.get_cache_directory())
     cache_dir.mkdir(parents=True, exist_ok=True)
     temp_build_dir = Path(tempfile.mkdtemp(prefix=f"joshw_single_{dep_name}_"))
 
@@ -566,7 +562,7 @@ class IndexPremadeWindow:
         threading.Thread(target=self.git_clone_worker, daemon=True).start()
 
     def git_clone_worker(self):
-        cache_dir = Path(get_cache_directory())
+        cache_dir = Path(config.get_cache_directory())
         cache_dir.mkdir(parents=True, exist_ok=True)
         
         repo_dir = cache_dir / "joshw-browser"

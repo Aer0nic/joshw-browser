@@ -8,9 +8,11 @@ import re
 import signal
 import random
 import tkinter as tk
+import ttkbootstrap as tb
+from PIL import Image, ImageTk
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
-from config import get_cache_directory
+from config import get_cache_directory, resource_path
 
 def get_shared_settings_path():
     cache_dir = Path(get_cache_directory())
@@ -80,13 +82,19 @@ class InteractiveProgressBar:
 
 
 class USFPlayerWindow(tk.Toplevel):
-    def __init__(self, parent=None, playlist=None, initial_index=0, audio_file=None, **kwargs):
+    def __init__(self, parent=None, audio_file=None, playlist=None, start_index=None, initial_index=0, **kwargs):
         super().__init__(parent)
         self.parent = parent
         
-        if playlist:
+        # Support both standard player signature (parent, audio_file, playlist, start_index)
+        # and legacy/direct USFPlayerWindow calls (playlist, initial_index)
+        if audio_file and not playlist:
+            self.playlist = [audio_file]
+            self.current_index = 0
+        elif playlist:
             self.playlist = list(playlist)
-            self.current_index = initial_index if 0 <= initial_index < len(self.playlist) else 0
+            idx = start_index if start_index is not None else initial_index
+            self.current_index = idx if 0 <= idx < len(self.playlist) else 0
         elif audio_file:
             self.playlist = [audio_file]
             self.current_index = 0
@@ -113,7 +121,7 @@ class USFPlayerWindow(tk.Toplevel):
         self.status_var = tk.StringVar(value="Stopped")
         self.seek_pct_var = tk.StringVar(value="0%")
         self.position_var = tk.StringVar(value="00:00 / 03:00")
-        self.track_var = tk.StringVar(value="")
+        self.track_var = tk.StringVar()
         self.duration_var = tk.StringVar(value="03:00")
         
         self.loop_chk_var = tk.BooleanVar(value=False)
@@ -124,14 +132,11 @@ class USFPlayerWindow(tk.Toplevel):
 
         self.build_ui()
 
-        # Load custom taskbar/window icon using native tk.PhotoImage (.png) with persistent reference
         try:
-            icon_path = Path(get_cache_directory()) / "usficon.png"
-            if icon_path.exists():
-                self.icon_photo = tk.PhotoImage(file=str(icon_path))
-                self.iconphoto(False, self.icon_photo)
+            icon_file = resource_path("assets/icons/usficon.png")
+            self.iconphoto(False, tk.PhotoImage(file=icon_file))
         except Exception as e:
-            print(f"[USFPlayer] Could not load custom icon: {e}")
+            print(f"Could not load icon: {e}")
 
         if self.playlist:
             self.load_and_play_current()
@@ -155,7 +160,7 @@ class USFPlayerWindow(tk.Toplevel):
         header_frame.pack(side="top", fill="x", pady=(0, 6))
 
         # Browse button sitting next to the banner
-        browse_btn = tk.Button(header_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn = tb.Button(header_frame, text="📁", width=3, bootstyle="outline-primary",command=self.on_browse_clicked,)
         browse_btn.pack(side="left", anchor="center", padx=(0, 8))
 
         # Canvas banner header taking up the remaining width
@@ -166,9 +171,9 @@ class USFPlayerWindow(tk.Toplevel):
         try:
             banner_path = Path(get_cache_directory()) / "usfbanner.png"
             if not banner_path.exists():
-                banner_path = Path(os.path.expanduser("~/.config/joshw/usfbanner.png"))
+                banner_path = resource_path("assets/icons/banner.png")
             if banner_path.exists():
-                from PIL import Image, ImageTk
+                
                 self.raw_banner_img = Image.open(str(banner_path)).convert("RGBA")
                 self.banner_image_item = self.banner_canvas.create_image(0, 0, anchor="nw")
 
@@ -232,8 +237,8 @@ class USFPlayerWindow(tk.Toplevel):
         controls = ttk.Frame(padding)
         controls.pack(pady=4)
 
-        ttk.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=0, padx=2)
-        ttk.Button(controls, text="Stop", width=8, command=self.stop).grid(row=0, column=1, padx=2)
+        ttk.Button(controls, text="Stop", width=8, command=self.stop).grid(row=0, column=0, padx=2)
+        ttk.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=1, padx=2)
         ttk.Button(controls, text="Play/Pause", width=10, command=self.toggle_play_pause).grid(row=0, column=2, padx=2)
         ttk.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=3, padx=2)
         ttk.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=4, padx=2)
@@ -333,7 +338,8 @@ class USFPlayerWindow(tk.Toplevel):
 
         try:
             parent_app = self.master
-            new_player = USFPlayerWindow(parent_app, new_playlist, new_index)
+            # Use explicit keyword arguments here so they map correctly:
+            new_player = USFPlayerWindow(parent=parent_app, playlist=new_playlist, initial_index=new_index)
             new_player.focus()
         except Exception as e:
             print(f"Error spawning new USF player window: {e}")
@@ -459,7 +465,7 @@ class USFPlayerWindow(tk.Toplevel):
                 return True
             parent_dir = Path(file_path).parent
             if parent_dir.exists():
-                for usf_file in parent_dir.glob("*.usf"):
+                for usf_file in parent_dir.glob("*.miniusf"):
                     sub_res = subprocess.run(f'strings -a "{usf_file}" | grep -Ei length', shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, timeout=1.0)
                     if sub_res.stdout and "length=" in sub_res.stdout.lower():
                         return True
