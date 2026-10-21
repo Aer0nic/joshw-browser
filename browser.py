@@ -11,6 +11,7 @@ import urllib.parse
 import urllib.request
 import tkinter as tk
 import ttkbootstrap as tb
+from ttkbootstrap.constants import *
 from downloaders import install_single_dependency
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
@@ -73,6 +74,226 @@ class ToolTip:
 
 
 class JoshWBrowser(tb.Window):
+
+    def change_theme(self, theme_name):
+        """Applies the chosen theme, saves it to settings.json, and updates hover colors."""
+        self.saved_theme = theme_name
+        
+        # 1. Apply the theme via ttk style
+        try:
+            self.style.theme_use(theme_name)
+        except Exception as e:
+            print(f"Could not apply theme: {e}")
+
+        # 2. Save to settings.json
+        try:
+            settings = self.load_settings() or {}
+            settings["theme"] = theme_name
+            config_path = os.path.join(get_cache_directory(), "settings.json")
+            with open(config_path, "w", encoding="utf-8") as f:
+                json.dump(settings, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"Could not save theme to settings: {e}")
+
+        # 3. Dynamically set the hover highlight color based on theme name
+        theme_lower = theme_name.lower()
+        hover_color = "#2a3b4c" if "dark" in theme_lower else "#e8f0fe"
+
+        if hasattr(self, "tree") and hasattr(self, "fav_tree"):
+            self.tree.tag_configure("hover", background=hover_color)
+            self.fav_tree.tag_configure("hover", background=hover_color)
+    
+    def on_tree_motion(self, event):
+        """Highlights the row under the mouse cursor for the Browse tree."""
+        tree = self.tree
+        item_id = tree.identify_row(event.y)
+        
+        # Clear previous hover tag if any
+        for item in tree.get_children():
+            current_tags = list(tree.item(item, "tags"))
+            if "hover" in current_tags:
+                current_tags.remove("hover")
+                tree.item(item, tags=current_tags)
+                
+        if item_id:
+            current_tags = list(tree.item(item_id, "tags"))
+            if "hover" not in current_tags:
+                current_tags.append("hover")
+                tree.item(item_id, tags=current_tags)
+
+    def on_tree_leave(self, event):
+        """Clears hover highlight when mouse leaves the Browse tree."""
+        for item in self.tree.get_children():
+            current_tags = list(self.tree.item(item, "tags"))
+            if "hover" in current_tags:
+                current_tags.remove("hover")
+                self.tree.item(item, tags=current_tags)
+
+    def on_fav_motion(self, event):
+        """Highlights the row under the mouse cursor for the Favorites tree."""
+        tree = self.fav_tree
+        item_id = tree.identify_row(event.y)
+        
+        for item in tree.get_children():
+            current_tags = list(tree.item(item, "tags"))
+            if "hover" in current_tags:
+                current_tags.remove("hover")
+                tree.item(item, tags=current_tags)
+                
+        if item_id:
+            current_tags = list(tree.item(item_id, "tags"))
+            if "hover" not in current_tags:
+                current_tags.append("hover")
+                tree.item(item_id, tags=current_tags)
+
+    def on_fav_leave(self, event):
+        """Clears hover highlight when mouse leaves the Favorites tree."""
+        for item in self.fav_tree.get_children():
+            current_tags = list(self.fav_tree.item(item, "tags"))
+            if "hover" in current_tags:
+                current_tags.remove("hover")
+                self.fav_tree.item(item, tags=current_tags)
+    
+    def get_favorites_path(self):
+        return os.path.join(get_cache_directory(), "favorites.json")
+
+    def load_favorites(self):
+        path = self.get_favorites_path()
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        return data
+            except Exception:
+                pass
+        return []
+
+    def save_favorites(self, favorites):
+        path = self.get_favorites_path()
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(favorites, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+
+    def toggle_favorite_by_entry(self, entry):
+        if entry.get("directory") or entry.get("is_parent_nav"):
+            return
+        favorites = self.load_favorites()
+        url = entry.get("url")
+        existing = next((f for f in favorites if f.get("url") == url), None)
+        if existing:
+            favorites = [f for f in favorites if f.get("url") != url]
+        else:
+            # Ensure domain is stamped if missing
+            if not entry.get("domain"):
+                entry["domain"] = self.domain_combo.get()
+            favorites.append(entry)
+        self.save_favorites(favorites)
+        self.apply_filter()
+        self.refresh_favorites_tab()
+
+    def refresh_favorites_tab(self):
+        if not hasattr(self, "fav_tree"):
+            return
+        self.fav_tree.delete(*self.fav_tree.get_children())
+        favs = self.load_favorites()
+        for index, entry in enumerate(favs):
+            item_id = str(index)
+            item_size = "-" if entry.get("directory") else format_size(entry.get("size"))
+            self.fav_tree.insert("", "end", iid=item_id, values=(
+                "★",
+                "Directory" if entry.get("directory") else "File",
+                entry["name"],
+                entry.get("date", ""),
+                item_size,
+                entry.get("domain", ""),
+                urllib.parse.unquote(entry["url"])
+            ))
+
+    def on_browse_right_click(self, event):
+        item_id = self.tree.identify_row(event.y)
+        if item_id:
+            try:
+                entry = self.visible_entries[int(item_id)]
+                if not entry.get("directory") and not entry.get("is_parent_nav"):
+                    self.toggle_favorite_by_entry(entry)
+            except Exception:
+                pass
+
+    def on_fav_right_click(self, event):
+        item_id = self.fav_tree.identify_row(event.y)
+        if item_id:
+            favs = self.load_favorites()
+            try:
+                entry = favs[int(item_id)]
+                self.toggle_favorite_by_entry(entry)
+            except Exception:
+                pass
+
+    def double_click_favorite(self, event=None):
+        selection = self.fav_tree.selection()
+        if not selection:
+            return
+        favs = self.load_favorites()
+        try:
+            entry = favs[int(selection[0])]
+            # Temporarily simulate a click action dialog or stream directly
+            dialog = tk.Toplevel(self)
+            dialog.title("File Action")
+            dialog.geometry("340x140")
+            dialog.resizable(False, False)
+            dialog.transient(self)
+            try:
+                dialog.update_idletasks()
+                dialog.grab_set()
+            except Exception:
+                pass
+
+            filename = entry["name"]
+            ttk.Label(dialog, text=f"Choose action for:\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
+            btn_frame = ttk.Frame(dialog)
+            btn_frame.pack(pady=5)
+
+            # Bind actions using entry["url"]
+            url = entry["url"]
+            stream_btn = ttk.Button(btn_frame, text="Stream", width=12, command=lambda: [dialog.destroy(), self.stream_specific_url(url)])
+            stream_btn.pack(side="left", padx=8)
+            download_btn = ttk.Button(btn_frame, text="Download", width=12, command=lambda: [dialog.destroy(), self.download_specific_url(url)])
+            download_btn.pack(side="left", padx=8)
+            stream_btn.focus_set()
+        except Exception:
+            pass
+
+    def stream_specific_url(self, url):
+        temp_dir = get_temp_directory()
+        self.stop_event.clear()
+        progress_win = DownloadProgressWindow(self, title="Downloading to Temp...")
+        threading.Thread(
+            target=self.download_and_open_temp_worker,
+            args=(url, temp_dir, progress_win),
+            daemon=True
+        ).start()
+
+    def download_specific_url(self, url):
+        dest_dir = self.destination.get().strip() if self.use_default_dest.get() else ""
+        if not dest_dir or not os.path.isdir(dest_dir):
+            dest_dir = filedialog.askdirectory(title="Choose destination folder", initialdir=self.destination.get())
+            if not dest_dir:
+                return
+            self.destination.set(dest_dir)
+            self.save_destination_history(dest_dir)
+
+        self.stop_event.clear()
+        progress_win = DownloadProgressWindow(self, title="Downloading File...")
+        threading.Thread(
+            target=self.download_files_worker,
+            args=([url], dest_dir, progress_win),
+            daemon=True
+        ).start()
+
+    
     
     def on_toggle_animation_setting(self):
         # If disabled via options, cancel animation loop and reset button background to default
@@ -252,7 +473,6 @@ class JoshWBrowser(tb.Window):
         def on_accept():
             chosen = state["chosen"]
             rand_win.destroy()
-            self.selected_item_ids.clear()
             self.download_specific_url_to_temp(chosen["url"])
 
         def on_cancel():
@@ -374,16 +594,30 @@ class JoshWBrowser(tb.Window):
         IndexPremadeWindow(self, show_steps=self.shift_pressed)
 
     def __init__(self):
-        super().__init__(themename="sandstone-light")
+        # 1. Load settings and fetch the saved theme name first (default to "cosmo" or similar if missing)
+        self._initial_settings = self.load_settings()
+        self.saved_theme = self._initial_settings.get("theme", "cosmo")
+        
+        # 2. Pass themename to the superclass constructor so ttkbootstrap initializes with it
+        super().__init__(themename=self.saved_theme)
+        
         self.title("JoshW Archive Browser")
         self.geometry("1280x760")
         self.minsize(850, 560)
-        # Add your icon here:
+        
+        # Explicitly ensure the style matches (just in case)
+        try:
+            self.style.theme_use(self.saved_theme)
+        except Exception:
+            pass
+
         try:
             icon_file = resource_path("assets/icons/browser.png")
             self.iconphoto(False, tk.PhotoImage(file=icon_file))
         except Exception as e:
             print(f"Could not load icon: {e}")
+        
+        # Use your custom cleanup handler
         self.protocol("WM_DELETE_WINDOW", self.on_window_close)
 
         self.shift_pressed = False
@@ -398,7 +632,6 @@ class JoshWBrowser(tb.Window):
         self.domain_full_entries = []
         self.cached_dir_sizes = {}
         self.cached_scanned_dirs = set()
-        self.selected_item_ids = set()
 
         self.nav_history = []
         self.nav_history_index = -1
@@ -412,6 +645,9 @@ class JoshWBrowser(tb.Window):
         saved_use_default = self._initial_settings.get("use_default_dest", False)
         saved_load_dir = self._initial_settings.get("default_load_music_dir", os.path.expanduser("~"))
 
+        # Change 'saved_theme' to 'self.saved_theme' here:
+        self.saved_theme = self._initial_settings.get("theme", "default")
+
         self.destination = tk.StringVar(value=saved_dest)
         self.use_default_dest = tk.BooleanVar(value=saved_use_default)
         self.default_load_music_dir = tk.StringVar(value=saved_load_dir)
@@ -420,7 +656,6 @@ class JoshWBrowser(tb.Window):
         self.path_7z = tk.StringVar(value="/bin/7z")
         self.path_mpv = tk.StringVar(value="/bin/mpv")
 
-        self.selection_checkboxes_enabled = tk.BooleanVar(value=False)
         self.keep_download_window_open = tk.BooleanVar(value=True)
 
         self.search_text = tk.StringVar()
@@ -434,6 +669,7 @@ class JoshWBrowser(tb.Window):
         self.stop_event = threading.Event()
 
         self.build_gui()
+        self.refresh_favorites_tab()
         self.after(100, self.process_messages)
 
     def on_window_close(self, callback=None):
@@ -484,7 +720,6 @@ class JoshWBrowser(tb.Window):
         options_menu_btn.pack(side="left", padx=4)
         
         self.options_dropdown = tk.Menu(options_menu_btn, tearoff=0)
-        self.options_dropdown.add_checkbutton(label="Enable Selection Checkboxes", variable=self.selection_checkboxes_enabled, command=self.on_toggle_checkboxes)
         self.options_dropdown.add_checkbutton(label="Keep Download Window Open After Completion", variable=self.keep_download_window_open)
         
         # Add animation toggle option variable and checkbutton
@@ -503,29 +738,35 @@ class JoshWBrowser(tb.Window):
             command=lambda: install_dependencies_prompt(self)
         )
 
+        # Theme Submenu with checkmarks for available themes
+        self.theme_var = tk.StringVar(value=self.style.theme_use())
+
+        self.theme_menu = tk.Menu(self.options_dropdown, tearoff=0)
+        for t_name in sorted(self.style.theme_names()):
+            self.theme_menu.add_radiobutton(
+                label=t_name,
+                variable=self.theme_var,
+                value=t_name,
+                command=lambda tn=t_name: self.change_theme(tn)
+            )
+        self.options_dropdown.add_cascade(label="Themes", menu=self.theme_menu)
+
         self.deps_menu = tk.Menu(self.options_dropdown, tearoff=0)
         self.options_dropdown.add_cascade(label="Dependencies", menu=self.deps_menu)
         self.update_dependencies_submenu()
 
         options_menu_btn["menu"] = self.options_dropdown
 
-        progress_container = ttk.Frame(self, padding=(8, 0, 8, 4))
-        progress_container.pack(fill="x")
-        progress_container.columnconfigure(0, weight=1)
-        progress_container.columnconfigure(2, weight=1)
+        # Mock/Dummy progress bar so background workers don't crash when updating values
+        class DummyProgressBar:
+            def __setitem__(self, key, value):
+                pass
+            def configure(self, **kwargs):
+                pass
+            def get(self):
+                return 0
 
-        sub_frame = ttk.Frame(progress_container)
-        sub_frame.grid(row=0, column=1)
-
-        self.progress_bar = ttk.Progressbar(sub_frame, orient="horizontal", mode="determinate", length=350, maximum=100)
-        self.progress_bar.pack(side="top", anchor="center")
-
-        labels_frame = ttk.Frame(sub_frame)
-        labels_frame.pack(side="top", fill="x", pady=(2, 0))
-        self.indexer_label = ttk.Label(labels_frame, textvariable=self.indexer_status_text, font=("Arial", 9))
-        self.indexer_label.pack(side="left")
-        self.progress_percent_label = ttk.Label(labels_frame, text="", font=("Arial", 9))
-        self.progress_percent_label.pack(side="right")
+        self.progress_bar = DummyProgressBar()
 
         path_frame = ttk.Frame(self, padding=(8, 0, 8, 8))
         path_frame.pack(fill="x")
@@ -540,7 +781,7 @@ class JoshWBrowser(tb.Window):
         info_search_frame = ttk.Frame(self, padding=(8, 0, 8, 2))
         info_search_frame.pack(fill="x", padx=2)
 
-        ttk.Label(info_search_frame, text="Double click or hit Enter on a file to stream or download it", font=("Arial", 9, "italic")).pack(side="left")
+        ttk.Label(info_search_frame, text="Double click or hit Enter on a file to stream or download it. Right click to favorite or unfavorite!", font=("Arial", 9, "italic")).pack(side="left")
 
         clear_search_btn = ttk.Button(info_search_frame, text="Clear", command=self.clear_search_history)
         clear_search_btn.pack(side="right", padx=2)
@@ -560,11 +801,18 @@ class JoshWBrowser(tb.Window):
 
         ttk.Label(info_search_frame, text="Search:").pack(side="right", padx=(4, 2))
 
-        tree_frame = ttk.Frame(self, padding=(8, 0, 8, 8))
-        tree_frame.pack(fill="both", expand=True)
+        tree_container = ttk.Frame(self, padding=(8, 0, 8, 8))
+        tree_container.pack(fill="both", expand=True)
 
-        self.tree = ttk.Treeview(tree_frame, columns=("select", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
-        self.tree.heading("select", text="[ ]")
+        self.notebook = ttk.Notebook(tree_container)
+        self.notebook.pack(fill="both", expand=True)
+
+        # --- Tab 1: Browse ---
+        browse_frame = ttk.Frame(self.notebook)
+        self.notebook.add(browse_frame, text="Browse")
+
+        self.tree = ttk.Treeview(browse_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
+        self.tree.heading("favorite", text="★")
         self.tree.heading("type", text="Type", command=lambda: self.sort_by_column("type"))
         self.tree.heading("name", text="Name ▲", command=lambda: self.sort_by_column("name"))
         self.tree.heading("date", text="Date", command=lambda: self.sort_by_column("date"))
@@ -572,23 +820,54 @@ class JoshWBrowser(tb.Window):
         self.tree.heading("domain", text="Domain", command=lambda: self.sort_by_column("domain"))
         self.tree.heading("url", text="URL", command=lambda: self.sort_by_column("url"))
 
-        self.tree.column("select", width=50, anchor="center", stretch=False)
+        self.tree.column("favorite", width=40, anchor="center", stretch=False)
         self.tree.column("type", width=90, anchor="center", stretch=False)
         self.tree.column("name", width=280)
         self.tree.column("date", width=110, anchor="center", stretch=False)
         self.tree.column("size", width=100, anchor="e", stretch=False)
         self.tree.column("domain", width=90, anchor="center", stretch=False)
         self.tree.column("url", width=520)
-        self.tree["displaycolumns"] = ("select", "type", "name", "date", "size", "url")
+        self.tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "url")
 
-        scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscrollcommand=scrollbar.set)
+        browse_scrollbar = ttk.Scrollbar(browse_frame, orient="vertical", command=self.tree.yview)
+        self.tree.configure(yscrollcommand=browse_scrollbar.set)
         self.tree.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
+        browse_scrollbar.pack(side="right", fill="y")
 
         self.tree.bind("<Double-1>", self.double_click_entry)
         self.tree.bind("<Return>", self.double_click_entry)
-        self.tree.bind("<Button-1>", self.click_tree_item)
+        self.tree.bind("<Button-3>", self.on_browse_right_click)
+
+        # --- Tab 2: Favorites ---
+        favorites_frame = ttk.Frame(self.notebook)
+        self.notebook.add(favorites_frame, text="Favorites")
+
+        self.fav_tree = ttk.Treeview(favorites_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
+        self.fav_tree.heading("favorite", text="★")
+        self.fav_tree.heading("type", text="Type")
+        self.fav_tree.heading("name", text="Name")
+        self.fav_tree.heading("date", text="Date")
+        self.fav_tree.heading("size", text="Size")
+        self.fav_tree.heading("domain", text="Domain")
+        self.fav_tree.heading("url", text="URL")
+
+        self.fav_tree.column("favorite", width=40, anchor="center", stretch=False)
+        self.fav_tree.column("type", width=90, anchor="center", stretch=False)
+        self.fav_tree.column("name", width=280)
+        self.fav_tree.column("date", width=110, anchor="center", stretch=False)
+        self.fav_tree.column("size", width=100, anchor="e", stretch=False)
+        self.fav_tree.column("domain", width=90, anchor="center", stretch=False)
+        self.fav_tree.column("url", width=520)
+        self.fav_tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "domain", "url")
+
+        fav_scrollbar = ttk.Scrollbar(favorites_frame, orient="vertical", command=self.fav_tree.yview)
+        self.fav_tree.configure(yscrollcommand=fav_scrollbar.set)
+        self.fav_tree.pack(side="left", fill="both", expand=True)
+        fav_scrollbar.pack(side="right", fill="y")
+
+        self.fav_tree.bind("<Double-1>", self.double_click_favorite)
+        self.fav_tree.bind("<Return>", self.double_click_favorite)
+        self.fav_tree.bind("<Button-3>", self.on_fav_right_click)
 
         destination_frame = ttk.Frame(self, padding=8)
         destination_frame.pack(fill="x")
@@ -628,6 +907,18 @@ class JoshWBrowser(tb.Window):
             "#fef9c3", "#ecfccb", "#d1fae5", "#ccfbf1", "#cffafe"
         ]
         self.fade_index = 0
+
+        # Determine initial hover color based on startup theme name and configure trees
+        initial_theme_lower = self.saved_theme.lower()
+        initial_hover_color = "#2a3b4c" if "dark" in initial_theme_lower else "#e8f0fe"
+        
+        self.tree.tag_configure("hover", background=initial_hover_color)
+        self.fav_tree.tag_configure("hover", background=initial_hover_color)
+        
+        self.tree.bind("<Motion>", self.on_tree_motion)
+        self.tree.bind("<Leave>", self.on_tree_leave)
+        self.fav_tree.bind("<Motion>", self.on_fav_motion)
+        self.fav_tree.bind("<Leave>", self.on_fav_leave)
 
         ttk.Label(button_frame, textvariable=self.status_text).pack(side="right")
 
@@ -775,25 +1066,6 @@ class JoshWBrowser(tb.Window):
             parsed_root = urllib.parse.urlparse(DOMAINS[domain_name])
             self.load_directory(domain_name, url, is_root=(parsed_url.path.rstrip("/") == parsed_root.path.rstrip("/")))
             self.is_navigating_history = False
-
-    def on_toggle_checkboxes(self):
-        self.selected_item_ids.clear()
-        self.apply_filter()
-
-    def click_tree_item(self, event):
-        if not self.selection_checkboxes_enabled.get():
-            return
-        region = self.tree.identify_region(event.x, event.y)
-        if region == "cell" and self.tree.identify_column(event.x) == "#1":
-            item_id = self.tree.identify_row(event.y)
-            if item_id:
-                entry = self.visible_entries[int(item_id)]
-                if not entry.get("is_parent_nav"):
-                    if item_id in self.selected_item_ids:
-                        self.selected_item_ids.remove(item_id)
-                    else:
-                        self.selected_item_ids.add(item_id)
-                    self.apply_filter()
 
     def play_audio_file(self, audio_file, playlist=None, start_index=None):
         ext = os.path.splitext(audio_file)[1].lower()
@@ -1133,7 +1405,6 @@ class JoshWBrowser(tb.Window):
     def display_entries(self, url, entries, folder_size):
         self.current_url = url
         self.current_entries = entries
-        self.selected_item_ids.clear()
         self.cached_dir_sizes[url] = folder_size
 
         domain_name = self.domain_combo.get()
@@ -1218,8 +1489,11 @@ class JoshWBrowser(tb.Window):
     def apply_filter(self):
         search = self.search_text.get().lower().strip()
         self.tree.delete(*self.tree.get_children())
+        
+        fav_urls = {f.get("url") for f in self.load_favorites()}
+
         if self.search_all_indexes_var.get():
-            self.tree["displaycolumns"] = ("select", "type", "name", "date", "size", "domain", "url")
+            self.tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "domain", "url")
             source = self.all_index_entries
             filtered = [
                 entry for entry in source
@@ -1228,14 +1502,15 @@ class JoshWBrowser(tb.Window):
                 and (search in entry["name"].lower() or search in entry["url"].lower() or search in entry.get("domain", "").lower())
             ]
         else:
-            self.tree["displaycolumns"] = ("select", "type", "name", "date", "size", "url")
+            self.tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "url")
             source = self.domain_full_entries if (search and self.domain_full_entries) else self.current_entries
             filtered = [e for e in source if not search or search in e["name"].lower() or e.get("is_parent_nav")]
         self.visible_entries = self.apply_sorting(filtered)
 
         for index, entry in enumerate(self.visible_entries):
             item_id = str(index)
-            select_symbol = ("[✓]" if item_id in self.selected_item_ids else "[ ]") if self.selection_checkboxes_enabled.get() and not entry.get("is_parent_nav") else ""
+            is_fav = entry.get("url") in fav_urls
+            star_symbol = "★" if (is_fav and not entry["directory"] and not entry.get("is_parent_nav")) else ""
             
             item_size = (
                 "-"
@@ -1244,7 +1519,7 @@ class JoshWBrowser(tb.Window):
             )
 
             self.tree.insert("", "end", iid=item_id, values=(
-                select_symbol,
+                star_symbol,
                 "Directory" if entry["directory"] else "File",
                 entry["name"],
                 entry.get("date", ""),
@@ -1265,9 +1540,6 @@ class JoshWBrowser(tb.Window):
         else:
             if not self.tree.selection():
                 self.tree.selection_set(selection[0])
-            if self.selection_checkboxes_enabled.get():
-                self.selected_item_ids.add(selection[0])
-                self.apply_filter()
 
             dialog = tk.Toplevel(self)
             dialog.title("File Action")
@@ -1467,12 +1739,13 @@ class JoshWBrowser(tb.Window):
             self.save_destination_history(selected)
 
     def get_selected_files(self):
-        target_ids = self.selected_item_ids if self.selection_checkboxes_enabled.get() else self.tree.selection()
+        """Returns the URLs of currently selected files in the active browse tree."""
         urls = []
-        for item_id in target_ids:
+        selection = self.tree.selection()
+        for item_id in selection:
             try:
                 entry = self.visible_entries[int(item_id)]
-                if not entry["directory"]:
+                if not entry.get("directory") and not entry.get("is_parent_nav"):
                     urls.append(entry["url"])
             except Exception:
                 pass
