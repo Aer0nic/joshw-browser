@@ -100,13 +100,14 @@ def get_temp_directory():
 
 
 def get_cache_path(domain_name):
-    """Return the cache-file path for a domain name."""
+    """Return the cache-file path for a domain name inside the indexes folder."""
     safe_name = "".join(
         character if character.isalnum() else "_"
         for character in domain_name
     )
-    cache_dir = get_cache_directory()
-    return os.path.join(cache_dir, f"domain_cache_{safe_name}.json")
+    indexes_dir = Path(get_cache_directory()) / "indexes"
+    indexes_dir.mkdir(parents=True, exist_ok=True)
+    return str(indexes_dir / f"domain_cache_{safe_name}.json")
 
 
 def format_size(size):

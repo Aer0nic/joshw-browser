@@ -1,0 +1,6 @@
+#!/home/aeronic/github/joshw-browser/venv/bin/python3.12
+import sys
+from mido.scripts.mido_play import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())

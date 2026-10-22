@@ -578,8 +578,9 @@ class JoshWBrowser(tb.Window):
                 )
 
     def download_premade_indexes_prompt(self):
-        cache_dir = get_cache_directory()
-        existing_caches = [f for f in os.listdir(cache_dir) if f.endswith(".json") and f != "settings.json" and f != "search_history.json"]
+        indexes_dir = os.path.join(get_cache_directory(), "indexes")
+        os.makedirs(indexes_dir, exist_ok=True)
+        existing_caches = [f for f in os.listdir(indexes_dir) if f.endswith(".json")]
         
         if existing_caches:
             ans = messagebox.askokcancel("Are you sure?", "Are you sure? These are likely to be outdated!")
@@ -587,7 +588,7 @@ class JoshWBrowser(tb.Window):
                 return
             for f in existing_caches:
                 try:
-                    os.remove(os.path.join(cache_dir, f))
+                    os.remove(os.path.join(indexes_dir, f))
                 except Exception:
                     pass
 
@@ -1500,7 +1501,7 @@ echo "Conversion succeeded; XMI originals deleted."
         bundled_root = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
         index_directories = (
             os.path.join(bundled_root, "indexes"),
-            get_cache_directory(),
+            os.path.join(get_cache_directory(), "indexes"),
         )
         index_files = {}
         for directory in index_directories:
