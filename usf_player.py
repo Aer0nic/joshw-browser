@@ -338,7 +338,6 @@ class USFPlayerWindow(tk.Toplevel):
 
         try:
             parent_app = self.master
-            # Use explicit keyword arguments here so they map correctly:
             new_player = USFPlayerWindow(parent=parent_app, playlist=new_playlist, initial_index=new_index)
             new_player.focus()
         except Exception as e:

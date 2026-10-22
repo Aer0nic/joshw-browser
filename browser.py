@@ -535,10 +535,10 @@ class JoshWBrowser(tb.Window):
                 shutil.which("nsf_tracks") is not None
                 or os.path.exists(os.path.join(cache_dir, "nsf_tracks"))
             )
-        elif dep_name == "fluidsynth":
+        elif dep_name == "playbae":
             return (
-                shutil.which("fluidsynth") is not None
-                and os.path.exists(os.path.join(cache_dir, "FluidR3_GM.sf2"))
+                shutil.which("playbae") is not None
+                or os.path.exists(os.path.join(cache_dir, "playbae"))
             )
         elif dep_name in ("aosdk", "psfplay"):
             try:
@@ -561,7 +561,7 @@ class JoshWBrowser(tb.Window):
             ("2sfPlay", "2sfplay", "2sfPlay"),
             ("AOSDK (PSF/PSF2)", "psfplay", "libaosdk.so"),
             ("nsf_tracks", "nsf_tracks", "nsf_tracks"),
-            ("FluidSynth & Soundfont", "fluidsynth", "FluidR3_GM.sf2")
+            ("NeoBAE (playbae)", "playbae", "playbae")
         ]
         
         cache_dir = Path(get_cache_directory())
@@ -594,6 +594,58 @@ class JoshWBrowser(tb.Window):
         IndexPremadeWindow(self, show_steps=self.shift_pressed)
 
     def __init__(self):
+        # Check and generate xmi2mid.sh on startup if missing
+        try:
+            sh_path = os.path.join(get_cache_directory(), "xmi2mid.sh")
+            if not os.path.exists(sh_path):
+                script_content = """#!/usr/bin/env bash
+
+folder="${1:-}"
+
+if [[ -z "$folder" || ! -d "$folder" ]]; then
+    echo "Usage: $0 DIRECTORY"
+    exit 1
+fi
+
+mapfile -d '' files < <(find "$folder" -type f -iname '*.xmi' -print0)
+
+if ((${#files[@]} == 0)); then
+    echo "No .xmi files found in: $folder"
+    exit 1
+fi
+
+# Don't overwrite any existing MIDI files.
+for file in "${files[@]}"; do
+    output="${file%.*}.mid"
+    if [[ -e "$output" ]]; then
+        echo "Output already exists; nothing converted or deleted: $output"
+        exit 1
+    fi
+done
+
+# Convert all files. Keep originals if any conversion fails.
+for file in "${files[@]}"; do
+    output="${file%.*}.mid"
+    echo "Converting: $file -> $output"
+    if ! wildmidi -x "$output" "$file"; then
+        echo "Conversion failed; XMI originals have been kept."
+        exit 1
+    fi
+done
+
+# Delete originals only after every conversion succeeds.
+for file in "${files[@]}"; do
+    rm -- "$file"
+done
+
+echo "Conversion succeeded; XMI originals deleted."
+"""
+                with open(sh_path, "w", encoding="utf-8") as f:
+                    f.write(script_content)
+                os.chmod(sh_path, 0o755)
+        except Exception as e:
+            print(f"Could not create xmi2mid.sh: {e}")
+        
         # 1. Load settings and fetch the saved theme name first (default to "cosmo" or similar if missing)
         self._initial_settings = self.load_settings()
         self.saved_theme = self._initial_settings.get("theme", "cosmo")
@@ -1070,6 +1122,12 @@ class JoshWBrowser(tb.Window):
     def play_audio_file(self, audio_file, playlist=None, start_index=None):
         ext = os.path.splitext(audio_file)[1].lower()
 
+        playbae_extensions = {".mid", ".midi", ".kar", ".rmi", ".rmf", ".zmf", ".xmf", ".mxmf", ".mthc"}
+        if ext in playbae_extensions:
+            from playbae import PlayBAEPlayerWindow
+            PlayBAEPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
+            return
+        
         # Force vgmstream123 for these specific formats
         vgmstream_formats = {".ast", ".dsp", ".brstm", ".rstm", ".bfsar", ".bfwav", ".adp", ".str", ".thp", ".was", ".h4m", ".vag", ".wem"}
         if ext in vgmstream_formats:
@@ -1119,12 +1177,7 @@ class JoshWBrowser(tb.Window):
                 return
             PSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
-        elif ext in (".mid", ".midi"):
-            if not self.check_dependency_status("fluidsynth"):
-                messagebox.showerror("FluidSynth Required", "Midi playback requires FluidSynth and soundfont. Please install dependencies.")
-                return
-            MPVPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
-            return
+        
         elif ext in supported_extensions or ext in (".hes", ".nsf", ".nsfe", ".xma", ".XMA", ".miniusf", ".usf"):
             mpv_path = self.path_mpv.get().strip() or "/bin/mpv"
             if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):

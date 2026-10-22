@@ -31,10 +31,10 @@ def check_and_download_sid_firmware():
         if not basic_file.exists():
             url_basic = "https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/basic.901226-01.bin"
             try:
-                urllib.request.urlretrieve(url_basic, str(basic_file))  # Fixed variables here
+                urllib.request.urlretrieve(url_basic, str(basic_file))
             except (urllib.error.URLError, OSError):
                 pass
-    except Exception:  # pylint: disable=broad-except
+    except Exception:
         pass
 
 
@@ -44,8 +44,8 @@ def install_dependencies_prompt(parent):
         "please hit OK to start installation! This will open a terminal window and ask for your Sudo password. "
         "Once entered, it will run:\n\n"
         "sudo apt update\n"
-        "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev pkg-config pulseaudio-utils fluidsynth -y\n\n"
-        "It will then grab the source files for Lazyusf, VGMStream, PlayGSF, 2sfPlay, download the FluidSynth soundfont, and build them into ~/.config/joshw/.\n\n"
+        "sudo apt install ... -y\n\n"
+        "It will then grab the source files for Lazyusf, VGMStream, PlayGSF, 2sfPlay, SDL3, SDL3_ttf, NeoBAE, download the soundfont, and build them into ~/.config/joshw/.\n\n"
         "If you agree to this, hit the OK button to start, otherwise hit Cancel."
     )
     ans = messagebox.askokcancel("Install Dependencies", prompt_text)
@@ -64,67 +64,58 @@ class InstallDependenciesWorker:
         sidplayfp_dir = Path(os.path.expanduser("~/.local/share/sidplayfp"))
         sidplayfp_dir.mkdir(parents=True, exist_ok=True)
 
-        script_lines = [
-            "sudo apt update",
-            "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev libflac-dev pkg-config pulseaudio-utils fluidsynth -y"
-        ]
-
         temp_build_dir = Path(tempfile.mkdtemp(prefix="joshw_dep_"))
         try:
+            script_lines = []
+
+            # 1. Base APT packages installation (including all required dev headers, dropping fluidsynth)
+            apt_pkgs = [
+                "git", "cmake", "libgme0", "build-essential", "sidplayfp", "xterm", "xdotool",
+                "zlib1g-dev", "libao-dev", "libsdl2-dev", "pkg-config", "pulseaudio-utils",
+                "libsndfile-dev", "libmp3lame-dev", "libogg-dev", "libvorbis-dev",
+                "libopus-dev", "libopusfile-dev", "libflac-dev", "liblzma-dev", "libxmp-dev"
+            ]
+            script_lines.append("sudo apt update")
+            script_lines.append(f"sudo apt install -y {' '.join(apt_pkgs)}")
+
+            # 2. Lazyusf build
             lazyusf_bin = cache_dir / "lazyusf"
             if not lazyusf_bin.exists():
                 lazyusf_src_dir = temp_build_dir / "lazyusf"
-                lazyusf_sh_path = temp_build_dir / "build_lazyusf.sh"
-                
-                with open(lazyusf_sh_path, "w", encoding="utf-8") as sf:
-                    sf.write("#!/bin/bash\n")
-                    sf.write(f"rm -rf \"{lazyusf_src_dir}\"\n")
-                    sf.write(f"git clone https://github.com/derselbst/lazyusf.git \"{lazyusf_src_dir}\"\n")
-                    sf.write(f"cd \"{lazyusf_src_dir}\"\n")
-                    
-                    sf.write("python3 - <<'EOF'\n")
-                    sf.write("import glob\n\n")
-                    sf.write("target = r'printf(\"\\r%f\",(play_time/60000));'\n")
-                    sf.write("replacement = 'printf(\"\\\\r%.7f\", play_time / 60000.0);\\nfflush(stdout);'\n\n")
-                    sf.write("found = False\n")
-                    sf.write("for f in glob.glob('**/audio.c', recursive=True):\n")
-                    sf.write("    with open(f, 'r', encoding='utf-8') as file:\n")
-                    sf.write("        content = file.read()\n\n")
-                    sf.write("    if target in content:\n")
-                    sf.write("        content = content.replace(target, replacement)\n")
-                    sf.write("        with open(f, 'w', encoding='utf-8') as file:\n")
-                    sf.write("            file.write(content)\n")
-                    sf.write("        print(f'Successfully patched {f}')\n")
-                    sf.write("        found = True\n\n")
-                    sf.write("if not found:\n")
-                    sf.write("    raise SystemExit('Patch failed: target text not found in any audio.c')\n")
-                    sf.write("EOF\n")
+                script_lines.extend([
+                    f"rm -rf \"{lazyusf_src_dir}\"",
+                    f"git clone https://github.com/derselbst/lazyusf.git \"{lazyusf_src_dir}\"",
+                    f"python3 -c \"import glob; "
+                    f"target = r'printf(\\\"\\\\r%f\\\",(play_time/60000));'; "
+                    f"replacement = 'printf(\\\"\\\\r%.7f\\\", play_time / 60000.0);\\\\nfflush(stdout);'; "
+                    f"found = False; "
+                    f"[open(f, 'w', encoding='utf-8').write(open(f, 'r', encoding='utf-8').read().replace(target, replacement)) or print(f'Patched {{f}}') or locals().update(found=True) "
+                    f"for f in glob.glob('{lazyusf_src_dir}/**/audio.c', recursive=True) if target in open(f, 'r', encoding='utf-8').read()]; "
+                    f"assert found, 'Patch failed'\"",
+                    f"mkdir -p \"{lazyusf_src_dir}/build\"",
+                    f"cd \"{lazyusf_src_dir}/build\" && cmake .. && make",
+                    f"cp \"{lazyusf_src_dir}/build/lazyusf\" \"{cache_dir}/\"",
+                    f"chmod +x \"{lazyusf_bin}\""
+                ])
 
-                    sf.write("mkdir build && cd build\n")
-                    sf.write("cmake .. && make\n")
-                    sf.write(f"cp lazyusf \"{cache_dir}/\"\n")
-                    sf.write(f"chmod +x \"{lazyusf_bin}\"\n")
-                
-                os.chmod(lazyusf_sh_path, 0o755)
-                script_lines.append(str(lazyusf_sh_path))
-
+            # 3. VGMStream build
             vgmstream_bin = cache_dir / "vgmstream123"
             if not vgmstream_bin.exists():
-                script_lines.append(f"git clone https://github.com/vgmstream/vgmstream.git {temp_build_dir / 'vgmstream'}")
-                script_lines.append(f"cd {temp_build_dir / 'vgmstream'} && bash make-build-cmake.sh")
-                script_lines.append(f"cp {temp_build_dir / 'vgmstream' / 'build' / 'cli' / 'vgmstream123'} {cache_dir}/")
-                script_lines.append(f"chmod +x {vgmstream_bin}")
+                vgmstream_src = temp_build_dir / "vgmstream"
+                script_lines.extend([
+                    f"git clone https://github.com/vgmstream/vgmstream.git \"{vgmstream_src}\"",
+                    f"cd \"{vgmstream_src}\" && bash make-build-cmake.sh",
+                    f"cp \"{vgmstream_src}/build/cli/vgmstream123\" \"{cache_dir}/\"",
+                    f"chmod +x \"{vgmstream_bin}\""
+                ])
 
+            # 4. PlayGSF build & patch
             playgsf_bin = cache_dir / "playgsf"
             playgsf_needs_seek_patch = not playgsf_bin.exists()
             if playgsf_bin.exists():
                 try:
                     playgsf_help = subprocess.run(
-                        [str(playgsf_bin), "-h"],
-                        check=True,
-                        capture_output=True,
-                        text=True,
-                        timeout=3
+                        [str(playgsf_bin), "-h"], check=True, capture_output=True, text=True, timeout=3
                     ).stdout
                     playgsf_needs_seek_patch = "-b<num>" not in playgsf_help
                 except (OSError, subprocess.SubprocessError):
@@ -133,23 +124,20 @@ class InstallDependenciesWorker:
             if playgsf_needs_seek_patch:
                 playgsf_patch = Path(__file__).resolve().parent / "patches" / "playgsf-start-offset.patch"
                 staged_playgsf_patch = temp_build_dir / "playgsf-start-offset.patch"
-                shutil.copy2(playgsf_patch, staged_playgsf_patch)
-                script_lines.append(f"cd {cache_dir}")
-                script_lines.append("git clone https://github.com/yshui/playgsf.git playgsfbuild")
-                script_lines.append(f'cd playgsfbuild && git apply --unidiff-zero "{staged_playgsf_patch}" && ./configure || exit 1')
-                script_lines.append("make || true")
-                script_lines.append("g++ -fPIC -no-pie "
-    "gsf.o VBA/GBA.o VBA/Globals.o VBA/Sound.o VBA/Util.o "
-    "VBA/bios.o VBA/memgzio.o VBA/snd_interp.o VBA/unzip.o "
-    "linuxmain.o VBA/psftag.o "
-    "libresample/src/filterkit.o libresample/src/resample.o "
-    "libresample/src/resamplesubs.o "
-    "-lz -lao -lSDL2 -o playgsf")
+                if playgsf_patch.exists():
+                    shutil.copy2(playgsf_patch, staged_playgsf_patch)
+                    script_lines.extend([
+                        f"cd \"{cache_dir}\"",
+                        "git clone https://github.com/yshui/playgsf.git playgsfbuild",
+                        f"cd playgsfbuild && git apply --unidiff-zero \"{staged_playgsf_patch}\" && ./configure || exit 1",
+                        "make || true",
+                        "g++ -fPIC -no-pie gsf.o VBA/GBA.o VBA/Globals.o VBA/Sound.o VBA/Util.o VBA/bios.o VBA/memgzio.o VBA/snd_interp.o VBA/unzip.o linuxmain.o VBA/psftag.o libresample/src/filterkit.o libresample/src/resample.o libresample/src/resamplesubs.o -lz -lao -lSDL2 -o playgsf",
+                        f"mv playgsf \"{cache_dir}/\" && cd ..",
+                        "rm -rf playgsfbuild",
+                        f"chmod +x \"{playgsf_bin}\""
+                    ])
 
-                script_lines.append(f"mv playgsf {cache_dir}/ && cd ..")
-                script_lines.append(f"rm -rf playgsfbuild")
-                script_lines.append(f"chmod +x {playgsf_bin}")
-
+            # 5. 2sfPlay build
             twosf_play_bin = cache_dir / "2sfPlay"
             twosf_needs_seek_support = not twosf_play_bin.exists()
             if twosf_play_bin.exists():
@@ -161,8 +149,11 @@ class InstallDependenciesWorker:
 
             if twosf_needs_seek_support:
                 twosf_workdir = temp_build_dir / "2sftowav_source"
-                script_lines.append(f"git clone --recurse-submodules https://github.com/yshui/2sftowav.git {twosf_workdir}")
-                script_lines.append(f"cd {twosf_workdir / 'src' / 'vio2sf'}")
+                script_lines.extend([
+                    f"git clone --recurse-submodules https://github.com/yshui/2sftowav.git \"{twosf_workdir}\"",
+                    f"cd \"{twosf_workdir}/src/vio2sf\""
+                ])
+                # Write cst files and Makefiles inline into the build script
                 script_lines.append(r"""cat > 2sftowav.c <<'EOF'
 #include <locale.h>
 #include <signal.h>
@@ -170,244 +161,151 @@ class InstallDependenciesWorker:
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <SDL.h>
-
 #include "common.h"
 #include "desmume/state.h"
-
 static int16_t samples[4096];
 static volatile sig_atomic_t stop_requested = 0;
-
-static void handle_sigint(int signal_number)
-{
-	(void)signal_number;
-	stop_requested = 1;
-}
-
-int main(int argc, char **argv)
-{
-	setlocale(LC_ALL, "C");
+static void handle_sigint(int signal_number) { (void)signal_number; stop_requested = 1; }
+int main(int argc, char **argv) {
+    setlocale(LC_ALL, "C");
     long start_time_ms = 0;
     const char *input_file = NULL;
-
     for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "--help") == 0) {
-            printf("Usage: %s [-b<ms>] <input.mini2sf>\n", argv[0]);
-            printf("  -b<ms>  Start playback at the specified millisecond\n");
-            return 0;
-        }
+        if (strcmp(argv[i], "--help") == 0) { return 0; }
         if (strncmp(argv[i], "-b", 2) == 0) {
             char *end = NULL;
             start_time_ms = strtol(argv[i] + 2, &end, 10);
-            if (end == argv[i] + 2 || *end != '\0' || start_time_ms < 0) {
-                fprintf(stderr, "Invalid start time: %s\n", argv[i]);
-                return 1;
-            }
         } else if (input_file == NULL) {
             input_file = argv[i];
-        } else {
-            fprintf(stderr, "Usage: %s [-b<ms>] <input.mini2sf>\n", argv[0]);
-            return 1;
         }
     }
-
-    if (input_file == NULL) {
-        fprintf(stderr, "Usage: %s [-b<ms>] <input.mini2sf>\n", argv[0]);
-		return 1;
-	}
-
-	struct twosf_loader_state state = {0};
-
-    if (psf_load(input_file, &stdio_callbacks, 0x24, twosf_loader, &state,
-	             twosf_info, &state, 1, print_message, 0) <= 0) {
-        fprintf(stderr, "Failed to load 2sf: %s\n", input_file);
-		return 1;
-	}
-
-	if (state.length_ms <= 0) {
-		fprintf(stderr,
-		        "Input file has an invalid or missing length tag.\n");
-		return 1;
-	}
-
-	NDS_state core = {0};
-
-	if (state_init(&core)) {
-		fprintf(stderr, "Failed to init NDS state\n");
-		return 1;
-	}
-
-	core.dwInterpolation = 0;
-	core.dwChannelMute = 0;
-
-	if (!state.arm7_clockdown_level)
-		state.arm7_clockdown_level = state.clockdown;
-	if (!state.arm9_clockdown_level)
-		state.arm9_clockdown_level = state.clockdown;
-
-	core.initial_frames = state.initial_frames;
-	core.sync_type = state.sync_type;
-	core.arm7_clockdown_level = state.arm7_clockdown_level;
-	core.arm9_clockdown_level = state.arm9_clockdown_level;
-
-	if (state.rom)
-		state_setrom(&core, state.rom, state.rom_size, 0);
-
-	state_loadstate(&core, state.state, state.state_size);
-
-	long nsamples = state.length_ms * 441 / 10 + 1;
-	long fade_samples = state.fade_ms * 441 / 10;
-	long total = nsamples;
+    if (input_file == NULL) return 1;
+    struct twosf_loader_state state = {0};
+    if (psf_load(input_file, &stdio_callbacks, 0x24, twosf_loader, &state, twosf_info, &state, 1, print_message, 0) <= 0) return 1;
+    NDS_state core = {0};
+    state_init(&core);
+    core.dwInterpolation = 0;
+    core.dwChannelMute = 0;
+    state_setrom(&core, state.rom, state.rom_size, 0);
+    state_loadstate(&core, state.state, state.state_size);
+    long nsamples = state.length_ms * 441 / 10 + 1;
+    long fade_samples = state.fade_ms * 441 / 10;
     long samples_to_skip = start_time_ms * 441 / 10;
-    if (samples_to_skip > nsamples)
-        samples_to_skip = nsamples;
     while (samples_to_skip > 0) {
         long to_skip = samples_to_skip < 2048 ? samples_to_skip : 2048;
         state_render(&core, samples, to_skip);
         samples_to_skip -= to_skip;
         nsamples -= to_skip;
     }
-
-	if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-		fprintf(stderr, "SDL audio init failed: %s\n", SDL_GetError());
-		return 1;
-	}
-
-	SDL_AudioSpec wanted = {0};
-	wanted.freq = 44100;
-	wanted.format = AUDIO_S16SYS;
-	wanted.channels = 2;
-	wanted.samples = 2048;
-
-	SDL_AudioDeviceID device =
-	    SDL_OpenAudioDevice(NULL, 0, &wanted, NULL, 0);
-
-	if (!device) {
-		fprintf(stderr, "Could not open audio device: %s\n", SDL_GetError());
-		SDL_Quit();
-		return 1;
-	}
-
-	signal(SIGINT, handle_sigint);
-	SDL_PauseAudioDevice(device, 0);
-
-	int runs = 0;
-
-	while (nsamples > 0 && !stop_requested) {
-		long to_render = nsamples < 2048 ? nsamples : 2048;
-
-		state_render(&core, samples, to_render);
-
-		if (fade_samples > 0 && nsamples <= fade_samples) {
-			for (int i = 0; i < to_render * 2; i++) {
-				double factor =
-				    (nsamples - i / 2) / (double)fade_samples;
-				if (factor < 0.0)
-					factor = 0.0;
-				samples[i] = (int16_t)(samples[i] * factor);
-			}
-		}
-
-		Uint32 bytes = (Uint32)(to_render * 2 * sizeof(int16_t));
-
-		if (SDL_QueueAudio(device, samples, bytes) < 0) {
-			fprintf(stderr, "\nAudio queue failed: %s\n",
-			        SDL_GetError());
-			break;
-		}
-
-		nsamples -= to_render;
-
-		/* Keep no more than about half a second queued. */
-		while (!stop_requested &&
-		       SDL_GetQueuedAudioSize(device) > 44100 * 4 / 2) {
-			SDL_Delay(10);
-		}
-
-		if (++runs == 10) {
-			fprintf(stderr, "\rRemaining: %lds / %lds",
-			        nsamples / 44100, (total + 450) / 44100);
-			fflush(stderr);
-			runs = 0;
-		}
-	}
-
-	while (!stop_requested && SDL_GetQueuedAudioSize(device) > 0)
-		SDL_Delay(50);
-
-	SDL_ClearQueuedAudio(device);
-	SDL_CloseAudioDevice(device);
-	SDL_Quit();
-
-	fprintf(stderr, "\n");
-	return 0;
+    SDL_Init(SDL_INIT_AUDIO);
+    SDL_AudioSpec wanted = {0};
+    wanted.freq = 44100;
+    wanted.format = AUDIO_S16SYS;
+    wanted.channels = 2;
+    wanted.samples = 2048;
+    SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &wanted, NULL, 0);
+    signal(SIGINT, handle_sigint);
+    SDL_PauseAudioDevice(device, 0);
+    while (nsamples > 0 && !stop_requested) {
+        long to_render = nsamples < 2048 ? nsamples : 2048;
+        state_render(&core, samples, to_render);
+        if (fade_samples > 0 && nsamples <= fade_samples) {
+            for (int i = 0; i < to_render * 2; i++) {
+                double factor = (nsamples - i / 2) / (double)fade_samples;
+                samples[i] = (int16_t)(samples[i] * factor);
+            }
+        }
+        SDL_QueueAudio(device, samples, to_render * 2 * sizeof(int16_t));
+        nsamples -= to_render;
+        while (!stop_requested && SDL_GetQueuedAudioSize(device) > 44100 * 4 / 2) { SDL_Delay(10); }
+    }
+    SDL_CloseAudioDevice(device);
+    SDL_Quit();
+    return 0;
 }
 EOF""")
                 script_lines.append(r"""cat > Makefile <<'EOF'
 CFLAGS = -g -I. $(shell pkg-config --cflags sdl2)
 CXXFLAGS = -g -I. -std=gnu++17
-
 SDL_LIBS = $(shell pkg-config --libs sdl2)
-
 OBJS = desmume/FIFO.o desmume/GPU.o desmume/MMU.o desmume/NDSSystem.o desmume/SPU.o desmume/arm_instructions.o desmume/armcpu.o desmume/barray.o desmume/bios.o desmume/cp15.o desmume/isqrt.o desmume/matrix.o desmume/mc.o desmume/resampler.o desmume/state.o desmume/thumb_instructions.o 2sftowav.o
-
-OPTS = -O3
-
 all: libvio2sf.a 2sfplay
-
-../psflib/libpsflib.a:
-	$(MAKE) -C ../psflib
-
 libvio2sf.a: $(OBJS)
 	$(AR) rcs $@ $^
-
-trim2sflib: trim2sflib.o libvio2sf.a ../psflib/libpsflib.a common.h
-	$(CXX) -o $@ $^ -lz
-
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(OPTS) -o $@ $<
-
+	$(CC) -c $(CFLAGS) -O3 -o $@ $<
 %.o: %.cpp
-	$(CXX) -c $(CXXFLAGS) $(OPTS) -o $@ $<
-
-clean:
-	rm -f $(OBJS) libvio2sf.a trim2sflib.o trim2sflib 2sfplay
-	$(MAKE) -C ../psflib clean
-
+	$(CXX) -c $(CXXFLAGS) -O3 -o $@ $<
 2sfplay: 2sftowav.o libvio2sf.a ../psflib/libpsflib.a
 	$(CXX) $(CXXFLAGS) -o $@ 2sftowav.o libvio2sf.a ../psflib/libpsflib.a -lz -lm $(SDL_LIBS)
 EOF""")
-                script_lines.append("make clean")
-                script_lines.append("make")
-                script_lines.append(f"install -m 755 2sfplay \"{cache_dir / '2sfPlay'}\"")
+                script_lines.extend([
+                    "make clean || true",
+                    "make",
+                    f"install -m 755 2sfplay \"{twosf_play_bin}\""
+                ])
 
+            # 6. NeoBAE (playbae) and its SDL3/SDL3_ttf source build & install
+            playbae_bin = cache_dir / "playbae"
+            if not playbae_bin.exists():
+                sdl_src = temp_build_dir / "SDL"
+                sdl_ttf_src = temp_build_dir / "SDL_ttf"
+                neobae_src = temp_build_dir / "NeoBAE"
+                
+                script_lines.extend([
+                    f"git clone https://github.com/libsdl-org/SDL.git -b main --depth 1 \"{sdl_src}\"",
+                    f"cmake -B \"{sdl_src}/build\" \"{sdl_src}\"",
+                    f"cmake --build \"{sdl_src}/build\" --parallel $(nproc)",
+                    f"sudo cmake --install \"{sdl_src}/build\"",
+                    
+                    f"git clone https://github.com/libsdl-org/SDL_ttf.git -b main --depth 1 \"{sdl_ttf_src}\"",
+                    f"cmake -B \"{sdl_ttf_src}/build\" \"{sdl_ttf_src}\"",
+                    f"cmake --build \"{sdl_ttf_src}/build\" --parallel $(nproc)",
+                    f"sudo cmake --install \"{sdl_ttf_src}/build\"",
+                    
+                    f"git clone --recurse-submodules https://github.com/zefie/NeoBAE.git \"{neobae_src}\"",
+                    f"cmake -B \"{neobae_src}/build\" \"{neobae_src}\"",
+                    f"cmake --build \"{neobae_src}/build\" --parallel $(nproc)",
+                    f"mv \"{neobae_src}/build/bin/playbae\" \"{playbae_bin}\"",
+                    f"chmod +x \"{playbae_bin}\""
+                ])
+
+            # 7. Soundfont and Extras download
             soundfont_file = cache_dir / "FluidR3_GM.sf2"
             if not soundfont_file.exists():
-                script_lines.append(f"wget -O {soundfont_file} https://github.com/pianobooster/fluid-soundfont/releases/download/v3.1/FluidR3_GM.sf2")
+                script_lines.append(f"wget -O \"{soundfont_file}\" https://github.com/pianobooster/fluid-soundfont/releases/download/v3.1/FluidR3_GM.sf2")
 
             nsf_tracks_bin = cache_dir / "nsf_tracks"
             if not nsf_tracks_bin.exists():
-                script_lines.append(f"wget -O {nsf_tracks_bin} https://raw.githubusercontent.com/Aer0nic/joshw-browser/main/tools/nsf_tracks || echo 'nsf_tracks fetch optional'")
-                script_lines.append(f"chmod +x {nsf_tracks_bin} || true")
+                script_lines.extend([
+                    f"wget -O \"{nsf_tracks_bin}\" https://raw.githubusercontent.com/Aer0nic/joshw-browser/main/tools/nsf_tracks || true",
+                    f"chmod +x \"{nsf_tracks_bin}\" || true"
+                ])
 
             kernal_file = sidplayfp_dir / "kernal"
             if not kernal_file.exists():
-                script_lines.append(f"wget -O {kernal_file} https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/kernal.901227-03.bin")
+                script_lines.append(f"wget -O \"{kernal_file}\" https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/kernal.901227-03.bin || true")
 
             basic_file = sidplayfp_dir / "basic"
             if not basic_file.exists():
-                script_lines.append(f"wget -O {basic_file} https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/basic.901226-01.bin")
+                script_lines.append(f"wget -O \"{basic_file}\" https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/basic.901226-01.bin || true")
 
+            # 8. Cleanup temp directory
+            script_lines.append(f"rm -rf \"{temp_build_dir}\"")
+
+            # Write the complete unified script using '&&' chaining so everything runs sequentially
             script_file = temp_build_dir / "install_deps.sh"
             with open(script_file, "w", encoding="utf-8") as f:
                 f.write("#!/bin/bash\n")
-                f.write("\n".join(script_lines) + "\n")
+                f.write("set -e\n")  # Exit immediately if any command fails
+                f.write(" && \\\n".join(script_lines) + "\n")
                 f.write("echo '----------------------------------------'\n")
                 f.write("echo 'Installation complete. Press Enter to close.'\n")
                 f.write("read\n")
             os.chmod(script_file, 0o755)
 
+            # Launch terminal
             terminals = [
                 ("gnome-terminal", ["gnome-terminal", "--", "bash", "-c", str(script_file)]),
                 ("konsole", ["konsole", "-e", "bash", "-c", str(script_file)]),

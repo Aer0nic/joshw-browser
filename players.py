@@ -2430,19 +2430,21 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
 
         if is_dir:
             self.populate_files(full_path)
-        else:
-            ext = os.path.splitext(full_path)[1].lower()
-            
-            if ext == ".miniusf":
-                all_files = sorted([
-                    p for _, p, is_d in self.entries_list 
-                    if not is_d and p.lower().endswith(".miniusf")
-                ])
-            else:
-                all_files = [p for _, p, is_d in self.entries_list if not is_d]
+            return
 
+        ext = os.path.splitext(full_path)[1].lower()
+        playbae_exts = {".mid", ".midi", ".kar", ".rmi", ".rmf", ".zmf", ".xmf", ".mxmf", ".mthc"}
+
+        # 1. Handle PlayBAE supported files (.mid, .midi, etc.)
+        if ext in playbae_exts:
+            playbae_files = sorted([
+                p for _, p, is_d in self.entries_list 
+                if not is_d and os.path.splitext(p)[1].lower() in playbae_exts
+            ])
+            if not playbae_files:
+                playbae_files = [full_path]
             try:
-                file_idx = all_files.index(full_path)
+                file_idx = playbae_files.index(full_path)
             except ValueError:
                 file_idx = 0
 
@@ -2451,13 +2453,102 @@ class ExtractedFilesBrowserWindow(tk.Toplevel):
                 handler = getattr(handler, "parent", None)
 
             if handler and hasattr(handler, "play_audio_file"):
-                handler.play_audio_file(full_path, playlist=all_files, start_index=file_idx)
+                handler.play_audio_file(full_path, playlist=playbae_files, start_index=file_idx)
             else:
-                ext_file = os.path.splitext(full_path)[1].lower()
-                if ext_file in (".nsf", ".nsfe"):
-                    # Local import to prevent circular dependency
-                    from mpv_player import MPVPlayerWindow
-                    MPVPlayerWindow(self.parent, full_path)
+                from playbae import PlayBAEPlayerWindow
+                PlayBAEPlayerWindow(self.parent, full_path, playlist=playbae_files, start_index=file_idx)
+            return
+
+        # 2. Handle XMI conversion to MIDI
+        if ext == ".xmi":
+            folder = os.path.dirname(full_path)
+            sh_path = os.path.join(get_cache_directory(), "xmi2mid.sh")
+            
+            if not os.path.exists(sh_path):
+                try:
+                    os.makedirs(get_cache_directory(), exist_ok=True)
+                    script_content = """#!/usr/bin/env bash
+folder="${1:-}"
+if [[ -z "$folder" || ! -d "$folder" ]]; then
+    echo "Usage: $0 DIRECTORY"
+    exit 1
+fi
+mapfile -d '' files < <(find "$folder" -type f -iname '*.xmi' -print0)
+if ((${#files[@]} == 0)); then
+    echo "No .xmi files found in: $folder"
+    exit 1
+fi
+for file in "${files[@]}"; do
+    output="${file%.*}.mid"
+    if [[ -e "$output" ]]; then
+        echo "Output already exists; nothing converted or deleted: $output"
+        exit 1
+    fi
+done
+for file in "${files[@]}"; do
+    output="${file%.*}.mid"
+    echo "Converting: $file -> $output"
+    if ! wildmidi -x "$output" "$file"; then
+        echo "Conversion failed; XMI originals have been kept."
+        exit 1
+    fi
+done
+for file in "${files[@]}"; do
+    rm -- "$file"
+done
+echo "Conversion succeeded; XMI originals deleted."
+"""
+                    with open(sh_path, "w", encoding="utf-8") as f:
+                        f.write(script_content)
+                    os.chmod(sh_path, 0o755)
+                except Exception:
+                    pass
+
+            try:
+                subprocess.run([sh_path, folder + "/"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            except Exception as e:
+                messagebox.showerror("XMI Conversion Error", f"Failed to convert XMI files:\n\n{e}")
+                return
+
+            mid_files = sorted([
+                os.path.join(folder, f) for f in os.listdir(folder)
+                if os.path.isfile(os.path.join(folder, f)) and f.lower().endswith((".mid", ".midi"))
+            ])
+            if mid_files:
+                target_mid = f"{os.path.splitext(full_path)[0]}.mid"
+                start_idx = mid_files.index(target_mid) if target_mid in mid_files else 0
+                
+                from playbae import PlayBAEPlayerWindow
+                PlayBAEPlayerWindow(self.parent, mid_files[start_idx], playlist=mid_files, start_index=start_idx)
+                self.destroy()
+                return
+
+        # 3. Handle all other audio formats (miniUSF, NSF, VGM, etc.)
+        if ext == ".miniusf":
+            all_files = sorted([
+                p for _, p, is_d in self.entries_list 
+                if not is_d and p.lower().endswith(".miniusf")
+            ])
+        else:
+            all_files = [p for _, p, is_d in self.entries_list if not is_d]
+
+        try:
+            file_idx = all_files.index(full_path)
+        except ValueError:
+            file_idx = 0
+
+        handler = self.parent
+        while handler and not hasattr(handler, "play_audio_file"):
+            handler = getattr(handler, "parent", None)
+
+        if handler and hasattr(handler, "play_audio_file"):
+            handler.play_audio_file(full_path, playlist=all_files, start_index=file_idx)
+        else:
+            if ext in (".nsf", ".nsfe"):
+                from mpv_player import MPVPlayerWindow
+                MPVPlayerWindow(self.parent, full_path)
+            else:
+                messagebox.showerror("Error", f"No handler available to play: {os.path.basename(full_path)}")
 
     def open_file_picker(self):
         initial_dir = self.folder_path if os.path.isdir(self.folder_path) else os.path.expanduser("~")
