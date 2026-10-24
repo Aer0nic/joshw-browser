@@ -12,15 +12,20 @@ import urllib.request
 import tkinter as tk
 import ttkbootstrap as tb
 from ttkbootstrap.constants import *
-from downloaders import install_single_dependency
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
-from usf_player import USFPlayerWindow
-from mpv_player import MPVPlayerWindow
-from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, is_emulated_file, format_size, resource_path
+from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, format_size, resource_path
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
-from players import VGMStreamPlayerWindow, SIDPlayerWindow, GSFPlayerWindow, TwoSFPlayerWindow, PSFPlayerWindow, ExtractedFilesBrowserWindow, get_vgmstream_path, get_lazyusf_path, get_2sfplay_path
-from downloaders import DownloadProgressWindow, IndexAllWindow, IndexPremadeWindow, install_dependencies_prompt
+from players import ExtractedFilesBrowserWindow, get_vgmstream_path
+from vgmstream_player import VGMStreamPlayerWindow
+from sid_player import SIDPlayerWindow
+from gsf_player import GSFPlayerWindow
+from twosf_player import TwoSFPlayerWindow
+from psf_player import PSFPlayerWindow
+from downloaders import DownloadProgressWindow, IndexAllWindow, IndexPremadeWindow, install_dependencies_prompt, check_and_download_sid_firmware
+from gme_player import GMEPlayerWindow, generate_gme_m3u_if_needed
+from mpv_player import MPVPlayerWindow
+from usf_player import USFPlayerWindow
 
 
 class ToolTip:
@@ -74,18 +79,14 @@ class ToolTip:
 
 
 class JoshWBrowser(tb.Window):
-
+    
     def change_theme(self, theme_name):
-        """Applies the chosen theme, saves it to settings.json, and updates hover colors."""
         self.saved_theme = theme_name
-        
-        # 1. Apply the theme via ttk style
         try:
             self.style.theme_use(theme_name)
         except Exception as e:
             print(f"Could not apply theme: {e}")
 
-        # 2. Save to settings.json
         try:
             settings = self.load_settings() or {}
             settings["theme"] = theme_name
@@ -95,20 +96,45 @@ class JoshWBrowser(tb.Window):
         except Exception as e:
             print(f"Could not save theme to settings: {e}")
 
-        # 3. Dynamically set the hover highlight color based on theme name
         theme_lower = theme_name.lower()
         hover_color = "#2a3b4c" if "dark" in theme_lower else "#e8f0fe"
+
+        try:
+            base_color = None
+            if hasattr(self.style, "colors") and hasattr(self.style.colors, "bg"):
+                base_color = self.style.colors.bg
+            if not base_color:
+                base_color = self.style.lookup("TFrame", "background") or "#ffffff"
+            
+            def darken_color(hex_str, factor=0.9):
+                if not hex_str or not isinstance(hex_str, str):
+                    return "#ffffff"
+                hex_str = hex_str.strip('#')
+                if len(hex_str) != 6:
+                    return f"#{hex_str}"
+                try:
+                    r = int(hex_str[0:2], 16)
+                    g = int(hex_str[2:4], 16)
+                    b = int(hex_str[4:6], 16)
+                    r = max(0, min(255, int(r * factor)))
+                    g = max(0, min(255, int(g * factor)))
+                    b = max(0, min(255, int(b * factor)))
+                    return f"#{r:02x}{g:02x}{b:02x}"
+                except Exception:
+                    return f"#{hex_str}"
+
+            field_bg = darken_color(base_color, 0.9 if "dark" in theme_lower else 0.96)
+            self.style.configure("Treeview", fieldbackground=field_bg)
+        except Exception as e:
+            print(f"Could not configure Treeview fieldbackground: {e}")
 
         if hasattr(self, "tree") and hasattr(self, "fav_tree"):
             self.tree.tag_configure("hover", background=hover_color)
             self.fav_tree.tag_configure("hover", background=hover_color)
     
     def on_tree_motion(self, event):
-        """Highlights the row under the mouse cursor for the Browse tree."""
         tree = self.tree
         item_id = tree.identify_row(event.y)
-        
-        # Clear previous hover tag if any
         for item in tree.get_children():
             current_tags = list(tree.item(item, "tags"))
             if "hover" in current_tags:
@@ -122,7 +148,6 @@ class JoshWBrowser(tb.Window):
                 tree.item(item_id, tags=current_tags)
 
     def on_tree_leave(self, event):
-        """Clears hover highlight when mouse leaves the Browse tree."""
         for item in self.tree.get_children():
             current_tags = list(self.tree.item(item, "tags"))
             if "hover" in current_tags:
@@ -130,10 +155,8 @@ class JoshWBrowser(tb.Window):
                 self.tree.item(item, tags=current_tags)
 
     def on_fav_motion(self, event):
-        """Highlights the row under the mouse cursor for the Favorites tree."""
         tree = self.fav_tree
         item_id = tree.identify_row(event.y)
-        
         for item in tree.get_children():
             current_tags = list(tree.item(item, "tags"))
             if "hover" in current_tags:
@@ -147,7 +170,6 @@ class JoshWBrowser(tb.Window):
                 tree.item(item_id, tags=current_tags)
 
     def on_fav_leave(self, event):
-        """Clears hover highlight when mouse leaves the Favorites tree."""
         for item in self.fav_tree.get_children():
             current_tags = list(self.fav_tree.item(item, "tags"))
             if "hover" in current_tags:
@@ -186,7 +208,6 @@ class JoshWBrowser(tb.Window):
         if existing:
             favorites = [f for f in favorites if f.get("url") != url]
         else:
-            # Ensure domain is stamped if missing
             if not entry.get("domain"):
                 entry["domain"] = self.domain_combo.get()
             favorites.append(entry)
@@ -239,8 +260,7 @@ class JoshWBrowser(tb.Window):
         favs = self.load_favorites()
         try:
             entry = favs[int(selection[0])]
-            # Temporarily simulate a click action dialog or stream directly
-            dialog = tk.Toplevel(self)
+            dialog = tb.Toplevel(self)
             dialog.title("File Action")
             dialog.geometry("340x140")
             dialog.resizable(False, False)
@@ -256,7 +276,6 @@ class JoshWBrowser(tb.Window):
             btn_frame = ttk.Frame(dialog)
             btn_frame.pack(pady=5)
 
-            # Bind actions using entry["url"]
             url = entry["url"]
             stream_btn = ttk.Button(btn_frame, text="Stream", width=12, command=lambda: [dialog.destroy(), self.stream_specific_url(url)])
             stream_btn.pack(side="left", padx=8)
@@ -293,10 +312,7 @@ class JoshWBrowser(tb.Window):
             daemon=True
         ).start()
 
-    
-    
     def on_toggle_animation_setting(self):
-        # If disabled via options, cancel animation loop and reset button background to default
         if not self.stream_random_animation_enabled.get():
             if self.stream_random_anim_id:
                 try:
@@ -307,7 +323,6 @@ class JoshWBrowser(tb.Window):
             if hasattr(self, "stream_random_btn") and str(self.stream_random_btn["state"]) == "normal":
                 self.stream_random_btn.configure(bg="#f0f0f0")
         else:
-            # If enabled and button is normal, restart the loop
             if hasattr(self, "stream_random_btn") and str(self.stream_random_btn["state"]) == "normal":
                 if not self.stream_random_anim_id:
                     self.animate_stream_random_button()
@@ -316,7 +331,6 @@ class JoshWBrowser(tb.Window):
         if not hasattr(self, "stream_random_btn") or not self.stream_random_btn.winfo_exists():
             return
         
-        # Keep animating as long as the button is enabled and animations are turned on in settings
         if str(self.stream_random_btn["state"]) == "normal" and self.stream_random_animation_enabled.get():
             color = self.fade_colors[self.fade_index]
             try:
@@ -324,8 +338,6 @@ class JoshWBrowser(tb.Window):
             except Exception:
                 pass
             self.fade_index = (self.fade_index + 1) % len(self.fade_colors)
-            
-            # Slower delay (450ms per step) for a slow, relaxing gradient fade transition
             self.stream_random_anim_id = self.after(450, self.animate_stream_random_button)
         else:
             self.stream_random_anim_id = None
@@ -336,7 +348,6 @@ class JoshWBrowser(tb.Window):
         
         if enable:
             self.stream_random_btn.configure(state="normal")
-            # Start the animation loop if enabled in settings and not already running
             if self.stream_random_animation_enabled.get() and not self.stream_random_anim_id:
                 self.animate_stream_random_button()
         else:
@@ -347,7 +358,6 @@ class JoshWBrowser(tb.Window):
                 except Exception:
                     pass
                 self.stream_random_anim_id = None
-    
     
     def stream_random_file(self):
         source_pool = self.domain_full_entries if self.domain_full_entries else self.current_entries
@@ -373,17 +383,14 @@ class JoshWBrowser(tb.Window):
         content_frame.pack(fill="both", expand=True)
         content_frame.columnconfigure(0, weight=1)
 
-        # Text label locked to the top (Row 0)
         text_label = ttk.Label(content_frame, text="Rolling the dice...", font=("Arial", 11, "bold"), justify="center", anchor="center")
         text_label.grid(row=0, column=0, pady=(5, 10), sticky="ew")
 
-        # Image label locked to the bottom (Row 1)
         img_label = ttk.Label(content_frame, anchor="center")
         img_label.grid(row=1, column=0, pady=(5, 5))
 
         bottom_frame = ttk.Frame(rand_win, padding=10)
 
-        # Generate clean dice images for faces 1 through 6 programmatically using Pillow
         from PIL import Image, ImageTk, ImageDraw
         dice_size = 64
 
@@ -417,13 +424,12 @@ class JoshWBrowser(tb.Window):
             state["chosen"] = random.choice(files)
             state["angle"] = 0
             state["face_num"] = random.randint(1, 6)
-            state["steps_left"] = 70  # Total duration of the smooth spin (~2.1 seconds)
-            state["next_face_steps"] = random.randint(12, 25)  # Random interval between 0.34s and 0.74s (12-25 ticks at 30ms)
+            state["steps_left"] = 70
+            state["next_face_steps"] = random.randint(12, 25)
             
             bottom_frame.pack_forget()
             text_label.configure(text="Rolling the dice...", font=("Arial", 11, "bold"), justify="center", anchor="center")
             img_label.grid()
-            
             spin_tick()
 
         def spin_tick():
@@ -433,11 +439,8 @@ class JoshWBrowser(tb.Window):
             if state["steps_left"] > 0:
                 state["steps_left"] -= 1
                 state["next_face_steps"] -= 1
-                
-                # Keep the smooth rotation going continuously
                 state["angle"] = (state["angle"] + 15) % 360
                 
-                # Randomly replace the dice face at intervals matching 0.34s to 0.74s
                 if state["next_face_steps"] <= 0:
                     state["face_num"] = random.randint(1, 6)
                     state["next_face_steps"] = random.randint(12, 25)
@@ -446,11 +449,10 @@ class JoshWBrowser(tb.Window):
                 rotated = current_face.rotate(state["angle"], resample=Image.BICUBIC, expand=False)
                 photo = ImageTk.PhotoImage(rotated)
                 img_label.configure(image=photo)
-                img_label.image = photo  # Keep reference to prevent garbage collection
+                img_label.image = photo
                 
                 rand_win.after(30, spin_tick)
             else:
-                # Animation finished: hide dice image cleanly, format text at the top, and show buttons
                 img_label.grid_remove()
                 chosen = state["chosen"]
                 filename = chosen["name"]
@@ -478,7 +480,6 @@ class JoshWBrowser(tb.Window):
         def on_cancel():
             rand_win.destroy()
 
-        # Layout buttons: OK on left, Roll Again! in middle, Cancel on right
         ok_btn = ttk.Button(bottom_frame, text="OK", command=on_accept, width=10)
         ok_btn.pack(side="left")
 
@@ -488,7 +489,6 @@ class JoshWBrowser(tb.Window):
         roll_again_btn = ttk.Button(bottom_frame, text="Roll Again!", command=pick_and_spin, width=12)
         roll_again_btn.pack(side="left", expand=True)
 
-        # Start initial roll
         pick_and_spin()
 
     def download_specific_url_to_temp(self, url):
@@ -535,10 +535,10 @@ class JoshWBrowser(tb.Window):
                 shutil.which("nsf_tracks") is not None
                 or os.path.exists(os.path.join(cache_dir, "nsf_tracks"))
             )
-        elif dep_name == "playbae":
+        elif dep_name == "neobae_player":
             return (
-                shutil.which("playbae") is not None
-                or os.path.exists(os.path.join(cache_dir, "playbae"))
+                shutil.which("neobae_player") is not None
+                or os.path.exists(os.path.join(cache_dir, "neobae_player"))
             )
         elif dep_name in ("aosdk", "psfplay"):
             try:
@@ -551,8 +551,6 @@ class JoshWBrowser(tb.Window):
 
     def update_dependencies_submenu(self):
         self.deps_menu.delete(0, tk.END)
-        
-        # Tuple structure: (Display Name, Unique Key, Binary/File Name)
         deps = [
             ("Lazyusf", "lazyusf", "lazyusf"),
             ("VGMStream", "vgmstream", "vgmstream123"),
@@ -563,14 +561,10 @@ class JoshWBrowser(tb.Window):
             ("nsf_tracks", "nsf_tracks", "nsf_tracks"),
             ("NeoBAE (playbae)", "playbae", "playbae")
         ]
-        
         cache_dir = Path(get_cache_directory())
 
         for display_name, key, bin_name in deps:
             is_installed = (cache_dir / bin_name).exists() or shutil.which(bin_name)
-            if key == "lazyusf":
-                is_installed = is_installed
-
             if is_installed:
                 self.deps_menu.add_command(
                     label=f"✓ {display_name} (Installed)", 
@@ -595,27 +589,20 @@ class JoshWBrowser(tb.Window):
         IndexPremadeWindow(self, show_steps=self.shift_pressed)
 
     def __init__(self):
-        # Check and generate xmi2mid.sh on startup if missing
         try:
             sh_path = os.path.join(get_cache_directory(), "xmi2mid.sh")
             if not os.path.exists(sh_path):
                 script_content = """#!/usr/bin/env bash
-
 folder="${1:-}"
-
 if [[ -z "$folder" || ! -d "$folder" ]]; then
     echo "Usage: $0 DIRECTORY"
     exit 1
 fi
-
 mapfile -d '' files < <(find "$folder" -type f -iname '*.xmi' -print0)
-
 if ((${#files[@]} == 0)); then
     echo "No .xmi files found in: $folder"
     exit 1
 fi
-
-# Don't overwrite any existing MIDI files.
 for file in "${files[@]}"; do
     output="${file%.*}.mid"
     if [[ -e "$output" ]]; then
@@ -623,8 +610,6 @@ for file in "${files[@]}"; do
         exit 1
     fi
 done
-
-# Convert all files. Keep originals if any conversion fails.
 for file in "${files[@]}"; do
     output="${file%.*}.mid"
     echo "Converting: $file -> $output"
@@ -633,12 +618,9 @@ for file in "${files[@]}"; do
         exit 1
     fi
 done
-
-# Delete originals only after every conversion succeeds.
 for file in "${files[@]}"; do
     rm -- "$file"
 done
-
 echo "Conversion succeeded; XMI originals deleted."
 """
                 with open(sh_path, "w", encoding="utf-8") as f:
@@ -647,18 +629,15 @@ echo "Conversion succeeded; XMI originals deleted."
         except Exception as e:
             print(f"Could not create xmi2mid.sh: {e}")
         
-        # 1. Load settings and fetch the saved theme name first (default to "cosmo" or similar if missing)
         self._initial_settings = self.load_settings()
         self.saved_theme = self._initial_settings.get("theme", "cosmo")
         
-        # 2. Pass themename to the superclass constructor so ttkbootstrap initializes with it
         super().__init__(themename=self.saved_theme)
         
         self.title("JoshW Archive Browser")
         self.geometry("1280x760")
         self.minsize(850, 560)
         
-        # Explicitly ensure the style matches (just in case)
         try:
             self.style.theme_use(self.saved_theme)
         except Exception:
@@ -670,7 +649,6 @@ echo "Conversion succeeded; XMI originals deleted."
         except Exception as e:
             print(f"Could not load icon: {e}")
         
-        # Use your custom cleanup handler
         self.protocol("WM_DELETE_WINDOW", self.on_window_close)
 
         self.shift_pressed = False
@@ -698,7 +676,6 @@ echo "Conversion succeeded; XMI originals deleted."
         saved_use_default = self._initial_settings.get("use_default_dest", False)
         saved_load_dir = self._initial_settings.get("default_load_music_dir", os.path.expanduser("~"))
 
-        # Change 'saved_theme' to 'self.saved_theme' here:
         self.saved_theme = self._initial_settings.get("theme", "default")
 
         self.destination = tk.StringVar(value=saved_dest)
@@ -723,7 +700,14 @@ echo "Conversion succeeded; XMI originals deleted."
 
         self.build_gui()
         self.refresh_favorites_tab()
+        self.change_theme(self.saved_theme)
         self.after(100, self.process_messages)
+        
+        # Check if SID firmware already exists in the cache directory before scheduling the check
+        sid_fw_dir = os.path.join(get_cache_directory(), "sid")
+        if not os.path.exists(sid_fw_dir) or not os.listdir(sid_fw_dir):
+            # Asynchronously run SID firmware check in the background after startup only if missing
+            self.after(500, lambda: threading.Thread(target=check_and_download_sid_firmware, daemon=True).start())
 
     def on_window_close(self, callback=None):
         self.stop_event.set()
@@ -775,7 +759,6 @@ echo "Conversion succeeded; XMI originals deleted."
         self.options_dropdown = tk.Menu(options_menu_btn, tearoff=0)
         self.options_dropdown.add_checkbutton(label="Keep Download Window Open After Completion", variable=self.keep_download_window_open)
         
-        # Add animation toggle option variable and checkbutton
         self.stream_random_animation_enabled = tk.BooleanVar(value=True)
         self.options_dropdown.add_checkbutton(
             label="Stream Random Button Animation", 
@@ -791,7 +774,6 @@ echo "Conversion succeeded; XMI originals deleted."
             command=lambda: install_dependencies_prompt(self)
         )
 
-        # Theme Submenu with checkmarks for available themes
         self.theme_var = tk.StringVar(value=self.style.theme_use())
 
         self.theme_menu = tk.Menu(self.options_dropdown, tearoff=0)
@@ -806,11 +788,12 @@ echo "Conversion succeeded; XMI originals deleted."
 
         self.deps_menu = tk.Menu(self.options_dropdown, tearoff=0)
         self.options_dropdown.add_cascade(label="Dependencies", menu=self.deps_menu)
-        self.update_dependencies_submenu()
+        
+        # Defer updating dependencies submenu to prevent startup lag
+        self.after(300, self.update_dependencies_submenu)
 
         options_menu_btn["menu"] = self.options_dropdown
 
-        # Mock/Dummy progress bar so background workers don't crash when updating values
         class DummyProgressBar:
             def __setitem__(self, key, value):
                 pass
@@ -860,7 +843,6 @@ echo "Conversion succeeded; XMI originals deleted."
         self.notebook = ttk.Notebook(tree_container)
         self.notebook.pack(fill="both", expand=True)
 
-        # --- Tab 1: Browse ---
         browse_frame = ttk.Frame(self.notebook)
         self.notebook.add(browse_frame, text="Browse")
 
@@ -891,7 +873,6 @@ echo "Conversion succeeded; XMI originals deleted."
         self.tree.bind("<Return>", self.double_click_entry)
         self.tree.bind("<Button-3>", self.on_browse_right_click)
 
-        # --- Tab 2: Favorites ---
         favorites_frame = ttk.Frame(self.notebook)
         self.notebook.add(favorites_frame, text="Favorites")
 
@@ -937,7 +918,6 @@ echo "Conversion succeeded; XMI originals deleted."
         ttk.Button(button_frame, text="Download Every File Here", command=self.download_current_directory).pack(side="left", padx=6)
         ttk.Button(button_frame, text="Stop", command=self.stop_operations).pack(side="left", padx=6)
         
-        # Stream Random! button (using tk.Button to allow smooth color fade animations)
         self.stream_random_btn = tk.Button(
             button_frame, 
             text="Stream Random!", 
@@ -952,7 +932,6 @@ echo "Conversion succeeded; XMI originals deleted."
         )
         self.stream_random_btn.pack(side="left", padx=6)
         
-        # Initialize animation tracking attributes
         self.stream_random_anim_id = None
         self.fade_colors = [
             "#e0f2fe", "#e8f0fe", "#ede9fe", "#f3e8ff", 
@@ -961,7 +940,6 @@ echo "Conversion succeeded; XMI originals deleted."
         ]
         self.fade_index = 0
 
-        # Determine initial hover color based on startup theme name and configure trees
         initial_theme_lower = self.saved_theme.lower()
         initial_hover_color = "#2a3b4c" if "dark" in initial_theme_lower else "#e8f0fe"
         
@@ -1027,6 +1005,7 @@ echo "Conversion succeeded; XMI originals deleted."
             "NES (.nsf, .nsfe)\n"
             "SNES (.spc)\n"
             "c64 (.sid)\n"
+            "Nintendo 64 (.usf, .miniusf)\n"
             "GameCube (.ast, .dsp, .brstm)\n"
             "Nintendo Wii (.brstm, .rstm, .bfsar)\n"
             "Nintendo WiiU (.bfstm, .bfwav, .fsar)\n"
@@ -1045,8 +1024,6 @@ echo "Conversion succeeded; XMI originals deleted."
             "Nintendo DS (.2sf, .mini2sf)\n"
             "Playstation Portable (.vag, .at3)\n"
             "Playstation Vita (.vag, .at3)\n\n"
-            "Partially working domains are:\n\n"
-            "N64 (.usf, .usfmini, .usflib)\n\n"
             "I hope to add more in the future with more updates\n\n"
             "All streamed songs are saved in a temporary folder within ~/.config/joshw/temp_extracted and will be deleted once the program is closed.\n\n"
             "I hope you really enjoy this program!"
@@ -1123,13 +1100,12 @@ echo "Conversion succeeded; XMI originals deleted."
     def play_audio_file(self, audio_file, playlist=None, start_index=None):
         ext = os.path.splitext(audio_file)[1].lower()
 
-        playbae_extensions = {".mid", ".midi", ".kar", ".rmi", ".rmf", ".zmf", ".xmf", ".mxmf", ".mthc"}
-        if ext in playbae_extensions:
-            from playbae import PlayBAEPlayerWindow
+        neobae_player_extensions = {".mid", ".midi", ".kar", ".rmi", ".rmf", ".zmf", ".xmf", ".mxmf", ".mthc"}
+        if ext in neobae_player_extensions:
+            from neobae_player import PlayBAEPlayerWindow
             PlayBAEPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
         
-        # Force vgmstream123 for these specific formats
         vgmstream_formats = {".ast", ".dsp", ".brstm", ".rstm", ".bfsar", ".bfwav", ".adp", ".str", ".thp", ".was", ".h4m", ".vag", ".wem"}
         if ext in vgmstream_formats:
             vgm_bin = get_vgmstream_path()
@@ -1139,13 +1115,6 @@ echo "Conversion succeeded; XMI originals deleted."
             VGMStreamPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
 
-        supported_extensions = {
-            ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
-            ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-            ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".aifc", ".au", ".ra", ".xma", ".XMA", ".xmd",
-            ".dsp", ".ast", ".brstm", ".rstm", ".brwav", ".rwav", ".brsar", ".rsar", ".bfstm", ".fstm", ".bfwav", ".fwav", ".bfsar", ".fsar",
-            ".vag", ".adpcm", ".at3", ".adp", ".str", ".thp", ".was", ".h4m", ".wem"
-        }
         if ext == ".sid":
             SIDPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
@@ -1163,12 +1132,14 @@ echo "Conversion succeeded; XMI originals deleted."
                 return
             GSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
+
         elif ext in (".2sf", ".mini2sf"):
             if not self.check_dependency_status("2sfplay"):
                 messagebox.showerror("2sfPlay Not Found", "2sfPlay not found! Please install dependencies.")
                 return
             TwoSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
+
         elif ext in (".psf", ".minipsf", ".psf2", ".minipsf2"):
             if not self.check_dependency_status("psfplay"):
                 messagebox.showerror(
@@ -1179,18 +1150,32 @@ echo "Conversion succeeded; XMI originals deleted."
             PSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
         
-        elif ext in supported_extensions or ext in (".hes", ".nsf", ".nsfe", ".xma", ".XMA", ".miniusf", ".usf"):
+        gme_native_formats = {
+            ".nsf", ".nsfe", ".spc", ".gbs", ".hes", ".kss", 
+            ".vgm", ".vgz", ".ay", ".sap", ".gym"
+        }
+        if ext in gme_native_formats:
+            playlist_target = generate_gme_m3u_if_needed(audio_file)
+            GMEPlayerWindow(self, playlist_target, playlist=None, start_index=0)
+            return
+
+        supported_extensions = {
+            ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
+            ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".aifc", ".au", ".ra", ".xma", ".xmd"
+        }
+        if ext in supported_extensions or ext in (".xma", ".XMA"):
             mpv_path = self.path_mpv.get().strip() or "/bin/mpv"
             if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
                 messagebox.showerror("mpv Not Found", "mpv not found!")
                 return
             MPVPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
-        else:
-            vgm_bin = get_vgmstream_path()
-            if not vgm_bin or (not shutil.which(vgm_bin) and not os.path.exists(vgm_bin)):
-                messagebox.showerror("vgmstream123 Not Found", "vgmstream123 not found!")
-                return
-            VGMStreamPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
+            return
+        
+        vgm_bin = get_vgmstream_path()
+        if not vgm_bin or (not shutil.which(vgm_bin) and not os.path.exists(vgm_bin)):
+            messagebox.showerror("vgmstream123 Not Found", "vgmstream123 not found!")
+            return
+        VGMStreamPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
 
     def toggle_auto_indexing(self):
         self.auto_index_enabled = not self.auto_index_enabled
@@ -1476,26 +1461,10 @@ echo "Conversion succeeded; XMI originals deleted."
         self.apply_filter()
         self.status_text.set(f"{len(self.visible_entries)} shown | Total Size: {format_size(folder_size)}")
 
-        # Enable/disable Stream Random! button and manage its gradient fade animation loop
         has_files = any(not e.get("directory") for e in (self.domain_full_entries if self.domain_full_entries else entries))
         self.update_stream_random_state(has_files)
         if hasattr(self, "stream_random_btn"):
             self.stream_random_btn.configure(state="normal" if has_files else "disabled")
-
-        domain_name = self.domain_combo.get()
-        root_url = DOMAINS.get(domain_name, "").rstrip("/")
-        parsed_current, parsed_root = urllib.parse.urlparse(url), urllib.parse.urlparse(root_url)
-
-        if parsed_current.path.rstrip("/") != parsed_root.path.rstrip("/"):
-            parent_path = posixpath.dirname(parsed_current.path.rstrip("/")) + "/"
-            parent_url = urllib.parse.urlunparse((parsed_current.scheme, parsed_current.netloc, parent_path, "", "", ""))
-            entries = [{
-                "name": "..", "raw_name": "..", "date": "", "url": parent_url, "directory": True, "size": None, "is_parent_nav": True
-            }] + entries
-
-        self.path_label.configure(text=urllib.parse.unquote(url))
-        self.apply_filter()
-        self.status_text.set(f"{len(self.visible_entries)} shown | Total Size: {format_size(folder_size)}")
 
     def load_all_index_entries(self):
         bundled_root = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
@@ -1595,7 +1564,7 @@ echo "Conversion succeeded; XMI originals deleted."
             if not self.tree.selection():
                 self.tree.selection_set(selection[0])
 
-            dialog = tk.Toplevel(self)
+            dialog = tb.Toplevel(self)
             dialog.title("File Action")
             dialog.geometry("340x140")
             dialog.resizable(False, False)
@@ -1764,7 +1733,6 @@ echo "Conversion succeeded; XMI originals deleted."
             extract_dir = temp_dir
             extracted = True
 
-        # Delete the original compressed archive file to save space immediately after extraction
         try:
             if os.path.exists(output_path):
                 os.remove(output_path)
@@ -1793,7 +1761,6 @@ echo "Conversion succeeded; XMI originals deleted."
             self.save_destination_history(selected)
 
     def get_selected_files(self):
-        """Returns the URLs of currently selected files in the active browse tree."""
         urls = []
         selection = self.tree.selection()
         for item_id in selection:

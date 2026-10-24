@@ -9,6 +9,7 @@ import tempfile
 import urllib.request
 import tkinter as tk
 from tkinter import ttk, messagebox
+import ttkbootstrap as tb
 import config
 
 
@@ -153,7 +154,6 @@ class InstallDependenciesWorker:
                     f"git clone --recurse-submodules https://github.com/yshui/2sftowav.git \"{twosf_workdir}\"",
                     f"cd \"{twosf_workdir}/src/vio2sf\""
                 ])
-                # Write cst files and Makefiles inline into the build script
                 script_lines.append(r"""cat > 2sftowav.c <<'EOF'
 #include <locale.h>
 #include <signal.h>
@@ -294,18 +294,16 @@ EOF""")
             # 8. Cleanup temp directory
             script_lines.append(f"rm -rf \"{temp_build_dir}\"")
 
-            # Write the complete unified script using '&&' chaining so everything runs sequentially
             script_file = temp_build_dir / "install_deps.sh"
             with open(script_file, "w", encoding="utf-8") as f:
                 f.write("#!/bin/bash\n")
-                f.write("set -e\n")  # Exit immediately if any command fails
+                f.write("set -e\n")
                 f.write(" && \\\n".join(script_lines) + "\n")
                 f.write("echo '----------------------------------------'\n")
                 f.write("echo 'Installation complete. Press Enter to close.'\n")
                 f.write("read\n")
             os.chmod(script_file, 0o755)
 
-            # Launch terminal
             terminals = [
                 ("gnome-terminal", ["gnome-terminal", "--", "bash", "-c", str(script_file)]),
                 ("konsole", ["konsole", "-e", "bash", "-c", str(script_file)]),
@@ -332,7 +330,6 @@ EOF""")
 
 
 def install_single_dependency(dep_name, parent):
-    """Triggers an isolated build/download for a single dependency without running full system apt updates."""
     threading.Thread(target=_run_single_installer, args=(dep_name, parent), daemon=True).start()
 
 
@@ -461,7 +458,8 @@ class IndexPremadeWindow:
 
     def git_clone_worker(self):
         cache_dir = Path(config.get_cache_directory())
-        cache_dir.mkdir(parents=True, exist_ok=True)
+        indexes_dir = cache_dir / "indexes"
+        indexes_dir.mkdir(parents=True, exist_ok=True)
         
         repo_dir = cache_dir / "joshw-browser"
         indexes_src_dir = repo_dir / "indexes"
@@ -476,12 +474,12 @@ class IndexPremadeWindow:
             if indexes_src_dir.exists():
                 for f in indexes_src_dir.glob("domain_cache*"):
                     if f.is_file():
-                        shutil.copy2(f, cache_dir / f.name)
+                        shutil.copy2(f, indexes_dir / f.name)
 
             if repo_dir.exists():
                 shutil.rmtree(repo_dir, ignore_errors=True)
 
-            found_caches = list(cache_dir.glob("*domain_cache*"))
+            found_caches = list(indexes_dir.glob("*domain_cache*"))
 
             if found_caches:
                 if self.parent.winfo_exists():
@@ -490,13 +488,13 @@ class IndexPremadeWindow:
                         "Premade indexes downloaded and installed successfully!"
                     ))
             else:
-                terminal_cmd = f"cd {cache_dir} && git clone {clone_url} && cd joshw-browser/indexes/ && cp domain_cache* {cache_dir}"
+                terminal_cmd = f"cd {cache_dir} && git clone {clone_url} && cd joshw-browser/indexes/ && mkdir -p {indexes_dir} && cp domain_cache* {indexes_dir}"
                 error_msg = "Premade index files containing 'domain_cache' were not found after cloning. Please do it manually. A terminal will now open when you click OK."
                 if self.parent.winfo_exists():
                     self.parent.after(0, lambda: StepLogDialog(self.parent, "Installation Error", error_msg, terminal_cmd))
 
         except Exception as e:
-            terminal_cmd = f"cd {cache_dir} && git clone {clone_url} && cd joshw-browser/indexes/ && cp domain_cache* {cache_dir}"
+            terminal_cmd = f"cd {cache_dir} && git clone {clone_url} && cd joshw-browser/indexes/ && mkdir -p {indexes_dir} && cp domain_cache* {indexes_dir}"
             error_msg = f"An error occurred during git clone or file copying:\n\n{e}\n\nPlease perform it manually. A terminal will now open when you click OK."
             if self.parent.winfo_exists():
                 self.parent.after(0, lambda: StepLogDialog(self.parent, "Installation Error", error_msg, terminal_cmd))
@@ -655,7 +653,7 @@ class IndexAllWindow(tk.Toplevel):
         self.destroy()
 
 
-class DownloadProgressWindow(tk.Toplevel):
+class DownloadProgressWindow(tb.Toplevel):
     def __init__(self, parent, title="Downloading..."):
         super().__init__(parent)
         self.title(title)
@@ -775,6 +773,3 @@ class DownloadProgressWindow(tk.Toplevel):
     def cancel(self):
         self.is_cancelled = True
         self.destroy()
-
-
-check_and_download_sid_firmware()

@@ -164,7 +164,7 @@ class USFPlayerWindow(tk.Toplevel):
         browse_btn.pack(side="left", anchor="center", padx=(0, 8))
 
         # Canvas banner header taking up the remaining width
-        self.banner_canvas = tk.Canvas(header_frame, height=85, highlightthickness=0)
+        self.banner_canvas = tb.Canvas(header_frame, height=85, highlightthickness=0)
         self.banner_canvas.pack(side="left", fill="x", expand=True)
 
         # Load, stretch, and render banner image across the canvas dynamically while keeping transparency
@@ -222,12 +222,12 @@ class USFPlayerWindow(tk.Toplevel):
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
 
-        list_frame = ttk.LabelFrame(padding, text="Playlist Files", padding=6)
+        list_frame = tb.LabelFrame(padding, text="Playlist Files", padding=6)
         list_frame.pack(fill="both", expand=True, pady=(0, 10))
 
-        self.playlist_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
+        self.playlist_listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
         self.playlist_listbox.pack(side="left", fill="both", expand=True)
-        scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
+        scrollbar = tb.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
         scrollbar.pack(side="right", fill="y")
         self.playlist_listbox.configure(yscrollcommand=scrollbar.set)
         self.playlist_listbox.bind("<<ListboxSelect>>", self.on_playlist_select)
@@ -252,7 +252,7 @@ class USFPlayerWindow(tk.Toplevel):
         command=self.on_loop_checkbox_changed
         ).grid(row=0, column=0, padx=(0, 2), sticky="w")
 
-        ttk.Spinbox(
+        tb.Spinbox(
             btn_bottom,
             from_=1,
             to=99,

@@ -11,20 +11,15 @@ from tkinter import ttk, messagebox, filedialog
 
 from config import get_cache_directory, is_emulated_file
 
-# Import shared helper functions from players.py
+# Import shared helper functions from players.py (NO player windows imported here)
 from players import (
     get_saved_player_volume,
     register_volume_player,
     set_player_volume,
-    get_vgmstream_path,
-    get_lazyusf_path,
     prepare_nsf_m3u,
     parse_m3u_playlist,
-    get_next_track_index,
     InteractiveProgressBar,
     ExtractedFilesBrowserWindow,
-    VGMStreamPlayerWindow,
-    USFPlayerWindow,
     _active_volume_players
 )
 
@@ -34,12 +29,11 @@ class MPVPlayerWindow(tk.Toplevel):
         self.parent = parent
         self.audio_file = audio_file
         self.mpv = None
-        self.lazy_proc = None
         self.sock = None
         self.m3u_path = None
         self.socket_path = os.path.join(tempfile.gettempdir(), f"mpv-python-{os.getpid()}-{threading.get_ident()}.sock")
         self.is_scrubbing = False
-        self.is_sliding_volume = False  # Track volume slider interaction to prevent polling race conditions
+        self.is_sliding_volume = False
         self.raw_duration_seconds = 180.0
         self.raw_position_seconds = 0.0
 
@@ -127,43 +121,26 @@ class MPVPlayerWindow(tk.Toplevel):
                 self.current_index = 0
             return
 
-        if ext in (".miniusf", ".usf"):
-            self.playlist = []
-            try:
-                for f in sorted(os.listdir(folder)):
-                    if f.lower().endswith((".miniusf", ".usf")):
-                        self.playlist.append(os.path.join(folder, f))
-                if not self.playlist:
-                    self.playlist = [self.audio_file]
-                norm_playlist = [os.path.normpath(os.path.abspath(p)) for p in self.playlist]
-                if abs_target in norm_playlist:
-                    self.current_index = norm_playlist.index(abs_target)
-                else:
-                    self.current_index = 0
-            except Exception:
+        try:
+            files = sorted(os.listdir(folder))
+            audio_exts = {
+                ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
+                ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
+                ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".mid", ".midi"
+            }
+            for f in files:
+                full_p = os.path.join(folder, f)
+                if os.path.isfile(full_p) and os.path.splitext(f)[1].lower() in audio_exts:
+                    self.playlist.append(full_p)
+            norm_playlist = [os.path.normpath(os.path.abspath(p)) for p in self.playlist]
+            if abs_target in norm_playlist:
+                self.current_index = norm_playlist.index(abs_target)
+            else:
                 self.playlist = [self.audio_file]
                 self.current_index = 0
-        else:
-            try:
-                files = sorted(os.listdir(folder))
-                audio_exts = {
-                    ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
-                    ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-                    ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".mid", ".midi", ".miniusf", ".usf"
-                }
-                for f in files:
-                    full_p = os.path.join(folder, f)
-                    if os.path.isfile(full_p) and os.path.splitext(f)[1].lower() in audio_exts:
-                        self.playlist.append(full_p)
-                norm_playlist = [os.path.normpath(os.path.abspath(p)) for p in self.playlist]
-                if abs_target in norm_playlist:
-                    self.current_index = norm_playlist.index(abs_target)
-                else:
-                    self.playlist = [self.audio_file]
-                    self.current_index = 0
-            except Exception:
-                self.playlist = [self.audio_file]
-                self.current_index = 0
+        except Exception:
+            self.playlist = [self.audio_file]
+            self.current_index = 0
 
     def build_ui(self):
         filename = os.path.basename(self.audio_file)
@@ -218,7 +195,6 @@ class MPVPlayerWindow(tk.Toplevel):
         self.volume_slider = ttk.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
-        # Bind events to prevent polling feedback race conditions while sliding volume
         self.volume_slider.bind("<ButtonPress-1>", lambda e: setattr(self, "is_sliding_volume", True))
         self.volume_slider.bind("<ButtonRelease-1>", lambda e: self.after(300, lambda: setattr(self, "is_sliding_volume", False)))
 
@@ -246,9 +222,9 @@ class MPVPlayerWindow(tk.Toplevel):
         btn_bottom.pack(pady=(6, 0), fill="x")
 
         ttk.Checkbutton(
-        btn_bottom,
-        variable=self.loop_chk_var,
-        command=self.on_loop_checkbox_changed
+            btn_bottom,
+            variable=self.loop_chk_var,
+            command=self.on_loop_checkbox_changed
         ).grid(row=0, column=0, padx=(0, 2), sticky="w")
 
         ttk.Spinbox(
@@ -298,16 +274,6 @@ class MPVPlayerWindow(tk.Toplevel):
 
     def play_audio_file(self, audio_file, playlist=None, start_index=None):
         ext = os.path.splitext(audio_file)[1].lower()
-        
-        vgmstream_formats = {".ast", ".dsp", ".brstm", ".rstm", ".bfsar", ".bfwav"}
-        if ext in vgmstream_formats:
-            vgm_bin = get_vgmstream_path()
-            if not vgm_bin or (not shutil.which(vgm_bin) and not os.path.exists(vgm_bin)):
-                messagebox.showerror("vgmstream123 Not Found", "vgmstream123 not found!")
-                return
-            VGMStreamPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
-            return
-        
         if ext in (".nsf", ".nsfe"):
             self.stop()
             self.audio_file = audio_file
@@ -316,6 +282,7 @@ class MPVPlayerWindow(tk.Toplevel):
             self.current_index = 0
             self.play_current_track()
         else:
+            # Delegate all other file formats to the parent router/browser cleanly
             handler = self.parent
             while handler and not hasattr(handler, "play_audio_file"):
                 handler = getattr(handler, "parent", None)
@@ -375,17 +342,6 @@ class MPVPlayerWindow(tk.Toplevel):
                 pass
             self.mpv = None
 
-        if hasattr(self, "lazy_proc") and self.lazy_proc:
-            try:
-                self.lazy_proc.terminate()
-                self.lazy_proc.wait(timeout=1)
-            except Exception:
-                try:
-                    self.lazy_proc.kill()
-                except Exception:
-                    pass
-            self.lazy_proc = None
-
         if hasattr(self, "sock") and self.sock:
             try:
                 self.sock.close()
@@ -398,40 +354,6 @@ class MPVPlayerWindow(tk.Toplevel):
                 os.unlink(self.socket_path)
         except Exception:
             pass
-
-        ext = os.path.splitext(self.audio_file)[1].lower()
-        if ext in (".miniusf", ".usf"):
-            lazyusf_bin = get_lazyusf_path()
-            if not lazyusf_bin or not os.path.exists(lazyusf_bin):
-                lazyusf_bin = os.path.expanduser("~/.config/joshw/lazyusf")
-
-            if os.path.exists(lazyusf_bin):
-                active_item = self.playlist[self.current_index] if self.playlist else self.audio_file
-                target_path = active_item["file"] if isinstance(active_item, dict) else active_item
-                
-                playlist_paths = []
-                for item in self.playlist:
-                    p = item["file"] if isinstance(item, dict) else item
-                    if p not in playlist_paths:
-                        playlist_paths.append(p)
-                if not playlist_paths:
-                    playlist_paths = [target_path]
-
-                try:
-                    try:
-                        _active_volume_players.discard(self)
-                    except Exception:
-                        pass
-                    self.stop()
-                    self.destroy()
-                    idx = playlist_paths.index(target_path) if target_path in playlist_paths else 0
-                    self.native_usf_player = USFPlayerWindow(
-                        playlist=playlist_paths,
-                        initial_index=idx
-                    )
-                    return
-                except Exception as e:
-                    print(f"Error launching native USF player: {e}")
 
         mpv_bin = "/bin/mpv" if os.path.exists("/bin/mpv") else (shutil.which("mpv") or "mpv")
         
@@ -499,6 +421,8 @@ class MPVPlayerWindow(tk.Toplevel):
 
         if hasattr(self, "title_label") and self.winfo_exists():
             self.title_label.configure(text=f"Now Playing:\n{display_title}")
+        
+        # Updates window title dynamically
         self.title(f"mpv Controller - {display_title}")
         self.track_var.set(f"Track: {self.current_index + 1} / {len(self.playlist)}")
         self.start_mpv()
@@ -550,17 +474,6 @@ class MPVPlayerWindow(tk.Toplevel):
             self.sock = None
 
     def stop(self):
-        if hasattr(self, "lazy_proc") and self.lazy_proc:
-            try:
-                self.lazy_proc.terminate()
-                self.lazy_proc.wait(timeout=1)
-            except Exception:
-                try:
-                    self.lazy_proc.kill()
-                except Exception:
-                    pass
-            self.lazy_proc = None
-
         if hasattr(self, "mpv") and self.mpv:
             try:
                 if isinstance(self.mpv, subprocess.Popen):
@@ -591,7 +504,6 @@ class MPVPlayerWindow(tk.Toplevel):
         self.request_property("pause")
         self.request_property("eof-reached")
         
-        # Skip polling/syncing mpv volume while the user is actively adjusting the slider
         if not self.is_scrubbing and not self.is_sliding_volume:
             self.request_property("volume")
 

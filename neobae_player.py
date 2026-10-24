@@ -9,7 +9,6 @@ import signal
 import json
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
-from mpris_helper import setup_mpris_server
 
 from config import get_cache_directory, is_emulated_file
 from players import (
@@ -117,13 +116,6 @@ class PlayBAEPlayerWindow(tk.Toplevel):
             self.play_current_track()
             self.start_timer_thread()
 
-class PlayBAEPlayerWindow(tk.Toplevel):
-    def __init__(self, parent, audio_file, playlist=None, start_index=None):
-        # ... existing __init__ setup ...
-        
-        # Initialize MPRIS integration for Cinnamon sound applet
-        self.mpris_server, self.mpris_adapter = setup_mpris_server(self, player_name="PlayBAE")
-
     def format_time(self, seconds):
         if seconds is None or seconds < 0:
             return "00:00:00"
@@ -165,7 +157,7 @@ class PlayBAEPlayerWindow(tk.Toplevel):
     def build_ui(self):
         filename = os.path.basename(self.audio_file)
         self.title(f"NeoBAE playbae Controller - {filename}")
-        self.geometry("520$580" if False else "520x580")
+        self.geometry("520x580")
         self.minsize(460, 500)
         self.transient(self.parent)
 
@@ -524,6 +516,7 @@ class PlayBAEPlayerWindow(tk.Toplevel):
 
         if hasattr(self, "title_label") and self.winfo_exists():
             self.title_label.configure(text=f"Now Playing:\n{display_title}")
+        # Dynamically updates the OS window title to the current song/title
         self.title(f"NeoBAE playbae Controller - {display_title}")
         self.track_var.set(f"Track: {self.current_index + 1} / {len(self.playlist)}")
         self.start_playbae()
