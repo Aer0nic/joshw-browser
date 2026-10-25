@@ -14,18 +14,11 @@ import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
+from collections import defaultdict
 from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, format_size, resource_path
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
 from players import ExtractedFilesBrowserWindow, get_vgmstream_path
-from vgmstream_player import VGMStreamPlayerWindow
-from sid_player import SIDPlayerWindow
-from gsf_player import GSFPlayerWindow
-from twosf_player import TwoSFPlayerWindow
-from psf_player import PSFPlayerWindow
 from downloaders import DownloadProgressWindow, IndexAllWindow, IndexPremadeWindow, install_dependencies_prompt, check_and_download_sid_firmware
-from gme_player import GMEPlayerWindow, generate_gme_m3u_if_needed
-from mpv_player import MPVPlayerWindow
-from usf_player import USFPlayerWindow
 
 
 class ToolTip:
@@ -98,6 +91,7 @@ class JoshWBrowser(tb.Window):
 
         theme_lower = theme_name.lower()
         hover_color = "#2a3b4c" if "dark" in theme_lower else "#e8f0fe"
+        border_factor = 1.3 if "dark" in theme_lower else 0.82
 
         try:
             base_color = None
@@ -127,6 +121,27 @@ class JoshWBrowser(tb.Window):
             self.style.configure("Treeview", fieldbackground=field_bg)
         except Exception as e:
             print(f"Could not configure Treeview fieldbackground: {e}")
+
+        hex_clean = hover_color.strip('#')
+        try:
+            hr = int(hex_clean[0:2], 16)
+            hg = int(hex_clean[2:4], 16)
+            hb = int(hex_clean[4:6], 16)
+            hr = max(0, min(255, int(hr * border_factor)))
+            hg = max(0, min(255, int(hg * border_factor)))
+            hb = max(0, min(255, int(hb * border_factor)))
+            hover_border_color = f"#{hr:02x}{hg:02x}{hb:02x}"
+        except Exception:
+            hover_border_color = "#555555" if "dark" in theme_lower else "#cccccc"
+
+        try:
+            self.style.map("Treeview",
+                bordercolor=[("active", hover_border_color), ("focus", hover_border_color)],
+                lightcolor=[("active", hover_border_color), ("focus", hover_border_color)],
+                darkcolor=[("active", hover_border_color), ("focus", hover_border_color)]
+            )
+        except Exception as e:
+            print(f"Could not configure Treeview border styles: {e}")
 
         if hasattr(self, "tree") and hasattr(self, "fav_tree"):
             self.tree.tag_configure("hover", background=hover_color)
@@ -164,6 +179,8 @@ class JoshWBrowser(tb.Window):
                 tree.item(item, tags=current_tags)
                 
         if item_id:
+            if hasattr(self, "fav_display_mapping") and self.fav_display_mapping.get(item_id) is None:
+                return
             current_tags = list(tree.item(item_id, "tags"))
             if "hover" not in current_tags:
                 current_tags.append("hover")
@@ -215,23 +232,124 @@ class JoshWBrowser(tb.Window):
         self.apply_filter()
         self.refresh_favorites_tab()
 
+    def build_favorite_display_items(self, sorted_favs, col, asc):
+        if not sorted_favs:
+            return []
+
+        groups = defaultdict(list)
+
+        for entry in sorted_favs:
+            if col == "name":
+                name = entry.get("name", "").strip()
+                first_char = name[0].upper() if name else "#"
+                key = first_char if first_char.isalnum() else "#"
+            elif col == "domain":
+                key = entry.get("domain", "Unknown").strip() or "Unknown"
+            elif col == "type":
+                key = "Directory" if entry.get("directory") else "File"
+            elif col == "date":
+                key = entry.get("date", "Unknown").strip() or "Unknown"
+            elif col == "size":
+                sz = entry.get("size")
+                if entry.get("directory"):
+                    key = "Directories"
+                elif sz is None:
+                    key = "Unknown Size"
+                elif sz < 1024 * 1024:
+                    key = "Under 1 MB"
+                elif sz < 10 * 1024 * 1024:
+                    key = "1 MB - 10 MB"
+                else:
+                    key = "Over 10 MB"
+            elif col == "url":
+                parsed = urllib.parse.urlparse(entry.get("url", ""))
+                key = parsed.netloc or "Other"
+            else:
+                name = entry.get("name", "").strip()
+                first_char = name[0].upper() if name else "#"
+                key = first_char if first_char.isalnum() else "#"
+
+            groups[key].append(entry)
+
+        sorted_keys = sorted(groups.keys(), reverse=not asc if col in ("name", "domain") else False)
+
+        display_items = []
+        for i, key in enumerate(sorted_keys):
+            group_entries = groups[key]
+            
+            # Header separator placed ABOVE the group items
+            display_items.append({"type": "separator", "text": f"┄┄┄┄┄┄┄┄ {key} ┄┄┄┄┄┄┄┄"})
+            display_items.append({"type": "space"})
+            
+            for idx, entry in enumerate(group_entries):
+                is_last = (idx == len(group_entries) - 1)
+                display_items.append({"type": "entry", "entry": entry, "is_last": is_last})
+
+            if i < len(sorted_keys) - 1:
+                display_items.append({"type": "space"})
+
+        return display_items
+
     def refresh_favorites_tab(self):
         if not hasattr(self, "fav_tree"):
             return
         self.fav_tree.delete(*self.fav_tree.get_children())
         favs = self.load_favorites()
-        for index, entry in enumerate(favs):
+
+        if not hasattr(self, "fav_sort_column"):
+            self.fav_sort_column = "name"
+            self.fav_sort_ascending = True
+
+        orig_col = self.current_sort_column
+        orig_asc = self.current_sort_ascending
+        
+        self.current_sort_column = self.fav_sort_column
+        self.current_sort_ascending = self.fav_sort_ascending
+        
+        sorted_favs = self.apply_sorting(favs)
+        
+        self.current_sort_column = orig_col
+        self.current_sort_ascending = orig_asc
+
+        self.save_favorites(sorted_favs)
+
+        display_items = self.build_favorite_display_items(sorted_favs, self.fav_sort_column, self.fav_sort_ascending)
+        self.fav_display_mapping = {}
+
+        for index, item_data in enumerate(display_items):
             item_id = str(index)
-            item_size = "-" if entry.get("directory") else format_size(entry.get("size"))
-            self.fav_tree.insert("", "end", iid=item_id, values=(
-                "★",
-                "Directory" if entry.get("directory") else "File",
-                entry["name"],
-                entry.get("date", ""),
-                item_size,
-                entry.get("domain", ""),
-                urllib.parse.unquote(entry["url"])
-            ))
+            if item_data["type"] == "entry":
+                entry = item_data["entry"]
+                self.fav_display_mapping[item_id] = entry
+                item_size = "-" if entry.get("directory") else format_size(entry.get("size"))
+                
+                tag_name = "group_item_last" if item_data.get("is_last") else "group_item"
+                
+                self.fav_tree.insert("", "end", iid=item_id, values=(
+                    "★",
+                    "Directory" if entry.get("directory") else "File",
+                    entry["name"],
+                    entry.get("date", ""),
+                    item_size,
+                    entry.get("domain", ""),
+                    urllib.parse.unquote(entry["url"])
+                ), tags=(tag_name,))
+                
+            elif item_data["type"] == "space":
+                self.fav_display_mapping[item_id] = None
+                self.fav_tree.insert("", "end", iid=item_id, values=("", "", "", "", "", "", ""), tags=("space_row",))
+            elif item_data["type"] == "separator":
+                self.fav_display_mapping[item_id] = None
+                sep_text = item_data.get("text", f"┄┄┄┄┄┄┄┄ Group ┄┄┄┄┄┄┄┄")
+                self.fav_tree.insert("", "end", iid=item_id, values=("", "", sep_text, "", "", "", ""), tags=("separator_row",))
+
+        theme_lower = self.saved_theme.lower()
+        border_color = "#666666" if "dark" in theme_lower else "#999999"
+        
+        self.fav_tree.tag_configure("space_row", background=self.style.lookup("Treeview", "background") or "#ffffff")
+        self.fav_tree.tag_configure("separator_row", foreground=border_color, font=("Arial", 9, "bold"))
+        self.fav_tree.tag_configure("group_item")
+        self.fav_tree.tag_configure("group_item_last")  
 
     def on_browse_right_click(self, event):
         item_id = self.tree.identify_row(event.y)
@@ -245,45 +363,45 @@ class JoshWBrowser(tb.Window):
 
     def on_fav_right_click(self, event):
         item_id = self.fav_tree.identify_row(event.y)
-        if item_id:
-            favs = self.load_favorites()
-            try:
-                entry = favs[int(item_id)]
+        if item_id and hasattr(self, "fav_display_mapping"):
+            entry = self.fav_display_mapping.get(item_id)
+            if entry:
                 self.toggle_favorite_by_entry(entry)
-            except Exception:
-                pass
 
     def double_click_favorite(self, event=None):
         selection = self.fav_tree.selection()
         if not selection:
             return
-        favs = self.load_favorites()
-        try:
-            entry = favs[int(selection[0])]
-            dialog = tb.Toplevel(self)
-            dialog.title("File Action")
-            dialog.geometry("340x140")
-            dialog.resizable(False, False)
-            dialog.transient(self)
+        item_id = selection[0]
+        if hasattr(self, "fav_display_mapping"):
+            entry = self.fav_display_mapping.get(item_id)
+            if not entry:
+                return
             try:
-                dialog.update_idletasks()
-                dialog.grab_set()
+                dialog = tb.Toplevel(self)
+                dialog.title("File Action")
+                dialog.geometry("340x140")
+                dialog.resizable(False, False)
+                dialog.transient(self)
+                try:
+                    dialog.update_idletasks()
+                    dialog.grab_set()
+                except Exception:
+                    pass
+
+                filename = entry["name"]
+                ttk.Label(dialog, text=f"Choose action for:\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
+                btn_frame = ttk.Frame(dialog)
+                btn_frame.pack(pady=5)
+
+                url = entry["url"]
+                stream_btn = ttk.Button(btn_frame, text="Stream", width=12, command=lambda: [dialog.destroy(), self.stream_specific_url(url)])
+                stream_btn.pack(side="left", padx=8)
+                download_btn = ttk.Button(btn_frame, text="Download", width=12, command=lambda: [dialog.destroy(), self.download_specific_url(url)])
+                download_btn.pack(side="left", padx=8)
+                stream_btn.focus_set()
             except Exception:
                 pass
-
-            filename = entry["name"]
-            ttk.Label(dialog, text=f"Choose action for:\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
-            btn_frame = ttk.Frame(dialog)
-            btn_frame.pack(pady=5)
-
-            url = entry["url"]
-            stream_btn = ttk.Button(btn_frame, text="Stream", width=12, command=lambda: [dialog.destroy(), self.stream_specific_url(url)])
-            stream_btn.pack(side="left", padx=8)
-            download_btn = ttk.Button(btn_frame, text="Download", width=12, command=lambda: [dialog.destroy(), self.download_specific_url(url)])
-            download_btn.pack(side="left", padx=8)
-            stream_btn.focus_set()
-        except Exception:
-            pass
 
     def stream_specific_url(self, url):
         temp_dir = get_temp_directory()
@@ -703,10 +821,8 @@ echo "Conversion succeeded; XMI originals deleted."
         self.change_theme(self.saved_theme)
         self.after(100, self.process_messages)
         
-        # Check if SID firmware already exists in the cache directory before scheduling the check
         sid_fw_dir = os.path.join(get_cache_directory(), "sid")
         if not os.path.exists(sid_fw_dir) or not os.listdir(sid_fw_dir):
-            # Asynchronously run SID firmware check in the background after startup only if missing
             self.after(500, lambda: threading.Thread(target=check_and_download_sid_firmware, daemon=True).start())
 
     def on_window_close(self, callback=None):
@@ -737,7 +853,7 @@ echo "Conversion succeeded; XMI originals deleted."
         help_btn.pack(side="right", padx=2)
 
         ttk.Label(archive_frame, text="Archive:").pack(side="left")
-        self.domain_combo = ttk.Combobox(archive_frame, state="readonly", width=22, values=list(DOMAINS.keys()))
+        self.domain_combo = tb.Combobox(archive_frame, state="readonly", width=22, values=list(DOMAINS.keys()))
         self.domain_combo.pack(side="left", padx=5)
         self.domain_combo.current(0)
 
@@ -789,7 +905,6 @@ echo "Conversion succeeded; XMI originals deleted."
         self.deps_menu = tk.Menu(self.options_dropdown, tearoff=0)
         self.options_dropdown.add_cascade(label="Dependencies", menu=self.deps_menu)
         
-        # Defer updating dependencies submenu to prevent startup lag
         self.after(300, self.update_dependencies_submenu)
 
         options_menu_btn["menu"] = self.options_dropdown
@@ -878,12 +993,12 @@ echo "Conversion succeeded; XMI originals deleted."
 
         self.fav_tree = ttk.Treeview(favorites_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
         self.fav_tree.heading("favorite", text="★")
-        self.fav_tree.heading("type", text="Type")
-        self.fav_tree.heading("name", text="Name")
-        self.fav_tree.heading("date", text="Date")
-        self.fav_tree.heading("size", text="Size")
-        self.fav_tree.heading("domain", text="Domain")
-        self.fav_tree.heading("url", text="URL")
+        self.fav_tree.heading("type", text="Type", command=lambda: self.sort_favorites_by_column("type"))
+        self.fav_tree.heading("name", text="Name ▲", command=lambda: self.sort_favorites_by_column("name"))
+        self.fav_tree.heading("date", text="Date", command=lambda: self.sort_favorites_by_column("date"))
+        self.fav_tree.heading("size", text="Size", command=lambda: self.sort_favorites_by_column("size"))
+        self.fav_tree.heading("domain", text="Domain", command=lambda: self.sort_favorites_by_column("domain"))
+        self.fav_tree.heading("url", text="URL", command=lambda: self.sort_favorites_by_column("url"))
 
         self.fav_tree.column("favorite", width=40, anchor="center", stretch=False)
         self.fav_tree.column("type", width=90, anchor="center", stretch=False)
@@ -927,16 +1042,22 @@ echo "Conversion succeeded; XMI originals deleted."
             fg="#000000",
             activebackground="#e0f2fe",
             activeforeground="#000000",
+            disabledforeground="#555555",
             relief="raised",
             font=("Arial", 9)
         )
+        
+        self.stream_random_btn.config(foreground="#000000")
         self.stream_random_btn.pack(side="left", padx=6)
         
         self.stream_random_anim_id = None
         self.fade_colors = [
             "#e0f2fe", "#e8f0fe", "#ede9fe", "#f3e8ff", 
             "#fae8ff", "#fce7f3", "#fee2e2", "#fef3c7", 
-            "#fef9c3", "#ecfccb", "#d1fae5", "#ccfbf1", "#cffafe"
+            "#fef9c3", "#ecfccb", "#d1fae5", "#ccfbf1", "#cffafe",
+            "#38bdf8", "#818cf8", "#c084fc", "#f472b6", 
+            "#fb7185", "#34d399", "#fbbf24", "#60a5fa", 
+            "#a78bfa", "#4ade80"
         ]
         self.fade_index = 0
 
@@ -958,9 +1079,7 @@ echo "Conversion succeeded; XMI originals deleted."
         file_path = filedialog.askopenfilename(
             title="Select Music File",
             initialdir=initial_dir,
-            filetypes=[
-                ("All Files", "*.*")
-            ]
+            filetypes=[("All Files", "*.*")]
         )
         if file_path:
             folder = os.path.dirname(file_path)
@@ -1073,6 +1192,31 @@ echo "Conversion succeeded; XMI originals deleted."
         normal_entries.sort(key=sort_key, reverse=not asc)
         return parent_navs + normal_entries
 
+    def sort_favorites_by_column(self, col_key):
+        if not hasattr(self, "fav_sort_column"):
+            self.fav_sort_column = "name"
+            self.fav_sort_ascending = True
+
+        if self.fav_sort_column == col_key:
+            self.fav_sort_ascending = not self.fav_sort_ascending
+        else:
+            self.fav_sort_column = col_key
+            self.fav_sort_ascending = True
+            
+        self.update_favorites_sort_headers()
+        self.refresh_favorites_tab()
+
+    def update_favorites_sort_headers(self):
+        base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "domain": "Domain", "url": "URL"}
+        current_col = getattr(self, "fav_sort_column", "name")
+        current_asc = getattr(self, "fav_sort_ascending", True)
+        
+        for k in base_titles:
+            arrow = ""
+            if k == current_col:
+                arrow = " ▲" if current_asc else " ▼"
+            self.fav_tree.heading(k, text=base_titles[k] + arrow)
+
     def push_nav_history(self, domain_name, url):
         if self.is_navigating_history:
             return
@@ -1112,10 +1256,12 @@ echo "Conversion succeeded; XMI originals deleted."
             if not vgm_bin or (not shutil.which(vgm_bin) and not os.path.exists(vgm_bin)):
                 messagebox.showerror("vgmstream123 Not Found", "vgmstream123 not found!")
                 return
+            from vgmstream_player import VGMStreamPlayerWindow
             VGMStreamPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
 
         if ext == ".sid":
+            from sid_player import SIDPlayerWindow
             SIDPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
 
@@ -1123,6 +1269,7 @@ echo "Conversion succeeded; XMI originals deleted."
             if not self.check_dependency_status("lazyusf"):
                 messagebox.showerror("Lazyusf Not Found", "Lazyusf not found! Please install dependencies.")
                 return
+            from usf_player import USFPlayerWindow
             USFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
         
@@ -1130,6 +1277,7 @@ echo "Conversion succeeded; XMI originals deleted."
             if not self.check_dependency_status("playgsf"):
                 messagebox.showerror("playgsf Not Found", "playgsf not found! Please install dependencies.")
                 return
+            from gsf_player import GSFPlayerWindow
             GSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
 
@@ -1137,6 +1285,7 @@ echo "Conversion succeeded; XMI originals deleted."
             if not self.check_dependency_status("2sfplay"):
                 messagebox.showerror("2sfPlay Not Found", "2sfPlay not found! Please install dependencies.")
                 return
+            from twosf_player import TwoSFPlayerWindow
             TwoSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
 
@@ -1147,6 +1296,7 @@ echo "Conversion succeeded; XMI originals deleted."
                     "libaosdk.so not found! Please run ./build_aosdk.sh to build the PSF/PSF2 playback library."
                 )
                 return
+            from psf_player import PSFPlayerWindow
             PSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
         
@@ -1155,6 +1305,7 @@ echo "Conversion succeeded; XMI originals deleted."
             ".vgm", ".vgz", ".ay", ".sap", ".gym"
         }
         if ext in gme_native_formats:
+            from gme_player import generate_gme_m3u_if_needed
             playlist_target = generate_gme_m3u_if_needed(audio_file)
             GMEPlayerWindow(self, playlist_target, playlist=None, start_index=0)
             return
@@ -1168,6 +1319,7 @@ echo "Conversion succeeded; XMI originals deleted."
             if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
                 messagebox.showerror("mpv Not Found", "mpv not found!")
                 return
+            from mpv_player import MPVPlayerWindow
             MPVPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
             return
         
@@ -1175,6 +1327,7 @@ echo "Conversion succeeded; XMI originals deleted."
         if not vgm_bin or (not shutil.which(vgm_bin) and not os.path.exists(vgm_bin)):
             messagebox.showerror("vgmstream123 Not Found", "vgmstream123 not found!")
             return
+        from vgmstream_player import VGMStreamPlayerWindow
         VGMStreamPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
 
     def toggle_auto_indexing(self):

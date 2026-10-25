@@ -62,6 +62,29 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         if self.playlist:
             self.play_current_track()
 
+    def get_dynamic_hover_color(self):
+        try:
+            if hasattr(self, "parent") and self.parent and hasattr(self.parent, "style"):
+                theme_name = self.parent.style.theme_use().lower()
+                if "dark" in theme_name:
+                    return "#2a3b4c"
+        except Exception:
+            pass
+        return "#e8f0fe"
+
+    def on_listbox_motion(self, event):
+        idx = self.chapter_listbox.nearest(event.y)
+        hover_color = self.get_dynamic_hover_color()
+        for i in range(self.chapter_listbox.size()):
+            if i == idx:
+                self.chapter_listbox.itemconfig(i, background=hover_color)
+            else:
+                self.chapter_listbox.itemconfig(i, background="")
+
+    def on_listbox_leave(self, event):
+        for i in range(self.chapter_listbox.size()):
+            self.chapter_listbox.itemconfig(i, background="")
+
     def load_playlist_files(self, provided_playlist=None, provided_index=None):
         if provided_playlist:
             self.playlist = provided_playlist
@@ -170,7 +193,17 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         meta_box_frame = tb.LabelFrame(padding, text="Stream Info", padding=4)
         meta_box_frame.pack(fill="x", pady=(0, 8))
 
-        self.metadata_text = tk.Text(meta_box_frame, height=11, wrap="none", font=("Ubuntu Mono", 10), bg="#000000", fg="#ffff00", insertbackground="yellow")
+        self.metadata_text = tk.Text(
+            meta_box_frame, 
+            height=11, 
+            wrap="none", 
+            font=("Ubuntu Mono", 10), 
+            bg="#000000", 
+            fg="#ffff00", 
+            insertbackground="yellow"
+        )
+        # Explicitly enforce colors to prevent any theme overrides
+        self.metadata_text.configure(bg="#000000", fg="#ffff00")
         self.metadata_text.pack(side="left", fill="x", expand=True)
         meta_scroll = tb.Scrollbar(meta_box_frame, orient="vertical", command=self.metadata_text.yview)
         meta_scroll.pack(side="right", fill="y")
@@ -186,6 +219,8 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         scrollbar.pack(side="right", fill="y")
         self.chapter_listbox.configure(yscrollcommand=scrollbar.set)
         self.chapter_listbox.bind("<<ListboxSelect>>", self.on_chapter_select)
+        self.chapter_listbox.bind("<Motion>", self.on_listbox_motion)
+        self.chapter_listbox.bind("<Leave>", self.on_listbox_leave)
         self.populate_playlist_listbox()
 
         controls = tb.Frame(padding)

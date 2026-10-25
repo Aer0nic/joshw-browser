@@ -4,8 +4,9 @@ import queue
 import threading
 import time
 import tkinter as tk
+import ttkbootstrap as tb
+import random
 from tkinter import ttk, messagebox
-from config import is_emulated_file
 from players import (
     get_saved_player_volume,
     register_volume_player,
@@ -16,13 +17,10 @@ from players import (
 )
 
 class PSFAudioWorker:
-    def __init__(self, audio_file, ui_queue, volume=1.0, loop_forever=False, loop_count=1):
+    def __init__(self, audio_file, ui_queue, volume=1.0):
         self.audio_file = audio_file
         self.ui_queue = ui_queue
         self.volume = max(0.0, float(volume))
-        self.loop_forever = loop_forever
-        self.loop_count = loop_count
-        self.repeat_count = 0
 
         self._stop_event = threading.Event()
         self._pause_event = threading.Event()
@@ -53,11 +51,6 @@ class PSFAudioWorker:
 
     def reset_track(self):
         self._seek_reset_event.set()
-
-    def update_loop_settings(self, loop_forever, loop_count):
-        with self._lock:
-            self.loop_forever = loop_forever
-            self.loop_count = loop_count
 
     def _run(self):
         try:
@@ -115,19 +108,8 @@ class PSFAudioWorker:
 
                         count, pcm = ctx.render(chunk_size)
                         if count <= 0 or ctx.is_done():
-                            with self._lock:
-                                loop_forever, loop_count = self.loop_forever, self.loop_count
-
-                            if loop_forever:
-                                ctx.reset()
-                                continue
-                            elif self.repeat_count < loop_count - 1:
-                                self.repeat_count += 1
-                                ctx.reset()
-                                continue
-                            else:
-                                self.ui_queue.put(("ended", None))
-                                break
+                            self.ui_queue.put(("ended", None))
+                            break
 
                         with self._lock:
                             vol = self.volume
@@ -182,11 +164,6 @@ class PSFPlayerWindow(tk.Toplevel):
         self.is_scrubbing = False
         self.ui_queue = queue.Queue()
 
-        is_emu = is_emulated_file(self.audio_file)
-        self.loop_chk_var = tk.BooleanVar(value=is_emu)
-        self.loop_count_var = tk.IntVar(value=1)
-        self.loop_forever_var = tk.BooleanVar(value=False)
-
         saved_volume = get_saved_player_volume()
         self.volume_var = tk.IntVar(value=saved_volume)
         self.volume_label_var = tk.StringVar(value=f"Volume: {saved_volume}%")
@@ -207,6 +184,18 @@ class PSFPlayerWindow(tk.Toplevel):
         if self.playlist:
             self.play_current_track()
 
+    def play_random_track(self):
+        if not self.playlist:
+            return
+        if len(self.playlist) == 1:
+            self.play_current_track()
+            return
+        new_index = self.current_index
+        while new_index == self.current_index:
+            new_index = random.randint(0, len(self.playlist) - 1)
+        self.current_index = new_index
+        self.play_current_track()
+    
     def format_time(self, seconds):
         if seconds is None or seconds < 0:
             return "00:00:00"
@@ -234,8 +223,8 @@ class PSFPlayerWindow(tk.Toplevel):
     def build_ui(self):
         filename = os.path.basename(self.audio_file)
         self.title(f"PSF Player - {filename}")
-        self.geometry("520x620")
-        self.minsize(460, 520)
+        self.geometry("520x600")
+        self.minsize(460, 500)
         self.transient(self.parent)
 
         padding = ttk.Frame(self, padding=12)
@@ -291,37 +280,54 @@ class PSFPlayerWindow(tk.Toplevel):
         list_frame = ttk.LabelFrame(padding, text="Playlist Files", padding=6)
         list_frame.pack(fill="both", expand=True, pady=(0, 10))
 
-        self.playlist_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
+        self.playlist_listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
         self.playlist_listbox.pack(side="left", fill="both", expand=True)
         scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
         scrollbar.pack(side="right", fill="y")
         self.playlist_listbox.configure(yscrollcommand=scrollbar.set)
         self.playlist_listbox.bind("<<ListboxSelect>>", self.on_playlist_select)
+        self.playlist_listbox.bind("<Motion>", self.on_listbox_motion)
+        self.playlist_listbox.bind("<Leave>", self.on_listbox_leave)
         self.populate_playlist_listbox()
 
         controls = ttk.Frame(padding)
         controls.pack(pady=4)
 
-        ttk.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=0, padx=2)
-        ttk.Button(controls, text="Restart", width=8, command=self.restart_track).grid(row=0, column=1, padx=2)
+        ttk.Button(controls, text="Stop", width=8, command=self.stop).grid(row=0, column=0, padx=2)
+        ttk.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=1, padx=2)
         ttk.Button(controls, text="Play/Pause", width=10, command=self.toggle_play_pause).grid(row=0, column=2, padx=2)
-        ttk.Button(controls, text="Seek Info", width=8, command=self.show_seek_info).grid(row=0, column=3, padx=2)
+        ttk.Button(controls, text="Random", width=8, command=self.play_random_track).grid(row=0, column=3, padx=2)
         ttk.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=4, padx=2)
-
-        btn_bottom = ttk.Frame(padding)
-        btn_bottom.pack(pady=(6, 0), fill="x")
-
-        ttk.Checkbutton(btn_bottom, variable=self.loop_chk_var, command=self.on_loop_settings_changed).pack(side="left", padx=(0, 2))
-        ttk.Spinbox(btn_bottom, from_=1, to=99, width=3, textvariable=self.loop_count_var, command=self.on_loop_settings_changed).pack(side="left", padx=(0, 6))
-        ttk.Button(btn_bottom, text="Stop", width=8, command=self.stop).pack(side="left", padx=2)
-        ttk.Checkbutton(btn_bottom, text="Loop forever", variable=self.loop_forever_var, command=self.on_loop_settings_changed).pack(side="right", padx=(4, 0))
-        ttk.Button(btn_bottom, text="Close", width=8, command=self.close).pack(side="right", padx=2)
+        ttk.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=5, padx=2)
 
     def populate_playlist_listbox(self):
         self.playlist_listbox.delete(0, tk.END)
         for f in self.playlist:
             self.playlist_listbox.insert(tk.END, os.path.basename(f))
         self.update_listbox_selection()
+
+    def get_dynamic_hover_color(self):
+        try:
+            if hasattr(self, "parent") and self.parent and hasattr(self.parent, "style"):
+                theme_name = self.parent.style.theme_use().lower()
+                if "dark" in theme_name:
+                    return "#2a3b4c"
+        except Exception:
+            pass
+        return "#e8f0fe"
+
+    def on_listbox_motion(self, event):
+        idx = self.playlist_listbox.nearest(event.y)
+        hover_color = self.get_dynamic_hover_color()
+        for i in range(self.playlist_listbox.size()):
+            if i == idx:
+                self.playlist_listbox.itemconfig(i, background=hover_color)
+            else:
+                self.playlist_listbox.itemconfig(i, background="")
+
+    def on_listbox_leave(self, event):
+        for i in range(self.playlist_listbox.size()):
+            self.playlist_listbox.itemconfig(i, background="")
 
     def update_listbox_selection(self):
         if 0 <= self.current_index < len(self.playlist):
@@ -341,9 +347,6 @@ class PSFPlayerWindow(tk.Toplevel):
         else:
             messagebox.showinfo("Seeking Unsupported", "PSF/PSF2 emulation does not support arbitrary scrubbing.")
             self.progress_bar_widget.update_progress(self.current_position_seconds, self.total_duration_seconds)
-
-    def show_seek_info(self):
-        messagebox.showinfo("PSF Seeking Limitation", "Hardware register states cannot be arbitrarily rewound.")
 
     def restart_track(self):
         if self.worker:
@@ -399,7 +402,6 @@ class PSFPlayerWindow(tk.Toplevel):
         self.audio_file = self.playlist[self.current_index]
         filename = os.path.basename(self.audio_file)
 
-        # Updates window title dynamically
         self.title(f"PSF Player - {filename}")
         if hasattr(self, "title_label") and self.winfo_exists():
             self.title_label.configure(text=f"Now Playing:\n{filename}")
@@ -410,10 +412,8 @@ class PSFPlayerWindow(tk.Toplevel):
         self.update_listbox_selection()
 
         vol_gain = max(0, min(150, self.volume_var.get())) / 100.0
-        loop_forever = self.loop_forever_var.get()
-        loop_count = max(1, int(self.loop_count_var.get())) if self.loop_chk_var.get() else 1
 
-        self.worker = PSFAudioWorker(self.audio_file, self.ui_queue, vol_gain, loop_forever, loop_count)
+        self.worker = PSFAudioWorker(self.audio_file, self.ui_queue, vol_gain)
         self.worker.start()
         self.is_paused = False
 
@@ -424,7 +424,8 @@ class PSFPlayerWindow(tk.Toplevel):
             w.stop()
 
     def toggle_play_pause(self):
-        if not self.worker:
+        if not self.worker or self.status_var.get() == "Stopped":
+            self.play_current_track()
             return
         if self.is_paused:
             self.worker.resume()
@@ -454,13 +455,6 @@ class PSFPlayerWindow(tk.Toplevel):
         self.current_index = next_index
         self.play_current_track()
 
-    def on_loop_settings_changed(self):
-        if self.worker:
-            self.worker.update_loop_settings(
-                self.loop_forever_var.get(),
-                max(1, int(self.loop_count_var.get())) if self.loop_chk_var.get() else 1
-            )
-
     def on_volume_slide(self, val):
         set_player_volume(float(val), source_player=self)
 
@@ -475,6 +469,10 @@ class PSFPlayerWindow(tk.Toplevel):
     def stop(self):
         self.stop_current_playback()
         self.status_var.set("Stopped")
+        self.position_var.set("Position: 00:00:00")
+        self.seek_pct_var.set("0%")
+        if hasattr(self, "progress_bar_widget"):
+            self.progress_bar_widget.update_progress(0, self.total_duration_seconds)
 
     def close(self):
         self.stop_current_playback()

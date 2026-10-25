@@ -57,6 +57,29 @@ class SIDPlayerWindow(tk.Toplevel):
         except Exception:
             pass
 
+    def get_dynamic_hover_color(self):
+        try:
+            if hasattr(self, "parent") and self.parent and hasattr(self.parent, "style"):
+                theme_name = self.parent.style.theme_use().lower()
+                if "dark" in theme_name:
+                    return "#2a3b4c"
+        except Exception:
+            pass
+        return "#e8f0fe"
+
+    def on_listbox_motion(self, event):
+        idx = self.subtrack_listbox.nearest(event.y)
+        hover_color = self.get_dynamic_hover_color()
+        for i in range(self.subtrack_listbox.size()):
+            if i == idx:
+                self.subtrack_listbox.itemconfig(i, background=hover_color)
+            else:
+                self.subtrack_listbox.itemconfig(i, background="")
+
+    def on_listbox_leave(self, event):
+        for i in range(self.subtrack_listbox.size()):
+            self.subtrack_listbox.itemconfig(i, background="")
+
     def build_ui(self):
         filename = os.path.basename(self.audio_file)
         self.title(f"sidplayfp Controller - {filename}")
@@ -128,6 +151,8 @@ class SIDPlayerWindow(tk.Toplevel):
         list_scrollbar.pack(side="right", fill="y")
         self.subtrack_listbox.configure(yscrollcommand=list_scrollbar.set)
         self.subtrack_listbox.bind("<<ListboxSelect>>", self.on_listbox_select)
+        self.subtrack_listbox.bind("<Motion>", self.on_listbox_motion)
+        self.subtrack_listbox.bind("<Leave>", self.on_listbox_leave)
         self.populate_subtrack_listbox()
 
         controls = ttk.Frame(padding)
@@ -263,7 +288,7 @@ class SIDPlayerWindow(tk.Toplevel):
             
             # Update window title with current subtrack info
             self.title(f"sidplayfp Controller - {filename} (Track {curr_sub})")
-            
+
             threading.Thread(target=self.read_sid_output, daemon=True).start()
         except Exception as e:
             messagebox.showerror("sidplayfp Error", f"Could not launch sidplayfp:\n\n{e}")

@@ -70,27 +70,55 @@ def generate_gme_m3u_if_needed(audio_file):
 # 1. libgme CTypes Wrapper & GMEContext
 # ==========================================
 
-def find_gme_lib():
+_gme_lib = None
+
+def get_gme():
+    global _gme_lib
+    if _gme_lib is not None:
+        return _gme_lib
+
     system = platform.system()
     if system == "Windows":
         names = ["gme.dll", "libgme.dll"]
     else:
         names = ["libgme.so.0", "libgme.so"]
 
+    lib = None
     for name in names:
         try:
-            return ctypes.CDLL(name)
-        except OSError:
-            continue
-    
-    for name in names:
-        try:
-            return ctypes.CDLL(os.path.join(os.path.dirname(__file__), name))
-        except OSError:
-            continue
-    raise RuntimeError("Could not find libgme shared library (libgme.so / gme.dll).")
+            lib = ctypes.CDLL(name)
+            break
+        except Exception:
+            try:
+                lib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), name))
+                break
+            except Exception:
+                continue
 
-_gme = find_gme_lib()
+    if lib is None:
+        raise RuntimeError("Could not load Game Music Emu (libgme) shared library.")
+
+    # Configure function signatures once loaded
+    lib.gme_open_file.argtypes = [ctypes.c_char_p, ctypes.c_void_p, ctypes.c_int]
+    lib.gme_open_file.restype = ctypes.c_char_p
+
+    lib.gme_track_info.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.POINTER(GMEInfo)), ctypes.c_int]
+    lib.gme_track_info.restype = ctypes.c_char_p
+
+    lib.gme_start_track.argtypes = [ctypes.c_void_p, ctypes.c_int]
+    lib.gme_start_track.restype = ctypes.c_char_p
+
+    lib.gme_play.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.POINTER(ctypes.c_short)]
+    lib.gme_play.restype = ctypes.c_char_p
+
+    lib.gme_seek.argtypes = [ctypes.c_void_p, ctypes.c_int]
+    lib.gme_seek.restype = ctypes.c_char_p
+
+    lib.gme_delete.argtypes = [ctypes.c_void_p]
+    lib.gme_free_info.argtypes = [ctypes.POINTER(GMEInfo)]
+
+    _gme_lib = lib
+    return _gme_lib
 
 class GMEInfo(ctypes.Structure):
     _fields_ = [
@@ -106,24 +134,6 @@ class GMEInfo(ctypes.Structure):
         ("comment", ctypes.c_char_p),
         ("dumper", ctypes.c_char_p),
     ]
-
-_gme.gme_open_file.argtypes = [ctypes.c_char_p, ctypes.c_void_p, ctypes.c_int]
-_gme.gme_open_file.restype = ctypes.c_char_p
-
-_gme.gme_track_info.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.POINTER(GMEInfo)), ctypes.c_int]
-_gme.gme_track_info.restype = ctypes.c_char_p
-
-_gme.gme_start_track.argtypes = [ctypes.c_void_p, ctypes.c_int]
-_gme.gme_start_track.restype = ctypes.c_char_p
-
-_gme.gme_play.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.POINTER(ctypes.c_short)]
-_gme.gme_play.restype = ctypes.c_char_p
-
-_gme.gme_seek.argtypes = [ctypes.c_void_p, ctypes.c_int]
-_gme.gme_seek.restype = ctypes.c_char_p
-
-_gme.gme_delete.argtypes = [ctypes.c_void_p]
-_gme.gme_free_info.argtypes = [ctypes.POINTER(GMEInfo)]
 
 class GMEContext:
     def __init__(self, file_path, sample_rate=44100):
@@ -557,6 +567,8 @@ class GMEPlayerWindow(tk.Toplevel):
         scrollbar.pack(side="right", fill="y")
         self.playlist_listbox.configure(yscrollcommand=scrollbar.set)
         self.playlist_listbox.bind("<<ListboxSelect>>", self.on_playlist_select)
+        self.playlist_listbox.bind("<Motion>", self.on_listbox_motion)
+        self.playlist_listbox.bind("<Leave>", self.on_listbox_leave)
         self.populate_playlist_listbox()
 
         # Main Control Buttons Row with optimized widths to fit cleanly
@@ -599,6 +611,29 @@ class GMEPlayerWindow(tk.Toplevel):
                 display_label = os.path.basename(p)
             self.playlist_listbox.insert(tk.END, display_label)
         self.update_listbox_selection()
+
+    def get_dynamic_hover_color(self):
+        try:
+            if hasattr(self, "parent") and self.parent and hasattr(self.parent, "style"):
+                theme_name = self.parent.style.theme_use().lower()
+                if "dark" in theme_name:
+                    return "#2a3b4c"
+        except Exception:
+            pass
+        return "#e8f0fe"
+
+    def on_listbox_motion(self, event):
+        idx = self.playlist_listbox.nearest(event.y)
+        hover_color = self.get_dynamic_hover_color()
+        for i in range(self.playlist_listbox.size()):
+            if i == idx:
+                self.playlist_listbox.itemconfig(i, background=hover_color)
+            else:
+                self.playlist_listbox.itemconfig(i, background="")
+
+    def on_listbox_leave(self, event):
+        for i in range(self.playlist_listbox.size()):
+            self.playlist_listbox.itemconfig(i, background="")
 
     def update_listbox_selection(self):
         if not self.winfo_exists():

@@ -391,6 +391,31 @@ class ExtractedFilesBrowserWindow(tb.Toplevel):
         self.build_ui()
         self.populate_files(self.folder_path)
 
+    def get_dynamic_hover_color(self):
+        try:
+            # Check parent window theme if available
+            if hasattr(self.parent, "style") and self.parent.style:
+                theme_name = self.parent.style.theme_use().lower()
+                if "dark" in theme_name:
+                    return "#2a3b4c"
+        except Exception:
+            pass
+        return "#e8f0fe"
+
+    def on_listbox_motion(self, event):
+        idx = self.listbox.nearest(event.y)
+        hover_color = self.get_dynamic_hover_color()
+        
+        for i in range(self.listbox.size()):
+            if i == idx:
+                self.listbox.itemconfig(i, background=hover_color)
+            else:
+                self.listbox.itemconfig(i, background="")
+
+    def on_listbox_leave(self, event):
+        for i in range(self.listbox.size()):
+            self.listbox.itemconfig(i, background="")
+    
     def build_ui(self):
         padding = tb.Frame(self, padding=10)
         padding.pack(fill="both", expand=True)
@@ -409,6 +434,9 @@ class ExtractedFilesBrowserWindow(tb.Toplevel):
 
         self.listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
         self.listbox.pack(side="left", fill="both", expand=True)
+
+        self.listbox.bind("<Motion>", self.on_listbox_motion)
+        self.listbox.bind("<Leave>", self.on_listbox_leave)
 
         scrollbar = tb.Scrollbar(list_frame, orient="vertical", command=self.listbox.yview)
         scrollbar.pack(side="right", fill="y")

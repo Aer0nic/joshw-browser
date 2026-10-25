@@ -141,6 +141,7 @@ class USFPlayerWindow(tk.Toplevel):
         if self.playlist:
             self.load_and_play_current()
 
+
     def build_ui(self):
         filename = os.path.basename(self.audio_file) if self.audio_file else "No file"
         self.title(f"USF Player - {filename}")
@@ -227,6 +228,10 @@ class USFPlayerWindow(tk.Toplevel):
 
         self.playlist_listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
         self.playlist_listbox.pack(side="left", fill="both", expand=True)
+        
+        self.playlist_listbox.bind("<Motion>", self.on_listbox_motion)
+        self.playlist_listbox.bind("<Leave>", self.on_listbox_leave)
+        
         scrollbar = tb.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
         scrollbar.pack(side="right", fill="y")
         self.playlist_listbox.configure(yscrollcommand=scrollbar.set)
@@ -277,6 +282,29 @@ class USFPlayerWindow(tk.Toplevel):
 
         btn_bottom.grid_columnconfigure(2, weight=1)
           
+    def get_dynamic_hover_color(self):
+        # Fallback or detect dark theme based on window style / background
+        try:
+            theme_name = self.style.theme_use().lower()
+            if "dark" in theme_name:
+                return "#2a3b4c"
+        except Exception:
+            pass
+        return "#e8f0fe"
+
+    def on_listbox_motion(self, event):
+        idx = self.playlist_listbox.nearest(event.y)
+        hover_color = self.get_dynamic_hover_color()
+        
+        for i in range(self.playlist_listbox.size()):
+            if i == idx:
+                self.playlist_listbox.itemconfig(i, background=hover_color)
+            else:
+                self.playlist_listbox.itemconfig(i, background="")
+
+    def on_listbox_leave(self, event):
+        for i in range(self.playlist_listbox.size()):
+            self.playlist_listbox.itemconfig(i, background="")
         
     def populate_playlist_listbox(self):
         self.playlist_listbox.delete(0, "end")

@@ -1,0 +1,14 @@
+bin/
+build/
+dist/
+FFmpeg/
+lib/
+lib64/
+__pycache__/
+testing/
+tests/
+test_tracks/
+venv/
+.venv/
+.venv2/
+.vscode/

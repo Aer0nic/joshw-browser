@@ -154,6 +154,29 @@ class PlayBAEPlayerWindow(tk.Toplevel):
             self.playlist = [self.audio_file]
             self.current_index = 0
 
+    def get_dynamic_hover_color(self):
+        try:
+            if hasattr(self, "parent") and self.parent and hasattr(self.parent, "style"):
+                theme_name = self.parent.style.theme_use().lower()
+                if "dark" in theme_name:
+                    return "#2a3b4c"
+        except Exception:
+            pass
+        return "#e8f0fe"
+
+    def on_listbox_motion(self, event):
+        idx = self.playlist_listbox.nearest(event.y)
+        hover_color = self.get_dynamic_hover_color()
+        for i in range(self.playlist_listbox.size()):
+            if i == idx:
+                self.playlist_listbox.itemconfig(i, background=hover_color)
+            else:
+                self.playlist_listbox.itemconfig(i, background="")
+
+    def on_listbox_leave(self, event):
+        for i in range(self.playlist_listbox.size()):
+            self.playlist_listbox.itemconfig(i, background="")
+
     def build_ui(self):
         filename = os.path.basename(self.audio_file)
         self.title(f"NeoBAE playbae Controller - {filename}")
@@ -238,6 +261,8 @@ class PlayBAEPlayerWindow(tk.Toplevel):
         scrollbar.pack(side="right", fill="y")
         self.playlist_listbox.configure(yscrollcommand=scrollbar.set)
         self.playlist_listbox.bind("<<ListboxSelect>>", self.on_playlist_select)
+        self.playlist_listbox.bind("<Motion>", self.on_listbox_motion)
+        self.playlist_listbox.bind("<Leave>", self.on_listbox_leave)
         self.populate_playlist_listbox()
 
         controls = ttk.Frame(padding)
