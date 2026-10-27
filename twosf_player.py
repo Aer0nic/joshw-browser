@@ -5,7 +5,7 @@ import threading
 import time
 import tkinter as tk
 from tkinter import ttk, messagebox
-from config import is_emulated_file
+from config import is_emulated_file, resource_path
 from players import (
     get_saved_player_volume,
     register_volume_player,
@@ -23,11 +23,11 @@ class TwoSFPlayerWindow(tk.Toplevel):
         self.audio_file = audio_file
         self.playlist = playlist or [audio_file]
         self.current_index = start_index if start_index is not None else 0
-        self.current_index = 0
         self.current_position_seconds = 0.0
         self.total_duration_seconds = 180.0
         self.is_scrubbing = False
         self.track_repeat_count = 0
+        self.proc = None
 
         is_emu = is_emulated_file(self.audio_file)
         self.loop_chk_var = tk.BooleanVar(value=is_emu)
@@ -46,6 +46,14 @@ class TwoSFPlayerWindow(tk.Toplevel):
 
         self.load_playlist_files()
         self.build_ui()
+
+        try:
+            icon_file = resource_path("assets/icons/player_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
+
         self.protocol("WM_DELETE_WINDOW", self.close)
 
         if self.playlist:
@@ -259,7 +267,7 @@ class TwoSFPlayerWindow(tk.Toplevel):
         env = os.environ.copy()
         env["SDL_VIDEODRIVER"] = "dummy"
 
-        cmd_args = [twosf_bin]
+        cmd_args = [str(twosf_bin)]
         if self.current_position_seconds > 0:
             cmd_args.append(f"-b{int(round(self.current_position_seconds * 1000))}")
         cmd_args.append(self.audio_file)
@@ -287,7 +295,7 @@ class TwoSFPlayerWindow(tk.Toplevel):
 
     def play_current_track(self):
         self.track_repeat_count = 0
-        self.start_2sfplay(preserve_time=False) # Calls start_2sfplay which updates self.title()
+        self.start_2sfplay(preserve_time=False)
 
     def start_timer_thread(self):
         def timer_loop():

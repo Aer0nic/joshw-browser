@@ -17,11 +17,7 @@ _venv_site = os.path.join(os.path.dirname(__file__), ".venv", "lib", f"python{sy
 if os.path.exists(_venv_site) and _venv_site not in sys.path:
     sys.path.insert(0, _venv_site)
 
-try:
-    from config import get_cache_directory
-except ImportError:
-    def get_cache_directory():
-        return os.path.expanduser("~/.config/joshw")
+from config import get_cache_directory, resource_path
 
 
 # --- Exceptions ---
@@ -75,9 +71,9 @@ def find_aosdk_lib() -> str:
     """
     Search for libaosdk.so in priority order:
     1. Environment variable AOSDK_LIB_PATH
-    2. assets/libraries/libaosdk.so (relative to project root / script)
+    2. Bundled inside PyInstaller runtime (_MEIPASS) or local project (assets/libraries/libaosdk.so)
     3. ~/.config/joshw/libaosdk.so
-    4. Project directory fallback
+    4. Project directory fallbacks
     5. System library paths
     """
     env_path = os.environ.get("AOSDK_LIB_PATH")
@@ -85,11 +81,17 @@ def find_aosdk_lib() -> str:
         return env_path
 
     cache_dir = get_cache_directory()
+    
+    # Use resource_path for bundled PyInstaller support
+    bundled_lib = resource_path("assets/libraries/libaosdk.so")
+    bundled_lib_root = resource_path("libaosdk.so")
+    bundled_lib_bin = resource_path("lib/libaosdk.so")
+
     candidates = [
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "libraries", "libaosdk.so"),
-        os.path.abspath(os.path.join("assets", "libraries", "libaosdk.so")),
+        str(bundled_lib),
+        str(bundled_lib_bin),
+        str(bundled_lib_root),
         os.path.join(cache_dir, "libaosdk.so"),
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "libaosdk.so"),
         os.path.join(os.path.dirname(os.path.abspath(__file__)), "aosdk", "libaosdk.so"),
         "/usr/local/lib/libaosdk.so",
         "/usr/lib/libaosdk.so",

@@ -14,7 +14,7 @@ import tkinter as tk
 import ttkbootstrap as tb
 import weakref
 import sounddevice as sd
-from config import get_cache_directory, is_emulated_file
+from config import get_cache_directory, is_emulated_file, resource_path, get_binary_path
 from tkinter import ttk, messagebox, filedialog
 
 _active_volume_players = weakref.WeakSet()
@@ -204,31 +204,19 @@ class InteractiveProgressBar:
 
 
 def get_vgmstream_path():
-    for p in [shutil.which("vgmstream123"), "/usr/local/bin/vgmstream123", "/usr/bin/vgmstream123", os.path.join(get_cache_directory(), "vgmstream123")]:
-        if p and os.path.exists(p):
-            return p
-    return "vgmstream123"
+    return str(get_binary_path("vgmstream123"))
 
 
 def get_lazyusf_path():
-    for p in [shutil.which("lazyusf"), "/usr/local/bin/lazyusf", "/usr/bin/lazyusf", os.path.join(get_cache_directory(), "lazyusf")]:
-        if p and os.path.exists(p):
-            return p
-    return "lazyusf"
+    return str(get_binary_path("lazyusf"))
 
 
 def get_playgsf_path():
-    for p in [os.path.join(get_cache_directory(), "playgsf"), shutil.which("playgsf"), "/usr/local/bin/playgsf", "/usr/bin/playgsf"]:
-        if p and os.path.exists(p):
-            return p
-    return os.path.join(get_cache_directory(), "playgsf")
+    return str(get_binary_path("playgsf"))
 
 
 def get_2sfplay_path():
-    for p in [os.path.join(get_cache_directory(), "2sfPlay"), shutil.which("2sfPlay"), "/usr/local/bin/2sfPlay", "/usr/bin/2sfPlay"]:
-        if p and os.path.exists(p):
-            return p
-    return os.path.join(get_cache_directory(), "2sfPlay")
+    return str(get_binary_path("2sfPlay"))
 
 
 def get_next_track_index(current_index, track_count, loop_forever):
@@ -247,6 +235,7 @@ def prepare_nsf_m3u(nsf_file_path):
     m3u_path = os.path.join(folder, f"{base_name}.m3u")
 
     candidate_bins = [
+        str(get_binary_path("nsf_tracks")),
         os.path.expanduser("~/.config/joshw/nsf_tracks"),
         os.path.join(get_cache_directory(), "nsf_tracks"),
         shutil.which("nsf_tracks")
@@ -389,6 +378,14 @@ class ExtractedFilesBrowserWindow(tb.Toplevel):
 
         self.entries_list = []
         self.build_ui()
+
+        try:
+            icon_file = resource_path("assets/icons/player_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
+
         self.populate_files(self.folder_path)
 
     def get_dynamic_hover_color(self):

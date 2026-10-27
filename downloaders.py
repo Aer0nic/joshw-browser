@@ -11,6 +11,104 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import ttkbootstrap as tb
 import config
+from config import resource_path
+
+class PremadeIndexProgressWindow(tb.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.title("Downloading Premade Indexes...")
+        self.geometry("420x150")
+        self.resizable(False, False)
+        self.transient(parent)
+        self.grab_set()
+
+        try:
+            icon_file = resource_path("assets/icons/app_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
+
+        self.status_var = tk.StringVar(value="Connecting to repository...")
+        
+        padding = tb.Frame(self, padding=16)
+        padding.pack(fill="both", expand=True)
+
+        tb.Label(padding, textvariable=self.status_var, font=("Arial", 9, "bold")).pack(anchor="w", pady=(0, 10))
+
+        # Indeterminate progress bar for git clone operation
+        self.pbar = tb.Progressbar(padding, mode="indeterminate", bootstyle="primary-striped")
+        self.pbar.pack(fill="x", expand=True, pady=(0, 10))
+        self.pbar.start(12)
+
+        threading.Thread(target=self.download_worker, daemon=True).start()
+
+    def download_worker(self):
+        cache_dir = Path(config.get_cache_directory())
+        indexes_dir = cache_dir / "indexes"
+        indexes_dir.mkdir(parents=True, exist_ok=True)
+
+        repo_dir = cache_dir / "joshw-browser"
+        indexes_src_dir = repo_dir / "indexes"
+        clone_url = "https://github.com/Aer0nic/joshw-browser.git"
+
+        try:
+            if repo_dir.exists():
+                shutil.rmtree(repo_dir, ignore_errors=True)
+
+            self.update_status("Cloning index repository...")
+            subprocess.run(["git", "clone", clone_url, str(repo_dir)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+            self.update_status("Installing index files to ~/.config/joshw/indexes...")
+            if indexes_src_dir.exists():
+                for f in indexes_src_dir.glob("domain_cache*"):
+                    if f.is_file():
+                        shutil.copy2(f, indexes_dir / f.name)
+
+            if repo_dir.exists():
+                shutil.rmtree(repo_dir, ignore_errors=True)
+
+            found_caches = list(indexes_dir.glob("*domain_cache*"))
+
+            if found_caches:
+                self.finish_success(len(found_caches), indexes_dir)
+            else:
+                terminal_cmd = f"mkdir -p \"{indexes_dir}\" && cd \"{cache_dir}\" && git clone {clone_url} && cp joshw-browser/indexes/domain_cache* \"{indexes_dir}/\" && rm -rf joshw-browser"
+                error_msg = "Premade index files containing 'domain_cache' were not found after cloning."
+                self.finish_error(error_msg, terminal_cmd)
+
+        except Exception as e:
+            terminal_cmd = f"mkdir -p \"{indexes_dir}\" && cd \"{cache_dir}\" && git clone {clone_url} && cp joshw-browser/indexes/domain_cache* \"{indexes_dir}/\" && rm -rf joshw-browser"
+            error_msg = f"An error occurred during indexing download:\n\n{e}"
+            self.finish_error(error_msg, terminal_cmd)
+
+    def update_status(self, text):
+        if self.winfo_exists():
+            self.after(0, lambda: self.status_var.set(text))
+
+    def finish_success(self, count, indexes_dir):
+        if self.winfo_exists():
+            self.pbar.stop()
+            self.after(0, self.close_and_notify_success, count, indexes_dir)
+
+    def close_and_notify_success(self, count, indexes_dir):
+        self.destroy()
+        if self.parent.winfo_exists():
+            messagebox.showinfo(
+                "Success",
+                f"Successfully installed {count} index files into:\n{indexes_dir}"
+            )
+
+    def finish_error(self, error_msg, terminal_cmd):
+        if self.winfo_exists():
+            self.pbar.stop()
+            self.after(0, self.close_and_show_error, error_msg, terminal_cmd)
+
+    def close_and_show_error(self, error_msg, terminal_cmd):
+        self.destroy()
+        if self.parent.winfo_exists():
+            StepLogDialog(self.parent, "Installation Error", error_msg, terminal_cmd)
 
 
 def check_and_download_sid_firmware():
@@ -69,7 +167,7 @@ class InstallDependenciesWorker:
         try:
             script_lines = []
 
-            # 1. Base APT packages installation (including all required dev headers, dropping fluidsynth)
+            # 1. Base APT packages installation
             apt_pkgs = [
                 "git", "cmake", "libgme0", "build-essential", "sidplayfp", "xterm", "xdotool",
                 "zlib1g-dev", "libao-dev", "libsdl2-dev", "pkg-config", "pulseaudio-utils",
@@ -83,16 +181,29 @@ class InstallDependenciesWorker:
             lazyusf_bin = cache_dir / "lazyusf"
             if not lazyusf_bin.exists():
                 lazyusf_src_dir = temp_build_dir / "lazyusf"
+                patch_script = temp_build_dir / "patch_lazyusf.py"
+                
+                with open(patch_script, "w", encoding="utf-8") as ps:
+                    ps.write("import glob\n")
+                    ps.write("import sys\n\n")
+                    ps.write("target = 'printf(\"\\\\r%f\",(play_time/60000));'\n")
+                    ps.write("replacement = 'printf(\"\\\\r%.7f\", play_time / 60000.0); fflush(stdout);'\n\n")
+                    ps.write("found = False\n")
+                    ps.write("for f in glob.glob(f'{sys.argv[1]}/**/audio.c', recursive=True):\n")
+                    ps.write("    with open(f, 'r', encoding='utf-8') as file:\n")
+                    ps.write("        content = file.read()\n")
+                    ps.write("    if target in content:\n")
+                    ps.write("        with open(f, 'w', encoding='utf-8') as file:\n")
+                    ps.write("            file.write(content.replace(target, replacement))\n")
+                    ps.write("        print(f'Successfully patched {f}')\n")
+                    ps.write("        found = True\n\n")
+                    ps.write("if not found:\n")
+                    ps.write("    sys.exit('Patch failed: target text not found')\n")
+
                 script_lines.extend([
                     f"rm -rf \"{lazyusf_src_dir}\"",
                     f"git clone https://github.com/derselbst/lazyusf.git \"{lazyusf_src_dir}\"",
-                    f"python3 -c \"import glob; "
-                    f"target = r'printf(\\\"\\\\r%f\\\",(play_time/60000));'; "
-                    f"replacement = 'printf(\\\"\\\\r%.7f\\\", play_time / 60000.0);\\\\nfflush(stdout);'; "
-                    f"found = False; "
-                    f"[open(f, 'w', encoding='utf-8').write(open(f, 'r', encoding='utf-8').read().replace(target, replacement)) or print(f'Patched {{f}}') or locals().update(found=True) "
-                    f"for f in glob.glob('{lazyusf_src_dir}/**/audio.c', recursive=True) if target in open(f, 'r', encoding='utf-8').read()]; "
-                    f"assert found, 'Patch failed'\"",
+                    f"python3 \"{patch_script}\" \"{lazyusf_src_dir}\"",
                     f"mkdir -p \"{lazyusf_src_dir}/build\"",
                     f"cd \"{lazyusf_src_dir}/build\" && cmake .. && make",
                     f"cp \"{lazyusf_src_dir}/build/lazyusf\" \"{cache_dir}/\"",
@@ -123,7 +234,7 @@ class InstallDependenciesWorker:
                     playgsf_needs_seek_patch = True
 
             if playgsf_needs_seek_patch:
-                playgsf_patch = Path(__file__).resolve().parent / "patches" / "playgsf-start-offset.patch"
+                playgsf_patch = resource_path("patches/playgsf-start-offset.patch")
                 staged_playgsf_patch = temp_build_dir / "playgsf-start-offset.patch"
                 if playgsf_patch.exists():
                     shutil.copy2(playgsf_patch, staged_playgsf_patch)
@@ -152,94 +263,94 @@ class InstallDependenciesWorker:
                 twosf_workdir = temp_build_dir / "2sftowav_source"
                 script_lines.extend([
                     f"git clone --recurse-submodules https://github.com/yshui/2sftowav.git \"{twosf_workdir}\"",
+                    f"cd \"{twosf_workdir}/src/psflib\" && make",
                     f"cd \"{twosf_workdir}/src/vio2sf\""
                 ])
-                script_lines.append(r"""cat > 2sftowav.c <<'EOF'
-#include <locale.h>
-#include <signal.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <SDL.h>
-#include "common.h"
-#include "desmume/state.h"
-static int16_t samples[4096];
-static volatile sig_atomic_t stop_requested = 0;
-static void handle_sigint(int signal_number) { (void)signal_number; stop_requested = 1; }
-int main(int argc, char **argv) {
-    setlocale(LC_ALL, "C");
-    long start_time_ms = 0;
-    const char *input_file = NULL;
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "--help") == 0) { return 0; }
-        if (strncmp(argv[i], "-b", 2) == 0) {
-            char *end = NULL;
-            start_time_ms = strtol(argv[i] + 2, &end, 10);
-        } else if (input_file == NULL) {
-            input_file = argv[i];
-        }
-    }
-    if (input_file == NULL) return 1;
-    struct twosf_loader_state state = {0};
-    if (psf_load(input_file, &stdio_callbacks, 0x24, twosf_loader, &state, twosf_info, &state, 1, print_message, 0) <= 0) return 1;
-    NDS_state core = {0};
-    state_init(&core);
-    core.dwInterpolation = 0;
-    core.dwChannelMute = 0;
-    state_setrom(&core, state.rom, state.rom_size, 0);
-    state_loadstate(&core, state.state, state.state_size);
-    long nsamples = state.length_ms * 441 / 10 + 1;
-    long fade_samples = state.fade_ms * 441 / 10;
-    long samples_to_skip = start_time_ms * 441 / 10;
-    while (samples_to_skip > 0) {
-        long to_skip = samples_to_skip < 2048 ? samples_to_skip : 2048;
-        state_render(&core, samples, to_skip);
-        samples_to_skip -= to_skip;
-        nsamples -= to_skip;
-    }
-    SDL_Init(SDL_INIT_AUDIO);
-    SDL_AudioSpec wanted = {0};
-    wanted.freq = 44100;
-    wanted.format = AUDIO_S16SYS;
-    wanted.channels = 2;
-    wanted.samples = 2048;
-    SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &wanted, NULL, 0);
-    signal(SIGINT, handle_sigint);
-    SDL_PauseAudioDevice(device, 0);
-    while (nsamples > 0 && !stop_requested) {
-        long to_render = nsamples < 2048 ? nsamples : 2048;
-        state_render(&core, samples, to_render);
-        if (fade_samples > 0 && nsamples <= fade_samples) {
-            for (int i = 0; i < to_render * 2; i++) {
-                double factor = (nsamples - i / 2) / (double)fade_samples;
-                samples[i] = (int16_t)(samples[i] * factor);
-            }
-        }
-        SDL_QueueAudio(device, samples, to_render * 2 * sizeof(int16_t));
-        nsamples -= to_render;
-        while (!stop_requested && SDL_GetQueuedAudioSize(device) > 44100 * 4 / 2) { SDL_Delay(10); }
-    }
-    SDL_CloseAudioDevice(device);
-    SDL_Quit();
-    return 0;
-}
-EOF""")
-                script_lines.append(r"""cat > Makefile <<'EOF'
-CFLAGS = -g -I. $(shell pkg-config --cflags sdl2)
-CXXFLAGS = -g -I. -std=gnu++17
-SDL_LIBS = $(shell pkg-config --libs sdl2)
-OBJS = desmume/FIFO.o desmume/GPU.o desmume/MMU.o desmume/NDSSystem.o desmume/SPU.o desmume/arm_instructions.o desmume/armcpu.o desmume/barray.o desmume/bios.o desmume/cp15.o desmume/isqrt.o desmume/matrix.o desmume/mc.o desmume/resampler.o desmume/state.o desmume/thumb_instructions.o 2sftowav.o
-all: libvio2sf.a 2sfplay
-libvio2sf.a: $(OBJS)
-	$(AR) rcs $@ $^
-%.o: %.c
-	$(CC) -c $(CFLAGS) -O3 -o $@ $<
-%.o: %.cpp
-	$(CXX) -c $(CXXFLAGS) -O3 -o $@ $<
-2sfplay: 2sftowav.o libvio2sf.a ../psflib/libpsflib.a
-	$(CXX) $(CXXFLAGS) -o $@ 2sftowav.o libvio2sf.a ../psflib/libpsflib.a -lz -lm $(SDL_LIBS)
-EOF""")
+
+                script_lines.append("echo '#include <locale.h>' > 2sftowav.c")
+                script_lines.append("echo '#include <signal.h>' >> 2sftowav.c")
+                script_lines.append("echo '#include <stdint.h>' >> 2sftowav.c")
+                script_lines.append("echo '#include <stdio.h>' >> 2sftowav.c")
+                script_lines.append("echo '#include <stdlib.h>' >> 2sftowav.c")
+                script_lines.append("echo '#include <string.h>' >> 2sftowav.c")
+                script_lines.append("echo '#include <SDL.h>' >> 2sftowav.c")
+                script_lines.append("echo '#include \"common.h\"' >> 2sftowav.c")
+                script_lines.append("echo '#include \"desmume/state.h\"' >> 2sftowav.c")
+                script_lines.append("echo 'static int16_t samples[4096];' >> 2sftowav.c")
+                script_lines.append("echo 'static volatile sig_atomic_t stop_requested = 0;' >> 2sftowav.c")
+                script_lines.append("echo 'static void handle_sigint(int signal_number) { (void)signal_number; stop_requested = 1; }' >> 2sftowav.c")
+                script_lines.append("echo 'int main(int argc, char **argv) {' >> 2sftowav.c")
+                script_lines.append("echo '    setlocale(LC_ALL, \"C\");' >> 2sftowav.c")
+                script_lines.append("echo '    long start_time_ms = 0;' >> 2sftowav.c")
+                script_lines.append("echo '    const char *input_file = NULL;' >> 2sftowav.c")
+                script_lines.append("echo '    for (int i = 1; i < argc; i++) {' >> 2sftowav.c")
+                script_lines.append("echo '        if (strcmp(argv[i], \"--help\") == 0) { return 0; }' >> 2sftowav.c")
+                script_lines.append("echo '        if (strncmp(argv[i], \"-b\", 2) == 0) {' >> 2sftowav.c")
+                script_lines.append("echo '            char *end = NULL;' >> 2sftowav.c")
+                script_lines.append("echo '            start_time_ms = strtol(argv[i] + 2, &end, 10);' >> 2sftowav.c")
+                script_lines.append("echo '        } else if (input_file == NULL) {' >> 2sftowav.c")
+                script_lines.append("echo '            input_file = argv[i];' >> 2sftowav.c")
+                script_lines.append("echo '        }' >> 2sftowav.c")
+                script_lines.append("echo '    }' >> 2sftowav.c")
+                script_lines.append("echo '    if (input_file == NULL) return 1;' >> 2sftowav.c")
+                script_lines.append("echo '    struct twosf_loader_state state = {0};' >> 2sftowav.c")
+                script_lines.append("echo '    if (psf_load(input_file, &stdio_callbacks, 0x24, twosf_loader, &state, twosf_info, &state, 1, print_message, 0) <= 0) return 1;' >> 2sftowav.c")
+                script_lines.append("echo '    NDS_state core = {0};' >> 2sftowav.c")
+                script_lines.append("echo '    state_init(&core);' >> 2sftowav.c")
+                script_lines.append("echo '    core.dwInterpolation = 0;' >> 2sftowav.c")
+                script_lines.append("echo '    core.dwChannelMute = 0;' >> 2sftowav.c")
+                script_lines.append("echo '    state_setrom(&core, state.rom, state.rom_size, 0);' >> 2sftowav.c")
+                script_lines.append("echo '    state_loadstate(&core, state.state, state.state_size);' >> 2sftowav.c")
+                script_lines.append("echo '    long nsamples = state.length_ms * 441 / 10 + 1;' >> 2sftowav.c")
+                script_lines.append("echo '    long fade_samples = state.fade_ms * 441 / 10;' >> 2sftowav.c")
+                script_lines.append("echo '    long samples_to_skip = start_time_ms * 441 / 10;' >> 2sftowav.c")
+                script_lines.append("echo '    while (samples_to_skip > 0) {' >> 2sftowav.c")
+                script_lines.append("echo '        long to_skip = samples_to_skip < 2048 ? samples_to_skip : 2048;' >> 2sftowav.c")
+                script_lines.append("echo '        state_render(&core, samples, to_skip);' >> 2sftowav.c")
+                script_lines.append("echo '        samples_to_skip -= to_skip;' >> 2sftowav.c")
+                script_lines.append("echo '        nsamples -= to_skip;' >> 2sftowav.c")
+                script_lines.append("echo '    }' >> 2sftowav.c")
+                script_lines.append("echo '    SDL_Init(SDL_INIT_AUDIO);' >> 2sftowav.c")
+                script_lines.append("echo '    SDL_AudioSpec wanted = {0};' >> 2sftowav.c")
+                script_lines.append("echo '    wanted.freq = 44100;' >> 2sftowav.c")
+                script_lines.append("echo '    wanted.format = AUDIO_S16SYS;' >> 2sftowav.c")
+                script_lines.append("echo '    wanted.channels = 2;' >> 2sftowav.c")
+                script_lines.append("echo '    wanted.samples = 2048;' >> 2sftowav.c")
+                script_lines.append("echo '    SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &wanted, NULL, 0);' >> 2sftowav.c")
+                script_lines.append("echo '    signal(SIGINT, handle_sigint);' >> 2sftowav.c")
+                script_lines.append("echo '    SDL_PauseAudioDevice(device, 0);' >> 2sftowav.c")
+                script_lines.append("echo '    while (nsamples > 0 && !stop_requested) {' >> 2sftowav.c")
+                script_lines.append("echo '        long to_render = nsamples < 2048 ? nsamples : 2048;' >> 2sftowav.c")
+                script_lines.append("echo '        state_render(&core, samples, to_render);' >> 2sftowav.c")
+                script_lines.append("echo '        if (fade_samples > 0 && nsamples <= fade_samples) {' >> 2sftowav.c")
+                script_lines.append("echo '            for (int i = 0; i < to_render * 2; i++) {' >> 2sftowav.c")
+                script_lines.append("echo '                double factor = (nsamples - i / 2) / (double)fade_samples;' >> 2sftowav.c")
+                script_lines.append("echo '                samples[i] = (int16_t)(samples[i] * factor);' >> 2sftowav.c")
+                script_lines.append("echo '            }' >> 2sftowav.c")
+                script_lines.append("echo '        }' >> 2sftowav.c")
+                script_lines.append("echo '        SDL_QueueAudio(device, samples, to_render * 2 * sizeof(int16_t));' >> 2sftowav.c")
+                script_lines.append("echo '        nsamples -= to_render;' >> 2sftowav.c")
+                script_lines.append("echo '        while (!stop_requested && SDL_GetQueuedAudioSize(device) > 44100 * 4 / 2) { SDL_Delay(10); }' >> 2sftowav.c")
+                script_lines.append("echo '    }' >> 2sftowav.c")
+                script_lines.append("echo '    SDL_CloseAudioDevice(device);' >> 2sftowav.c")
+                script_lines.append("echo '    SDL_Quit();' >> 2sftowav.c")
+                script_lines.append("echo '    return 0;' >> 2sftowav.c")
+                script_lines.append("echo '}' >> 2sftowav.c")
+
+                script_lines.append("echo 'CFLAGS = -g -I. $(shell pkg-config --cflags sdl2)' > Makefile")
+                script_lines.append("echo 'CXXFLAGS = -g -I. -std=gnu++17' >> Makefile")
+                script_lines.append("echo 'SDL_LIBS = $(shell pkg-config --libs sdl2)' >> Makefile")
+                script_lines.append("echo 'OBJS = desmume/FIFO.o desmume/GPU.o desmume/MMU.o desmume/NDSSystem.o desmume/SPU.o desmume/arm_instructions.o desmume/armcpu.o desmume/barray.o desmume/bios.o desmume/cp15.o desmume/isqrt.o desmume/matrix.o desmume/mc.o desmume/resampler.o desmume/state.o desmume/thumb_instructions.o 2sftowav.o' >> Makefile")
+                script_lines.append("echo 'all: libvio2sf.a 2sfplay' >> Makefile")
+                script_lines.append("echo 'libvio2sf.a: $(OBJS)' >> Makefile")
+                script_lines.append("echo -e '\t$(AR) rcs $@ $^' >> Makefile")
+                script_lines.append("echo '%.o: %.c' >> Makefile")
+                script_lines.append("echo -e '\t$(CC) -c $(CFLAGS) -O3 -o $@ $<' >> Makefile")
+                script_lines.append("echo '%.o: %.cpp' >> Makefile")
+                script_lines.append("echo -e '\t$(CXX) -c $(CXXFLAGS) -O3 -o $@ $<' >> Makefile")
+                script_lines.append("echo '2sfplay: 2sftowav.o libvio2sf.a ../psflib/libpsflib.a' >> Makefile")
+                script_lines.append("echo -e '\t$(CXX) $(CXXFLAGS) -o $@ 2sftowav.o libvio2sf.a ../psflib/libpsflib.a -lz -lm $(SDL_LIBS)' >> Makefile")
+
                 script_lines.extend([
                     "make clean || true",
                     "make",
@@ -274,14 +385,7 @@ EOF""")
             # 7. Soundfont and Extras download
             soundfont_file = cache_dir / "FluidR3_GM.sf2"
             if not soundfont_file.exists():
-                script_lines.append(f"wget -O \"{soundfont_file}\" https://github.com/pianobooster/fluid-soundfont/releases/download/v3.1/FluidR3_GM.sf2")
-
-            nsf_tracks_bin = cache_dir / "nsf_tracks"
-            if not nsf_tracks_bin.exists():
-                script_lines.extend([
-                    f"wget -O \"{nsf_tracks_bin}\" https://raw.githubusercontent.com/Aer0nic/joshw-browser/main/tools/nsf_tracks || true",
-                    f"chmod +x \"{nsf_tracks_bin}\" || true"
-                ])
+                script_lines.append(f"wget -O \"{soundfont_file}\" https://github.com/pianobooster/fluid-soundfont/releases/download/v3.1/FluidR3_GM.sf2 || true")
 
             kernal_file = sidplayfp_dir / "kernal"
             if not kernal_file.exists():
@@ -296,12 +400,22 @@ EOF""")
 
             script_file = temp_build_dir / "install_deps.sh"
             with open(script_file, "w", encoding="utf-8") as f:
-                f.write("#!/bin/bash\n")
-                f.write("set -e\n")
-                f.write(" && \\\n".join(script_lines) + "\n")
+                f.write("#!/bin/bash\n\n")
+                f.write("error_handler() {\n")
+                f.write("    echo ''\n")
+                f.write("    echo '===================================================' \n")
+                f.write("    echo 'ERROR DETECTED! Installation failed.'\n")
+                f.write("    echo 'Review the log messages above to pinpoint the issue.'\n")
+                f.write("    echo '===================================================' \n")
+                f.write("    read -p 'Press Enter to exit...' key\n")
+                f.write("    exit 1\n")
+                f.write("}\n\n")
+                f.write("trap 'error_handler' ERR\n")
+                f.write("set -e\n\n")
+                f.write("\n".join(script_lines) + "\n\n")
                 f.write("echo '----------------------------------------'\n")
-                f.write("echo 'Installation complete. Press Enter to close.'\n")
-                f.write("read\n")
+                f.write("echo 'Installation complete successfully. Press Enter to close.'\n")
+                f.write("read -p 'Press Enter to exit...' key\n")
             os.chmod(script_file, 0o755)
 
             terminals = [
@@ -347,12 +461,19 @@ def _run_single_installer(dep_name, parent):
             build_sh = temp_build_dir / "build_single.sh"
             
             with open(build_sh, "w", encoding="utf-8") as sf:
-                sf.write("#!/bin/bash\n")
+                sf.write("#!/bin/bash\n\n")
+                sf.write("error_handler() {\n")
+                sf.write("    echo 'ERROR DETECTED! Press Enter to exit.'\n")
+                sf.write("    read -p 'Press Enter to exit...' key\n")
+                sf.write("    exit 1\n")
+                sf.write("}\n")
+                sf.write("trap 'error_handler' ERR\n")
+                sf.write("set -e\n\n")
                 sf.write(f"rm -rf \"{lazyusf_src_dir}\"\n")
                 sf.write(f"git clone https://github.com/derselbst/lazyusf.git \"{lazyusf_src_dir}\"\n")
                 sf.write(f"cd \"{lazyusf_src_dir}\"\n")
                 
-                sf.write("python3 - <<'EOF'\n")
+                sf.write("cat <<'EOF' > patch.py\n")
                 sf.write("import glob\n\n")
                 sf.write("target = r'printf(\"\\r%f\",(play_time/60000));'\n")
                 sf.write("replacement = 'printf(\"\\\\r%.7f\", play_time / 60000.0);\\nfflush(stdout);'\n\n")
@@ -370,6 +491,7 @@ def _run_single_installer(dep_name, parent):
                 sf.write("    raise SystemExit('Patch failed: target text not found in any audio.c')\n")
                 sf.write("EOF\n")
 
+                sf.write("python3 patch.py\n")
                 sf.write("mkdir build && cd build\n")
                 sf.write("cmake .. && make\n")
                 sf.write(f"cp lazyusf \"{cache_dir}/\"\n")
@@ -382,7 +504,16 @@ def _run_single_installer(dep_name, parent):
         if script_lines:
             terminal_script = temp_build_dir / "run_term.sh"
             with open(terminal_script, "w", encoding="utf-8") as tf:
-                tf.write("#!/bin/bash\n" + "\n".join(script_lines) + "\nread -p 'Press Enter to close.'\n")
+                tf.write("#!/bin/bash\n\n")
+                tf.write("error_handler() {\n")
+                tf.write("    echo 'ERROR DETECTED! Press Enter to exit.'\n")
+                tf.write("    read -p 'Press Enter to exit...' key\n")
+                tf.write("    exit 1\n")
+                tf.write("}\n")
+                tf.write("trap 'error_handler' ERR\n")
+                tf.write("set -e\n\n")
+                tf.write("\n".join(script_lines) + "\n\n")
+                tf.write("read -p 'Press Enter to close.' key\n")
             os.chmod(terminal_script, 0o755)
             
             for term in ["gnome-terminal", "konsole", "xfce4-terminal", "xterm", "x-terminal-emulator"]:
@@ -459,6 +590,7 @@ class IndexPremadeWindow:
     def git_clone_worker(self):
         cache_dir = Path(config.get_cache_directory())
         indexes_dir = cache_dir / "indexes"
+        
         indexes_dir.mkdir(parents=True, exist_ok=True)
         
         repo_dir = cache_dir / "joshw-browser"
@@ -485,17 +617,17 @@ class IndexPremadeWindow:
                 if self.parent.winfo_exists():
                     self.parent.after(0, lambda: messagebox.showinfo(
                         "Success", 
-                        "Premade indexes downloaded and installed successfully!"
+                        f"Premade indexes downloaded and installed to {indexes_dir} successfully!"
                     ))
             else:
-                terminal_cmd = f"cd {cache_dir} && git clone {clone_url} && cd joshw-browser/indexes/ && mkdir -p {indexes_dir} && cp domain_cache* {indexes_dir}"
-                error_msg = "Premade index files containing 'domain_cache' were not found after cloning. Please do it manually. A terminal will now open when you click OK."
+                terminal_cmd = f"mkdir -p \"{indexes_dir}\" && cd \"{cache_dir}\" && git clone {clone_url} && cp joshw-browser/indexes/domain_cache* \"{indexes_dir}/\" && rm -rf joshw-browser"
+                error_msg = "Premade index files containing 'domain_cache' were not found after cloning. Please install them manually using the terminal window."
                 if self.parent.winfo_exists():
                     self.parent.after(0, lambda: StepLogDialog(self.parent, "Installation Error", error_msg, terminal_cmd))
 
         except Exception as e:
-            terminal_cmd = f"cd {cache_dir} && git clone {clone_url} && cd joshw-browser/indexes/ && mkdir -p {indexes_dir} && cp domain_cache* {indexes_dir}"
-            error_msg = f"An error occurred during git clone or file copying:\n\n{e}\n\nPlease perform it manually. A terminal will now open when you click OK."
+            terminal_cmd = f"mkdir -p \"{indexes_dir}\" && cd \"{cache_dir}\" && git clone {clone_url} && cp joshw-browser/indexes/domain_cache* \"{indexes_dir}/\" && rm -rf joshw-browser"
+            error_msg = f"An error occurred during git clone or file copying:\n\n{e}\n\nA terminal window will now open to attempt manual retrieval."
             if self.parent.winfo_exists():
                 self.parent.after(0, lambda: StepLogDialog(self.parent, "Installation Error", error_msg, terminal_cmd))
 
@@ -510,6 +642,13 @@ class IndexAllWindow(tk.Toplevel):
         self.minsize(520, 400)
         self.transient(parent)
         self.grab_set()
+
+        try:
+            icon_file = resource_path("assets/icons/app_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
 
         self.domain_rows = {}
         self.total_start_time = time.time()
@@ -661,6 +800,13 @@ class DownloadProgressWindow(tb.Toplevel):
         self.resizable(False, False)
         self.transient(parent)
         self.is_cancelled = False
+
+        try:
+            icon_file = resource_path("assets/icons/app_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
 
         self.start_time = time.time()
         self.mode = "downloading"

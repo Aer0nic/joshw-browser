@@ -7,6 +7,7 @@ import tkinter as tk
 import ttkbootstrap as tb
 import random
 from tkinter import ttk, messagebox
+from config import resource_path
 from players import (
     get_saved_player_volume,
     register_volume_player,
@@ -89,8 +90,7 @@ class PSFAudioWorker:
                         channels=2,
                         dtype="int16",
                         blocksize=chunk_size,
-                        latency="high",
-                        device=4
+                        latency="high"
                     )
                     stream.start()
                 except Exception as e:
@@ -185,6 +185,14 @@ class PSFPlayerWindow(tk.Toplevel):
 
         self.load_playlist_files()
         self.build_ui()
+
+        try:
+            icon_file = resource_path("assets/icons/player_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
+
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.start_queue_polling()
 

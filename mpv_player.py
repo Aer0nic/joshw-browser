@@ -9,7 +9,7 @@ import random
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
-from config import get_cache_directory, is_emulated_file
+from config import get_cache_directory, is_emulated_file, resource_path, get_binary_path
 
 # Import shared helper functions from players.py (NO player windows imported here)
 from players import (
@@ -60,6 +60,14 @@ class MPVPlayerWindow(tk.Toplevel):
         self.seek_pct_var = tk.StringVar(value="0%")
 
         self.build_ui()
+
+        try:
+            icon_file = resource_path("assets/icons/player_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
+
         self.protocol("WM_DELETE_WINDOW", self.close)
 
         if self.playlist:
@@ -380,7 +388,7 @@ class MPVPlayerWindow(tk.Toplevel):
         except Exception:
             pass
 
-        mpv_bin = "/bin/mpv" if os.path.exists("/bin/mpv") else (shutil.which("mpv") or "mpv")
+        mpv_bin = str(get_binary_path("mpv"))
         
         cmd = [
             mpv_bin,

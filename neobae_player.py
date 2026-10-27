@@ -10,7 +10,7 @@ import json
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
-from config import get_cache_directory, is_emulated_file
+from config import get_cache_directory, is_emulated_file, resource_path, get_binary_path
 from players import (
     get_saved_player_volume,
     register_volume_player,
@@ -39,6 +39,16 @@ def get_available_soundfonts():
     if os.path.isdir(cache_dir):
         try:
             for f in os.listdir(cache_dir):
+                if os.path.splitext(f)[1].lower() in valid_exts:
+                    sf_files.add(f)
+        except Exception:
+            pass
+
+    # Check bundled resources directory for soundfonts
+    bundled_sf_dir = resource_path("soundfonts")
+    if bundled_sf_dir.exists() and bundled_sf_dir.is_dir():
+        try:
+            for f in os.listdir(str(bundled_sf_dir)):
                 if os.path.splitext(f)[1].lower() in valid_exts:
                     sf_files.add(f)
         except Exception:
@@ -110,6 +120,14 @@ class PlayBAEPlayerWindow(tk.Toplevel):
         self.seek_pct_var = tk.StringVar(value="0%")
 
         self.build_ui()
+
+        try:
+            icon_file = resource_path("assets/icons/player_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
+
         self.protocol("WM_DELETE_WINDOW", self.close)
 
         if self.playlist:
@@ -468,7 +486,7 @@ class PlayBAEPlayerWindow(tk.Toplevel):
             self.proc = None
         self.playbae_wpctl_id = None
 
-        playbae_bin = shutil.which("playbae") or os.path.join(get_cache_directory(), "playbae")
+        playbae_bin = str(get_binary_path("playbae"))
         ext = os.path.splitext(self.audio_file)[1].lower()
         soundfont_supported = {".mid", ".midi", ".kar", ".xmf", ".mxmf", ".mthc"}
 
@@ -480,10 +498,13 @@ class PlayBAEPlayerWindow(tk.Toplevel):
             if selected_sf and selected_sf != "(None)":
                 sf_path1 = os.path.expanduser(f"~/.config/joshw/{selected_sf}")
                 sf_path2 = os.path.join(get_cache_directory(), selected_sf)
+                sf_path3 = str(resource_path(f"soundfonts/{selected_sf}"))
                 if os.path.exists(sf_path1):
                     cmd.extend(["-p", sf_path1])
                 elif os.path.exists(sf_path2):
                     cmd.extend(["-p", sf_path2])
+                elif os.path.exists(sf_path3):
+                    cmd.extend(["-p", sf_path3])
                 else:
                     cmd.extend(["-p", sf_path1]) # Fallback path
 

@@ -4,18 +4,22 @@ import os
 import platform
 import re
 import shutil
+import stat
 import sys
 from pathlib import Path
 
 
-if getattr(sys, "frozen", False):
-    # PyInstaller's bundled-resource directory.
-    app_dir = Path(
-        getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent)
-    )
-else:
-    # Directory containing config.py while developing.
-    app_dir = Path(__file__).resolve().parent
+def get_project_root() -> Path:
+    """
+    Returns absolute Path to the project root.
+    Handles both normal execution and PyInstaller --onefile runtime (_MEIPASS).
+    """
+    if getattr(sys, "frozen", False):
+        return Path(getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent))
+    return Path(__file__).resolve().parent
+
+
+app_dir = get_project_root()
 
 
 DOMAINS = {
@@ -58,17 +62,52 @@ USER_AGENT = "JoshW-Archive-Browser/1.0"
 DATE_PATTERN = re.compile(r"[\(\[](\d{4}(?:-\d{2}(?:-\d{2})?)?)[\)\]]")
 
 
+def resource_path(relative_path: str) -> Path:
+    """
+    Return an absolute Path object to a bundled or project resource.
+    Always returns a Path object so .exists() works natively.
+    """
+    return app_dir / relative_path
+
+
+def get_binary_path(binary_name: str) -> Path:
+    """
+    Finds helper binary across PyInstaller bundle, repo root, ~/.config, or PATH.
+    Ensures execution permissions (+x) are granted if extracted inside PyInstaller.
+    """
+    # 1. Check inside PyInstaller bundle or project root (e.g., bin/binary_name or binary_name)
+    bundled_bin = resource_path(f"bin/{binary_name}")
+    if not bundled_bin.exists():
+        bundled_bin = resource_path(binary_name)
+
+    if bundled_bin.exists():
+        try:
+            # Grant execution rights to temporary extracted file on Linux
+            current_mode = bundled_bin.stat().st_mode
+            bundled_bin.chmod(current_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        except Exception:
+            pass
+        return bundled_bin
+
+    # 2. Check user's app config directory (~/.config/joshw/binary_name)
+    config_bin = Path.home() / ".config" / "joshw" / binary_name
+    if config_bin.exists():
+        return config_bin
+
+    # 3. Fall back to system PATH lookup
+    system_bin = shutil.which(binary_name)
+    if system_bin:
+        return Path(system_bin)
+
+    return Path(binary_name)
+
+
 def get_ffmpeg_path():
     """Find the bundled, development, or system FFmpeg executable."""
-    bundled_path = Path(resource_path("ffmpeg"))
-    if bundled_path.exists():
-        return str(bundled_path)
-
-    dev_ffmpeg = Path(__file__).resolve().parent / "ffmpeg"
-    if dev_ffmpeg.exists():
-        return str(dev_ffmpeg)
-
-    return shutil.which("ffmpeg") or "ffmpeg"
+    ffmpeg_bin = get_binary_path("ffmpeg")
+    if ffmpeg_bin.exists():
+        return str(ffmpeg_bin)
+    return "ffmpeg"
 
 
 def get_cache_directory():
@@ -84,11 +123,6 @@ def get_cache_directory():
     cache_dir = os.path.join(base_dir, "joshw")
     os.makedirs(cache_dir, exist_ok=True)
     return cache_dir
-
-
-def resource_path(relative_path):
-    """Return an absolute path to a bundled or project resource."""
-    return str(app_dir / relative_path)
 
 
 def get_temp_directory():

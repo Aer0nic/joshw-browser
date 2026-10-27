@@ -9,7 +9,7 @@ import random
 import tkinter as tk
 import ttkbootstrap as tb
 from tkinter import ttk, messagebox
-from config import is_emulated_file
+from config import is_emulated_file, resource_path
 from players import (
     get_saved_player_volume,
     register_volume_player,
@@ -57,6 +57,14 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         self.seek_pct_var = tk.StringVar(value="0%")
 
         self.build_ui()
+
+        try:
+            icon_file = resource_path("assets/icons/player_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
+
         self.protocol("WM_DELETE_WINDOW", self.close)
 
         if self.playlist:
@@ -104,9 +112,9 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         abs_target = os.path.normpath(os.path.abspath(self.audio_file))
 
         vgm_bin = get_vgmstream_path()
-        if vgm_bin and (shutil.which(vgm_bin) or os.path.exists(vgm_bin)):
+        if vgm_bin and (shutil.which(str(vgm_bin)) or os.path.exists(str(vgm_bin))):
             try:
-                cmd = [vgm_bin, "-m", self.audio_file]
+                cmd = [str(vgm_bin), "-m", self.audio_file]
                 result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=5)
                 for line in result.stdout.splitlines():
                     if "subsongs:" in line.lower() or "tracks:" in line.lower():
@@ -274,14 +282,7 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         self.on_loop_settings_changed()
 
     def on_loop_spinbox_changed(self):
-            # Dynamically recalculate visual duration on spinbox change without restarting the process
-            if not self.loop_forever_var.get() and self.audio_file:
-                parsed_length, parsed_fade = self.parse_length_and_fade_from_strings(self.audio_file)
-                multiplier = 1 + self.loop_count_var.get() if self.loop_chk_var.get() else 1
-                effective_length = parsed_length * multiplier
-                self.raw_duration_seconds = effective_length + parsed_fade
-                formatted_dur = self.format_time(self.raw_duration_seconds)
-                self.duration_var.set(formatted_dur)
+        self.on_loop_settings_changed()
 
     def on_loop_forever_changed(self):
         self.on_loop_settings_changed()
@@ -375,11 +376,11 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         self.pactl_stream_id = None
 
         vgm_bin = get_vgmstream_path()
-        if not vgm_bin or not (shutil.which(vgm_bin) or os.path.exists(vgm_bin)):
+        if not vgm_bin or not (shutil.which(str(vgm_bin)) or os.path.exists(str(vgm_bin))):
             messagebox.showerror("vgmstream123 Not Found", "vgmstream123 binary not found!")
             return
 
-        cmd = [vgm_bin, "-m"]
+        cmd = [str(vgm_bin), "-m"]
         if self.loop_forever_var.get():
             cmd.append("-c")
 

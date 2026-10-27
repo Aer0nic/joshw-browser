@@ -9,6 +9,7 @@ import array
 import tkinter as tk
 from tkinter import ttk, messagebox
 from pathlib import Path
+from config import resource_path
 from players import get_saved_player_volume, register_volume_player, set_player_volume, InteractiveProgressBar, ExtractedFilesBrowserWindow
 
 def generate_gme_m3u_if_needed(audio_file):
@@ -79,10 +80,15 @@ def get_gme():
             break
         except Exception:
             try:
-                lib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), name))
+                bundled_lib = str(resource_path(name))
+                lib = ctypes.CDLL(bundled_lib)
                 break
             except Exception:
-                continue
+                try:
+                    lib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), name))
+                    break
+                except Exception:
+                    continue
 
     if lib is None:
         raise RuntimeError("Could not load Game Music Emu (libgme) shared library.")
@@ -447,6 +453,14 @@ class GMEPlayerWindow(tk.Toplevel):
         self.seek_pct_var = tk.StringVar(value="0%")
 
         self.build_ui()
+
+        try:
+            icon_file = resource_path("assets/icons/player_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
+
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.start_queue_polling()
 

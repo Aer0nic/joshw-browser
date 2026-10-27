@@ -18,7 +18,7 @@ from collections import defaultdict
 from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, format_size, resource_path
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
 from players import ExtractedFilesBrowserWindow, get_vgmstream_path
-from downloaders import DownloadProgressWindow, IndexAllWindow, IndexPremadeWindow, install_dependencies_prompt, check_and_download_sid_firmware
+from downloaders import DownloadProgressWindow, IndexAllWindow, PremadeIndexProgressWindow, install_dependencies_prompt, check_and_download_sid_firmware
 
 
 class ToolTip:
@@ -695,7 +695,7 @@ class JoshWBrowser(tb.Window):
         existing_caches = [f for f in os.listdir(indexes_dir) if f.endswith(".json")]
         
         if existing_caches:
-            ans = messagebox.askokcancel("Are you sure?", "Are you sure? These are likely to be outdated!")
+            ans = messagebox.askokcancel("Are you sure?", "Are you sure? Existing local indexes will be replaced!")
             if not ans:
                 return
             for f in existing_caches:
@@ -704,7 +704,8 @@ class JoshWBrowser(tb.Window):
                 except Exception:
                     pass
 
-        IndexPremadeWindow(self, show_steps=self.shift_pressed)
+        # Open the pop-up progress window
+        PremadeIndexProgressWindow(self)
 
     def __init__(self):
         try:
@@ -763,7 +764,8 @@ echo "Conversion succeeded; XMI originals deleted."
 
         try:
             icon_file = resource_path("assets/icons/browser.png")
-            self.iconphoto(False, tk.PhotoImage(file=icon_file))
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
         except Exception as e:
             print(f"Could not load icon: {e}")
         

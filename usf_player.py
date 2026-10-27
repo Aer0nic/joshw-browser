@@ -7,12 +7,13 @@ import json
 import re
 import signal
 import random
+import shutil
 import tkinter as tk
 import ttkbootstrap as tb
 from PIL import Image, ImageTk
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
-from config import get_cache_directory, resource_path
+from config import get_cache_directory, resource_path, get_binary_path
 
 def get_shared_settings_path():
     cache_dir = Path(get_cache_directory())
@@ -134,9 +135,10 @@ class USFPlayerWindow(tk.Toplevel):
 
         try:
             icon_file = resource_path("assets/icons/usficon.png")
-            self.iconphoto(False, tk.PhotoImage(file=icon_file))
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
         except Exception as e:
-            print(f"Could not load icon: {e}")
+            print(f"[USFPlayer] Could not load icon: {e}")
 
         if self.playlist:
             self.load_and_play_current()
@@ -170,11 +172,8 @@ class USFPlayerWindow(tk.Toplevel):
 
         # Load, stretch, and render banner image across the canvas dynamically while keeping transparency
         try:
-            banner_path = Path(get_cache_directory()) / "usfbanner.png"
-            if not banner_path.exists():
-                banner_path = resource_path("assets/icons/banner.png")
+            banner_path = resource_path("assets/icons/usfbanner.png")
             if banner_path.exists():
-                
                 self.raw_banner_img = Image.open(str(banner_path)).convert("RGBA")
                 self.banner_image_item = self.banner_canvas.create_image(0, 0, anchor="nw")
 
@@ -588,11 +587,9 @@ class USFPlayerWindow(tk.Toplevel):
             time.sleep(0.1)
 
     def _playback_worker(self, file_path, is_forever, session_id):
-        cache_dir = Path(get_cache_directory())
-        lazyusf_bin = cache_dir / "lazyusf"
-        if not lazyusf_bin.exists():
-            lazyusf_bin = Path(os.path.expanduser("~/.config/joshw/lazyusf"))
-        if not lazyusf_bin.exists():
+        lazyusf_bin = get_binary_path("lazyusf")
+        if not lazyusf_bin.exists() and shutil.which(str(lazyusf_bin)) is None:
+            print("[USFPlayer] lazyusf binary not found!")
             return
 
         cmd = [str(lazyusf_bin), "--playback"]

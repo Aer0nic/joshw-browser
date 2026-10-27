@@ -7,6 +7,7 @@ import threading
 import time
 import tkinter as tk
 from tkinter import ttk, messagebox
+from config import resource_path, get_binary_path
 from players import (
     get_saved_player_volume,
     register_volume_player,
@@ -41,6 +42,14 @@ class SIDPlayerWindow(tk.Toplevel):
 
         self.parse_sid_subtracks()
         self.build_ui()
+
+        try:
+            icon_file = resource_path("assets/icons/player_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
+
         self.protocol("WM_DELETE_WINDOW", self.close)
         
         self.start_sidplay()
@@ -252,7 +261,7 @@ class SIDPlayerWindow(tk.Toplevel):
         if not preserve_time:
             self.current_position_seconds = 0.0
 
-        sidplay_bin = shutil.which("sidplayfp") or "sidplayfp"
+        sidplay_bin = str(get_binary_path("sidplayfp"))
         subtrack_num = self.subtracks[self.current_subtrack_idx]
         
         env = os.environ.copy()

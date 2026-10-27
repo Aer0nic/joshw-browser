@@ -1,5 +1,6 @@
 import os
 import posixpath
+import re
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -45,7 +46,6 @@ def parse_filename_and_date(display_name):
     if target_match:
         date_str = target_match.group(1)
         clean_name = display_name[:target_match.start()].strip()
-        import re
         clean_name = re.sub(r'[\s\-]+$', '', clean_name)
         return clean_name or display_name, date_str
 
@@ -158,9 +158,10 @@ def fetch_directory(url):
     entries.sort(key=lambda entry: (not entry["directory"], entry["name"].lower()))
     return entries
 
+
 def unique_path(path):
     """Return a non-existing path without overwriting an existing file."""
-    if not os.path.exists(path):
+    if not path or not os.path.exists(path):
         return path
 
     folder = os.path.dirname(path)
