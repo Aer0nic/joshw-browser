@@ -2,6 +2,7 @@ bin/
 build/
 dist/
 FFmpeg/
+include/
 lib/
 lib64/
 __pycache__/
@@ -12,3 +13,16 @@ venv/
 .venv/
 .venv2/
 .vscode/
+pyvenv.cfg
+PSF_PLAYBACK.md
+dump_gme_struct.py
+fading_spc_player.py
+findaudio.py
+query_gme.py
+read_spc_data.py
+joshw-browser.spc
+main.spec
+libaosdk.so
+build_aosdk.sh
+build_lazyusf_selector.sh
+xmi2mid.sh
