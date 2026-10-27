@@ -5,18 +5,11 @@ import queue
 import random
 import threading
 import time
+import array
 import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
+from tkinter import ttk, messagebox
 from pathlib import Path
-from config import is_emulated_file
-from players import (
-    get_saved_player_volume,
-    register_volume_player,
-    set_player_volume,
-    InteractiveProgressBar,
-    ExtractedFilesBrowserWindow,
-    _active_volume_players
-)
+from players import get_saved_player_volume, register_volume_player, set_player_volume, InteractiveProgressBar, ExtractedFilesBrowserWindow
 
 def generate_gme_m3u_if_needed(audio_file):
     """
@@ -34,32 +27,28 @@ def generate_gme_m3u_if_needed(audio_file):
     stem = Path(audio_file).stem
     m3u_path = os.path.join(folder, f"{stem}_tracks.m3u")
 
-    # If the m3u already exists, use it
     if os.path.exists(m3u_path):
         return m3u_path
 
     try:
-        # Open emulator handle safely via ctypes
         emu = ctypes.c_void_p(None)
         file_bytes = str(Path(audio_file).resolve()).encode("utf-8")
         
-        err = _gme.gme_open_file(file_bytes, ctypes.byref(emu), 44100)
+        err = get_gme().gme_open_file(file_bytes, ctypes.byref(emu), 44100)
         if err:
             return audio_file
 
-        # Get track count via the crash-free primitive function
-        count = _gme.gme_track_count(emu)
-        _gme.gme_delete(emu)
+        count = get_gme().gme_track_count(emu)
+        get_gme().gme_delete(emu)
 
         if count <= 1:
             return audio_file
 
-        # Write the .m3u playlist file
         with open(m3u_path, "w", encoding="utf-8") as f_m3u:
             f_m3u.write("#EXTM3U\n")
             for i in range(count):
-                track_num = f"{i+1:02d}"
-                f_m3u.write(f"#EXTINF:-1,{os.path.basename(audio_file)} - Track {track_num}\n")
+                track_num = i + 1
+                f_m3u.write(f"#EXTINF:-1,Track {track_num}\n")
                 f_m3u.write(f"{os.path.basename(audio_file)}#{i}\n")
         
         return m3u_path
@@ -98,12 +87,13 @@ def get_gme():
     if lib is None:
         raise RuntimeError("Could not load Game Music Emu (libgme) shared library.")
 
-    # Configure function signatures once loaded
     lib.gme_open_file.argtypes = [ctypes.c_char_p, ctypes.c_void_p, ctypes.c_int]
     lib.gme_open_file.restype = ctypes.c_char_p
 
-    lib.gme_track_info.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.POINTER(GMEInfo)), ctypes.c_int]
-    lib.gme_track_info.restype = ctypes.c_char_p
+    lib.gme_track_count.argtypes = [ctypes.c_void_p]
+    lib.gme_track_count.restype = ctypes.c_int
+
+    lib.gme_free_info.argtypes = [ctypes.c_void_p]
 
     lib.gme_start_track.argtypes = [ctypes.c_void_p, ctypes.c_int]
     lib.gme_start_track.restype = ctypes.c_char_p
@@ -115,77 +105,93 @@ def get_gme():
     lib.gme_seek.restype = ctypes.c_char_p
 
     lib.gme_delete.argtypes = [ctypes.c_void_p]
-    lib.gme_free_info.argtypes = [ctypes.POINTER(GMEInfo)]
+
+    lib.gme_track_info.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_void_p), ctypes.c_int]
+    lib.gme_track_info.restype = ctypes.c_char_p
+
+    if hasattr(lib, "gme_set_fade"):
+        lib.gme_set_fade.argtypes = [ctypes.c_void_p, ctypes.c_int]
 
     _gme_lib = lib
     return _gme_lib
-
-class GMEInfo(ctypes.Structure):
-    _fields_ = [
-        ("track_count", ctypes.c_int),
-        ("length", ctypes.c_int),
-        ("intro_length", ctypes.c_int),
-        ("loop_length", ctypes.c_int),
-        ("system", ctypes.c_char_p),
-        ("game", ctypes.c_char_p),
-        ("song", ctypes.c_char_p),
-        ("author", ctypes.c_char_p),
-        ("copyright", ctypes.c_char_p),
-        ("comment", ctypes.c_char_p),
-        ("dumper", ctypes.c_char_p),
-    ]
 
 class GMEContext:
     def __init__(self, file_path, sample_rate=44100):
         self.file_path = file_path
         self.sample_rate = sample_rate
         self.emu = ctypes.c_void_p(None)
-        self.track_count = 1
-        self.current_track = 0
+        self.base_length_ms = 180000
+        self.fade_ms = 0
         self.duration_ms = 180000
 
         track_ptr = ctypes.c_void_p()
-        err = _gme.gme_open_file(file_path.encode("utf-8"), ctypes.byref(track_ptr), sample_rate)
+        err = get_gme().gme_open_file(file_path.encode("utf-8"), ctypes.byref(track_ptr), sample_rate)
         if err:
             raise RuntimeError(f"Failed to open GME file: {err.decode('utf-8', errors='ignore')}")
         self.emu = track_ptr
 
-    def load_track(self, track_index):
+    def load_track(self, track_index, loop_forever=False):
         self.current_track = track_index
-        err = _gme.gme_start_track(self.emu, track_index)
+        lib = get_gme()
+        err = lib.gme_start_track(self.emu, track_index)
         if err:
             raise RuntimeError(f"Failed to start track {track_index}: {err.decode('utf-8', errors='ignore')}")
 
-        info_ptr = ctypes.POINTER(GMEInfo)()
-        _gme.gme_track_info(self.emu, ctypes.byref(info_ptr), track_index)
-        if info_ptr:
-            self.duration_ms = info_ptr.contents.length
-            if self.duration_ms <= 0:
-                self.duration_ms = 180000
-            _gme.gme_free_info(info_ptr)
+        if hasattr(lib, "gme_set_fade"):
+            if loop_forever:
+                lib.gme_set_fade(self.emu, 0)
+            else:
+                lib.gme_set_fade(self.emu, -1)
+
+        info_ptr = ctypes.c_void_p()
+        lib.gme_track_info(self.emu, ctypes.byref(info_ptr), track_index)
+        
+        self.base_length_ms = 180000
+        self.fade_ms = 0
+
+        if info_ptr.value:
+            try:
+                val = ctypes.c_int.from_address(info_ptr.value).value
+                if val > 0:
+                    self.base_length_ms = val
+            except Exception:
+                pass
+
+            try:
+                fade_val = ctypes.c_int.from_address(info_ptr.value + 12).value
+                if fade_val > 0:
+                    self.fade_ms = fade_val
+            except Exception:
+                pass
+                
+            lib.gme_free_info(info_ptr)
+
+        default_fade_ms = 5000
+        if self.fade_ms <= 0 or self.fade_ms == self.base_length_ms:
+            actual_fade_ms = default_fade_ms
+        else:
+            actual_fade_ms = self.fade_ms
+
+        if loop_forever:
+            self.duration_ms = self.base_length_ms
+        else:
+            self.duration_ms = self.base_length_ms + actual_fade_ms
 
     def get_track_count(self):
-        info_ptr = ctypes.POINTER(GMEInfo)()
-        _gme.gme_track_info(self.emu, ctypes.byref(info_ptr), 0)
-        count = 1
-        if info_ptr:
-            count = info_ptr.contents.track_count
-            _gme.gme_free_info(info_ptr)
-        return count
+        return get_gme().gme_track_count(self.emu)
 
-    def render(self, num_samples):
-        buf = (ctypes.c_short * (num_samples * 2))()
-        err = _gme.gme_play(self.emu, num_samples * 2, buf)
+    def render(self, num_samples, buf):
+        err = get_gme().gme_play(self.emu, num_samples * 2, buf)
         if err:
-            return b""
-        return bytes(buf)
+            return False
+        return True
 
     def seek(self, position_ms):
-        _gme.gme_seek(self.emu, int(position_ms))
+        get_gme().gme_seek(self.emu, int(position_ms))
 
     def close(self):
         if self.emu:
-            _gme.gme_delete(self.emu)
+            get_gme().gme_delete(self.emu)
             self.emu = ctypes.c_void_p(None)
 
     def __enter__(self):
@@ -250,25 +256,55 @@ class GMEAudioWorker:
         try:
             with GMEContext(self.audio_file) as ctx:
                 total_tracks = ctx.get_track_count()
-                ctx.load_track(self.track_index)
+                ctx.load_track(self.track_index, loop_forever=self.loop_forever)
                 duration_sec = ctx.duration_ms / 1000.0
 
                 self.ui_queue.put(("opened", {"duration": duration_sec, "track_count": total_tracks}))
                 self.ui_queue.put(("status", "Playing"))
 
-                chunk_samples = 2048
+                chunk_samples = 4096
                 sample_rate = ctx.sample_rate
 
                 try:
+                    # Find the best available output device index for HyperX or fallback to default
+                    target_device = None
+                    devices = sd.query_devices()
+                    
+                    # First try to find a HyperX playback device with output channels
+                    for idx, dev in enumerate(devices):
+                        if 'HyperX' in dev['name'] and dev['max_output_channels'] > 0:
+                            target_device = idx
+                            break
+                    
+                    # If not found, use system default output
+                    if target_device is None:
+                        default_info = sd.query_devices(kind='output')
+                        target_device = default_info['index']
+
                     stream = sd.RawOutputStream(
-                        samplerate=sample_rate, channels=2, dtype="int16", blocksize=chunk_samples
+                        samplerate=sample_rate, 
+                        channels=2, 
+                        dtype="int16", 
+                        blocksize=chunk_samples, 
+                        latency="high",
+                        device=target_device
                     )
                     stream.start()
                 except Exception as e:
                     self.ui_queue.put(("error", f"Could not open audio stream: {e}"))
                     return
 
-                current_sample_total = 0
+                base_length_ms = ctx.base_length_ms
+                fade_ms = ctx.fade_ms
+                default_fade_ms = 5000
+                actual_fade_ms = default_fade_ms if (fade_ms <= 0 or fade_ms == base_length_ms) else fade_ms
+
+                base_samples = int((base_length_ms / 1000.0) * sample_rate)
+                fade_samples = int((actual_fade_ms / 1000.0) * sample_rate)
+                fade_start_sample = base_samples
+                max_samples = base_samples + fade_samples
+
+                total_samples_rendered = 0
                 loops_completed = 0
 
                 try:
@@ -283,49 +319,60 @@ class GMEAudioWorker:
                                 target_ms = self._seek_target_ms
                                 self._seek_target_ms = None
                                 ctx.seek(target_ms)
-                                current_sample_total = int((target_ms / 1000.0) * sample_rate)
+                                total_samples_rendered = int((target_ms / 1000.0) * sample_rate)
 
-                        pcm_data = ctx.render(chunk_samples)
-                        if not pcm_data:
+                        if not self.loop_forever and total_samples_rendered >= max_samples:
                             should_loop = False
-                            if self.loop_forever:
-                                should_loop = True
-                            elif self.loop_enabled and loops_completed < self.loop_count - 1:
+                            if self.loop_enabled and loops_completed < self.loop_count - 1:
                                 loops_completed += 1
                                 should_loop = True
 
                             if should_loop:
-                                ctx.load_track(self.track_index)
-                                current_sample_total = 0
+                                ctx.load_track(self.track_index, loop_forever=False)
+                                total_samples_rendered = 0
                                 continue
                             else:
                                 self.ui_queue.put(("ended", None))
                                 break
 
-                        current_sample_total += chunk_samples
-                        curr_pos_sec = current_sample_total / sample_rate
+                        samples_to_render = chunk_samples
+                        if not self.loop_forever:
+                            samples_to_render = min(chunk_samples, int(max_samples - total_samples_rendered))
 
-                        if curr_pos_sec >= duration_sec:
+                        sub_buf = (ctypes.c_short * (samples_to_render * 2))()
+                        success = ctx.render(samples_to_render, sub_buf)
+                        
+                        pcm_data = bytes(sub_buf)
+                        if not pcm_data or not success:
                             should_loop = False
-                            if self.loop_forever:
-                                should_loop = True
-                            elif self.loop_enabled and loops_completed < self.loop_count - 1:
+                            if self.loop_enabled and loops_completed < self.loop_count - 1:
                                 loops_completed += 1
                                 should_loop = True
 
                             if should_loop:
-                                ctx.load_track(self.track_index)
-                                current_sample_total = 0
+                                ctx.load_track(self.track_index, loop_forever=self.loop_forever)
+                                total_samples_rendered = 0
                                 continue
                             else:
                                 self.ui_queue.put(("ended", None))
                                 break
+
+                        # Apply volume fade-out only when loop_forever is False and past base length
+                        if not self.loop_forever and total_samples_rendered >= fade_start_sample:
+                            arr = array.array("h")
+                            arr.frombytes(pcm_data)
+                            for i in range(0, len(arr), 2):
+                                current_abs = total_samples_rendered + (i // 2)
+                                fade_prog = current_abs - fade_start_sample
+                                multiplier = max(0.0, 1.0 - (fade_prog / fade_samples))
+                                arr[i] = int(arr[i] * multiplier)
+                                arr[i+1] = int(arr[i+1] * multiplier)
+                            pcm_data = arr.tobytes()
 
                         with self._lock:
                             vol = self.volume
 
                         if vol != 1.0 and len(pcm_data) > 0:
-                            import array
                             arr = array.array("h")
                             arr.frombytes(pcm_data)
                             for i in range(len(arr)):
@@ -333,12 +380,20 @@ class GMEAudioWorker:
                             pcm_data = arr.tobytes()
 
                         stream.write(pcm_data)
+                        total_samples_rendered += samples_to_render
+
+                        if self.loop_forever and base_samples > 0:
+                            curr_pos_sec = (total_samples_rendered % base_samples) / sample_rate
+                        else:
+                            curr_pos_sec = total_samples_rendered / sample_rate
+
+                        effective_duration_sec = ctx.duration_ms / 1000.0
 
                         now = time.time()
                         if now - last_pos_time >= 0.2:
                             last_pos_time = now
-                            pct = int((curr_pos_sec / duration_sec) * 100) if duration_sec > 0 else 0
-                            self.ui_queue.put(("position", (curr_pos_sec, duration_sec, pct)))
+                            pct = int((curr_pos_sec / effective_duration_sec) * 100) if effective_duration_sec > 0 else 0
+                            self.ui_queue.put(("position", (curr_pos_sec, effective_duration_sec, pct)))
                 finally:
                     try:
                         stream.stop()
@@ -427,39 +482,29 @@ class GMEPlayerWindow(tk.Toplevel):
             ext = os.path.splitext(self.audio_file)[1].lower()
             subtrack_exts = (".nsf", ".nsfe", ".gbs", ".hes", ".kss")
 
-            # If it's a multi-track format and not already an M3U file, generate the tracks M3U file
             if ext in subtrack_exts and not self.audio_file.lower().endswith(".m3u"):
                 stem = Path(self.audio_file).stem
                 m3u_path = os.path.join(folder, f"{stem}_tracks.m3u")
 
                 if not os.path.exists(m3u_path):
                     try:
-                        # Safely open context to get track count, defaulting to a safe range if needed
                         track_count = 1
                         with GMEContext(self.audio_file) as ctx:
-                            # If get_track_count works, great; otherwise we catch it
-                            info_ptr = ctypes.POINTER(GMEInfo)()
-                            _gme.gme_track_info(ctx.emu, ctypes.byref(info_ptr), 0)
-                            if info_ptr:
-                                track_count = info_ptr.contents.track_count
-                                _gme.gme_free_info(info_ptr)
+                            track_count = ctx.get_track_count()
 
                         if track_count > 1:
                             with open(m3u_path, "w", encoding="utf-8") as f_m3u:
                                 f_m3u.write("#EXTM3U\n")
                                 for i in range(track_count):
-                                    track_num = f"{i+1:02d}"
-                                    f_m3u.write(f"#EXTINF:-1,{os.path.basename(self.audio_file)} - Track {track_num}\n")
+                                    track_num = i + 1
+                                    f_m3u.write(f"#EXTINF:-1,Track {track_num}\n")
                                     f_m3u.write(f"{os.path.basename(self.audio_file)}#{i}\n")
                     except Exception:
-                        # Fallback: if dynamic count fails, write a standard 99-track or standard block, 
-                        # or let GME handle it natively. Let's write a default 32 tracks if query fails.
                         pass
 
                 if os.path.exists(m3u_path):
                     self.audio_file = m3u_path
 
-            # If loading an M3U playlist file, load its tracks into the playlist
             if self.audio_file.lower().endswith(".m3u"):
                 loaded_tracks = []
                 with open(self.audio_file, "r", encoding="utf-8", errors="ignore") as f_m3u:
@@ -481,7 +526,6 @@ class GMEPlayerWindow(tk.Toplevel):
                     self.current_index = 0
                     return
 
-            # Standard folder scan fallback for SPC, VGM, etc.
             gme_exts = {".nsf", ".nsfe", ".spc", ".gbs", ".hes", ".kss", ".vgm", ".vgz", ".ay", ".sap", ".gym"}
             files = sorted(os.listdir(folder))
             self.playlist = []
@@ -551,10 +595,14 @@ class GMEPlayerWindow(tk.Toplevel):
         ttk.Label(meta_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="left", padx=5)
         ttk.Label(meta_frame, textvariable=self.duration_var, font=("Arial", 9)).pack(side="right", padx=5)
 
+        # Define a custom style for a thicker horizontal slider
+        style = ttk.Style()
+        style.configure("Thick.Horizontal.TScale", sliderthickness=50, troughrelief="flat")
+
         vol_frame = ttk.Frame(padding)
         vol_frame.pack(fill="x", pady=(0, 8))
         ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
-        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
+        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide, style="Thick.Horizontal.TScale")
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
 
@@ -571,7 +619,6 @@ class GMEPlayerWindow(tk.Toplevel):
         self.playlist_listbox.bind("<Leave>", self.on_listbox_leave)
         self.populate_playlist_listbox()
 
-        # Main Control Buttons Row with optimized widths to fit cleanly
         controls = ttk.Frame(padding)
         controls.pack(pady=4)
 
@@ -581,7 +628,6 @@ class GMEPlayerWindow(tk.Toplevel):
         ttk.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=3, padx=2)
         ttk.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=4, padx=2)
 
-        # Bottom Sub-Row: Loop settings on left, Random in center, Loop forever on right
         bottom_sub_frame = ttk.Frame(padding)
         bottom_sub_frame.pack(fill="x", pady=(6, 0))
 
@@ -596,17 +642,27 @@ class GMEPlayerWindow(tk.Toplevel):
 
         right_loop_frame = ttk.Frame(bottom_sub_frame)
         right_loop_frame.pack(side="right")
-        ttk.Checkbutton(right_loop_frame, text="Loop forever", variable=self.loop_forever_var).pack(side="right")
+        # Added command to restart the song fresh when toggling loop forever
+        tk.Checkbutton(
+            right_loop_frame, 
+            text="Loop forever", 
+            variable=self.loop_forever_var, 
+            command=self.on_loop_forever_toggled
+        ).pack(side="right")
+
+    def on_loop_forever_toggled(self):
+        # Restart the current track fresh when loop forever is toggled
+        if self.playlist:
+            self.play_current_track()
 
     def populate_playlist_listbox(self):
         if not self.winfo_exists():
             return
         self.playlist_listbox.delete(0, tk.END)
         for p in self.playlist:
-            # If the playlist item contains a subtrack hash (e.g. file.nsf#0), show a clean track label
             if "#" in p:
-                base_name, t_idx = p.split("#", 1)
-                display_label = f"{os.path.basename(base_name)} - Track {int(t_idx) + 1}"
+                _, t_idx = p.split("#", 1)
+                display_label = f"Track {int(t_idx) + 1}"
             else:
                 display_label = os.path.basename(p)
             self.playlist_listbox.insert(tk.END, display_label)
@@ -697,7 +753,11 @@ class GMEPlayerWindow(tk.Toplevel):
 
         raw_entry = self.playlist[self.current_index]
         if "#" in raw_entry:
-            self.audio_file, track_str = raw_entry.rsplit("#", 1)
+            base_file, track_str = raw_entry.rsplit("#", 1)
+            if not os.path.isabs(base_file):
+                self.audio_file = os.path.join(os.path.dirname(self.audio_file), base_file)
+            else:
+                self.audio_file = base_file
             try:
                 self.track_index = int(track_str)
             except ValueError:
@@ -708,7 +768,6 @@ class GMEPlayerWindow(tk.Toplevel):
 
         filename = os.path.basename(self.audio_file)
         
-        # Updates window title dynamically
         self.title(f"GME Player - {filename} (Track {self.track_index + 1})")
         if hasattr(self, "title_label") and self.winfo_exists():
             self.title_label.configure(text=f"Now Playing:\n{filename} [Track {self.track_index + 1}]")
@@ -746,7 +805,6 @@ class GMEPlayerWindow(tk.Toplevel):
         while new_index == self.current_index:
             new_index = random.randint(0, len(self.playlist) - 1)
         self.current_index = new_index
-        self.track_index = 0
         self.play_current_track()
 
     def seek_to_position(self, target_sec):
@@ -754,7 +812,6 @@ class GMEPlayerWindow(tk.Toplevel):
             self.worker.seek(target_sec * 1000.0)
 
     def toggle_play_pause(self):
-        # If stopped or worker is missing, restart playback of the selected track
         if not self.worker or self.status_var.get() == "Stopped":
             self.play_current_track()
             return
@@ -769,21 +826,13 @@ class GMEPlayerWindow(tk.Toplevel):
             self.status_var.set("Paused")
 
     def prev_track(self):
-        if self.supports_subtracks(self.audio_file) and (self.track_index - 1 < self.total_subtracks):
-            self.track_index -= 1
-            self.play_current_track()
-        elif len(self.playlist) > 1:
+        if len(self.playlist) > 1:
             self.current_index = (self.current_index - 1) % len(self.playlist)
-            self.track_index = 0
             self.play_current_track()
 
     def next_track(self):
-        if self.supports_subtracks(self.audio_file) and (self.track_index + 1 < self.total_subtracks):
-            self.track_index += 1
-            self.play_current_track()
-        elif len(self.playlist) > 1:
+        if len(self.playlist) > 1:
             self.current_index = (self.current_index + 1) % len(self.playlist)
-            self.track_index = 0
             self.play_current_track()
 
     def on_volume_slide(self, val):

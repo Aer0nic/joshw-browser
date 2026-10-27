@@ -6,7 +6,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-VENV_DIR="$SCRIPT_DIR/venv"
+VENV_DIR="$SCRIPT_DIR/.venv"
 
 # Ensure python3 is installed
 if ! command -v python3 &> /dev/null; then
@@ -26,7 +26,7 @@ fi
 if [ ! -d "$VENV_DIR" ]; then
     echo "No virtual environment found in project folder."
     echo "Creating local virtual environment (.venv)..."
-    python3 -m venv "$VENV_DIR"
+    /usr/bin/python3 -m venv "$VENV_DIR"
     echo "Virtual environment created successfully."
 fi
 
@@ -45,4 +45,4 @@ fi
 
 # 4. Run the main program
 echo "Launching JoshW-Browser"
-python3 main.py
+"$VENV_DIR/bin/python" main.py

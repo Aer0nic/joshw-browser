@@ -75,9 +75,10 @@ def find_aosdk_lib() -> str:
     """
     Search for libaosdk.so in priority order:
     1. Environment variable AOSDK_LIB_PATH
-    2. ~/.config/joshw/libaosdk.so
-    3. Project directory
-    4. System library paths
+    2. assets/libraries/libaosdk.so (relative to project root / script)
+    3. ~/.config/joshw/libaosdk.so
+    4. Project directory fallback
+    5. System library paths
     """
     env_path = os.environ.get("AOSDK_LIB_PATH")
     if env_path and os.path.isfile(env_path):
@@ -85,6 +86,8 @@ def find_aosdk_lib() -> str:
 
     cache_dir = get_cache_directory()
     candidates = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "libraries", "libaosdk.so"),
+        os.path.abspath(os.path.join("assets", "libraries", "libaosdk.so")),
         os.path.join(cache_dir, "libaosdk.so"),
         os.path.join(os.path.dirname(os.path.abspath(__file__)), "libaosdk.so"),
         os.path.join(os.path.dirname(os.path.abspath(__file__)), "aosdk", "libaosdk.so"),
@@ -212,12 +215,17 @@ class AOSDKContext:
     """
 
     def __init__(self, lib_path: Optional[str] = None):
-        self._binding = get_binding(lib_path)
-        self._handle = self._binding.lib.aosdk_create()
-        if not self._handle:
-            raise AOSDKError("Failed to allocate native AOSDK playback context.")
-        self._closed = False
+        self._closed = True
+        self._handle = None
         self._current_file = None
+
+        self._binding = get_binding(lib_path)
+        handle = self._binding.lib.aosdk_create()
+        if not handle:
+            raise AOSDKError("Failed to allocate native AOSDK playback context.")
+        
+        self._handle = handle
+        self._closed = False
 
     def _check_valid(self):
         if self._closed or not self._handle:
@@ -394,4 +402,3 @@ class AOSDKContext:
             if val is not None:
                 tags[key] = val
         return tags
-

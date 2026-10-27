@@ -1305,7 +1305,7 @@ echo "Conversion succeeded; XMI originals deleted."
             ".vgm", ".vgz", ".ay", ".sap", ".gym"
         }
         if ext in gme_native_formats:
-            from gme_player import generate_gme_m3u_if_needed
+            from gme_player import GMEPlayerWindow, generate_gme_m3u_if_needed
             playlist_target = generate_gme_m3u_if_needed(audio_file)
             GMEPlayerWindow(self, playlist_target, playlist=None, start_index=0)
             return

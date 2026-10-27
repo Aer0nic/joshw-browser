@@ -78,12 +78,19 @@ class PSFAudioWorker:
                 self.ui_queue.put(("opened", {"duration": duration, "fade": fade, "tags": tags, "format": fmt}))
                 self.ui_queue.put(("status", "Playing"))
 
-                chunk_size = 2048
+                # Increased chunk size to reduce context switching
+                chunk_size = 4096
                 sample_rate = ctx.sample_rate
 
                 try:
+                    # Added latency="high" to eliminate buffer underflows/choppiness
                     stream = sd.RawOutputStream(
-                        samplerate=sample_rate, channels=2, dtype="int16", blocksize=chunk_size
+                        samplerate=sample_rate,
+                        channels=2,
+                        dtype="int16",
+                        blocksize=chunk_size,
+                        latency="high",
+                        device=4
                     )
                     stream.start()
                 except Exception as e:
@@ -129,7 +136,7 @@ class PSFAudioWorker:
                             raise
 
                         now = time.time()
-                        if now - last_pos_time >= 0.2:
+                        if now - last_pos_time >= 0.25:
                             last_pos_time = now
                             curr_pos = ctx.get_position()
                             pct = int((curr_pos / duration) * 100) if duration and duration > 0 else 0
