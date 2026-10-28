@@ -139,11 +139,11 @@ def check_and_download_sid_firmware():
 
 def install_dependencies_prompt(parent):
     prompt_text = (
-        "The Josh Archive Browser requires some dependencies to run its built-in music player properly, "
-        "please hit OK to start installation! This will open a terminal window and ask for your Sudo password. "
+        "The Josh Archive Browser requires some dependencies to run its built-in music player properly, you need about 1.5 GB of free space on your main drive to allow for grabbing and building all needed files. These will be deleted after installation!\n"
+        "Click OK to start installation. This will open a terminal window and ask for your Sudo password. "
         "Once entered, it will run:\n\n"
         "sudo apt update\n"
-        "sudo apt install ... -y\n\n"
+        "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev pkg-config pulseaudio-utils libsndfile-dev libmp3lame-dev libogg-dev libvorbis-dev libopus-dev libopusfile-dev libflac-dev liblzma-dev libxmp-dev -y\n\n"
         "It will then grab the source files for Lazyusf, VGMStream, PlayGSF, 2sfPlay, SDL3, SDL3_ttf, NeoBAE, download the soundfont, and build them into ~/.config/joshw/.\n\n"
         "If you agree to this, hit the OK button to start, otherwise hit Cancel."
     )

@@ -1,4 +1,5 @@
 import os
+import shutil
 import signal
 import subprocess
 import threading
@@ -157,7 +158,7 @@ class TwoSFPlayerWindow(tk.Toplevel):
         vol_frame = ttk.Frame(padding)
         vol_frame.pack(fill="x", pady=(0, 8))
         ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
-        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
+        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide)
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
 
@@ -214,7 +215,27 @@ class TwoSFPlayerWindow(tk.Toplevel):
         set_player_volume(float(val), source_player=self)
 
     def apply_live_volume(self):
-        pass
+        """Adjust process/stream volume dynamically via PulseAudio/PipeWire system tools."""
+        if not self.winfo_exists() or not self.proc or self.proc.poll() is not None:
+            return
+
+        vol_percent = int(self.volume_var.get())
+        pid = self.proc.pid
+
+        try:
+            if shutil.which("pactl"):
+                out = subprocess.check_output(["pactl", "list", "sink-inputs"], text=True, stderr=subprocess.DEVNULL)
+                current_input = None
+                for line in out.splitlines():
+                    if line.strip().startswith("Sink Input #"):
+                        current_input = line.split("#")[1].strip()
+                    elif f"application.process.id = \"{pid}\"" in line and current_input:
+                        subprocess.run(["pactl", "set-sink-input-volume", current_input, f"{vol_percent}%"], check=False)
+                        break
+            elif shutil.which("pamixer"):
+                subprocess.run(["pamixer", "--pid", str(pid), "--set-volume", str(vol_percent)], check=False)
+        except Exception:
+            pass
 
     def populate_playlist_listbox(self):
         if not self.winfo_exists():
@@ -289,6 +310,10 @@ class TwoSFPlayerWindow(tk.Toplevel):
                 self.title_label.configure(text=f"Now Playing:\n{filename}")
             self.title(f"2sfPlay Controller - {filename}")
             self.update_listbox_selection()
+
+            # Apply target process volume immediately after spawn
+            self.after(100, self.apply_live_volume)
+
             threading.Thread(target=self.read_output, daemon=True).start()
         except Exception as e:
             messagebox.showerror("2sfPlay Error", f"Could not launch 2sfPlay:\n\n{e}")
