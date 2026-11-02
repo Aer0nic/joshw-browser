@@ -277,7 +277,6 @@ class JoshWBrowser(tb.Window):
         for i, key in enumerate(sorted_keys):
             group_entries = groups[key]
             
-            # Header separator placed ABOVE the group items
             display_items.append({"type": "separator", "text": f"┄┄┄┄┄┄┄┄ {key} ┄┄┄┄┄┄┄┄"})
             display_items.append({"type": "space"})
             
@@ -704,63 +703,65 @@ class JoshWBrowser(tb.Window):
                 except Exception:
                     pass
 
-        # Open the pop-up progress window
         PremadeIndexProgressWindow(self)
 
-    def __init__(self):
-        try:
-            sh_path = os.path.join(get_cache_directory(), "xmi2mid.sh")
-            if not os.path.exists(sh_path):
-                script_content = """#!/usr/bin/env bash
-folder="${1:-}"
-if [[ -z "$folder" || ! -d "$folder" ]]; then
-    echo "Usage: $0 DIRECTORY"
-    exit 1
-fi
-mapfile -d '' files < <(find "$folder" -type f -iname '*.xmi' -print0)
-if ((${#files[@]} == 0)); then
-    echo "No .xmi files found in: $folder"
-    exit 1
-fi
-for file in "${files[@]}"; do
-    output="${file%.*}.mid"
-    if [[ -e "$output" ]]; then
-        echo "Output already exists; nothing converted or deleted: $output"
-        exit 1
-    fi
-done
-for file in "${files[@]}"; do
-    output="${file%.*}.mid"
-    echo "Converting: $file -> $output"
-    if ! wildmidi -x "$output" "$file"; then
-        echo "Conversion failed; XMI originals have been kept."
-        exit 1
-    fi
-done
-for file in "${files[@]}"; do
-    rm -- "$file"
-done
-echo "Conversion succeeded; XMI originals deleted."
-"""
-                with open(sh_path, "w", encoding="utf-8") as f:
-                    f.write(script_content)
-                os.chmod(sh_path, 0o755)
-        except Exception as e:
-            print(f"Could not create xmi2mid.sh: {e}")
-        
+    def __init__(self, *args, **kwargs):
+        # Check if settings.json exists before loading settings or doing setup
+        settings_path = os.path.join(get_cache_directory(), "settings.json")
+        self.is_first_run = not os.path.isfile(settings_path)
+
+        # 1. Fetch saved theme settings first
         self._initial_settings = self.load_settings()
         self.saved_theme = self._initial_settings.get("theme", "cosmo")
-        
-        super().__init__(themename=self.saved_theme)
-        
+
+        # 2. Call super().__init__ EXACTLY ONCE with the saved theme
+        super().__init__(themename=self.saved_theme, *args, **kwargs)
+
         self.title("JoshW Archive Browser")
         self.geometry("1280x760")
         self.minsize(850, 560)
-        
-        try:
-            self.style.theme_use(self.saved_theme)
-        except Exception:
-            pass
+
+        # Platform-specific initialization of helper scripts
+        if sys.platform != "win32":
+            try:
+                sh_path = os.path.join(get_cache_directory(), "xmi2mid.sh")
+                if not os.path.exists(sh_path):
+                    script_content = """#!/usr/bin/env bash
+                    folder="${1:-}"
+                    if [[ -z "$folder" || ! -d "$folder" ]]; then
+                        echo "Usage: $0 DIRECTORY"
+                        exit 1
+                    fi
+                    mapfile -d '' files < <(find "$folder" -type f -iname '*.xmi' -print0)
+                    if ((${#files[@]} == 0)); then
+                        echo "No .xmi files found in: $folder"
+                        exit 1
+                    fi
+                    for file in "${files[@]}"; do
+                        output="${file%.*}.mid"
+                        if [[ -e "$output" ]]; then
+                            echo "Output already exists; nothing converted or deleted: $output"
+                            exit 1
+                        fi
+                    done
+                    for file in "${files[@]}"; do
+                        output="${file%.*}.mid"
+                        echo "Converting: $file -> $output"
+                        if ! wildmidi -x "$output" "$file"; then
+                            echo "Conversion failed; XMI originals have been kept."
+                            exit 1
+                        fi
+                    done
+                    for file in "${files[@]}"; do
+                        rm -- "$file"
+                    done
+                    echo "Conversion succeeded; XMI originals deleted."
+                    """
+                    with open(sh_path, "w", encoding="utf-8") as f:
+                        f.write(script_content)
+                    os.chmod(sh_path, 0o755)
+            except Exception as e:
+                print(f"Could not create xmi2mid.sh: {e}")
 
         try:
             icon_file = resource_path("assets/icons/browser.png")
@@ -768,7 +769,7 @@ echo "Conversion succeeded; XMI originals deleted."
                 self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
         except Exception as e:
             print(f"Could not load icon: {e}")
-        
+
         self.protocol("WM_DELETE_WINDOW", self.on_window_close)
 
         self.shift_pressed = False
@@ -791,20 +792,25 @@ echo "Conversion succeeded; XMI originals deleted."
         self.current_sort_column = "type"
         self.current_sort_ascending = True
 
-        self._initial_settings = self.load_settings()
-        saved_dest = self._initial_settings.get("default_destination", os.path.expanduser("~/Downloads"))
+        saved_dest = self._initial_settings.get(
+            "default_destination", os.path.expanduser("~/Downloads")
+        )
         saved_use_default = self._initial_settings.get("use_default_dest", False)
-        saved_load_dir = self._initial_settings.get("default_load_music_dir", os.path.expanduser("~"))
-
-        self.saved_theme = self._initial_settings.get("theme", "default")
+        saved_load_dir = self._initial_settings.get(
+            "default_load_music_dir", os.path.expanduser("~")
+        )
 
         self.destination = tk.StringVar(value=saved_dest)
         self.use_default_dest = tk.BooleanVar(value=saved_use_default)
         self.default_load_music_dir = tk.StringVar(value=saved_load_dir)
         self._last_loaded_music_dir = saved_load_dir
 
-        self.path_7z = tk.StringVar(value="/bin/7z")
-        self.path_mpv = tk.StringVar(value="/bin/mpv")
+        if sys.platform == "win32":
+            self.path_7z = tk.StringVar(value="7z.exe")
+            self.path_mpv = tk.StringVar(value="mpv.exe")
+        else:
+            self.path_7z = tk.StringVar(value="/bin/7z")
+            self.path_mpv = tk.StringVar(value="/bin/mpv")
 
         self.keep_download_window_open = tk.BooleanVar(value=True)
 
@@ -822,10 +828,42 @@ echo "Conversion succeeded; XMI originals deleted."
         self.refresh_favorites_tab()
         self.change_theme(self.saved_theme)
         self.after(100, self.process_messages)
-        
+
         sid_fw_dir = os.path.join(get_cache_directory(), "sid")
         if not os.path.exists(sid_fw_dir) or not os.listdir(sid_fw_dir):
-            self.after(500, lambda: threading.Thread(target=check_and_download_sid_firmware, daemon=True).start())
+            self.after(
+                500,
+                lambda: threading.Thread(
+                    target=check_and_download_sid_firmware, daemon=True
+                ).start(),
+            )
+
+        # 3. Schedule first_start via self.after so the main window is rendered first
+        self.after(200, self.first_start)
+
+    def read_settings_file(self):
+        """Safely read settings without creating a file on disk."""
+        path = self.get_settings_path()
+        if os.path.isfile(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {}
+    
+    def first_start(self):
+        """Runs setup prompts if settings.json was not present on startup."""
+        if self.is_first_run:
+            # Pass is_first_start=True so the extra text header appears
+            install_dependencies_prompt(self, is_first_start=True)
+
+            # Step B: Open premade index progress window
+            PremadeIndexProgressWindow(self)
+
+            # Step C: Write settings.json ONLY AFTER setup dialogs are launched/completed
+            self.save_settings()
+            self.is_first_run = False
 
     def on_window_close(self, callback=None):
         self.stop_event.set()
@@ -1112,6 +1150,8 @@ echo "Conversion succeeded; XMI originals deleted."
         scrollbar.pack(side="right", fill="y")
         text_widget.configure(yscrollcommand=scrollbar.set)
 
+        temp_path_display = "Documents\\Joshw\\temp_extracted" if sys.platform == "win32" else "~/.config/joshw/temp_extracted"
+
         help_text = (
             "Welcome to the JoshW emulated music browser & player!\n\n"
             "It is pretty simple to use, first, i highly recommend that you click the Options button and choose the Download Premade Indexes option. Once a domain is indexed, it will load instantly rather than having to get reloaded from the server every time.\n\n"
@@ -1146,7 +1186,7 @@ echo "Conversion succeeded; XMI originals deleted."
             "Playstation Portable (.vag, .at3)\n"
             "Playstation Vita (.vag, .at3)\n\n"
             "I hope to add more in the future with more updates\n\n"
-            "All streamed songs are saved in a temporary folder within ~/.config/joshw/temp_extracted and will be deleted once the program is closed.\n\n"
+            f"All streamed songs are saved in a temporary folder within {temp_path_display} and will be deleted once the program is closed.\n\n"
             "I hope you really enjoy this program!"
         )
 
@@ -1295,7 +1335,7 @@ echo "Conversion succeeded; XMI originals deleted."
             if not self.check_dependency_status("psfplay"):
                 messagebox.showerror(
                     "AOSDK Library Not Found",
-                    "libaosdk.so not found! Please run ./build_aosdk.sh to build the PSF/PSF2 playback library."
+                    "libaosdk.so/DLL not found! Please ensure the playback library is built."
                 )
                 return
             from psf_player import PSFPlayerWindow
@@ -1317,7 +1357,7 @@ echo "Conversion succeeded; XMI originals deleted."
             ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".aifc", ".au", ".ra", ".xma", ".xmd"
         }
         if ext in supported_extensions or ext in (".xma", ".XMA"):
-            mpv_path = self.path_mpv.get().strip() or "/bin/mpv"
+            mpv_path = self.path_mpv.get().strip() or "mpv"
             if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
                 messagebox.showerror("mpv Not Found", "mpv not found!")
                 return
@@ -1622,7 +1662,8 @@ echo "Conversion succeeded; XMI originals deleted."
             self.stream_random_btn.configure(state="normal" if has_files else "disabled")
 
     def load_all_index_entries(self):
-        bundled_root = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+        # Support PyInstaller binary packaging (_MEIPASS) as well as loose script execution
+        bundled_root = sys._MEIPASS if getattr(sys, "frozen", False) else os.path.dirname(os.path.abspath(__file__))
         index_directories = (
             os.path.join(bundled_root, "indexes"),
             os.path.join(get_cache_directory(), "indexes"),

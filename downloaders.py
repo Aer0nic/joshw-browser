@@ -1,12 +1,14 @@
 import os
 import shutil
 import subprocess
+import sys
 import time
 import urllib.error
 from pathlib import Path
 import threading
 import tempfile
 import urllib.request
+import zipfile
 import tkinter as tk
 from tkinter import ttk, messagebox
 import ttkbootstrap as tb
@@ -37,7 +39,7 @@ class PremadeIndexProgressWindow(tb.Toplevel):
 
         tb.Label(padding, textvariable=self.status_var, font=("Arial", 9, "bold")).pack(anchor="w", pady=(0, 10))
 
-        # Indeterminate progress bar for git clone operation
+        # Indeterminate progress bar for download operation
         self.pbar = tb.Progressbar(padding, mode="indeterminate", bootstyle="primary-striped")
         self.pbar.pack(fill="x", expand=True, pady=(0, 10))
         self.pbar.start(12)
@@ -49,39 +51,49 @@ class PremadeIndexProgressWindow(tb.Toplevel):
         indexes_dir = cache_dir / "indexes"
         indexes_dir.mkdir(parents=True, exist_ok=True)
 
-        repo_dir = cache_dir / "joshw-browser"
-        indexes_src_dir = repo_dir / "indexes"
-        clone_url = "https://github.com/Aer0nic/joshw-browser.git"
+        # Use GitHub's zip archive endpoint to avoid needing git or wget on Windows/Linux
+        zip_url = "https://github.com/Aer0nic/joshw-browser/archive/refs/heads/main.zip"
+        temp_zip = cache_dir / "joshw_repo.zip"
+        extract_target = cache_dir / "joshw_extracted"
 
         try:
-            if repo_dir.exists():
-                shutil.rmtree(repo_dir, ignore_errors=True)
+            if extract_target.exists():
+                shutil.rmtree(extract_target, ignore_errors=True)
 
-            self.update_status("Cloning index repository...")
-            subprocess.run(["git", "clone", clone_url, str(repo_dir)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            self.update_status("Downloading index archive...")
+            urllib.request.urlretrieve(zip_url, str(temp_zip))
 
-            self.update_status("Installing index files to ~/.config/joshw/indexes...")
-            if indexes_src_dir.exists():
-                for f in indexes_src_dir.glob("domain_cache*"):
-                    if f.is_file():
-                        shutil.copy2(f, indexes_dir / f.name)
+            self.update_status("Extracting index files...")
+            with zipfile.ZipFile(temp_zip, 'r') as zip_ref:
+                zip_ref.extractall(extract_target)
 
-            if repo_dir.exists():
-                shutil.rmtree(repo_dir, ignore_errors=True)
+            if temp_zip.exists():
+                temp_zip.unlink()
 
-            found_caches = list(indexes_dir.glob("*domain_cache*"))
+            config_display_path = "Documents\\Joshw\\indexes" if sys.platform == "win32" else "~/.config/joshw/indexes"
+            self.update_status(f"Installing index files to {config_display_path}...")
 
-            if found_caches:
-                self.finish_success(len(found_caches), indexes_dir)
+            # Locate domain_cache files inside the extracted repo structure
+            found_count = 0
+            for root, dirs, files in os.walk(extract_target):
+                for file in files:
+                    if file.startswith("domain_cache") and file.endswith(".json"):
+                        src_file = Path(root) / file
+                        shutil.copy2(src_file, indexes_dir / file)
+                        found_count += 1
+
+            if extract_target.exists():
+                shutil.rmtree(extract_target, ignore_errors=True)
+
+            if found_count > 0:
+                self.finish_success(found_count, indexes_dir)
             else:
-                terminal_cmd = f"mkdir -p \"{indexes_dir}\" && cd \"{cache_dir}\" && git clone {clone_url} && cp joshw-browser/indexes/domain_cache* \"{indexes_dir}/\" && rm -rf joshw-browser"
-                error_msg = "Premade index files containing 'domain_cache' were not found after cloning."
-                self.finish_error(error_msg, terminal_cmd)
+                error_msg = "Premade index files containing 'domain_cache' were not found in the repository archive."
+                self.finish_error(error_msg, zip_url)
 
         except Exception as e:
-            terminal_cmd = f"mkdir -p \"{indexes_dir}\" && cd \"{cache_dir}\" && git clone {clone_url} && cp joshw-browser/indexes/domain_cache* \"{indexes_dir}/\" && rm -rf joshw-browser"
             error_msg = f"An error occurred during indexing download:\n\n{e}"
-            self.finish_error(error_msg, terminal_cmd)
+            self.finish_error(error_msg, zip_url)
 
     def update_status(self, text):
         if self.winfo_exists():
@@ -100,21 +112,25 @@ class PremadeIndexProgressWindow(tb.Toplevel):
                 f"Successfully installed {count} index files into:\n{indexes_dir}"
             )
 
-    def finish_error(self, error_msg, terminal_cmd):
+    def finish_error(self, error_msg, target_url):
         if self.winfo_exists():
             self.pbar.stop()
-            self.after(0, self.close_and_show_error, error_msg, terminal_cmd)
+            self.after(0, self.close_and_show_error, error_msg, target_url)
 
-    def close_and_show_error(self, error_msg, terminal_cmd):
+    def close_and_show_error(self, error_msg, target_url):
         self.destroy()
         if self.parent.winfo_exists():
-            StepLogDialog(self.parent, "Installation Error", error_msg, terminal_cmd)
+            messagebox.showerror("Installation Error", error_msg)
 
 
 def check_and_download_sid_firmware():
-    """Silently checks and downloads kernal and basic firmware files on startup if missing."""
+    """Silently checks and downloads kernel and basic firmware files on startup if missing."""
     try:
-        sidplayfp_dir = Path(os.path.expanduser("~/.local/share/sidplayfp"))
+        if sys.platform == "win32":
+            sidplayfp_dir = Path(config.get_cache_directory()) / "sidplayfp"
+        else:
+            sidplayfp_dir = Path(os.path.expanduser("~/.local/share/sidplayfp"))
+            
         sidplayfp_dir.mkdir(parents=True, exist_ok=True)
 
         kernal_file = sidplayfp_dir / "kernal"
@@ -136,25 +152,88 @@ def check_and_download_sid_firmware():
     except Exception:
         pass
 
+def get_package_manager_info():
+    import shutil
+    
+    if shutil.which("apt"):
+        return "apt", "sudo apt update", "sudo apt install -y", [
+            "git", "cmake", "libgme0", "build-essential", "sidplayfp", "xterm", "xdotool",
+            "zlib1g-dev", "libao-dev", "libsdl2-dev", "pkg-config", "pulseaudio-utils",
+            "libsndfile-dev", "libmp3lame-dev", "libogg-dev", "libvorbis-dev",
+            "libopus-dev", "libopusfile-dev", "libflac-dev", "liblzma-dev", "libxmp-dev"
+        ]
+    elif shutil.which("dnf"):
+        return "dnf", "sudo dnf makecache", "sudo dnf install -y", [
+            "git", "cmake", "game-music-emu", "gcc-c++", "make", "sidplayfp", "xterm", "xdotool",
+            "zlib-devel", "libao-devel", "SDL2-devel", "pkgconf", "pulseaudio-utils",
+            "libsndfile-devel", "lame-devel", "libogg-devel", "libvorbis-devel",
+            "opus-devel", "opusfile-devel", "flac-devel", "xz-devel", "libxmp-devel"
+        ]
+    elif shutil.which("pacman"):
+        return "pacman", "sudo pacman -Sy", "sudo pacman -S --noconfirm", [
+            "git", "cmake", "libgme", "base-devel", "sidplayfp", "xterm", "xdotool",
+            "zlib", "libao", "sdl2", "pkgconf", "libpulse",
+            "libsndfile", "lame", "libogg", "libvorbis",
+            "opus", "opusfile", "flac", "xz", "libxmp"
+        ]
+    elif shutil.which("zypper"):
+        return "zypper", "sudo zypper refresh", "sudo zypper install -y", [
+            "git", "cmake", "libgme0", "gcc-c++", "make", "sidplayfp", "xterm", "xdotool",
+            "zlib-devel", "libao-devel", "libSDL2-devel", "pkgconf", "pulseaudio-utils",
+            "libsndfile-devel", "lame-devel", "libogg-devel", "libvorbis-devel",
+            "opus-devel", "opusfile-devel", "flac-devel", "xz-devel", "libxmp-devel"
+        ]
+    
+    # Fallback to apt
+    return "apt", "sudo apt update", "sudo apt install -y", [
+        "git", "cmake", "libgme0", "build-essential", "sidplayfp", "xterm", "xdotool",
+        "zlib1g-dev", "libao-dev", "libsdl2-dev", "pkg-config", "pulseaudio-utils",
+        "libsndfile-dev", "libmp3lame-dev", "libogg-dev", "libvorbis-dev",
+        "libopus-dev", "libopusfile-dev", "libflac-dev", "liblzma-dev", "libxmp-dev"
+    ]
 
-def install_dependencies_prompt(parent):
+def install_dependencies_prompt(parent, is_first_start=False):
+    prefix = "FIRST TIME USER INFO!!\n\n" if is_first_start else ""
+    
+    if sys.platform == "win32":
+        messagebox.showinfo(
+            "Windows Dependencies",
+            f"{prefix}"
+            "Automatic dependency building via apt/CMake scripts is designed\n"
+            "for Linux environments.\n\n"
+            "On Windows, please ensure external CLI binaries like vgmstream123,\n"
+            "mpv, and 7-Zip are available in your system PATH or project directory."
+        )
+        return
+
+    pm_name, update_cmd, install_cmd, pkgs = get_package_manager_info()
+    pkg_str = " ".join(pkgs)
+
     prompt_text = (
-        "The Josh Archive Browser requires some dependencies to run its built-in music player properly, you need about 1.5 GB of free space on your main drive to allow for grabbing and building all needed files. These will be deleted after installation!\n"
-        "Click OK to start installation. This will open a terminal window and ask for your Sudo password. "
-        "Once entered, it will run:\n\n"
-        "sudo apt update\n"
-        "sudo apt install git cmake libgme0 build-essential sidplayfp xterm xdotool zlib1g-dev libao-dev libsdl2-dev pkg-config pulseaudio-utils libsndfile-dev libmp3lame-dev libogg-dev libvorbis-dev libopus-dev libopusfile-dev libflac-dev liblzma-dev libxmp-dev -y\n\n"
-        "It will then grab the source files for Lazyusf, VGMStream, PlayGSF, 2sfPlay, SDL3, SDL3_ttf, NeoBAE, download the soundfont, and build them into ~/.config/joshw/.\n\n"
+        f"{prefix}"
+        "The Josh Archive Browser requires some dependencies to run its built-in music player\n"
+        "properly. You need about 1.5 GB of free space on your main drive to allow for grabbing\n"
+        "and building all needed files. These will be deleted after installation!\n\n"
+        "Click OK to start installation. This will open a terminal window and ask for your\n"
+        "Sudo password. Once entered, it will run:\n\n"
+        f"{update_cmd}\n"
+        f"{install_cmd} {pkg_str}\n\n"
+        "It will then grab the source files for Lazyusf, VGMStream, PlayGSF, 2sfPlay, SDL3,\n"
+        "SDL3_ttf, NeoBAE, download the soundfont, and build them into your config directory.\n\n"
         "If you agree to this, hit the OK button to start, otherwise hit Cancel."
     )
     ans = messagebox.askokcancel("Install Dependencies", prompt_text)
     if ans:
-        InstallDependenciesWorker(parent)
+        InstallDependenciesWorker(parent, pm_name, update_cmd, install_cmd, pkgs)
 
 
 class InstallDependenciesWorker:
-    def __init__(self, parent):
+    def __init__(self, parent, pm_name="apt", update_cmd="sudo apt update", install_cmd="sudo apt install -y", pkgs=None):
         self.parent = parent
+        self.pm_name = pm_name
+        self.update_cmd = update_cmd
+        self.install_cmd = install_cmd
+        self.pkgs = pkgs or []
         threading.Thread(target=self.run_installation, daemon=True).start()
 
     def run_installation(self):
@@ -167,15 +246,9 @@ class InstallDependenciesWorker:
         try:
             script_lines = []
 
-            # 1. Base APT packages installation
-            apt_pkgs = [
-                "git", "cmake", "libgme0", "build-essential", "sidplayfp", "xterm", "xdotool",
-                "zlib1g-dev", "libao-dev", "libsdl2-dev", "pkg-config", "pulseaudio-utils",
-                "libsndfile-dev", "libmp3lame-dev", "libogg-dev", "libvorbis-dev",
-                "libopus-dev", "libopusfile-dev", "libflac-dev", "liblzma-dev", "libxmp-dev"
-            ]
-            script_lines.append("sudo apt update")
-            script_lines.append(f"sudo apt install -y {' '.join(apt_pkgs)}")
+            # 1. Base packages installation dynamically configured
+            script_lines.append(self.update_cmd)
+            script_lines.append(f"{self.install_cmd} {' '.join(self.pkgs)}")
 
             # 2. Lazyusf build
             lazyusf_bin = cache_dir / "lazyusf"
@@ -441,195 +514,6 @@ class InstallDependenciesWorker:
         except Exception as e:
             if self.parent.winfo_exists():
                 self.parent.after(0, lambda err=e: messagebox.showerror("Installation Error", f"An error occurred during dependency installation:\n\n{err}"))
-
-
-def install_single_dependency(dep_name, parent):
-    threading.Thread(target=_run_single_installer, args=(dep_name, parent), daemon=True).start()
-
-
-def _run_single_installer(dep_name, parent):
-    cache_dir = Path(config.get_cache_directory())
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    temp_build_dir = Path(tempfile.mkdtemp(prefix=f"joshw_single_{dep_name}_"))
-
-    try:
-        script_lines = []
-        
-        if dep_name == "lazyusf":
-            lazyusf_src_dir = temp_build_dir / "lazyusf"
-            lazyusf_bin = cache_dir / "lazyusf"
-            build_sh = temp_build_dir / "build_single.sh"
-            
-            with open(build_sh, "w", encoding="utf-8") as sf:
-                sf.write("#!/bin/bash\n\n")
-                sf.write("error_handler() {\n")
-                sf.write("    echo 'ERROR DETECTED! Press Enter to exit.'\n")
-                sf.write("    read -p 'Press Enter to exit...' key\n")
-                sf.write("    exit 1\n")
-                sf.write("}\n")
-                sf.write("trap 'error_handler' ERR\n")
-                sf.write("set -e\n\n")
-                sf.write(f"rm -rf \"{lazyusf_src_dir}\"\n")
-                sf.write(f"git clone https://github.com/derselbst/lazyusf.git \"{lazyusf_src_dir}\"\n")
-                sf.write(f"cd \"{lazyusf_src_dir}\"\n")
-                
-                sf.write("cat <<'EOF' > patch.py\n")
-                sf.write("import glob\n\n")
-                sf.write("target = r'printf(\"\\r%f\",(play_time/60000));'\n")
-                sf.write("replacement = 'printf(\"\\\\r%.7f\", play_time / 60000.0);\\nfflush(stdout);'\n\n")
-                sf.write("found = False\n")
-                sf.write("for f in glob.glob('**/audio.c', recursive=True):\n")
-                sf.write("    with open(f, 'r', encoding='utf-8') as file:\n")
-                sf.write("        content = file.read()\n\n")
-                sf.write("    if target in content:\n")
-                sf.write("        content = content.replace(target, replacement)\n")
-                sf.write("        with open(f, 'w', encoding='utf-8') as file:\n")
-                sf.write("            file.write(content)\n")
-                sf.write("        print(f'Successfully patched {f}')\n")
-                sf.write("        found = True\n\n")
-                sf.write("if not found:\n")
-                sf.write("    raise SystemExit('Patch failed: target text not found in any audio.c')\n")
-                sf.write("EOF\n")
-
-                sf.write("python3 patch.py\n")
-                sf.write("mkdir build && cd build\n")
-                sf.write("cmake .. && make\n")
-                sf.write(f"cp lazyusf \"{cache_dir}/\"\n")
-                sf.write(f"chmod +x \"{lazyusf_bin}\"\n")
-                sf.write("echo 'Lazyusf built successfully!'\n")
-            
-            os.chmod(build_sh, 0o755)
-            script_lines.append(str(build_sh))
-
-        if script_lines:
-            terminal_script = temp_build_dir / "run_term.sh"
-            with open(terminal_script, "w", encoding="utf-8") as tf:
-                tf.write("#!/bin/bash\n\n")
-                tf.write("error_handler() {\n")
-                tf.write("    echo 'ERROR DETECTED! Press Enter to exit.'\n")
-                tf.write("    read -p 'Press Enter to exit...' key\n")
-                tf.write("    exit 1\n")
-                tf.write("}\n")
-                tf.write("trap 'error_handler' ERR\n")
-                tf.write("set -e\n\n")
-                tf.write("\n".join(script_lines) + "\n\n")
-                tf.write("read -p 'Press Enter to close.' key\n")
-            os.chmod(terminal_script, 0o755)
-            
-            for term in ["gnome-terminal", "konsole", "xfce4-terminal", "xterm", "x-terminal-emulator"]:
-                if shutil.which(term):
-                    if term == "gnome-terminal":
-                        subprocess.Popen([term, "--", "bash", "-c", str(terminal_script)])
-                    elif term == "konsole":
-                        subprocess.Popen([term, "-e", "bash", "-c", str(terminal_script)])
-                    else:
-                        subprocess.Popen([term, "-e", f"bash -c '{terminal_script}'"])
-                    break
-    except Exception as e:
-        print(f"Single dependency build error: {e}")
-
-
-class StepLogDialog(tk.Toplevel):
-    def __init__(self, parent, title, error_message, terminal_cmd):
-        super().__init__(parent)
-        self.title(title)
-        self.geometry("540x320")
-        self.resizable(False, False)
-        self.transient(parent)
-        self.grab_set()
-
-        self.terminal_cmd = terminal_cmd
-
-        ttk.Label(self, text="Premade Indexes Not Found", font=("Arial", 10, "bold"), foreground="red").pack(anchor="w", padx=12, pady=(12, 4))
-        ttk.Label(self, text=error_message, font=("Arial", 9), wraplength=510, justify="left").pack(anchor="w", padx=12, pady=(0, 10))
-
-        info_frame = ttk.Frame(self, padding=12)
-        info_frame.pack(fill="both", expand=True)
-
-        text_widget = tk.Text(info_frame, wrap="word", font=("Courier", 9), height=5)
-        text_widget.pack(side="left", fill="both", expand=True)
-        text_widget.insert("1.0", f"Command to be run in terminal:\n\n{self.terminal_cmd}")
-        text_widget.configure(state="disabled")
-
-        scrollbar = ttk.Scrollbar(info_frame, orient="vertical", command=text_widget.yview)
-        scrollbar.pack(side="right", fill="y")
-        text_widget.configure(yscrollcommand=scrollbar.set)
-
-        btn_frame = ttk.Frame(self, padding=12)
-        btn_frame.pack(fill="x")
-        ttk.Button(btn_frame, text="OK", command=self.on_ok_clicked, width=12).pack(side="right")
-
-    def on_ok_clicked(self):
-        try:
-            terminals = ["gnome-terminal", "konsole", "xfce4-terminal", "xterm"]
-            launched = False
-            for term in terminals:
-                if shutil.which(term):
-                    if term == "gnome-terminal":
-                        subprocess.Popen([term, "--", "bash", "-c", f"{self.terminal_cmd}; echo 'Done. Press Enter to close.'; read"])
-                    elif term == "konsole":
-                        subprocess.Popen([term, "-e", "bash", "-c", f"{self.terminal_cmd}; echo 'Done. Press Enter to close.'; read"])
-                    else:
-                        subprocess.Popen([term, "-e", f"bash -c \"{self.terminal_cmd}; echo 'Done. Press Enter to close.'; read\""])
-                    launched = True
-                    break
-            if not launched:
-                subprocess.Popen(["x-terminal-emulator", "-e", f"bash -c \"{self.terminal_cmd}; echo 'Done. Press Enter to close.'; read\""])
-        except Exception as e:
-            messagebox.showerror("Error", f"Could not open terminal:\n\n{e}")
-        
-        self.destroy()
-
-
-class IndexPremadeWindow:
-    def __init__(self, parent, show_steps=False):
-        self.parent = parent
-        self.show_steps = show_steps
-        threading.Thread(target=self.git_clone_worker, daemon=True).start()
-
-    def git_clone_worker(self):
-        cache_dir = Path(config.get_cache_directory())
-        indexes_dir = cache_dir / "indexes"
-        
-        indexes_dir.mkdir(parents=True, exist_ok=True)
-        
-        repo_dir = cache_dir / "joshw-browser"
-        indexes_src_dir = repo_dir / "indexes"
-        clone_url = "https://github.com/Aer0nic/joshw-browser.git"
-
-        try:
-            if repo_dir.exists():
-                shutil.rmtree(repo_dir, ignore_errors=True)
-
-            subprocess.run(["git", "clone", clone_url, str(repo_dir)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-            if indexes_src_dir.exists():
-                for f in indexes_src_dir.glob("domain_cache*"):
-                    if f.is_file():
-                        shutil.copy2(f, indexes_dir / f.name)
-
-            if repo_dir.exists():
-                shutil.rmtree(repo_dir, ignore_errors=True)
-
-            found_caches = list(indexes_dir.glob("*domain_cache*"))
-
-            if found_caches:
-                if self.parent.winfo_exists():
-                    self.parent.after(0, lambda: messagebox.showinfo(
-                        "Success", 
-                        f"Premade indexes downloaded and installed to {indexes_dir} successfully!"
-                    ))
-            else:
-                terminal_cmd = f"mkdir -p \"{indexes_dir}\" && cd \"{cache_dir}\" && git clone {clone_url} && cp joshw-browser/indexes/domain_cache* \"{indexes_dir}/\" && rm -rf joshw-browser"
-                error_msg = "Premade index files containing 'domain_cache' were not found after cloning. Please install them manually using the terminal window."
-                if self.parent.winfo_exists():
-                    self.parent.after(0, lambda: StepLogDialog(self.parent, "Installation Error", error_msg, terminal_cmd))
-
-        except Exception as e:
-            terminal_cmd = f"mkdir -p \"{indexes_dir}\" && cd \"{cache_dir}\" && git clone {clone_url} && cp joshw-browser/indexes/domain_cache* \"{indexes_dir}/\" && rm -rf joshw-browser"
-            error_msg = f"An error occurred during git clone or file copying:\n\n{e}\n\nA terminal window will now open to attempt manual retrieval."
-            if self.parent.winfo_exists():
-                self.parent.after(0, lambda: StepLogDialog(self.parent, "Installation Error", error_msg, terminal_cmd))
 
 
 class IndexAllWindow(tk.Toplevel):
