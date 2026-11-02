@@ -853,17 +853,17 @@ class JoshWBrowser(tb.Window):
         return {}
     
     def first_start(self):
-        """Runs setup prompts if settings.json was not present on startup."""
+        """Runs setup prompts sequentially if settings.json was not present on startup."""
         if self.is_first_run:
-            # Pass is_first_start=True so the extra text header appears
-            install_dependencies_prompt(self, is_first_start=True)
+            def continue_setup():
+                # Open premade index progress window AFTER dependency prompt action
+                PremadeIndexProgressWindow(self)
+                # Write settings.json AFTER both steps finish
+                self.save_settings()
+                self.is_first_run = False
 
-            # Step B: Open premade index progress window
-            PremadeIndexProgressWindow(self)
-
-            # Step C: Write settings.json ONLY AFTER setup dialogs are launched/completed
-            self.save_settings()
-            self.is_first_run = False
+            # Pass continue_setup as the callback
+            install_dependencies_prompt(self, is_first_start=True, on_complete=continue_setup)
 
     def on_window_close(self, callback=None):
         self.stop_event.set()

@@ -192,39 +192,96 @@ def get_package_manager_info():
         "libopus-dev", "libopusfile-dev", "libflac-dev", "liblzma-dev", "libxmp-dev"
     ]
 
-def install_dependencies_prompt(parent, is_first_start=False):
-    prefix = "FIRST TIME USER INFO!!\n\n" if is_first_start else ""
-    
-    if sys.platform == "win32":
-        messagebox.showinfo(
-            "Windows Dependencies",
-            f"{prefix}"
-            "Automatic dependency building via apt/CMake scripts is designed\n"
-            "for Linux environments.\n\n"
-            "On Windows, please ensure external CLI binaries like vgmstream123,\n"
-            "mpv, and 7-Zip are available in your system PATH or project directory."
-        )
-        return
+class FirstStartInstallDialog(tb.Toplevel):
+    def __init__(self, parent, prompt_text, on_accept):
+        super().__init__(parent)
+        self.parent = parent
+        self.on_accept = on_accept
+        self.title("Install Dependencies")
+        self.geometry("540x420")
+        self.resizable(False, False)
+        self.transient(parent)
+        self.grab_set()
 
+        frame = ttk.Frame(self, padding=16)
+        frame.pack(fill="both", expand=True)
+
+        # Pulsing Red Header
+        self.prefix_label = ttk.Label(
+            frame,
+            text="FIRST TIME USER INFO!!",
+            font=("Arial", 11, "bold"),
+            foreground="red"
+        )
+        self.prefix_label.pack(anchor="w", pady=(0, 8))
+
+        # Main Body Text
+        body_label = ttk.Label(
+            frame, text=prompt_text, font=("Arial", 9), wraplength=500
+        )
+        body_label.pack(anchor="w", fill="both", expand=True, pady=(0, 15))
+
+        # Action Buttons
+        btn_frame = ttk.Frame(frame)
+        btn_frame.pack(fill="x", side="bottom")
+
+        cancel_btn = ttk.Button(
+            btn_frame, text="Cancel", width=12, command=self.destroy
+        )
+        cancel_btn.pack(side="right", padx=(6, 0))
+
+        ok_btn = ttk.Button(
+            btn_frame, text="OK", width=12, command=self.confirm
+        )
+        ok_btn.pack(side="right")
+        ok_btn.focus_set()
+
+    def confirm(self):
+        self.destroy()
+        if self.on_accept:
+            self.on_accept()
+
+def install_dependencies_prompt(parent, is_first_start=False, on_complete=None):
     pm_name, update_cmd, install_cmd, pkgs = get_package_manager_info()
     pkg_str = " ".join(pkgs)
 
-    prompt_text = (
-        f"{prefix}"
-        "The Josh Archive Browser requires some dependencies to run its built-in music player\n"
-        "properly. You need about 1.5 GB of free space on your main drive to allow for grabbing\n"
-        "and building all needed files. These will be deleted after installation!\n\n"
-        "Click OK to start installation. This will open a terminal window and ask for your\n"
-        "Sudo password. Once entered, it will run:\n\n"
+    if sys.platform == "win32":
+        msg = (
+            "Automatic dependency building via apt/CMake scripts is designed for Linux environments.\n\n"
+            "On Windows, please ensure external CLI binaries like vgmstream123, mpv, and 7-Zip are available in your system PATH or project directory."
+        )
+        if is_first_start:
+            FirstStartInstallDialog(parent, msg, lambda: [on_complete() if on_complete else None])
+        else:
+            messagebox.showinfo("Windows Dependencies", msg)
+            if on_complete:
+                on_complete()
+        return
+
+    prompt_body = (
+        "The Josh Archive Browser requires some dependencies to run its built-in music player properly.\n"
+        "You need about 1.5 GB of free space on your main drive to allow for grabbing and building all needed files.\n"
+        "These will be deleted after installation!\n\n"
+        "Click OK to start installation. This will open a terminal window and ask for your Sudo password.\n"
+        "Once entered, it will run:\n\n"
         f"{update_cmd}\n"
         f"{install_cmd} {pkg_str}\n\n"
-        "It will then grab the source files for Lazyusf, VGMStream, PlayGSF, 2sfPlay, SDL3,\n"
-        "SDL3_ttf, NeoBAE, download the soundfont, and build them into your config directory.\n\n"
+        "It will then grab the source files for Lazyusf, VGMStream, PlayGSF, 2sfPlay, SDL3, SDL3_ttf, NeoBAE,\n"
+        "download the soundfont, and build them into your config directory.\n\n"
         "If you agree to this, hit the OK button to start, otherwise hit Cancel."
     )
-    ans = messagebox.askokcancel("Install Dependencies", prompt_text)
-    if ans:
+
+    def start_worker():
         InstallDependenciesWorker(parent, pm_name, update_cmd, install_cmd, pkgs)
+        if on_complete:
+            on_complete()
+
+    if is_first_start:
+        FirstStartInstallDialog(parent, prompt_body, start_worker)
+    else:
+        ans = messagebox.askokcancel("Install Dependencies", prompt_body)
+        if ans:
+            start_worker()
 
 
 class InstallDependenciesWorker:
