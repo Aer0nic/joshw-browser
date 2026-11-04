@@ -1,0 +1,240 @@
+// ==UserScript==
+// @name         VGMRips Arcade Scraper
+// @namespace    http://tampermonkey.net/
+// @version      1.5
+// @description  Scrapes Arcade listings, handles ?p=N pagination, and extracts file sizes in bytes
+// @match        https://vgmrips.net/packs/systems/arcade*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // 1. Inject a floating UI button to trigger the scrape
+    const btn = document.createElement('button');
+    btn.textContent = 'Scrape Index to JSON';
+    Object.assign(btn.style, {
+        position: 'fixed', bottom: '20px', right: '20px', zIndex: '9999',
+        padding: '12px 24px', background: '#4CAF50', color: 'white',
+        border: 'none', borderRadius: '4px', cursor: 'pointer',
+        boxShadow: '0 4px 6px rgba(0,0,0,0.3)', fontWeight: 'bold'
+    });
+    document.body.appendChild(btn);
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    function parseSystemName(fullName) {
+        const parts = fullName.trim().split(' ');
+        if (parts.length > 1) {
+            return { company: parts[0], system: parts.slice(1).join(' ') };
+        }
+        return { company: parts[0], system: parts[0] };
+    }
+
+    function cleanDisplayName(rawName) {
+        let name = rawName.replace(/\.[a-zA-Z0-9]+$/, ''); // Remove extension
+        name = name.replace(/_/g, ' '); // Replace underscores
+        name = name.replace(/\s*[\(\[\{].*$/, ''); // Remove trailing bracketed info
+        return name.trim();
+    }
+
+    function extractDate(text) {
+        const match = text.match(/\((\d{4}(?:-\d{2})?(?:-\d{2})?)\)/);
+        return match ? match[1] : "";
+    }
+
+    // Helper to parse human-readable file sizes (e.g., "1.2 MB", "450 KB", "2.1 GB") into bytes
+    function parseSizeToBytes(sizeText) {
+        if (!sizeText) return null;
+        const match = sizeText.trim().match(/^([\d.]+)\s*(KB|MB|GB|B)?$/i);
+        if (!match) return null;
+
+        const val = parseFloat(match[1]);
+        const unit = (match[2] || 'B').toUpperCase();
+
+        switch (unit) {
+            case 'GB': return Math.round(val * 1024 * 1024 * 1024);
+            case 'MB': return Math.round(val * 1024 * 1024);
+            case 'KB': return Math.round(val * 1024);
+            case 'B':  return Math.round(val);
+            default:   return null;
+        }
+    }
+
+    function buildSaturnStyleJson(rawScrapedEntries) {
+        const entriesMap = new Map();
+
+        rawScrapedEntries.forEach(entry => {
+            entriesMap.set(entry.url, {
+                name: entry.name,
+                raw_name: entry.raw_name,
+                date: entry.date || "",
+                url: entry.url,
+                directory: entry.directory,
+                size: entry.size !== undefined ? entry.size : null
+            });
+        });
+
+        const allEntries = Array.from(entriesMap.values());
+
+        // Sort directories first, then files, alphabetically by name
+        allEntries.sort((a, b) => {
+            if (a.directory !== b.directory) {
+                return b.directory - a.directory;
+            }
+            return a.name.localeCompare(b.name);
+        });
+
+        return {
+            entries: allEntries
+        };
+    }
+
+    btn.addEventListener('click', async () => {
+        btn.textContent = 'Scraping... (Check F12 Console)';
+        btn.disabled = true;
+        btn.style.background = '#ff9800';
+
+        const allEntries = [];
+        const systems = [];
+
+        // 2. Parse all arcade systems directly from the current DOM
+        const links = document.querySelectorAll('div#systems div.system div.name a');
+        for (const link of links) {
+            const sysName = link.textContent.trim();
+            if (!sysName) continue;
+
+            const sysParts = parseSystemName(sysName);
+            systems.push({
+                company: sysParts.company,
+                system: sysParts.system,
+                fullName: sysName,
+                url: link.href
+            });
+        }
+
+        // Sort systems hierarchically (Company -> System)
+        systems.sort((a, b) => a.company.localeCompare(b.company) || a.system.localeCompare(b.system));
+
+        // 3. Iterate over each system and paginate using ?p=N
+        for (const sys of systems) {
+            console.log(`Scraping system: ${sys.fullName}`);
+
+            allEntries.push({
+                company: sys.company,
+                system: sys.system,
+                name: sys.fullName,
+                raw_name: sys.fullName,
+                date: "",
+                url: sys.url,
+                directory: true,
+                size: null
+            });
+
+            let page = 0;
+            let hasNextPage = true;
+            const seenPageUrls = new Set();
+
+            while (hasNextPage) {
+                const separator = sys.url.includes('?') ? '&' : '?';
+                const pageUrl = page === 0 ? sys.url : `${sys.url}${separator}p=${page}`;
+
+                if (seenPageUrls.has(pageUrl)) {
+                    break;
+                }
+                seenPageUrls.add(pageUrl);
+
+                try {
+                    console.log(`Fetching: ${pageUrl}`);
+                    const resp = await fetch(pageUrl);
+                    if (!resp.ok) {
+                        console.log(`Page returned status ${resp.status}. Ending pagination for ${sys.fullName}.`);
+                        break;
+                    }
+
+                    const html = await resp.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    const downloads = doc.querySelectorAll('.download');
+                    if (downloads.length === 0) {
+                        console.log(`No downloads found on page index ${page}. Moving to next system.`);
+                        break;
+                    }
+
+                    let newItemsCount = 0;
+                    for (const dl of downloads) {
+                        const link = dl.tagName === 'A' ? dl : dl.querySelector('a');
+                        if (!link || !link.href) continue;
+
+                        // Extract file size from the <small> element right under/inside the download block
+                        let fileSizeBytes = null;
+                        const smallTag = dl.querySelector('small') || dl.parentElement.querySelector('small');
+                        if (smallTag) {
+                            const smallText = smallTag.textContent;
+                            // Format is usually "22 songs • 1.2 MB" -> split by '•' to grab the right side
+                            if (smallText.includes('•')) {
+                                const parts = smallText.split('•');
+                                fileSizeBytes = parseSizeToBytes(parts[parts.length - 1]);
+                            } else {
+                                fileSizeBytes = parseSizeToBytes(smallText);
+                            }
+                        }
+
+                        let finalUrl = link.href;
+                        try {
+                            const headResp = await fetch(link.href, { method: 'HEAD' });
+                            finalUrl = headResp.url;
+                        } catch (e) {
+                            // Fallback to original href if HEAD fails
+                        }
+
+                        const urlObj = new URL(finalUrl);
+                        const rawFilename = decodeURIComponent(urlObj.pathname.split('/').pop());
+
+                        allEntries.push({
+                            company: sys.company,
+                            system: sys.system,
+                            name: cleanDisplayName(rawFilename),
+                            raw_name: rawFilename,
+                            date: extractDate(rawFilename),
+                            url: finalUrl,
+                            directory: false,
+                            size: fileSizeBytes
+                        });
+                        newItemsCount++;
+                    }
+
+                    console.log(`Found ${newItemsCount} items on page index ${page}.`);
+
+                    const nextParam = `p=${page + 1}`;
+                    const hasNextLink = Array.from(doc.querySelectorAll('a')).some(a => a.href.includes(nextParam));
+
+                    if (hasNextLink || newItemsCount > 0) {
+                        page++;
+                    } else {
+                        hasNextPage = false;
+                    }
+
+                    await delay(600);
+
+                } catch (e) {
+                    console.error(`Error fetching ${pageUrl}`, e);
+                    break;
+                }
+            }
+        }
+
+        // 4. Build and download the JSON file seamlessly
+        const outputData = buildSaturnStyleJson(allEntries);
+        const blob = new Blob([JSON.stringify(outputData, null, 2)], { type: 'application/json' });
+
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = 'domain_cache_Arcade.json';
+        downloadLink.click();
+
+        btn.textContent = 'Finished! JSON Downloaded';
+        btn.style.background = '#4CAF50';
+    });
+})();

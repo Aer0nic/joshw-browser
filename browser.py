@@ -1622,8 +1622,64 @@ class JoshWBrowser(tb.Window):
 
     def load_directory_from_index_worker(self, domain_name, url):
         try:
-            entries = get_entries_from_domain_entries(url, self.domain_full_entries)
-            total_size = self.cached_dir_sizes.get(url, get_size_from_domain_entries(url, self.domain_full_entries))
+            if domain_name == "Arcade":
+                entries = []
+                target_base = url.rstrip("/") + "/"
+                is_root = (url.rstrip("/") == DOMAINS["Arcade"].rstrip("/"))
+    
+                for entry in self.domain_full_entries:
+                    entry_url = entry.get("url", "").rstrip("/")
+                    if entry_url == url.rstrip("/"):
+                        continue
+            
+                    if is_root:
+                        # At the root, only show top-level items (subdirectories directly under Arcade)
+                        parsed_target = urllib.parse.urlparse(target_base)
+                        parsed_entry = urllib.parse.urlparse(entry_url)
+                        
+                        # Check if it's an immediate child directory or file under root
+                        rel_path = parsed_entry.path[len(parsed_target.path):].strip("/")
+                        if rel_path and "/" not in rel_path:
+                            # If it's a directory or a file directly at root level
+                            if not any(e.get("url", "").rstrip("/") == entry_url for e in entries):
+                                entries.append(entry)
+                    else:
+                        # Inside a subdirectory, check if the entry belongs to this exact path
+                        if entry_url.startswith(target_base):
+                            rel_path = entry_url[len(target_base):].strip("/")
+                            if rel_path:
+                                # If there's no further slash, it's an item directly inside this folder
+                                if "/" not in rel_path:
+                                    if not any(e.get("url", "").rstrip("/") == entry_url for e in entries):
+                                        entries.append(entry)
+                                else:
+                                    # It's nested deeper, so collapse it into a virtual subdirectory
+                                    sub_dir_name = rel_path.split("/")[0]
+                                    sub_dir_url = target_base + sub_dir_name + "/"
+                                    if not any(e.get("url", "").rstrip("/") == sub_dir_url.rstrip("/") for e in entries):
+                                        entries.append({
+                                            "name": sub_dir_name,
+                                            "raw_name": sub_dir_name,
+                                            "date": "",
+                                            "url": sub_dir_url,
+                                            "directory": True,
+                                            "size": None
+                                        })
+                        
+                        # Also check for associated files under https://vgmrips.net/files/ matching this folder context
+                        elif entry_url.startswith("https://vgmrips.net/files/"):
+                            # Map files if they correspond to the current folder structure
+                            parsed_target = urllib.parse.urlparse(target_base)
+                            folder_name = parsed_target.path.strip("/").split("/")[-1]
+                            if folder_name and folder_name.lower() in entry_url.lower():
+                                if not any(e.get("url", "").rstrip("/") == entry_url for e in entries):
+                                    entries.append(entry)
+                
+                total_size = sum(e.get("size", 0) or 0 for e in entries if not e.get("directory"))
+            else:
+                entries = get_entries_from_domain_entries(url, self.domain_full_entries)
+                total_size = self.cached_dir_sizes.get(url, get_size_from_domain_entries(url, self.domain_full_entries))
+
             self.cached_dir_sizes[url] = total_size
             self.messages.put(("directory", url, entries, total_size))
         except Exception as error:

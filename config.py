@@ -24,6 +24,7 @@ app_dir = get_project_root()
 
 DOMAINS = {
     "PC music archives": "http://pc.joshw.info/",
+    "Arcade": "https://vgmrips.net/packs/system/",
     "FM Towns music archive": "http://fmtowns.joshw.info/",
     "Hoot music archives": "http://hoot.joshw.info/",
     "S98 music archives": "http://s98.joshw.info/",
