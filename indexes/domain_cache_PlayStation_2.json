@@ -1310,7 +1310,7 @@
       "date": "2007-01-09",
       "url": "http://psf2.joshw.info/a/Arthur%20and%20the%20Invisibles%20%5bArthur%20and%20the%20Minimoys%5d%20(2007-01-09)(Etranges%20Libellules)(Atari)%5bPS2%5d.7z",
       "directory": false,
-      "size": 304989247
+      "size": 627029051
     },
     {
       "name": "Ashita no Joe - Masshiro ni Moe Tsukiro!",
@@ -1935,14 +1935,6 @@
       "url": "http://psf2.joshw.info/b/Blazing%20Souls%20(2006-01-19)(Neverland)(Idea%20Factory)%5bPS2%5d.7z",
       "directory": false,
       "size": 194621813
-    },
-    {
-      "name": "Blazing Souls",
-      "raw_name": "Blazing Souls (2006-01-19)(Neverland)(Idea Factory)[PS2][old].7z",
-      "date": "2006-01-19",
-      "url": "http://psf2.joshw.info/b/Blazing%20Souls%20(2006-01-19)(Neverland)(Idea%20Factory)%5bPS2%5d%5bold%5d.7z",
-      "directory": false,
-      "size": 194750845
     },
     {
       "name": "Bleach - Blade Battlers",
@@ -7249,14 +7241,6 @@
       "size": 97756387
     },
     {
-      "name": "Harry Potter & The Sorcerer's Stone [Harry Potter to Kenja no Ishi]",
-      "raw_name": "Harry Potter & The Sorcerer's Stone [Harry Potter to Kenja no Ishi] (2003-12-09)(Warthog)(Electronic Arts)[PS2].7z",
-      "date": "2003-12-09",
-      "url": "http://psf2.joshw.info/h/Harry%20Potter%20&%20The%20Sorcerer's%20Stone%20%5bHarry%20Potter%20to%20Kenja%20no%20Ishi%5d%20(2003-12-09)(Warthog)(Electronic%20Arts)%5bPS2%5d.7z",
-      "directory": false,
-      "size": 228537973
-    },
-    {
       "name": "Harry Potter and the Chamber of Secrets",
       "raw_name": "Harry Potter and the Chamber of Secrets (2002-11-14)(Eurocom, EA UK)(Electronic Arts)[PS2].7z",
       "date": "2002-11-14",
@@ -8903,6 +8887,14 @@
       "url": "http://psf2.joshw.info/k/Karaoke%20Revolution%20Party%20(2005-11-08)(Harmonix)(Konami)%5bPS2%5d.7z",
       "directory": false,
       "size": 1195422933
+    },
+    {
+      "name": "Karaoke Revolution Volume 3",
+      "raw_name": "Karaoke Revolution Volume 3 (2004-11-09)(Harmonix)(Konami)[PS2].7z",
+      "date": "2004-11-09",
+      "url": "http://psf2.joshw.info/k/Karaoke%20Revolution%20Volume%203%20(2004-11-09)(Harmonix)(Konami)%5bPS2%5d.7z",
+      "directory": false,
+      "size": 783766198
     },
     {
       "name": "Kashimashi! Girl Meets Girl - Hajimete no Natsu Monogatari",
@@ -18022,15 +18014,15 @@
       "date": "2000-10-26",
       "url": "http://psf2.joshw.info/s/SSX%20%5bX-treme%20Racing%20SSX%5d%20(2000-10-26)(EA%20Canada)(Electronic%20Arts)%5bPS2%5d.7z",
       "directory": false,
-      "size": 216388176
+      "size": 226843926
     },
     {
       "name": "SSX [X-treme Racing SSX]",
-      "raw_name": "SSX [X-treme Racing SSX] (2000-10-26)(EA Canada)(Electronic Arts)[PS2][alt].7z",
+      "raw_name": "SSX [X-treme Racing SSX] (2000-10-26)(EA Canada)(Electronic Arts)[PS2][old].7z",
       "date": "2000-10-26",
-      "url": "http://psf2.joshw.info/s/SSX%20%5bX-treme%20Racing%20SSX%5d%20(2000-10-26)(EA%20Canada)(Electronic%20Arts)%5bPS2%5d%5balt%5d.7z",
+      "url": "http://psf2.joshw.info/s/SSX%20%5bX-treme%20Racing%20SSX%5d%20(2000-10-26)(EA%20Canada)(Electronic%20Arts)%5bPS2%5d%5bold%5d.7z",
       "directory": false,
-      "size": 226904412
+      "size": 216388176
     },
     {
       "name": "SSX On Tour",
@@ -18047,14 +18039,6 @@
       "url": "http://psf2.joshw.info/s/SSX%20Tricky%20(2001-11-05)(EA%20Canada)(Electronic%20Arts)%5bPS2%5d.7z",
       "directory": false,
       "size": 337783405
-    },
-    {
-      "name": "SSX Tricky",
-      "raw_name": "SSX Tricky (2001-11-05)(EA Canada)(Electronic Arts)[PS2][alt].7z",
-      "date": "2001-11-05",
-      "url": "http://psf2.joshw.info/s/SSX%20Tricky%20(2001-11-05)(EA%20Canada)(Electronic%20Arts)%5bPS2%5d%5balt%5d.7z",
-      "directory": false,
-      "size": 552299798
     },
     {
       "name": "Standard Daisenryaku - Shiwareta Shouri",
@@ -18399,14 +18383,6 @@
       "url": "http://psf2.joshw.info/s/Suikoden%20V%20%5bGensou%20Suikoden%20V%5d%20(2006-02-23)(Konami)%5bPS2%5d.7z",
       "directory": false,
       "size": 806685452
-    },
-    {
-      "name": "Suikoden V [Gensou Suikoden V]",
-      "raw_name": "Suikoden V [Gensou Suikoden V] (2006-02-23)(Konami)[PS2][tagged].7z",
-      "date": "2006-02-23",
-      "url": "http://psf2.joshw.info/s/Suikoden%20V%20%5bGensou%20Suikoden%20V%5d%20(2006-02-23)(Konami)%5bPS2%5d%5btagged%5d.7z",
-      "directory": false,
-      "size": 700160354
     },
     {
       "name": "Suikoden V [Gensou Suikoden V] (Beta)",
@@ -21353,6 +21329,14 @@
       "size": 32960771
     },
     {
+      "name": "Worms 3D",
+      "raw_name": "Worms 3D (2003-10-31)(Team17)(Sega)[PS2].7z",
+      "date": "2003-10-31",
+      "url": "http://psf2.joshw.info/w/Worms%203D%20(2003-10-31)(Team17)(Sega)%5bPS2%5d.7z",
+      "directory": false,
+      "size": 394357702
+    },
+    {
       "name": "Worms 4 - Mayhem",
       "raw_name": "Worms 4 - Mayhem (2005-07-29)(Team 17)(Codemasters)[PS2].7z",
       "date": "2005-07-29",
@@ -22010,36 +21994,36 @@
     }
   ],
   "dir_sizes": {
-    "https://hvsc.brona.dk/HVSC/C64Music/": 0
+    "https://vgmrips.net/packs/system/": 1293134046
   },
   "scanned_dirs": [
-    "http://psf2.joshw.info/x/",
-    "http://psf2.joshw.info/m/",
-    "http://psf2.joshw.info/f/",
-    "http://psf2.joshw.info/r/",
-    "http://psf2.joshw.info/e/",
-    "http://psf2.joshw.info/b/",
-    "http://psf2.joshw.info/0-9/",
-    "http://psf2.joshw.info/s/",
-    "http://psf2.joshw.info/d/",
-    "http://psf2.joshw.info/u/",
-    "http://psf2.joshw.info/v/",
-    "http://psf2.joshw.info/t/",
-    "http://psf2.joshw.info/i/",
-    "http://psf2.joshw.info/c/",
-    "http://psf2.joshw.info/z/",
     "http://psf2.joshw.info/j/",
+    "http://psf2.joshw.info/t/",
     "http://psf2.joshw.info/y/",
-    "http://psf2.joshw.info/g/",
-    "http://psf2.joshw.info/l/",
-    "http://psf2.joshw.info/",
-    "http://psf2.joshw.info/p/",
-    "http://psf2.joshw.info/o/",
+    "http://psf2.joshw.info/z/",
     "http://psf2.joshw.info/h/",
-    "http://psf2.joshw.info/n/",
-    "http://psf2.joshw.info/w/",
-    "http://psf2.joshw.info/a/",
+    "http://psf2.joshw.info/v/",
     "http://psf2.joshw.info/k/",
-    "http://psf2.joshw.info/q/"
+    "http://psf2.joshw.info/x/",
+    "http://psf2.joshw.info/",
+    "http://psf2.joshw.info/n/",
+    "http://psf2.joshw.info/l/",
+    "http://psf2.joshw.info/s/",
+    "http://psf2.joshw.info/u/",
+    "http://psf2.joshw.info/p/",
+    "http://psf2.joshw.info/q/",
+    "http://psf2.joshw.info/d/",
+    "http://psf2.joshw.info/r/",
+    "http://psf2.joshw.info/c/",
+    "http://psf2.joshw.info/0-9/",
+    "http://psf2.joshw.info/w/",
+    "http://psf2.joshw.info/b/",
+    "http://psf2.joshw.info/e/",
+    "http://psf2.joshw.info/i/",
+    "http://psf2.joshw.info/g/",
+    "http://psf2.joshw.info/f/",
+    "http://psf2.joshw.info/a/",
+    "http://psf2.joshw.info/o/",
+    "http://psf2.joshw.info/m/"
   ]
 }

@@ -206,6 +206,8 @@ class InteractiveProgressBar:
 def get_vgmstream_path():
     return str(get_binary_path("vgmstream123"))
 
+def get_vgmplay_path():
+    return str(get_binary_path("vgmplay"))
 
 def get_lazyusf_path():
     return str(get_binary_path("lazyusf"))

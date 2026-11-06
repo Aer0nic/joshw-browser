@@ -2881,12 +2881,28 @@
       "size": 12975898
     },
     {
+      "name": "Farming Simulator 14",
+      "raw_name": "Farming Simulator 14 (2014-06-05)(Giants)(Focus Home)[3DS].7z",
+      "date": "2014-06-05",
+      "url": "http://3sf.joshw.info/f/Farming%20Simulator%2014%20(2014-06-05)(Giants)(Focus%20Home)%5b3DS%5d.7z",
+      "directory": false,
+      "size": 10342681
+    },
+    {
       "name": "Farming Simulator 18",
       "raw_name": "Farming Simulator 18 (2017-06-06)(Giants)(Focus Home)[3DS].7z",
       "date": "2017-06-06",
       "url": "http://3sf.joshw.info/f/Farming%20Simulator%2018%20(2017-06-06)(Giants)(Focus%20Home)%5b3DS%5d.7z",
       "directory": false,
       "size": 19198206
+    },
+    {
+      "name": "Farming Simulator 2012 3D",
+      "raw_name": "Farming Simulator 2012 3D (2012-03-29)(GIANTS)(astragon)[3DS].7z",
+      "date": "2012-03-29",
+      "url": "http://3sf.joshw.info/f/Farming%20Simulator%202012%203D%20(2012-03-29)(GIANTS)(astragon)%5b3DS%5d.7z",
+      "directory": false,
+      "size": 22258847
     },
     {
       "name": "Farmscapes",
@@ -5271,6 +5287,14 @@
       "url": "http://3sf.joshw.info/m/Mighty%20Action%20X%20(2016-12-01)(-)(Bandai%20Namco)%5b3DS%5d.7z",
       "directory": false,
       "size": 11222952
+    },
+    {
+      "name": "Mighty Gunvolt",
+      "raw_name": "Mighty Gunvolt (2014-08-20)(Inti Creates)[3DS][unplayable].7z",
+      "date": "2014-08-20",
+      "url": "http://3sf.joshw.info/m/Mighty%20Gunvolt%20(2014-08-20)(Inti%20Creates)%5b3DS%5d%5bunplayable%5d.7z",
+      "directory": false,
+      "size": 2295750
     },
     {
       "name": "Mighty Gunvolt Burst",
@@ -9466,36 +9490,36 @@
     }
   ],
   "dir_sizes": {
-    "https://hvsc.brona.dk/HVSC/C64Music/": 0
+    "https://vgmrips.net/packs/system/": 1293134046
   },
   "scanned_dirs": [
+    "http://3sf.joshw.info/d/",
+    "http://3sf.joshw.info/e/",
+    "http://3sf.joshw.info/g/",
+    "http://3sf.joshw.info/a/",
+    "http://3sf.joshw.info/u/",
+    "http://3sf.joshw.info/",
+    "http://3sf.joshw.info/w/",
+    "http://3sf.joshw.info/b/",
+    "http://3sf.joshw.info/x/",
+    "http://3sf.joshw.info/j/",
+    "http://3sf.joshw.info/c/",
+    "http://3sf.joshw.info/l/",
+    "http://3sf.joshw.info/i/",
+    "http://3sf.joshw.info/o/",
+    "http://3sf.joshw.info/m/",
+    "http://3sf.joshw.info/f/",
+    "http://3sf.joshw.info/p/",
+    "http://3sf.joshw.info/h/",
+    "http://3sf.joshw.info/r/",
+    "http://3sf.joshw.info/k/",
     "http://3sf.joshw.info/y/",
     "http://3sf.joshw.info/s/",
-    "http://3sf.joshw.info/z/",
-    "http://3sf.joshw.info/u/",
-    "http://3sf.joshw.info/g/",
-    "http://3sf.joshw.info/0-9/",
-    "http://3sf.joshw.info/k/",
-    "http://3sf.joshw.info/o/",
-    "http://3sf.joshw.info/j/",
-    "http://3sf.joshw.info/h/",
-    "http://3sf.joshw.info/e/",
-    "http://3sf.joshw.info/m/",
-    "http://3sf.joshw.info/",
-    "http://3sf.joshw.info/n/",
-    "http://3sf.joshw.info/b/",
-    "http://3sf.joshw.info/f/",
     "http://3sf.joshw.info/t/",
-    "http://3sf.joshw.info/i/",
-    "http://3sf.joshw.info/c/",
+    "http://3sf.joshw.info/z/",
     "http://3sf.joshw.info/v/",
-    "http://3sf.joshw.info/l/",
-    "http://3sf.joshw.info/w/",
-    "http://3sf.joshw.info/d/",
-    "http://3sf.joshw.info/r/",
-    "http://3sf.joshw.info/q/",
-    "http://3sf.joshw.info/x/",
-    "http://3sf.joshw.info/p/",
-    "http://3sf.joshw.info/a/"
+    "http://3sf.joshw.info/n/",
+    "http://3sf.joshw.info/0-9/",
+    "http://3sf.joshw.info/q/"
   ]
 }

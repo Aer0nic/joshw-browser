@@ -1401,14 +1401,6 @@
       "size": 274660173
     },
     {
-      "name": "FIFA Street 2",
-      "raw_name": "FIFA Street 2 (2006-02-28)(EA Canada)(Electronic Arts)[Xbox][alt].7z",
-      "date": "2006-02-28",
-      "url": "http://xbox.joshw.info/f/FIFA%20Street%202%20(2006-02-28)(EA%20Canada)(Electronic%20Arts)%5bXbox%5d%5balt%5d.7z",
-      "directory": false,
-      "size": 274534404
-    },
-    {
       "name": "Fight Club",
       "raw_name": "Fight Club (2004-11-16)(Genuine)(Vivendi Universal)[Xbox].7z",
       "date": "2004-11-16",
@@ -1701,14 +1693,6 @@
       "raw_name": "Harry Potter and the Chamber of Secrets (2002-11-14)(Eurocom, EA UK)(Electronic Arts)[Xbox].7z",
       "date": "2002-11-14",
       "url": "http://xbox.joshw.info/h/Harry%20Potter%20and%20the%20Chamber%20of%20Secrets%20(2002-11-14)(Eurocom,%20EA%20UK)(Electronic%20Arts)%5bXbox%5d.7z",
-      "directory": false,
-      "size": 89204942
-    },
-    {
-      "name": "Harry Potter and the Chamber of Secrets",
-      "raw_name": "Harry Potter and the Chamber of Secrets (2002-11-14)(Eurocom, EA UK)(Electronic Arts)[Xbox][alt].7z",
-      "date": "2002-11-14",
-      "url": "http://xbox.joshw.info/h/Harry%20Potter%20and%20the%20Chamber%20of%20Secrets%20(2002-11-14)(Eurocom,%20EA%20UK)(Electronic%20Arts)%5bXbox%5d%5balt%5d.7z",
       "directory": false,
       "size": 100944039
     },
@@ -2126,15 +2110,15 @@
       "date": "2006-08-22",
       "url": "http://xbox.joshw.info/m/Madden%20NFL%2007%20(2006-08-22)(EA%20Tiburon)(EA%20Sports)%5bXbox%5d.7z",
       "directory": false,
-      "size": 205003821
+      "size": 249671250
     },
     {
       "name": "Madden NFL 07",
-      "raw_name": "Madden NFL 07 (2006-08-22)(EA Tiburon)(EA Sports)[Xbox][alt].7z",
+      "raw_name": "Madden NFL 07 (2006-08-22)(EA Tiburon)(EA Sports)[Xbox][old].7z",
       "date": "2006-08-22",
-      "url": "http://xbox.joshw.info/m/Madden%20NFL%2007%20(2006-08-22)(EA%20Tiburon)(EA%20Sports)%5bXbox%5d%5balt%5d.7z",
+      "url": "http://xbox.joshw.info/m/Madden%20NFL%2007%20(2006-08-22)(EA%20Tiburon)(EA%20Sports)%5bXbox%5d%5bold%5d.7z",
       "directory": false,
-      "size": 249439937
+      "size": 205003821
     },
     {
       "name": "Madden NFL 08",
@@ -2534,15 +2518,15 @@
       "date": "2005-11-15",
       "url": "http://xbox.joshw.info/n/Need%20for%20Speed%20-%20Most%20Wanted%20(2005-11-15)(Black%20Box)(Electronic%20Arts)%5bXbox%5d.7z",
       "directory": false,
-      "size": 521819140
+      "size": 523151505
     },
     {
       "name": "Need for Speed - Most Wanted",
-      "raw_name": "Need for Speed - Most Wanted (2005-11-15)(Black Box)(Electronic Arts)[Xbox][alt].7z",
+      "raw_name": "Need for Speed - Most Wanted (2005-11-15)(Black Box)(Electronic Arts)[Xbox][old].7z",
       "date": "2005-11-15",
-      "url": "http://xbox.joshw.info/n/Need%20for%20Speed%20-%20Most%20Wanted%20(2005-11-15)(Black%20Box)(Electronic%20Arts)%5bXbox%5d%5balt%5d.7z",
+      "url": "http://xbox.joshw.info/n/Need%20for%20Speed%20-%20Most%20Wanted%20(2005-11-15)(Black%20Box)(Electronic%20Arts)%5bXbox%5d%5bold%5d.7z",
       "directory": false,
-      "size": 238670918
+      "size": 521819140
     },
     {
       "name": "Need for Speed - Underground",
@@ -4142,7 +4126,7 @@
       "date": "2002-11-03",
       "url": "http://xbox.joshw.info/z/Zapper%20-%20One%20Wicked%20Cricket!%20(2002-11-03)(Blitz)(Infogrames)%5bXbox%5d.7z",
       "directory": false,
-      "size": 308491841
+      "size": 326739895
     },
     {
       "name": "Zapper - One Wicked Cricket! (Prototype)",
@@ -4162,37 +4146,37 @@
     }
   ],
   "dir_sizes": {
-    "https://hvsc.brona.dk/HVSC/C64Music/": 0
+    "https://vgmrips.net/packs/system/": 1293134046
   },
   "scanned_dirs": [
-    "http://xbox.joshw.info/h/",
-    "http://xbox.joshw.info/m/",
-    "http://xbox.joshw.info/f/",
-    "http://xbox.joshw.info/j/",
-    "http://xbox.joshw.info/l/",
-    "http://xbox.joshw.info/t/",
-    "http://xbox.joshw.info/p/",
-    "http://xbox.joshw.info/a/",
-    "http://xbox.joshw.info/y/",
-    "http://xbox.joshw.info/zzz_old_remove/",
-    "http://xbox.joshw.info/z/",
-    "http://xbox.joshw.info/c/",
     "http://xbox.joshw.info/d/",
-    "http://xbox.joshw.info/v/",
+    "http://xbox.joshw.info/y/",
     "http://xbox.joshw.info/b/",
-    "http://xbox.joshw.info/i/",
-    "http://xbox.joshw.info/",
-    "http://xbox.joshw.info/0-9/",
-    "http://xbox.joshw.info/r/",
-    "http://xbox.joshw.info/x/",
-    "http://xbox.joshw.info/w/",
-    "http://xbox.joshw.info/u/",
-    "http://xbox.joshw.info/e/",
-    "http://xbox.joshw.info/k/",
-    "http://xbox.joshw.info/g/",
-    "http://xbox.joshw.info/s/",
-    "http://xbox.joshw.info/n/",
+    "http://xbox.joshw.info/j/",
     "http://xbox.joshw.info/o/",
-    "http://xbox.joshw.info/q/"
+    "http://xbox.joshw.info/g/",
+    "http://xbox.joshw.info/i/",
+    "http://xbox.joshw.info/c/",
+    "http://xbox.joshw.info/u/",
+    "http://xbox.joshw.info/zzz_old_remove/",
+    "http://xbox.joshw.info/r/",
+    "http://xbox.joshw.info/f/",
+    "http://xbox.joshw.info/h/",
+    "http://xbox.joshw.info/s/",
+    "http://xbox.joshw.info/e/",
+    "http://xbox.joshw.info/z/",
+    "http://xbox.joshw.info/k/",
+    "http://xbox.joshw.info/x/",
+    "http://xbox.joshw.info/p/",
+    "http://xbox.joshw.info/m/",
+    "http://xbox.joshw.info/v/",
+    "http://xbox.joshw.info/q/",
+    "http://xbox.joshw.info/n/",
+    "http://xbox.joshw.info/l/",
+    "http://xbox.joshw.info/w/",
+    "http://xbox.joshw.info/t/",
+    "http://xbox.joshw.info/0-9/",
+    "http://xbox.joshw.info/",
+    "http://xbox.joshw.info/a/"
   ]
 }

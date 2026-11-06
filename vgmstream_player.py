@@ -148,7 +148,7 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         filename = os.path.basename(self.audio_file)
         self.title(f"vgmstream123 Controller - {filename}")
         self.geometry("480x680")
-        self.minsize(440, 560)
+        self.minsize(500, 560)
         self.transient(self.parent)
 
         padding = tb.Frame(self, padding=12)
@@ -186,7 +186,7 @@ class VGMStreamPlayerWindow(tk.Toplevel):
         )
         self.progress_bar_widget.frame.pack(fill="x", expand=True)
 
-        vol_frame = ttk.Frame(padding)
+        vol_frame = tb.Frame(padding)
         vol_frame.pack(fill="x", pady=(0, 8))
         tb.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
         self.volume_slider = tb.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)

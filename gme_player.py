@@ -7,6 +7,7 @@ import threading
 import time
 import array
 import tkinter as tk
+import ttkbootstrap as tb
 from tkinter import ttk, messagebox
 from pathlib import Path
 from config import resource_path
@@ -118,6 +119,10 @@ def get_gme():
     if hasattr(lib, "gme_set_fade"):
         lib.gme_set_fade.argtypes = [ctypes.c_void_p, ctypes.c_int]
 
+    if hasattr(lib, "gme_ignore_silence"):
+        lib.gme_ignore_silence.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        lib.gme_ignore_silence.restype = None
+
     _gme_lib = lib
     return _gme_lib
 
@@ -136,17 +141,22 @@ class GMEContext:
             raise RuntimeError(f"Failed to open GME file: {err.decode('utf-8', errors='ignore')}")
         self.emu = track_ptr
 
-    def load_track(self, track_index, loop_forever=False):
+    def load_track(self, track_index, loop_forever=False, loop_enabled=False, loop_count=1):
         self.current_track = track_index
         lib = get_gme()
         err = lib.gme_start_track(self.emu, track_index)
         if err:
             raise RuntimeError(f"Failed to start track {track_index}: {err.decode('utf-8', errors='ignore')}")
 
-        if hasattr(lib, "gme_set_fade"):
-            if loop_forever:
-                lib.gme_set_fade(self.emu, 0)
-            else:
+        if loop_forever:
+            if hasattr(lib, "gme_ignore_silence"):
+                lib.gme_ignore_silence(self.emu, 1)
+            if hasattr(lib, "gme_set_fade"):
+                lib.gme_set_fade(self.emu, -1)
+        else:
+            if hasattr(lib, "gme_ignore_silence"):
+                lib.gme_ignore_silence(self.emu, 0)
+            if hasattr(lib, "gme_set_fade"):
                 lib.gme_set_fade(self.emu, -1)
 
         info_ptr = ctypes.c_void_p()
@@ -179,9 +189,10 @@ class GMEContext:
             actual_fade_ms = self.fade_ms
 
         if loop_forever:
-            self.duration_ms = self.base_length_ms
+            self.duration_ms = 0
         else:
-            self.duration_ms = self.base_length_ms + actual_fade_ms
+            multiplier = (1 + int(loop_count)) if loop_enabled else 1
+            self.duration_ms = (self.base_length_ms * multiplier) + actual_fade_ms
 
     def get_track_count(self):
         return get_gme().gme_track_count(self.emu)
@@ -262,8 +273,8 @@ class GMEAudioWorker:
         try:
             with GMEContext(self.audio_file) as ctx:
                 total_tracks = ctx.get_track_count()
-                ctx.load_track(self.track_index, loop_forever=self.loop_forever)
-                duration_sec = ctx.duration_ms / 1000.0
+                ctx.load_track(self.track_index, loop_forever=self.loop_forever, loop_enabled=self.loop_enabled, loop_count=self.loop_count)
+                duration_sec = ctx.duration_ms / 1000.0 if ctx.duration_ms > 0 else 0.0
 
                 self.ui_queue.put(("opened", {"duration": duration_sec, "track_count": total_tracks}))
                 self.ui_queue.put(("status", "Playing"))
@@ -272,17 +283,14 @@ class GMEAudioWorker:
                 sample_rate = ctx.sample_rate
 
                 try:
-                    # Find the best available output device index for HyperX or fallback to default
                     target_device = None
                     devices = sd.query_devices()
                     
-                    # First try to find a HyperX playback device with output channels
                     for idx, dev in enumerate(devices):
                         if 'HyperX' in dev['name'] and dev['max_output_channels'] > 0:
                             target_device = idx
                             break
                     
-                    # If not found, use system default output
                     if target_device is None:
                         default_info = sd.query_devices(kind='output')
                         target_device = default_info['index']
@@ -305,10 +313,13 @@ class GMEAudioWorker:
                 default_fade_ms = 5000
                 actual_fade_ms = default_fade_ms if (fade_ms <= 0 or fade_ms == base_length_ms) else fade_ms
 
-                base_samples = int((base_length_ms / 1000.0) * sample_rate)
+                single_base_samples = int((base_length_ms / 1000.0) * sample_rate)
+                multiplier = (1 + self.loop_count) if self.loop_enabled else 1
+                total_base_samples = single_base_samples * multiplier
+                
                 fade_samples = int((actual_fade_ms / 1000.0) * sample_rate)
-                fade_start_sample = base_samples
-                max_samples = base_samples + fade_samples
+                fade_start_sample = total_base_samples
+                max_samples = float('inf') if self.loop_forever else (total_base_samples + fade_samples)
 
                 total_samples_rendered = 0
                 loops_completed = 0
@@ -334,12 +345,16 @@ class GMEAudioWorker:
                                 should_loop = True
 
                             if should_loop:
-                                ctx.load_track(self.track_index, loop_forever=False)
+                                ctx.load_track(self.track_index, loop_forever=False, loop_enabled=self.loop_enabled, loop_count=self.loop_count)
                                 total_samples_rendered = 0
                                 continue
                             else:
                                 self.ui_queue.put(("ended", None))
                                 break
+
+                        # If manual looping is enabled and we hit the end of a base loop before the final fade window, restart track from beginning[cite: 1]
+                        if not self.loop_forever and self.loop_enabled and total_samples_rendered > 0 and total_samples_rendered % single_base_samples == 0 and total_samples_rendered < total_base_samples:
+                            ctx.seek(0)
 
                         samples_to_render = chunk_samples
                         if not self.loop_forever:
@@ -350,20 +365,12 @@ class GMEAudioWorker:
                         
                         pcm_data = bytes(sub_buf)
                         if not pcm_data or not success:
-                            should_loop = False
-                            if self.loop_enabled and loops_completed < self.loop_count - 1:
-                                loops_completed += 1
-                                should_loop = True
-
-                            if should_loop:
-                                ctx.load_track(self.track_index, loop_forever=self.loop_forever)
-                                total_samples_rendered = 0
-                                continue
-                            else:
+                            if not self.loop_forever:
                                 self.ui_queue.put(("ended", None))
                                 break
+                            else:
+                                continue
 
-                        # Apply volume fade-out only when loop_forever is False and past base length
                         if not self.loop_forever and total_samples_rendered >= fade_start_sample:
                             arr = array.array("h")
                             arr.frombytes(pcm_data)
@@ -388,17 +395,13 @@ class GMEAudioWorker:
                         stream.write(pcm_data)
                         total_samples_rendered += samples_to_render
 
-                        if self.loop_forever and base_samples > 0:
-                            curr_pos_sec = (total_samples_rendered % base_samples) / sample_rate
-                        else:
-                            curr_pos_sec = total_samples_rendered / sample_rate
-
-                        effective_duration_sec = ctx.duration_ms / 1000.0
+                        curr_pos_sec = total_samples_rendered / sample_rate
+                        effective_duration_sec = ctx.duration_ms / 1000.0 if ctx.duration_ms > 0 else 0.0
 
                         now = time.time()
                         if now - last_pos_time >= 0.2:
                             last_pos_time = now
-                            pct = int((curr_pos_sec / effective_duration_sec) * 100) if effective_duration_sec > 0 else 0
+                            pct = 0 if self.loop_forever else (int((curr_pos_sec / effective_duration_sec) * 100) if effective_duration_sec > 0 else 0)
                             self.ui_queue.put(("position", (curr_pos_sec, effective_duration_sec, pct)))
                 finally:
                     try:
@@ -568,32 +571,32 @@ class GMEPlayerWindow(tk.Toplevel):
         filename = os.path.basename(self.audio_file)
         self.title(f"GME Player - {filename}")
         self.geometry("480x640")
-        self.minsize(440, 520)
+        self.minsize(550, 520)
         self.transient(self.parent)
 
-        padding = ttk.Frame(self, padding=12)
+        padding = tb.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
 
-        browse_frame = ttk.Frame(padding)
+        browse_frame = tb.Frame(padding)
         browse_frame.pack(side="top", anchor="w", pady=(0, 6))
         tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked).pack(side="top", anchor="w")
 
-        self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=440, justify="center")
+        self.title_label = tb.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=440, justify="center")
         self.title_label.pack(pady=(0, 6))
 
-        info_frame = ttk.Frame(padding)
+        info_frame = tb.Frame(padding)
         info_frame.pack(fill="x", pady=(0, 4))
         
-        status_sub = ttk.Frame(info_frame)
+        status_sub = tb.Frame(info_frame)
         status_sub.pack(side="left", padx=5)
-        ttk.Label(status_sub, textvariable=self.status_var, font=("Arial", 9)).pack(side="left")
-        ttk.Label(status_sub, text=" (", font=("Arial", 9)).pack(side="left")
-        ttk.Label(status_sub, textvariable=self.seek_pct_var, font=("Arial", 9, "bold")).pack(side="left")
-        ttk.Label(status_sub, text=")", font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub, textvariable=self.status_var, font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub, text=" (", font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub, textvariable=self.seek_pct_var, font=("Arial", 9, "bold")).pack(side="left")
+        tb.Label(status_sub, text=")", font=("Arial", 9)).pack(side="left")
 
-        ttk.Label(info_frame, textvariable=self.position_var, font=("Arial", 9)).pack(side="right", padx=5)
+        tb.Label(info_frame, textvariable=self.position_var, font=("Arial", 9)).pack(side="right", padx=5)
 
-        progress_container = ttk.Frame(padding)
+        progress_container = tb.Frame(padding)
         progress_container.pack(fill="x", pady=(2, 6))
         self.progress_bar_widget = InteractiveProgressBar(
             progress_container,
@@ -604,28 +607,27 @@ class GMEPlayerWindow(tk.Toplevel):
         )
         self.progress_bar_widget.frame.pack(fill="x", expand=True)
 
-        meta_frame = ttk.Frame(padding)
+        meta_frame = tb.Frame(padding)
         meta_frame.pack(fill="x", pady=(0, 8))
-        ttk.Label(meta_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="left", padx=5)
-        ttk.Label(meta_frame, textvariable=self.duration_var, font=("Arial", 9)).pack(side="right", padx=5)
+        tb.Label(meta_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="left", padx=5)
+        tb.Label(meta_frame, textvariable=self.duration_var, font=("Arial", 9)).pack(side="right", padx=5)
 
-        # Define a custom style for a thicker horizontal slider
-        style = ttk.Style()
+        style = tb.Style()
         style.configure("Thick.Horizontal.TScale", sliderthickness=50, troughrelief="flat")
 
-        vol_frame = ttk.Frame(padding)
+        vol_frame = tb.Frame(padding)
         vol_frame.pack(fill="x", pady=(0, 8))
-        ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
-        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide, style="Thick.Horizontal.TScale")
+        tb.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
+        self.volume_slider = tb.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide, style="Thick.Horizontal.TScale")
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
 
-        list_frame = ttk.LabelFrame(padding, text="Playlist Files", padding=6)
+        list_frame = tb.LabelFrame(padding, text="Playlist Files", padding=6)
         list_frame.pack(fill="both", expand=True, pady=(0, 10))
 
-        self.playlist_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
+        self.playlist_listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
         self.playlist_listbox.pack(side="left", fill="both", expand=True)
-        scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
+        scrollbar = tb.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
         scrollbar.pack(side="right", fill="y")
         self.playlist_listbox.configure(yscrollcommand=scrollbar.set)
         self.playlist_listbox.bind("<<ListboxSelect>>", self.on_playlist_select)
@@ -633,39 +635,60 @@ class GMEPlayerWindow(tk.Toplevel):
         self.playlist_listbox.bind("<Leave>", self.on_listbox_leave)
         self.populate_playlist_listbox()
 
-        controls = ttk.Frame(padding)
+        controls = tb.Frame(padding)
         controls.pack(pady=4)
 
-        ttk.Button(controls, text="Stop", width=8, command=self.stop).grid(row=0, column=0, padx=2)
-        ttk.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=1, padx=2)
-        ttk.Button(controls, text="Play/Pause", width=10, command=self.toggle_play_pause).grid(row=0, column=2, padx=2)
-        ttk.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=3, padx=2)
-        ttk.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=4, padx=2)
+        tb.Button(controls, text="Stop", width=8, command=self.stop).grid(row=0, column=0, padx=2)
+        tb.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=1, padx=2)
+        tb.Button(controls, text="Play/Pause", width=10, command=self.toggle_play_pause).grid(row=0, column=2, padx=2)
+        tb.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=3, padx=2)
+        tb.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=4, padx=2)
 
-        bottom_sub_frame = ttk.Frame(padding)
+        bottom_sub_frame = tb.Frame(padding)
         bottom_sub_frame.pack(fill="x", pady=(6, 0))
 
-        left_loop_frame = ttk.Frame(bottom_sub_frame)
+        left_loop_frame = tb.Frame(bottom_sub_frame)
         left_loop_frame.pack(side="left")
-        tk.Checkbutton(left_loop_frame, variable=self.loop_enabled_var).pack(side="left", padx=(0, 2))
-        tk.Spinbox(left_loop_frame, from_=1, to=99, width=3, textvariable=self.loop_count_var).pack(side="left")
+        tb.Checkbutton(
+            left_loop_frame, 
+            variable=self.loop_enabled_var,
+            command=self.on_loop_controls_changed
+        ).pack(side="left", padx=(0, 2))
+        tb.Spinbox(
+            left_loop_frame, 
+            from_=1, 
+            to=99, 
+            width=3, 
+            textvariable=self.loop_count_var,
+            command=self.on_loop_controls_changed
+        ).pack(side="left")
 
-        center_rand_frame = ttk.Frame(bottom_sub_frame)
+        center_rand_frame = tb.Frame(bottom_sub_frame)
         center_rand_frame.pack(side="left", expand=True)
-        ttk.Button(center_rand_frame, text="Random", width=8, command=self.play_random_track).pack()
+        tb.Button(center_rand_frame, text="Random", width=8, command=self.play_random_track).pack()
 
-        right_loop_frame = ttk.Frame(bottom_sub_frame)
+        right_loop_frame = tb.Frame(bottom_sub_frame)
         right_loop_frame.pack(side="right")
-        # Added command to restart the song fresh when toggling loop forever
-        tk.Checkbutton(
+        tb.Checkbutton(
             right_loop_frame, 
             text="Loop forever", 
             variable=self.loop_forever_var, 
             command=self.on_loop_forever_toggled
         ).pack(side="right")
 
+    def on_loop_controls_changed(self):
+        if self.loop_enabled_var.get() and self.loop_forever_var.get():
+            self.loop_forever_var.set(False)
+        if self.playlist:
+            self.play_current_track()
+
     def on_loop_forever_toggled(self):
-        # Restart the current track fresh when loop forever is toggled
+        if self.loop_forever_var.get() and self.loop_enabled_var.get():
+            self.loop_enabled_var.set(False)
+        if self.loop_forever_var.get():
+            self.duration_var.set("Duration: forever")
+        else:
+            self.duration_var.set(f"Duration: {self.format_time(self.total_duration_seconds)}")
         if self.playlist:
             self.play_current_track()
 
@@ -744,15 +767,22 @@ class GMEPlayerWindow(tk.Toplevel):
         if m_type == "opened":
             self.total_duration_seconds = data["duration"]
             self.total_subtracks = data["track_count"]
-            self.duration_var.set(f"Duration: {self.format_time(self.total_duration_seconds)}")
+            if self.loop_forever_var.get():
+                self.duration_var.set("Duration: forever")
+            else:
+                self.duration_var.set(f"Duration: {self.format_time(self.total_duration_seconds)}")
             self.update_track_label_display()
         elif m_type == "position":
             curr, tot, pct = data
             if not self.is_scrubbing:
                 self.current_position_seconds = curr
                 self.position_var.set(f"Position: {self.format_time(curr)}")
-                self.seek_pct_var.set(f"{pct}%")
-                self.progress_bar_widget.update_progress(curr, self.total_duration_seconds)
+                if self.loop_forever_var.get():
+                    self.duration_var.set("Duration: forever")
+                else:
+                    self.duration_var.set(f"Duration: {self.format_time(self.total_duration_seconds)}")
+                self.seek_pct_var.set(f"{pct}%" if not self.loop_forever_var.get() else "0%")
+                self.progress_bar_widget.update_progress(curr, self.total_duration_seconds if not self.loop_forever_var.get() else 0.0)
         elif m_type == "status":
             self.status_var.set(str(data))
         elif m_type == "ended":

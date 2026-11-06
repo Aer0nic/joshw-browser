@@ -239,37 +239,37 @@ class PSFPlayerWindow(tk.Toplevel):
         filename = os.path.basename(self.audio_file)
         self.title(f"PSF Player - {filename}")
         self.geometry("520x600")
-        self.minsize(460, 500)
+        self.minsize(500, 500)
         self.transient(self.parent)
 
-        padding = ttk.Frame(self, padding=12)
+        padding = tb.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
 
-        browse_frame = ttk.Frame(padding)
+        browse_frame = tb.Frame(padding)
         browse_frame.pack(side="top", anchor="w", pady=(0, 6))
 
         browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="top", anchor="w")
 
-        self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=480, justify="center")
+        self.title_label = tb.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=480, justify="center")
         self.title_label.pack(pady=(0, 4))
 
-        self.meta_label = ttk.Label(padding, textvariable=self.tags_var, font=("Arial", 8), wraplength=480, justify="center", foreground="#555555")
+        self.meta_label = tb.Label(padding, textvariable=self.tags_var, font=("Arial", 8), wraplength=480, justify="center", foreground="#555555")
         self.meta_label.pack(pady=(0, 6))
 
-        info_frame = ttk.Frame(padding)
+        info_frame = tb.Frame(padding)
         info_frame.pack(fill="x", pady=(0, 4))
 
-        status_sub_frame = ttk.Frame(info_frame)
+        status_sub_frame = tb.Frame(info_frame)
         status_sub_frame.pack(side="left", padx=5)
-        ttk.Label(status_sub_frame, textvariable=self.status_var, font=("Arial", 9)).pack(side="left")
-        ttk.Label(status_sub_frame, text=" (", font=("Arial", 9)).pack(side="left")
-        ttk.Label(status_sub_frame, textvariable=self.seek_pct_var, font=("Arial", 9, "bold")).pack(side="left")
-        ttk.Label(status_sub_frame, text=")", font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub_frame, textvariable=self.status_var, font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub_frame, text=" (", font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub_frame, textvariable=self.seek_pct_var, font=("Arial", 9, "bold")).pack(side="left")
+        tb.Label(status_sub_frame, text=")", font=("Arial", 9)).pack(side="left")
 
-        ttk.Label(info_frame, textvariable=self.position_var, font=("Arial", 9)).pack(side="right", padx=5)
+        tb.Label(info_frame, textvariable=self.position_var, font=("Arial", 9)).pack(side="right", padx=5)
 
-        progress_container = ttk.Frame(padding)
+        progress_container = tb.Frame(padding)
         progress_container.pack(fill="x", pady=(2, 6))
         self.progress_bar_widget = InteractiveProgressBar(
             progress_container,
@@ -280,24 +280,24 @@ class PSFPlayerWindow(tk.Toplevel):
         )
         self.progress_bar_widget.frame.pack(fill="x", expand=True)
 
-        meta_frame = ttk.Frame(padding)
+        meta_frame = tb.Frame(padding)
         meta_frame.pack(fill="x", pady=(0, 8))
-        ttk.Label(meta_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="left", padx=5)
-        ttk.Label(meta_frame, textvariable=self.duration_var, font=("Arial", 9)).pack(side="right", padx=5)
+        tb.Label(meta_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="left", padx=5)
+        tb.Label(meta_frame, textvariable=self.duration_var, font=("Arial", 9)).pack(side="right", padx=5)
 
-        vol_frame = ttk.Frame(padding)
+        vol_frame = tb.Frame(padding)
         vol_frame.pack(fill="x", pady=(0, 8))
-        ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
-        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
+        tb.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
+        self.volume_slider = tb.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
 
-        list_frame = ttk.LabelFrame(padding, text="Playlist Files", padding=6)
+        list_frame = tb.LabelFrame(padding, text="Playlist Files", padding=6)
         list_frame.pack(fill="both", expand=True, pady=(0, 10))
 
         self.playlist_listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
         self.playlist_listbox.pack(side="left", fill="both", expand=True)
-        scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
+        scrollbar = tb.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
         scrollbar.pack(side="right", fill="y")
         self.playlist_listbox.configure(yscrollcommand=scrollbar.set)
         self.playlist_listbox.bind("<<ListboxSelect>>", self.on_playlist_select)
@@ -305,15 +305,17 @@ class PSFPlayerWindow(tk.Toplevel):
         self.playlist_listbox.bind("<Leave>", self.on_listbox_leave)
         self.populate_playlist_listbox()
 
-        controls = ttk.Frame(padding)
+        controls = tb.Frame(padding)
         controls.pack(pady=4)
 
-        ttk.Button(controls, text="Stop", width=8, command=self.stop).grid(row=0, column=0, padx=2)
-        ttk.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=1, padx=2)
-        ttk.Button(controls, text="Play/Pause", width=10, command=self.toggle_play_pause).grid(row=0, column=2, padx=2)
-        ttk.Button(controls, text="Random", width=8, command=self.play_random_track).grid(row=0, column=3, padx=2)
-        ttk.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=4, padx=2)
-        ttk.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=5, padx=2)
+        tb.Button(controls, text="Stop", width=8, command=self.stop).grid(row=0, column=0, padx=2)
+        tb.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=1, padx=2)
+        tb.Button(controls, text="Play/Pause", width=10, command=self.toggle_play_pause).grid(row=0, column=2, padx=2)
+        tb.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=3, padx=2)
+        tb.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=4, padx=2)
+
+        # Row 1: Random button centered under column 2 (Play/Pause)
+        tb.Button(controls, text="Random", width=8, command=self.play_random_track).grid(row=1, column=2, pady=(6, 0), padx=2)
 
     def populate_playlist_listbox(self):
         self.playlist_listbox.delete(0, tk.END)

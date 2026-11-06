@@ -990,7 +990,7 @@
       "date": "2007-10-30",
       "url": "http://x360.joshw.info/b/Bee%20Movie%20Game%20(2007-10-30)(Beenox)(Activision)%5bX360%5d.7z",
       "directory": false,
-      "size": 130292654
+      "size": 152667382
     },
     {
       "name": "Bee Movie Game (Beta)",
@@ -2279,6 +2279,14 @@
       "url": "http://x360.joshw.info/d/Dead%20or%20Alive%204%20(2005-12-29)(Team%20Ninja)(Tecmo)%5bX360%5d.7z",
       "directory": false,
       "size": 498441480
+    },
+    {
+      "name": "Dead or Alive 4 (E3 Demo)",
+      "raw_name": "Dead or Alive 4 (E3 Demo) (2005-09-30)(Team Ninja)(Tecmo)[X360].7z",
+      "date": "2005-09-30",
+      "url": "http://x360.joshw.info/d/Dead%20or%20Alive%204%20(E3%20Demo)%20(2005-09-30)(Team%20Ninja)(Tecmo)%5bX360%5d.7z",
+      "directory": false,
+      "size": 46391464
     },
     {
       "name": "Dead or Alive 5",
@@ -8137,35 +8145,37 @@
       "size": 306022527
     }
   ],
-  "dir_sizes": {},
+  "dir_sizes": {
+    "https://vgmrips.net/packs/system/": 1293134046
+  },
   "scanned_dirs": [
     "http://x360.joshw.info/t/",
-    "http://x360.joshw.info/",
-    "http://x360.joshw.info/e/",
-    "http://x360.joshw.info/j/",
-    "http://x360.joshw.info/o/",
-    "http://x360.joshw.info/i/",
-    "http://x360.joshw.info/0-9/",
-    "http://x360.joshw.info/q/",
-    "http://x360.joshw.info/r/",
     "http://x360.joshw.info/y/",
-    "http://x360.joshw.info/n/",
+    "http://x360.joshw.info/c/",
     "http://x360.joshw.info/p/",
+    "http://x360.joshw.info/a/",
+    "http://x360.joshw.info/o/",
+    "http://x360.joshw.info/l/",
+    "http://x360.joshw.info/e/",
+    "http://x360.joshw.info/d/",
     "http://x360.joshw.info/z/",
     "http://x360.joshw.info/h/",
-    "http://x360.joshw.info/w/",
-    "http://x360.joshw.info/d/",
-    "http://x360.joshw.info/a/",
-    "http://x360.joshw.info/l/",
-    "http://x360.joshw.info/m/",
-    "http://x360.joshw.info/f/",
-    "http://x360.joshw.info/u/",
-    "http://x360.joshw.info/g/",
-    "http://x360.joshw.info/k/",
-    "http://x360.joshw.info/b/",
+    "http://x360.joshw.info/v/",
     "http://x360.joshw.info/s/",
-    "http://x360.joshw.info/c/",
+    "http://x360.joshw.info/j/",
+    "http://x360.joshw.info/",
     "http://x360.joshw.info/x/",
-    "http://x360.joshw.info/v/"
+    "http://x360.joshw.info/g/",
+    "http://x360.joshw.info/q/",
+    "http://x360.joshw.info/u/",
+    "http://x360.joshw.info/r/",
+    "http://x360.joshw.info/i/",
+    "http://x360.joshw.info/b/",
+    "http://x360.joshw.info/0-9/",
+    "http://x360.joshw.info/f/",
+    "http://x360.joshw.info/k/",
+    "http://x360.joshw.info/m/",
+    "http://x360.joshw.info/w/",
+    "http://x360.joshw.info/n/"
   ]
 }

@@ -1433,14 +1433,6 @@
       "size": 167296176
     },
     {
-      "name": "Harry Potter & The Sorcerer's Stone [Harry Potter to Kenja no Ishi]",
-      "raw_name": "Harry Potter & The Sorcerer's Stone [Harry Potter to Kenja no Ishi] (2003-12-09)(Warthog)(Electronic Arts)[GC].7z",
-      "date": "2003-12-09",
-      "url": "http://gcn.joshw.info/h/Harry%20Potter%20&%20The%20Sorcerer's%20Stone%20%5bHarry%20Potter%20to%20Kenja%20no%20Ishi%5d%20(2003-12-09)(Warthog)(Electronic%20Arts)%5bGC%5d.7z",
-      "directory": false,
-      "size": 99094204
-    },
-    {
       "name": "Harry Potter and the Chamber of Secrets",
       "raw_name": "Harry Potter and the Chamber of Secrets (2002-11-14)(Eurocom, EA UK)(Electronic Arts)[GC].7z",
       "date": "2002-11-14",
@@ -1465,12 +1457,12 @@
       "size": 167100419
     },
     {
-      "name": "Harry Potter and the Prisoner of Azkaban",
-      "raw_name": "Harry Potter and the Prisoner of Azkaban (2004-05-29)(EA UK)(Electronic Arts)[GC][alt].7z",
-      "date": "2004-05-29",
-      "url": "http://gcn.joshw.info/h/Harry%20Potter%20and%20the%20Prisoner%20of%20Azkaban%20(2004-05-29)(EA%20UK)(Electronic%20Arts)%5bGC%5d%5balt%5d.7z",
+      "name": "Harry Potter and the Sorcerer's Stone",
+      "raw_name": "Harry Potter and the Sorcerer's Stone (2003-12-09)(Warthog)(Electronic Arts)[GC].7z",
+      "date": "2003-12-09",
+      "url": "http://gcn.joshw.info/h/Harry%20Potter%20and%20the%20Sorcerer's%20Stone%20(2003-12-09)(Warthog)(Electronic%20Arts)%5bGC%5d.7z",
       "directory": false,
-      "size": 172530633
+      "size": 99094204
     },
     {
       "name": "Harvest Moon - Another Wonderful Life [Bokujou Monogatari - Wonderful Life for Girls]",
@@ -3665,6 +3657,14 @@
       "size": 314742036
     },
     {
+      "name": "Worms 3D",
+      "raw_name": "Worms 3D (2003-10-31)(Team17)(Sega)[GC].7z",
+      "date": "2003-10-31",
+      "url": "http://gcn.joshw.info/w/Worms%203D%20(2003-10-31)(Team17)(Sega)%5bGC%5d.7z",
+      "directory": false,
+      "size": 144545518
+    },
+    {
       "name": "Worms Blast",
       "raw_name": "Worms Blast (2002-09-13)(Team 17)(Ubisoft)[GC].7z",
       "date": "2002-09-13",
@@ -3802,35 +3802,35 @@
     }
   ],
   "dir_sizes": {
-    "https://hvsc.brona.dk/HVSC/C64Music/": 0
+    "https://vgmrips.net/packs/system/": 1293134046
   },
   "scanned_dirs": [
-    "http://gcn.joshw.info/a/",
-    "http://gcn.joshw.info/z/",
-    "http://gcn.joshw.info/y/",
+    "http://gcn.joshw.info/",
+    "http://gcn.joshw.info/f/",
+    "http://gcn.joshw.info/0-9/",
+    "http://gcn.joshw.info/n/",
+    "http://gcn.joshw.info/d/",
+    "http://gcn.joshw.info/v/",
     "http://gcn.joshw.info/l/",
-    "http://gcn.joshw.info/p/",
-    "http://gcn.joshw.info/b/",
-    "http://gcn.joshw.info/e/",
-    "http://gcn.joshw.info/c/",
-    "http://gcn.joshw.info/x/",
-    "http://gcn.joshw.info/j/",
     "http://gcn.joshw.info/s/",
     "http://gcn.joshw.info/w/",
-    "http://gcn.joshw.info/",
-    "http://gcn.joshw.info/v/",
-    "http://gcn.joshw.info/h/",
+    "http://gcn.joshw.info/x/",
     "http://gcn.joshw.info/k/",
-    "http://gcn.joshw.info/i/",
     "http://gcn.joshw.info/g/",
-    "http://gcn.joshw.info/o/",
-    "http://gcn.joshw.info/t/",
-    "http://gcn.joshw.info/n/",
-    "http://gcn.joshw.info/0-9/",
-    "http://gcn.joshw.info/m/",
-    "http://gcn.joshw.info/d/",
-    "http://gcn.joshw.info/f/",
+    "http://gcn.joshw.info/a/",
     "http://gcn.joshw.info/r/",
-    "http://gcn.joshw.info/u/"
+    "http://gcn.joshw.info/o/",
+    "http://gcn.joshw.info/b/",
+    "http://gcn.joshw.info/h/",
+    "http://gcn.joshw.info/m/",
+    "http://gcn.joshw.info/p/",
+    "http://gcn.joshw.info/u/",
+    "http://gcn.joshw.info/i/",
+    "http://gcn.joshw.info/c/",
+    "http://gcn.joshw.info/e/",
+    "http://gcn.joshw.info/j/",
+    "http://gcn.joshw.info/y/",
+    "http://gcn.joshw.info/z/",
+    "http://gcn.joshw.info/t/"
   ]
 }

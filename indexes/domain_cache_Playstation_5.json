@@ -65,6 +65,14 @@
       "size": null
     },
     {
+      "name": "Final Fantasy XVI",
+      "raw_name": "Final Fantasy XVI (2023-06-22)(Square Enix Creative Business Unit III)(Square Enix)[PS5].7z",
+      "date": "2023-06-22",
+      "url": "http://psf5.joshw.info/Final%20Fantasy%20XVI%20(2023-06-22)(Square%20Enix%20Creative%20Business%20Unit%20III)(Square%20Enix)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 967961711
+    },
+    {
       "name": "robots.txt",
       "raw_name": "robots.txt",
       "date": "",
@@ -86,7 +94,7 @@
       "date": "2024-09-06",
       "url": "http://psf5.joshw.info/a/Astro%20Bot%20(2024-09-06)(Team%20Asobi)(PlayStation%20Studios)%5bPS5%5d.7z",
       "directory": false,
-      "size": 1484705046
+      "size": 1484705055
     },
     {
       "name": "Astro's Playroom",
@@ -167,20 +175,28 @@
       "url": "http://psf5.joshw.info/s/Silent%20Hill%20-%20The%20Short%20Message%20(2024-01-31)(Konami%20Digital%20Entertainment)(Konami)%5bPS5%5d.7z",
       "directory": false,
       "size": 1724033117
+    },
+    {
+      "name": "Star Wars - Galactic Racer",
+      "raw_name": "Star Wars - Galactic Racer (2026-10-06)(Fuse Games)(Secret Mode)[PS5].7z",
+      "date": "2026-10-06",
+      "url": "http://psf5.joshw.info/s/Star%20Wars%20-%20Galactic%20Racer%20(2026-10-06)(Fuse%20Games)(Secret%20Mode)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 501088475
     }
   ],
   "dir_sizes": {
-    "https://hvsc.brona.dk/HVSC/C64Music/": 0
+    "https://vgmrips.net/packs/system/": 1293134046
   },
   "scanned_dirs": [
     "http://psf5.joshw.info/",
-    "http://psf5.joshw.info/p/",
-    "http://psf5.joshw.info/d/",
-    "http://psf5.joshw.info/l/",
-    "http://psf5.joshw.info/r/",
-    "http://psf5.joshw.info/n/",
-    "http://psf5.joshw.info/a/",
     "http://psf5.joshw.info/m/",
-    "http://psf5.joshw.info/s/"
+    "http://psf5.joshw.info/d/",
+    "http://psf5.joshw.info/s/",
+    "http://psf5.joshw.info/p/",
+    "http://psf5.joshw.info/r/",
+    "http://psf5.joshw.info/l/",
+    "http://psf5.joshw.info/n/",
+    "http://psf5.joshw.info/a/"
   ]
 }

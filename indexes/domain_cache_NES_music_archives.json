@@ -406,7 +406,7 @@
       "date": "1992-07-31",
       "url": "http://nsf.joshw.info/a/Adventure%20Island%203%20%5bTakahashi%20Meijin%20no%20Boukenjima%20III%5d%20(1992-07-31)(Hudson)%5bNES%5d.7z",
       "directory": false,
-      "size": 11315
+      "size": 22037
     },
     {
       "name": "Adventure Island [Takahashi Meijin no Boukenjima]",
@@ -422,7 +422,7 @@
       "date": "1991-02",
       "url": "http://nsf.joshw.info/a/Adventure%20Island%20II%20%5bTakahashi%20Meijin%20no%20Boukenjima%20II%5d%20(1991-02)(Now%20Production)(Hudson)%5bNES%5d.7z",
       "directory": false,
-      "size": 12208
+      "size": 12888
     },
     {
       "name": "Adventure Island JP [Takahashi Meijin no Boukenjima]",
@@ -430,7 +430,7 @@
       "date": "1986-09-12",
       "url": "http://nsf.joshw.info/a/Adventure%20Island%20JP%20%5bTakahashi%20Meijin%20no%20Boukenjima%5d%20(1986-09-12)(Hudson)%5bNES%5d.7z",
       "directory": false,
-      "size": 5339
+      "size": 6324
     },
     {
       "name": "Adventures in the Magic Kingdom",
@@ -470,7 +470,7 @@
       "date": "1987-02-10",
       "url": "http://nsf.joshw.info/a/Adventures%20of%20Dino-Riki%20JP%20%5bShin%20Jinrui%20-%20The%20New%20Type%5d%20(1987-02-10)(Hudson)%5bNES%5d.7z",
       "directory": false,
-      "size": 4000
+      "size": 4805
     },
     {
       "name": "Adventures of Gilligan's Island, The",
@@ -806,7 +806,7 @@
       "date": "1986-12-26",
       "url": "http://nsf.joshw.info/a/Arkanoid%20(1986-12-26)(Taito)%5bNES%5d.7z",
       "directory": false,
-      "size": 3150
+      "size": 3750
     },
     {
       "name": "Arkanoid II",
@@ -814,7 +814,7 @@
       "date": "1988-03-08",
       "url": "http://nsf.joshw.info/a/Arkanoid%20II%20(1988-03-08)(Taito)%5bNES%5d.7z",
       "directory": false,
-      "size": 6934
+      "size": 7583
     },
     {
       "name": "Arkista's Ring",
@@ -1262,7 +1262,7 @@
       "date": "1989-12-22",
       "url": "http://nsf.joshw.info/b/Batman%20(1989-12-22)(Sunsoft)%5bNES%5d.7z",
       "directory": false,
-      "size": 9505
+      "size": 10689
     },
     {
       "name": "Batman - Return of The Joker [Dynamite Batman]",
@@ -1270,7 +1270,7 @@
       "date": "1991-12-20",
       "url": "http://nsf.joshw.info/b/Batman%20-%20Return%20of%20The%20Joker%20%5bDynamite%20Batman%5d%20(1991-12-20)(Sunsoft)%5bNES%5d.7z",
       "directory": false,
-      "size": 25439
+      "size": 17000
     },
     {
       "name": "Batman Returns",
@@ -1278,7 +1278,7 @@
       "date": "1993-01",
       "url": "http://nsf.joshw.info/b/Batman%20Returns%20(1993-01)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 12151
+      "size": 13950
     },
     {
       "name": "Batsu & Terii - Makyou no Tetsujin Race",
@@ -2478,7 +2478,15 @@
       "date": "1991-08-27",
       "url": "http://nsf.joshw.info/c/Crisis%20Force%20(1991-08-27)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 15394
+      "size": 14048
+    },
+    {
+      "name": "Crisis Force (a)",
+      "raw_name": "Crisis Force (a)(1991-08-27)(Konami)[NES].7z",
+      "date": "1991-08-27",
+      "url": "http://nsf.joshw.info/c/Crisis%20Force%20(a)(1991-08-27)(Konami)%5bNES%5d.7z",
+      "directory": false,
+      "size": 14996
     },
     {
       "name": "Cross Fire",
@@ -3110,7 +3118,7 @@
       "date": "1988-08-12",
       "url": "http://nsf.joshw.info/d/Dragon%20Ball%202%20-%20Dai%20Maou%20Fukkatsu%20(1988-08-12)(Tose)(Bandai)%5bNES%5d.7z",
       "directory": false,
-      "size": 8864
+      "size": 10045
     },
     {
       "name": "Dragon Ball 3 - Gokuu Den",
@@ -3118,7 +3126,7 @@
       "date": "1989-10-27",
       "url": "http://nsf.joshw.info/d/Dragon%20Ball%203%20-%20Gokuu%20Den%20(1989-10-27)(Tose)(Bandai)%5bNES%5d.7z",
       "directory": false,
-      "size": 9066
+      "size": 10597
     },
     {
       "name": "Dragon Ball Z - Gekitou Tenkaichi Budou Kai",
@@ -3126,7 +3134,7 @@
       "date": "1992-12-29",
       "url": "http://nsf.joshw.info/d/Dragon%20Ball%20Z%20-%20Gekitou%20Tenkaichi%20Budou%20Kai%20(1992-12-29)(Tose)(Bandai)%5bNES%5d.7z",
       "directory": false,
-      "size": 10453
+      "size": 11495
     },
     {
       "name": "Dragon Ball Z - Kyoushuu! Saiyajin",
@@ -3134,7 +3142,7 @@
       "date": "1990-10-27",
       "url": "http://nsf.joshw.info/d/Dragon%20Ball%20Z%20-%20Kyoushuu!%20Saiyajin%20(1990-10-27)(Tose)(Bandai)%5bNES%5d.7z",
       "directory": false,
-      "size": 10858
+      "size": 12444
     },
     {
       "name": "Dragon Ball Z Gaiden - Saiyajin Zetsumetsu Keikaku",
@@ -3142,7 +3150,7 @@
       "date": "1993-08-06",
       "url": "http://nsf.joshw.info/d/Dragon%20Ball%20Z%20Gaiden%20-%20Saiyajin%20Zetsumetsu%20Keikaku%20(1993-08-06)(Tose)(Bandai)%5bNES%5d.7z",
       "directory": false,
-      "size": 8575
+      "size": 10141
     },
     {
       "name": "Dragon Ball Z II - Gekishin Freeza!!",
@@ -3150,7 +3158,7 @@
       "date": "1991-08-10",
       "url": "http://nsf.joshw.info/d/Dragon%20Ball%20Z%20II%20-%20Gekishin%20Freeza!!%20(1991-08-10)(Tose)(Bandai)%5bNES%5d.7z",
       "directory": false,
-      "size": 15368
+      "size": 16446
     },
     {
       "name": "Dragon Ball Z III - Ressen Jinzou Ningen",
@@ -3158,7 +3166,7 @@
       "date": "1992-08-07",
       "url": "http://nsf.joshw.info/d/Dragon%20Ball%20Z%20III%20-%20Ressen%20Jinzou%20Ningen%20(1992-08-07)(Tose)(Bandai)%5bNES%5d.7z",
       "directory": false,
-      "size": 9622
+      "size": 10951
     },
     {
       "name": "Dragon Buster",
@@ -3191,6 +3199,14 @@
       "url": "http://nsf.joshw.info/d/Dragon%20Power%20%5bDragon%20Ball%20-%20Shen%20Long%20no%20Nazo%5d%20(1986-11-27)(Tose)(Bandai)%5bNES%5d.7z",
       "directory": false,
       "size": 17480
+    },
+    {
+      "name": "Dragon Power JP [Dragon Ball - Shen Long no Nazo]",
+      "raw_name": "Dragon Power JP [Dragon Ball - Shen Long no Nazo] (1986-11-27)(Tose)(Bandai)[NES].7z",
+      "date": "1986-11-27",
+      "url": "http://nsf.joshw.info/d/Dragon%20Power%20JP%20%5bDragon%20Ball%20-%20Shen%20Long%20no%20Nazo%5d%20(1986-11-27)(Tose)(Bandai)%5bNES%5d.7z",
+      "directory": false,
+      "size": 10384
     },
     {
       "name": "Dragon Scroll - Yomigaerishi Maryuu",
@@ -4550,7 +4566,7 @@
       "date": "1989-07-14",
       "url": "http://nsf.joshw.info/g/Ghost%20Lion%20%5bWhite%20Lion%20Densetsu%20-%20Pyramid%20no%20Kanata%20ni%5d%20(1989-07-14)(Kemco)%5bNES%5d.7z",
       "directory": false,
-      "size": 5360
+      "size": 14803
     },
     {
       "name": "Ghostbusters",
@@ -4726,7 +4742,7 @@
       "date": "1987-03-18",
       "url": "http://nsf.joshw.info/g/Goonies%20II,%20The%20%5bGoonies%202%20-%20Fratelli%20Saigo%20no%20Chousen%5d%20(1987-03-18)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 10650
+      "size": 11334
     },
     {
       "name": "Goonies, The",
@@ -4734,7 +4750,7 @@
       "date": "1986-02-21",
       "url": "http://nsf.joshw.info/g/Goonies,%20The%20(1986-02-21)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 24159
+      "size": 4832
     },
     {
       "name": "Gorby no Pipeline Daisakusen",
@@ -4774,7 +4790,7 @@
       "date": "1986-04-25",
       "url": "http://nsf.joshw.info/g/Gradius%20(1986-04-25)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 4506
+      "size": 5008
     },
     {
       "name": "Gradius II",
@@ -4782,7 +4798,7 @@
       "date": "1988-12-16",
       "url": "http://nsf.joshw.info/g/Gradius%20II%20(1988-12-16)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 24315
+      "size": 24982
     },
     {
       "name": "Grand Master",
@@ -4838,7 +4854,7 @@
       "date": "1988-02-05",
       "url": "http://nsf.joshw.info/g/Guardian%20Legend,%20The%20%5bGuardic%20Gaiden%5d%20(1988-02-05)(Compile)(Irem)%5bNES%5d.7z",
       "directory": false,
-      "size": 8022
+      "size": 9217
     },
     {
       "name": "Guerrilla War [Guevara]",
@@ -4902,7 +4918,7 @@
       "date": "1988-11-18",
       "url": "http://nsf.joshw.info/g/Gyruss%20(1988-11-18)(Konami)%5bFDS%5d.7z",
       "directory": false,
-      "size": 20616
+      "size": 10863
     },
     {
       "name": "Gyruss",
@@ -4910,7 +4926,7 @@
       "date": "1989-02",
       "url": "http://nsf.joshw.info/g/Gyruss%20(1989-02)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 6740
+      "size": 7414
     },
     {
       "name": "Haja no Fuuin",
@@ -6734,7 +6750,7 @@
       "date": "1987-09-25",
       "url": "http://nsf.joshw.info/l/Life%20Force%20%5bSalamander%5d%20(1987-09-25)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 9765
+      "size": 11704
     },
     {
       "name": "Linus Spacehead's Cosmic Crusade",
@@ -7110,7 +7126,7 @@
       "date": "1990-03-23",
       "url": "http://nsf.joshw.info/m/Majin%20Eiyuuden%20Wataru%20Gaiden%20(1990-03-23)(Westone)(Hudson)%5bNES%5d.7z",
       "directory": false,
-      "size": 19455
+      "size": 20873
     },
     {
       "name": "Majou Densetsu 2 - Daimashikyou Galious",
@@ -7430,7 +7446,7 @@
       "date": "1986-08",
       "url": "http://nsf.joshw.info/m/Metroid%20(1986-08)(Nintendo%20R&D1)(Nintendo)%5bNES%5d.7z",
       "directory": false,
-      "size": 5241
+      "size": 7512
     },
     {
       "name": "Metroid",
@@ -7438,7 +7454,7 @@
       "date": "1986-08-06",
       "url": "http://nsf.joshw.info/m/Metroid%20(1986-08-06)(Nintendo%20R&D1)(Nintendo)%5bFDS%5d.7z",
       "directory": false,
-      "size": 5961
+      "size": 6561
     },
     {
       "name": "Mezase Pachi Pro - Pachio-kun",
@@ -7638,7 +7654,7 @@
       "date": "1990-03-09",
       "url": "http://nsf.joshw.info/m/Moai-kun%20(1990-03-09)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 3570
+      "size": 11815
     },
     {
       "name": "Moero!! Juudou Warriors",
@@ -8622,7 +8638,7 @@
       "date": "1990-11-30",
       "url": "http://nsf.joshw.info/p/Parodius%20JP%20%5bParodius%20Da!%5d%20(1990-11-30)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 24120
+      "size": 16025
     },
     {
       "name": "Peepar Time",
@@ -9014,7 +9030,7 @@
       "date": "1990-04-13",
       "url": "http://nsf.joshw.info/q/Quarth%20(1990-04-13)(Konami)%5bNES%5d.7z",
       "directory": false,
-      "size": 13707
+      "size": 8482
     },
     {
       "name": "Quattro Adventure - Boomerang Kid",
@@ -9222,7 +9238,7 @@
       "date": "1991-11-15",
       "url": "http://nsf.joshw.info/r/Radia%20Senki%20-%20Reimei-hen%20(1991-11-15)(-)(Tecmo)%5bNES%5d.7z",
       "directory": false,
-      "size": 23852
+      "size": 16290
     },
     {
       "name": "Radical Bomber!! Jirai-kun",
@@ -11126,7 +11142,7 @@
       "date": "1994-06-24",
       "url": "http://nsf.joshw.info/t/Takahashi%20Meijin%20no%20Bouken%20Jima%20IV%20(1994-06-24)(-)(Hudson)%5bNES%5d.7z",
       "directory": false,
-      "size": 10977
+      "size": 12238
     },
     {
       "name": "Takahashi Meijin no Bugutte Honey",
@@ -11134,7 +11150,7 @@
       "date": "1987-06-05",
       "url": "http://nsf.joshw.info/t/Takahashi%20Meijin%20no%20Bugutte%20Honey%20(1987-06-05)(Hudson)%5bNES%5d.7z",
       "directory": false,
-      "size": 5852
+      "size": 7067
     },
     {
       "name": "Takeda Shingen",
@@ -12598,7 +12614,7 @@
       "date": "1989-11-17",
       "url": "http://nsf.joshw.info/w/Wrath%20of%20the%20Black%20Manta%20JP%20%5bNinja%20Cop%20Saizou%5d%20(1989-11-17)(A.I)(Kyugo%20Boueki)%5bNES%5d.7z",
       "directory": false,
-      "size": 4173
+      "size": 4855
     },
     {
       "name": "Wrecking Crew",
@@ -12830,7 +12846,7 @@
       "date": "1993-10-22",
       "url": "http://nsf.joshw.info/y/Yuu%20Yuu%20Hakusho%20-%20Bakutou%20Ankoku%20Bujutsu%20Kai%20(1993-10-22)(Tose)(Bandai)%5bNES%5d.7z",
       "directory": false,
-      "size": 7876
+      "size": 9762
     },
     {
       "name": "Zanac",
@@ -15746,38 +15762,38 @@
     }
   ],
   "dir_sizes": {
-    "https://hvsc.brona.dk/HVSC/C64Music/": 0
+    "https://vgmrips.net/packs/system/": 1293134046
   },
   "scanned_dirs": [
-    "http://nsf.joshw.info/p/",
-    "http://nsf.joshw.info/b/",
-    "http://nsf.joshw.info/w/",
+    "http://nsf.joshw.info/u/",
+    "http://nsf.joshw.info/i/",
+    "http://nsf.joshw.info/d/",
+    "http://nsf.joshw.info/h/",
+    "http://nsf.joshw.info/q/",
+    "http://nsf.joshw.info/zzz_unlicensed/",
     "http://nsf.joshw.info/r/",
-    "http://nsf.joshw.info/z/",
-    "http://nsf.joshw.info/zzz_prototypes/",
-    "http://nsf.joshw.info/t/",
     "http://nsf.joshw.info/n/",
-    "http://nsf.joshw.info/j/",
+    "http://nsf.joshw.info/s/",
+    "http://nsf.joshw.info/e/",
+    "http://nsf.joshw.info/0-9/",
+    "http://nsf.joshw.info/l/",
+    "http://nsf.joshw.info/y/",
+    "http://nsf.joshw.info/t/",
+    "http://nsf.joshw.info/o/",
+    "http://nsf.joshw.info/f/",
+    "http://nsf.joshw.info/w/",
+    "http://nsf.joshw.info/z/",
+    "http://nsf.joshw.info/g/",
+    "http://nsf.joshw.info/c/",
     "http://nsf.joshw.info/v/",
     "http://nsf.joshw.info/",
-    "http://nsf.joshw.info/i/",
-    "http://nsf.joshw.info/g/",
     "http://nsf.joshw.info/a/",
-    "http://nsf.joshw.info/x/",
-    "http://nsf.joshw.info/s/",
-    "http://nsf.joshw.info/d/",
-    "http://nsf.joshw.info/f/",
-    "http://nsf.joshw.info/m/",
-    "http://nsf.joshw.info/o/",
-    "http://nsf.joshw.info/zzz_unlicensed/",
-    "http://nsf.joshw.info/l/",
-    "http://nsf.joshw.info/0-9/",
-    "http://nsf.joshw.info/e/",
-    "http://nsf.joshw.info/q/",
     "http://nsf.joshw.info/k/",
-    "http://nsf.joshw.info/u/",
-    "http://nsf.joshw.info/c/",
-    "http://nsf.joshw.info/h/",
-    "http://nsf.joshw.info/y/"
+    "http://nsf.joshw.info/b/",
+    "http://nsf.joshw.info/zzz_prototypes/",
+    "http://nsf.joshw.info/m/",
+    "http://nsf.joshw.info/p/",
+    "http://nsf.joshw.info/x/",
+    "http://nsf.joshw.info/j/"
   ]
 }

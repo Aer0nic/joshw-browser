@@ -57,6 +57,7 @@ DOMAINS = {
     "PlayStation Portable": "http://psp.joshw.info/",
     "PlayStation Vita": "http://vita.joshw.info/",
     "Other Assorted Systems": "https://cdi.joshw.info/",
+    "VGMusic Full": "https://www.vgmusic.com/music/",
 }
 
 USER_AGENT = "JoshW-Archive-Browser/1.0"

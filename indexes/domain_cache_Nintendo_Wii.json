@@ -241,6 +241,14 @@
       "size": 33812160
     },
     {
+      "name": "2010 FIFA World Cup South Africa",
+      "raw_name": "2010 FIFA World Cup South Africa (2010-04-27)(HB Studios)(EA Sports)[Wii].7z",
+      "date": "2010-04-27",
+      "url": "http://wii.joshw.info/0-9/2010%20FIFA%20World%20Cup%20South%20Africa%20(2010-04-27)(HB%20Studios)(EA%20Sports)%5bWii%5d.7z",
+      "directory": false,
+      "size": 251857111
+    },
+    {
       "name": "250 Mannin no Kanken Wii de Tokoton Kanji Nou",
       "raw_name": "250 Mannin no Kanken Wii de Tokoton Kanji Nou (2008-07-31)(IE Institute)(Konami)[Wii].7z",
       "date": "2008-07-31",
@@ -690,6 +698,14 @@
     },
     {
       "name": "Asterix at the Olympic Games",
+      "raw_name": "Asterix at the Olympic Games (2007-11-09)(Etranges Libellules)(Atari)[Wii].7z",
+      "date": "2007-11-09",
+      "url": "http://wii.joshw.info/a/Asterix%20at%20the%20Olympic%20Games%20(2007-11-09)(Etranges%20Libellules)(Atari)%5bWii%5d.7z",
+      "directory": false,
+      "size": 497947892
+    },
+    {
+      "name": "Asterix at the Olympic Games",
       "raw_name": "Asterix at the Olympic Games (2007-11-09)(Étranges Libellules)(Atari)[Wii].7z",
       "date": "2007-11-09",
       "url": "http://wii.joshw.info/a/Asterix%20at%20the%20Olympic%20Games%20(2007-11-09)(%c3%89tranges%20Libellules)(Atari)%5bWii%5d.7z",
@@ -783,6 +799,14 @@
       "url": "http://wii.joshw.info/b/Barbie%20Dreamhouse%20Party%20(2013-11-12)(Torus)(Little%20Orbit)%5bWii%5d.7z",
       "directory": false,
       "size": 66732285
+    },
+    {
+      "name": "Barnyard",
+      "raw_name": "Barnyard (2006-11-30)(Blue Tongue)(THQ)[Wii].7z",
+      "date": "2006-11-30",
+      "url": "http://wii.joshw.info/b/Barnyard%20(2006-11-30)(Blue%20Tongue)(THQ)%5bWii%5d.7z",
+      "directory": false,
+      "size": 410902051
     },
     {
       "name": "Barnyard",
@@ -5065,14 +5089,6 @@
       "size": 396448186
     },
     {
-      "name": "SSX Blur",
-      "raw_name": "SSX Blur (2007-02-27)(EA Montreal)(Electronic Arts)[Wii][alt].7z",
-      "date": "2007-02-27",
-      "url": "http://wii.joshw.info/s/SSX%20Blur%20(2007-02-27)(EA%20Montreal)(Electronic%20Arts)%5bWii%5d%5balt%5d.7z",
-      "directory": false,
-      "size": 539705163
-    },
-    {
       "name": "Star Wars - The Clone Wars - Lightsaber Duels",
       "raw_name": "Star Wars - The Clone Wars - Lightsaber Duels (2008-11-11)(Krome)(LucasArts)[Wii].7z",
       "date": "2008-11-11",
@@ -6002,35 +6018,35 @@
     }
   ],
   "dir_sizes": {
-    "https://hvsc.brona.dk/HVSC/C64Music/": 0
+    "https://vgmrips.net/packs/system/": 1293134046
   },
   "scanned_dirs": [
-    "http://wii.joshw.info/w/",
-    "http://wii.joshw.info/x/",
-    "http://wii.joshw.info/y/",
-    "http://wii.joshw.info/a/",
-    "http://wii.joshw.info/",
-    "http://wii.joshw.info/k/",
-    "http://wii.joshw.info/0-9/",
-    "http://wii.joshw.info/p/",
-    "http://wii.joshw.info/l/",
-    "http://wii.joshw.info/e/",
-    "http://wii.joshw.info/s/",
-    "http://wii.joshw.info/c/",
-    "http://wii.joshw.info/b/",
     "http://wii.joshw.info/i/",
-    "http://wii.joshw.info/o/",
-    "http://wii.joshw.info/g/",
-    "http://wii.joshw.info/v/",
+    "http://wii.joshw.info/x/",
+    "http://wii.joshw.info/h/",
+    "http://wii.joshw.info/w/",
+    "http://wii.joshw.info/n/",
+    "http://wii.joshw.info/s/",
     "http://wii.joshw.info/j/",
     "http://wii.joshw.info/u/",
-    "http://wii.joshw.info/n/",
+    "http://wii.joshw.info/c/",
+    "http://wii.joshw.info/a/",
+    "http://wii.joshw.info/d/",
+    "http://wii.joshw.info/",
+    "http://wii.joshw.info/y/",
     "http://wii.joshw.info/z/",
-    "http://wii.joshw.info/f/",
-    "http://wii.joshw.info/m/",
-    "http://wii.joshw.info/h/",
+    "http://wii.joshw.info/k/",
+    "http://wii.joshw.info/0-9/",
+    "http://wii.joshw.info/g/",
     "http://wii.joshw.info/t/",
+    "http://wii.joshw.info/p/",
+    "http://wii.joshw.info/e/",
+    "http://wii.joshw.info/m/",
+    "http://wii.joshw.info/f/",
     "http://wii.joshw.info/r/",
-    "http://wii.joshw.info/d/"
+    "http://wii.joshw.info/v/",
+    "http://wii.joshw.info/o/",
+    "http://wii.joshw.info/b/",
+    "http://wii.joshw.info/l/"
   ]
 }

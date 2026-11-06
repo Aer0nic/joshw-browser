@@ -487,6 +487,17 @@ class InstallDependenciesWorker:
                     f"install -m 755 2sfplay \"{twosf_play_bin}\""
                 ])
 
+            vgmplay_bin = cache_dir / "vgmplay"
+            if not vgmplay_bin.exists():
+                vgmplay_src = temp_build_dir / "vgmplay-legacy"
+                script_lines.extend([
+                    f"git clone https://github.com/vgmrips/vgmplay-legacy.git \"{vgmplay_src}\"",
+                    f"cd \"{vgmplay_src}/VGMPlay\"",
+                    "make",
+                    f"mv vgmplay \"{cache_dir}/\"",
+                    f"chmod +x \"{vgmplay_bin}\""
+                ])
+
             # 6. NeoBAE (playbae) and its SDL3/SDL3_ttf source build & install
             playbae_bin = cache_dir / "playbae"
             if not playbae_bin.exists():

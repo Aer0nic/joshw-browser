@@ -10752,5 +10752,11 @@
       "directory": false,
       "size": 1677722
     }
+  ],
+  "dir_sizes": {
+    "https://vgmrips.net/packs/system/": 1293134046
+  },
+  "scanned_dirs": [
+    "https://vgmrips.net/packs/system/"
   ]
 }

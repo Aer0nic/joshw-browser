@@ -463,7 +463,7 @@ class JoshWBrowser(tb.Window):
         if not hasattr(self, "stream_random_btn"):
             return
         
-        if enable:
+        if enable or self.stream_random_all_indexes_var.get():
             self.stream_random_btn.configure(state="normal")
             if self.stream_random_animation_enabled.get() and not self.stream_random_anim_id:
                 self.animate_stream_random_button()
@@ -477,11 +477,15 @@ class JoshWBrowser(tb.Window):
                 self.stream_random_anim_id = None
     
     def stream_random_file(self):
-        source_pool = self.domain_full_entries if self.domain_full_entries else self.current_entries
+        if self.stream_random_all_indexes_var.get():
+            source_pool = self.load_all_index_entries()
+        else:
+            source_pool = self.domain_full_entries if self.domain_full_entries else self.current_entries
+
         files = [e for e in source_pool if not e.get("directory") and not e.get("is_parent_nav")]
         
         if not files:
-            messagebox.showinfo("No Files", "No files available in the current domain to pick from!")
+            messagebox.showinfo("No Files", "No files available to pick from!")
             return
 
         import random
@@ -643,6 +647,11 @@ class JoshWBrowser(tb.Window):
                 shutil.which("2sfPlay") is not None
                 or os.path.exists(os.path.join(cache_dir, "2sfPlay"))
             )
+        elif dep_name == "vgmplay":
+            return (
+                shutil.which("vgmplay") is not None
+                or os.path.exists(os.path.join(cache_dir, "vgmplay"))
+            )
         elif dep_name == "xterm":
             return shutil.which("xterm") is not None
         elif dep_name == "xdotool":
@@ -675,7 +684,7 @@ class JoshWBrowser(tb.Window):
             ("PlayGSF", "playgsf", "playgsf"),
             ("2sfPlay", "2sfplay", "2sfPlay"),
             ("AOSDK (PSF/PSF2)", "psfplay", "libaosdk.so"),
-            ("nsf_tracks", "nsf_tracks", "nsf_tracks"),
+            ("Arcade Player (vgmplay)", "vgmplay", "vgmplay"),
             ("NeoBAE (playbae)", "playbae", "playbae")
         ]
         cache_dir = Path(get_cache_directory())
@@ -816,6 +825,7 @@ class JoshWBrowser(tb.Window):
 
         self.search_text = tk.StringVar()
         self.search_all_indexes_var = tk.BooleanVar(value=False)
+        self.stream_random_all_indexes_var = tk.BooleanVar(value=False)
         self.all_index_entries = []
         self.status_text = tk.StringVar(value="Choose an archive.")
         self.indexer_status_text = tk.StringVar(value="")
@@ -1014,7 +1024,7 @@ class JoshWBrowser(tb.Window):
         self.tree.column("type", width=90, anchor="center", stretch=False)
         self.tree.column("name", width=280)
         self.tree.column("date", width=110, anchor="center", stretch=False)
-        self.tree.column("size", width=100, anchor="e", stretch=False)
+        self.tree.column("size", width=100, anchor="center", stretch=False)
         self.tree.column("domain", width=90, anchor="center", stretch=False)
         self.tree.column("url", width=520)
         self.tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "url")
@@ -1087,8 +1097,15 @@ class JoshWBrowser(tb.Window):
             font=("Arial", 9)
         )
         
+        ttk.Checkbutton(
+            button_frame,
+            text="in all indexes!",
+            variable=self.stream_random_all_indexes_var,
+            command=lambda: self.update_stream_random_state(any(not e.get("directory") for e in (self.domain_full_entries if self.domain_full_entries else self.current_entries)))
+        ).pack(side="left", padx=(6, 2))
+        
         self.stream_random_btn.config(foreground="#000000")
-        self.stream_random_btn.pack(side="left", padx=6)
+        self.stream_random_btn.pack(side="left", padx=2)
         
         self.stream_random_anim_id = None
         self.fade_colors = [
@@ -1286,6 +1303,14 @@ class JoshWBrowser(tb.Window):
     def play_audio_file(self, audio_file, playlist=None, start_index=None):
         ext = os.path.splitext(audio_file)[1].lower()
 
+        if ext in (".vgz"):
+            if not self.check_dependency_status("vgmplay"):
+                messagebox.showerror("vgmplay Not Found", "vgmplay binary not found in ~/.config/joshw/ or PATH!")
+                return
+            from arcade_player import ArcadePlayerWindow
+            ArcadePlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
+            return
+
         neobae_player_extensions = {".mid", ".midi", ".kar", ".rmi", ".rmf", ".zmf", ".xmf", ".mxmf", ".mthc"}
         if ext in neobae_player_extensions:
             from neobae_player import PlayBAEPlayerWindow
@@ -1344,7 +1369,7 @@ class JoshWBrowser(tb.Window):
         
         gme_native_formats = {
             ".nsf", ".nsfe", ".spc", ".gbs", ".hes", ".kss", 
-            ".vgm", ".vgz", ".ay", ".sap", ".gym"
+            ".ay", ".sap", ".gym", ".vgm"
         }
         if ext in gme_native_formats:
             from gme_player import GMEPlayerWindow, generate_gme_m3u_if_needed
@@ -1633,27 +1658,21 @@ class JoshWBrowser(tb.Window):
                         continue
             
                     if is_root:
-                        # At the root, only show top-level items (subdirectories directly under Arcade)
                         parsed_target = urllib.parse.urlparse(target_base)
                         parsed_entry = urllib.parse.urlparse(entry_url)
                         
-                        # Check if it's an immediate child directory or file under root
                         rel_path = parsed_entry.path[len(parsed_target.path):].strip("/")
                         if rel_path and "/" not in rel_path:
-                            # If it's a directory or a file directly at root level
                             if not any(e.get("url", "").rstrip("/") == entry_url for e in entries):
                                 entries.append(entry)
                     else:
-                        # Inside a subdirectory, check if the entry belongs to this exact path
                         if entry_url.startswith(target_base):
                             rel_path = entry_url[len(target_base):].strip("/")
                             if rel_path:
-                                # If there's no further slash, it's an item directly inside this folder
                                 if "/" not in rel_path:
                                     if not any(e.get("url", "").rstrip("/") == entry_url for e in entries):
                                         entries.append(entry)
                                 else:
-                                    # It's nested deeper, so collapse it into a virtual subdirectory
                                     sub_dir_name = rel_path.split("/")[0]
                                     sub_dir_url = target_base + sub_dir_name + "/"
                                     if not any(e.get("url", "").rstrip("/") == sub_dir_url.rstrip("/") for e in entries):
@@ -1666,9 +1685,7 @@ class JoshWBrowser(tb.Window):
                                             "size": None
                                         })
                         
-                        # Also check for associated files under https://vgmrips.net/files/ matching this folder context
                         elif entry_url.startswith("https://vgmrips.net/files/"):
-                            # Map files if they correspond to the current folder structure
                             parsed_target = urllib.parse.urlparse(target_base)
                             folder_name = parsed_target.path.strip("/").split("/")[-1]
                             if folder_name and folder_name.lower() in entry_url.lower():
@@ -1714,11 +1731,8 @@ class JoshWBrowser(tb.Window):
 
         has_files = any(not e.get("directory") for e in (self.domain_full_entries if self.domain_full_entries else entries))
         self.update_stream_random_state(has_files)
-        if hasattr(self, "stream_random_btn"):
-            self.stream_random_btn.configure(state="normal" if has_files else "disabled")
 
     def load_all_index_entries(self):
-        # Support PyInstaller binary packaging (_MEIPASS) as well as loose script execution
         bundled_root = sys._MEIPASS if getattr(sys, "frozen", False) else os.path.dirname(os.path.abspath(__file__))
         index_directories = (
             os.path.join(bundled_root, "indexes"),

@@ -247,10 +247,10 @@ class USFPlayerWindow(tk.Toplevel):
         ttk.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=3, padx=2)
         ttk.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=4, padx=2)
                 
-        btn_bottom = ttk.Frame(padding)
+        btn_bottom = tb.Frame(padding)
         btn_bottom.pack(pady=(6, 4), fill="x")
 
-        ttk.Checkbutton(
+        tb.Checkbutton(
         btn_bottom,
         variable=self.loop_chk_var,
         command=self.on_loop_checkbox_changed
@@ -265,14 +265,14 @@ class USFPlayerWindow(tk.Toplevel):
             command=self.on_loop_spinbox_changed
         ).grid(row=0, column=1, padx=(0, 6), sticky="w")
 
-        ttk.Button(
+        tb.Button(
             btn_bottom,
             text="Random",
             width=12,
             command=self.random_track
         ).grid(row=0, column=2, padx=2)
 
-        ttk.Checkbutton(
+        tb.Checkbutton(
             btn_bottom,
             text="Loop forever",
             variable=self.loop_forever_var,

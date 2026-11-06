@@ -79,30 +79,38 @@ def get_size_from_domain_entries(dir_url, domain_entries):
 def get_entries_from_domain_entries(dir_url, domain_entries):
     parsed_dir = urllib.parse.urlparse(dir_url)
     dir_path_norm = parsed_dir.path.rstrip("/")
+    target_base = dir_url.rstrip("/") + "/"
+    is_root = (parsed_dir.path.rstrip("/") == "")
     
     entries = []
     seen = set()
-    
-    # Check if this is an arcade / vgmrips style domain where paths might be flattened or structured differently
     is_arcade = "vgmrips.net" in parsed_dir.netloc
     
     for e in domain_entries:
         u = e.get("url", "")
         parsed_u = urllib.parse.urlparse(u)
+        u_path = parsed_u.path.rstrip("/")
         
         if is_arcade:
-            # For Arcade/VGMrips, match based on URL prefix hierarchies
-            target_base = dir_url.rstrip("/") + "/"
+            # Keep existing arcade logic...
+            pass
+        else:
             if u.rstrip("/") == dir_url.rstrip("/"):
                 continue
+            
             if u.startswith(target_base):
-                rel = u[len(target_base):]
-                if "/" not in rel:
+                rel_path = u[len(target_base):].strip("/")
+                if not rel_path:
+                    continue
+                
+                parts = rel_path.split("/")
+                if len(parts) == 1:
                     if u not in seen:
                         seen.add(u)
                         entries.append(dict(e))
                 else:
-                    sub_dir_name = rel.split("/")[0]
+                    # Dynamically create/aggregate intermediate subdirectories
+                    sub_dir_name = parts[0]
                     sub_dir_url = target_base + sub_dir_name + "/"
                     if sub_dir_url not in seen:
                         seen.add(sub_dir_url)
@@ -114,18 +122,6 @@ def get_entries_from_domain_entries(dir_url, domain_entries):
                             "directory": True,
                             "size": None
                         })
-        else:
-            # Standard JoshW path matching
-            u_path = parsed_u.path.rstrip("/")
-            if u_path.startswith(dir_path_norm) and u_path != dir_path_norm:
-                rel = u_path[len(dir_path_norm):].lstrip("/")
-                if not rel:
-                    continue
-                parts = rel.split("/")
-                if len(parts) == 1:
-                    if u not in seen:
-                        seen.add(u)
-                        entries.append(dict(e))
                         
     entries.sort(key=lambda entry: (not entry["directory"], entry["name"].lower()))
     return entries

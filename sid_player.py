@@ -6,6 +6,7 @@ import subprocess
 import threading
 import time
 import tkinter as tk
+import ttkbootstrap as tb
 from tkinter import ttk, messagebox
 from config import resource_path, get_binary_path
 from players import (
@@ -17,7 +18,7 @@ from players import (
     get_next_track_index
 )
 
-class SIDPlayerWindow(tk.Toplevel):
+class SIDPlayerWindow(tb.Toplevel):
     def __init__(self, parent, audio_file, playlist=None, start_index=None):
         super().__init__(parent)
         self.parent = parent
@@ -96,31 +97,31 @@ class SIDPlayerWindow(tk.Toplevel):
         self.minsize(520, 540)
         self.transient(self.parent)
 
-        padding = ttk.Frame(self, padding=12)
+        padding = tb.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
 
-        browse_frame = ttk.Frame(padding)
+        browse_frame = tb.Frame(padding)
         browse_frame.pack(side="top", anchor="w", pady=(0, 6))
 
         browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="top", anchor="w")
 
-        ttk.Label(padding, text=f"Now Playing (SID):\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=520).pack(pady=(0, 6))
+        tb.Label(padding, text=f"Now Playing (SID):\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=520).pack(pady=(0, 6))
         
-        info_frame = ttk.Frame(padding)
+        info_frame = tb.Frame(padding)
         info_frame.pack(fill="x", pady=(0, 4))
         
-        status_sub_frame = ttk.Frame(info_frame)
+        status_sub_frame = tb.Frame(info_frame)
         status_sub_frame.pack(side="left", padx=5)
-        ttk.Label(status_sub_frame, textvariable=self.status_var, font=("Arial", 9)).pack(side="left")
-        ttk.Label(status_sub_frame, text=" (", font=("Arial", 9)).pack(side="left")
-        ttk.Label(status_sub_frame, textvariable=self.seek_pct_var, font=("Arial", 9, "bold")).pack(side="left")
-        ttk.Label(status_sub_frame, text=")", font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub_frame, textvariable=self.status_var, font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub_frame, text=" (", font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub_frame, textvariable=self.seek_pct_var, font=("Arial", 9, "bold")).pack(side="left")
+        tb.Label(status_sub_frame, text=")", font=("Arial", 9)).pack(side="left")
 
-        ttk.Label(info_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="right", padx=5)
+        tb.Label(info_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="right", padx=5)
         self.update_track_label()
 
-        progress_container = ttk.Frame(padding)
+        progress_container = tb.Frame(padding)
         progress_container.pack(fill="x", pady=(4, 8))
         self.progress_bar_widget = InteractiveProgressBar(
             progress_container,
@@ -131,32 +132,32 @@ class SIDPlayerWindow(tk.Toplevel):
         )
         self.progress_bar_widget.frame.pack(fill="x", expand=True)
 
-        vol_frame = ttk.Frame(padding)
+        vol_frame = tb.Frame(padding)
         vol_frame.pack(fill="x", pady=(0, 8))
-        ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
-        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide)
+        tb.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
+        self.volume_slider = tb.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide)
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
 
-        term_container = ttk.LabelFrame(padding, text="sidplayfp Track Status", padding=4)
+        term_container = tb.LabelFrame(padding, text="sidplayfp Track Status", padding=4)
         term_container.pack(fill="both", expand=True, pady=(4, 8))
 
-        log_frame = ttk.Frame(term_container)
+        log_frame = tb.Frame(term_container)
         log_frame.pack(fill="both", expand=True)
 
-        self.log_text = tk.Text(log_frame, wrap="word", bg="black", fg="yellow", font=("Monospace", 10), state="disabled", height=8)
+        self.log_text = tb.Text(log_frame, wrap="word", bg="black", fg="yellow", font=("Monospace", 10), state="disabled", height=8)
         self.log_text.pack(side="left", fill="both", expand=True)
         
-        scrollbar = ttk.Scrollbar(log_frame, orient="vertical", command=self.log_text.yview)
+        scrollbar = tb.Scrollbar(log_frame, orient="vertical", command=self.log_text.yview)
         scrollbar.pack(side="right", fill="y")
         self.log_text.configure(yscrollcommand=scrollbar.set)
 
-        list_frame = ttk.LabelFrame(padding, text="Subtracks Playlist", padding=6)
+        list_frame = tb.LabelFrame(padding, text="Subtracks Playlist", padding=6)
         list_frame.pack(fill="x", pady=(0, 8))
 
-        self.subtrack_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False, height=3)
+        self.subtrack_listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False, height=3)
         self.subtrack_listbox.pack(side="left", fill="both", expand=True)
-        list_scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.subtrack_listbox.yview)
+        list_scrollbar = tb.Scrollbar(list_frame, orient="vertical", command=self.subtrack_listbox.yview)
         list_scrollbar.pack(side="right", fill="y")
         self.subtrack_listbox.configure(yscrollcommand=list_scrollbar.set)
         self.subtrack_listbox.bind("<<ListboxSelect>>", self.on_listbox_select)
@@ -164,14 +165,14 @@ class SIDPlayerWindow(tk.Toplevel):
         self.subtrack_listbox.bind("<Leave>", self.on_listbox_leave)
         self.populate_subtrack_listbox()
 
-        controls = ttk.Frame(padding)
+        controls = tb.Frame(padding)
         controls.pack(pady=4)
 
-        ttk.Button(controls, text="<< Prev", width=10, command=self.prev_track).grid(row=0, column=0, padx=4)
-        ttk.Button(controls, text="Play/Pause", width=12, command=self.toggle_play_pause).grid(row=0, column=1, padx=4)
-        ttk.Button(controls, text="Next >>", width=10, command=self.next_track).grid(row=0, column=2, padx=4)
-        ttk.Button(controls, text="Close", width=10, command=self.close).grid(row=0, column=3, padx=(16, 4))
-        ttk.Checkbutton(controls, text="Loop forever", variable=self.loop_forever_var).grid(row=1, column=0, columnspan=4, pady=(6, 0))
+        tb.Button(controls, text="<< Prev", width=10, command=self.prev_track).grid(row=0, column=0, padx=4)
+        tb.Button(controls, text="Play/Pause", width=12, command=self.toggle_play_pause).grid(row=0, column=1, padx=4)
+        tb.Button(controls, text="Next >>", width=10, command=self.next_track).grid(row=0, column=2, padx=4)
+        tb.Button(controls, text="Close", width=10, command=self.close).grid(row=0, column=3, padx=(16, 4))
+        tb.Checkbutton(controls, text="Loop forever", variable=self.loop_forever_var).grid(row=1, column=0, columnspan=4, pady=(6, 0))
 
     def on_volume_slide(self, val):
         set_player_volume(float(val), source_player=self)
