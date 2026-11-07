@@ -157,28 +157,28 @@ def get_package_manager_info():
     
     if shutil.which("apt"):
         return "apt", "sudo apt update", "sudo apt install -y", [
-            "git", "cmake", "libgme0", "build-essential", "sidplayfp", "xterm", "xdotool",
+            "git", "cmake", "libssl-dev", "libgme0", "build-essential", "sidplayfp", "xterm", "xdotool",
             "zlib1g-dev", "libao-dev", "libsdl2-dev", "pkg-config", "pulseaudio-utils",
             "libsndfile-dev", "libmp3lame-dev", "libogg-dev", "libvorbis-dev",
             "libopus-dev", "libopusfile-dev", "libflac-dev", "liblzma-dev", "libxmp-dev"
         ]
     elif shutil.which("dnf"):
         return "dnf", "sudo dnf makecache", "sudo dnf install -y", [
-            "git", "cmake", "game-music-emu", "gcc-c++", "make", "sidplayfp", "xterm", "xdotool",
+            "git", "cmake", "libssl-dev", "game-music-emu", "gcc-c++", "make", "sidplayfp", "xterm", "xdotool",
             "zlib-devel", "libao-devel", "SDL2-devel", "pkgconf", "pulseaudio-utils",
             "libsndfile-devel", "lame-devel", "libogg-devel", "libvorbis-devel",
             "opus-devel", "opusfile-devel", "flac-devel", "xz-devel", "libxmp-devel"
         ]
     elif shutil.which("pacman"):
         return "pacman", "sudo pacman -Sy", "sudo pacman -S --noconfirm", [
-            "git", "cmake", "libgme", "base-devel", "sidplayfp", "xterm", "xdotool",
+            "git", "cmake", "libssl-dev", "libgme", "base-devel", "sidplayfp", "xterm", "xdotool",
             "zlib", "libao", "sdl2", "pkgconf", "libpulse",
             "libsndfile", "lame", "libogg", "libvorbis",
             "opus", "opusfile", "flac", "xz", "libxmp"
         ]
     elif shutil.which("zypper"):
         return "zypper", "sudo zypper refresh", "sudo zypper install -y", [
-            "git", "cmake", "libgme0", "gcc-c++", "make", "sidplayfp", "xterm", "xdotool",
+            "git", "cmake", "libssl-dev", "libgme0", "gcc-c++", "make", "sidplayfp", "xterm", "xdotool",
             "zlib-devel", "libao-devel", "libSDL2-devel", "pkgconf", "pulseaudio-utils",
             "libsndfile-devel", "lame-devel", "libogg-devel", "libvorbis-devel",
             "opus-devel", "opusfile-devel", "flac-devel", "xz-devel", "libxmp-devel"
@@ -186,7 +186,7 @@ def get_package_manager_info():
     
     # Fallback to apt
     return "apt", "sudo apt update", "sudo apt install -y", [
-        "git", "cmake", "libgme0", "build-essential", "sidplayfp", "xterm", "xdotool",
+        "git", "cmake", "libssl-dev", "libgme0", "build-essential", "sidplayfp", "xterm", "xdotool",
         "zlib1g-dev", "libao-dev", "libsdl2-dev", "pkg-config", "pulseaudio-utils",
         "libsndfile-dev", "libmp3lame-dev", "libogg-dev", "libvorbis-dev",
         "libopus-dev", "libopusfile-dev", "libflac-dev", "liblzma-dev", "libxmp-dev"
