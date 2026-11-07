@@ -23,40 +23,63 @@ app_dir = get_project_root()
 
 
 DOMAINS = {
-    "PC music archives": "http://pc.joshw.info/",
-    "Arcade": "https://vgmrips.net/packs/system/",
-    "FM Towns music archive": "http://fmtowns.joshw.info/",
-    "Hoot music archives": "http://hoot.joshw.info/",
-    "S98 music archives": "http://s98.joshw.info/",
-    "MSX music archives": "http://kss.joshw.info/",
-    "NES music archives": "http://nsf.joshw.info/",
-    "SNES music archives": "http://spc.joshw.info/",
+    "  Please Choose a Domain! ": "",
+    
+    "----------- 3DO COMPANY -----------": "",
+    "3DO": "http://3do.joshw.info/",
+
+    "----------- BANDAI -----------": "",
+    "WonderSwan": "http://wsr.joshw.info/",
+
+    "----------- COMMODORE -----------": "",
     "c64 music archives": "https://hvsc.brona.dk/HVSC/C64Music/",
-    "Nintendo 64": "http://usf.joshw.info/",
+
+    "----------- FUJITSU -----------": "",
+    "FM Towns music archive": "http://fmtowns.joshw.info/",
+
+    "----------- MICROSOFT -----------": "",
+    "Xbox": "http://xbox.joshw.info/",
+    "Xbox 360": "http://x360.joshw.info/",
+
+    "----------- NEC -----------": "",
+    "PC Engine": "http://hes.joshw.info/",
+
+    "----------- NINTENDO -----------": "",
+    "Game Boy": "http://gbs.joshw.info/",
+    "Game Boy Advance": "http://gsf.joshw.info/",
     "GameCube": "http://gcn.joshw.info/",
+    "NES music archives": "http://nsf.joshw.info/",
+    "Nintendo 3DS": "http://3sf.joshw.info/",
+    "Nintendo 64": "http://usf.joshw.info/",
+    "Nintendo DS": "http://2sf.joshw.info/",
     "Nintendo Wii": "http://wii.joshw.info/",
     "Nintendo Wii U": "http://wiiu.joshw.info/",
-    "Sega CD / Mega Drive": "http://smd.joshw.info/",
-    "Saturn": "http://ssf.joshw.info/",
+    "SNES music archives": "http://spc.joshw.info/",
+
+    "----------- SEGA -----------": "",
     "Dreamcast": "http://dsf.joshw.info/",
-    "PC Engine": "http://hes.joshw.info/",
+    "Saturn": "http://ssf.joshw.info/",
+    "Sega CD / Mega Drive": "http://smd.joshw.info/",
+
+    "----------- SNK -----------": "",
     "Neo Geo": "http://ncd.joshw.info/",
+
+    "----------- SONY -----------": "",
     "PlayStation": "http://psf.joshw.info/",
     "PlayStation 2": "http://psf2.joshw.info/",
     "PlayStation 3": "http://psf3.joshw.info/",
     "Playstation 4": "http://psf4.joshw.info/",
     "Playstation 5": "http://psf5.joshw.info/",
-    "Xbox": "http://xbox.joshw.info/",
-    "Xbox 360": "http://x360.joshw.info/",
-    "3DO": "http://3do.joshw.info/",
-    "Game Boy": "http://gbs.joshw.info/",
-    "Game Boy Advance": "http://gsf.joshw.info/",
-    "Nintendo DS": "http://2sf.joshw.info/",
-    "Nintendo 3DS": "http://3sf.joshw.info/",
-    "WonderSwan": "http://wsr.joshw.info/",
     "PlayStation Portable": "http://psp.joshw.info/",
     "PlayStation Vita": "http://vita.joshw.info/",
+
+    "----------- OTHER & ASSORTED -----------": "",
+    "Arcade": "https://vgmrips.net/packs/system/",
+    "Hoot music archives": "http://hoot.joshw.info/",
+    "MSX music archives": "http://kss.joshw.info/",
     "Other Assorted Systems": "https://cdi.joshw.info/",
+    "PC music archives": "http://pc.joshw.info/",
+    "S98 music archives": "http://s98.joshw.info/",
     "VGMusic Full": "https://www.vgmusic.com/music/",
 }
 

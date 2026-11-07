@@ -265,7 +265,7 @@ class PlayBAEPlayerWindow(tk.Toplevel):
         vol_frame = tb.Frame(padding)
         vol_frame.pack(fill="x", pady=(0, 8))
         tb.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
-        self.volume_slider = tb.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
+        self.volume_slider = tb.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide)
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
         self.volume_slider.bind("<ButtonPress-1>", lambda e: setattr(self, "is_sliding_volume", True))
@@ -274,7 +274,7 @@ class PlayBAEPlayerWindow(tk.Toplevel):
         list_frame = tb.LabelFrame(padding, text="Playlist Files", padding=6)
         list_frame.pack(fill="both", expand=True, pady=(0, 10))
 
-        self.playlist_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
+        self.playlist_listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
         self.playlist_listbox.pack(side="left", fill="both", expand=True)
         scrollbar = tb.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
         scrollbar.pack(side="right", fill="y")

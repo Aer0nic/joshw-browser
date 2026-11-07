@@ -369,10 +369,11 @@ def parse_m3u_playlist(m3u_path, fallback_file_path=None):
 
 
 class ExtractedFilesBrowserWindow(tb.Toplevel):
-    def __init__(self, parent, folder_path):
-        super().__init__(parent)
+    def __init__(self, parent, folder_path, keep_open=True, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
         self.parent = parent
-        self.folder_path = os.path.abspath(folder_path)
+        self.folder_path = folder_path
+        self.keep_open = keep_open
         self.title(f"Select Music File - {os.path.basename(self.folder_path)}")
         self.geometry("520x450")
         self.minsize(400, 300)
@@ -389,6 +390,11 @@ class ExtractedFilesBrowserWindow(tb.Toplevel):
             pass
 
         self.populate_files(self.folder_path)
+
+    def play_selected_file(self, file_path):
+        self.parent.play_audio_file(file_path)
+        if not self.keep_open:
+            self.destroy()
 
     def get_dynamic_hover_color(self):
         try:
@@ -520,6 +526,9 @@ class ExtractedFilesBrowserWindow(tb.Toplevel):
             else:
                 from neobae_player import PlayBAEPlayerWindow
                 PlayBAEPlayerWindow(self.parent, full_path, playlist=playbae_files, start_index=file_idx)
+
+            if not self.keep_open:
+                self.destroy()
             return
 
         if ext == ".xmi":
@@ -582,7 +591,8 @@ echo "Conversion succeeded; XMI originals deleted."
                 
                 from neobae_player import PlayBAEPlayerWindow
                 PlayBAEPlayerWindow(self.parent, mid_files[start_idx], playlist=mid_files, start_index=start_idx)
-                self.destroy()
+                if not self.keep_open:
+                    self.destroy()
                 return
 
         if ext == ".miniusf":
@@ -604,6 +614,8 @@ echo "Conversion succeeded; XMI originals deleted."
 
         if handler and hasattr(handler, "play_audio_file"):
             handler.play_audio_file(full_path, playlist=all_files, start_index=file_idx)
+            if not self.keep_open:
+                self.destroy()
         else:
             messagebox.showerror("Error", f"No handler available to play: {os.path.basename(full_path)}")
 

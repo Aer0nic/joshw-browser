@@ -10,6 +10,7 @@ import time
 import urllib.parse
 import urllib.request
 import tkinter as tk
+import tkinter.font as tkfont
 import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 from tkinter import ttk, filedialog, messagebox
@@ -19,6 +20,47 @@ from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_direct
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
 from players import ExtractedFilesBrowserWindow, get_vgmstream_path
 from downloaders import DownloadProgressWindow, IndexAllWindow, PremadeIndexProgressWindow, install_dependencies_prompt, check_and_download_sid_firmware
+
+
+def autofit_treeview_columns(tree, padding=24, min_widths=None):
+    """
+    Automatically calculates and sets column widths in a ttk.Treeview widget
+    based on the widest text entry (headers + all rows) in each visible column.
+    """
+    if not tree or not tree.winfo_exists():
+        return
+
+    try:
+        font_style = tree.cget("font")
+        font = tkfont.Font(font=font_style) if font_style else tkfont.Font(family="Arial", size=9)
+    except Exception:
+        font = tkfont.Font(family="Arial", size=9)
+
+    columns = tree.cget("columns")
+    if not columns:
+        return
+
+    disp_cols = tree.cget("displaycolumns")
+    min_widths = min_widths or {}
+
+    for col in columns:
+        if disp_cols != "#all" and col not in disp_cols:
+            continue
+
+        header_text = str(tree.heading(col, "text") or "")
+        max_w = font.measure(header_text)
+
+        for item in tree.get_children():
+            cell_val = str(tree.set(item, col) or "")
+            if cell_val:
+                for line in cell_val.splitlines():
+                    w = font.measure(line)
+                    if w > max_w:
+                        max_w = w
+
+        col_min = min_widths.get(col, 40)
+        target_width = max(max_w + padding, col_min)
+        tree.column(col, width=target_width)
 
 
 class ToolTip:
@@ -57,7 +99,7 @@ class ToolTip:
         self.tip_window = tw = tk.Toplevel(self.widget)
         tw.wm_overrideredirect(True)
         tw.wm_geometry(f"+{x}+{y}")
-        label = ttk.Label(
+        label = tb.Label(
             tw, text=self.text, justify="left",
             background="#ffffe0", relief="solid", borderwidth=1,
             font=("Arial", 9), padding=(4, 2)
@@ -72,6 +114,92 @@ class ToolTip:
 
 
 class JoshWBrowser(tb.Window):
+    
+    def open_choose_random_domains_window(self):
+        win = tb.Toplevel(self)
+        win.title("Choose Random Stream Domains")
+        win.geometry("420x520")
+        win.transient(self)
+        try:
+            win.grab_set()
+        except Exception:
+            pass
+
+        tb.Label(
+            win,
+            text="Select domains to include in 'Stream Random (All Indexes)':",
+            font=("Arial", 9, "bold"),
+            wraplength=380,
+            justify="left"
+        ).pack(pady=(12, 6), padx=15, anchor="w")
+
+        btn_frame = tb.Frame(win)
+        btn_frame.pack(fill="x", padx=15, pady=(0, 8))
+
+        container = tb.Frame(win)
+        container.pack(fill="both", expand=True, padx=15, pady=(0, 12))
+
+        canvas = tk.Canvas(container, highlightthickness=0)
+        scrollbar = tb.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scroll_frame = tb.Frame(canvas)
+
+        scroll_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        canvas_window = canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
+        
+        canvas.bind("<Configure>", lambda e: canvas.itemconfig(canvas_window, width=e.width))
+
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        def _on_mousewheel(event):
+            if canvas.winfo_exists():
+                canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+        win.bind("<Destroy>", lambda e: canvas.unbind_all("<MouseWheel>"))
+
+        valid_domains = [d for d, url in DOMAINS.items() if url]
+        self.domain_vars = {}
+
+        def update_and_save():
+            excluded = [d for d, v in self.domain_vars.items() if not v.get()]
+            self.excluded_stream_domains = excluded
+            self.save_settings()
+
+        def toggle_all(state):
+            for d, v in self.domain_vars.items():
+                v.set(state)
+            update_and_save()
+
+        tb.Button(btn_frame, text="Select All", width=12, command=lambda: toggle_all(True)).pack(side="left", padx=(0, 5))
+        tb.Button(btn_frame, text="Deselect All", width=12, command=lambda: toggle_all(False)).pack(side="left")
+
+        excluded_set = set(getattr(self, "excluded_stream_domains", []))
+
+        for domain in valid_domains:
+            # If domain is missing from settings.json, domain not in excluded_set evaluates to True (chosen)
+            var = tk.BooleanVar(value=(domain not in excluded_set))
+            self.domain_vars[domain] = var
+            chk = tb.Checkbutton(
+                scroll_frame,
+                text=domain,
+                variable=var,
+                command=update_and_save
+            )
+            chk.pack(anchor="w", pady=3, padx=5)
+    
+    def on_domain_combobox_select(self, event=None):
+        selected = self.domain_combo.get()
+        # If the user selected a category header or empty item, revert selection
+        if not DOMAINS.get(selected, ""):
+            if hasattr(self, "last_valid_domain") and self.last_valid_domain:
+                self.domain_combo.set(self.last_valid_domain)
+        else:
+            self.last_valid_domain = selected
     
     def change_theme(self, theme_name):
         self.saved_theme = theme_name
@@ -350,6 +478,8 @@ class JoshWBrowser(tb.Window):
         self.fav_tree.tag_configure("group_item")
         self.fav_tree.tag_configure("group_item_last")  
 
+        autofit_treeview_columns(self.fav_tree)
+
     def on_browse_right_click(self, event):
         item_id = self.tree.identify_row(event.y)
         if item_id:
@@ -389,14 +519,14 @@ class JoshWBrowser(tb.Window):
                     pass
 
                 filename = entry["name"]
-                ttk.Label(dialog, text=f"Choose action for:\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
-                btn_frame = ttk.Frame(dialog)
+                tb.Label(dialog, text=f"Choose action for:\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
+                btn_frame = tb.Frame(dialog)
                 btn_frame.pack(pady=5)
 
                 url = entry["url"]
-                stream_btn = ttk.Button(btn_frame, text="Stream", width=12, command=lambda: [dialog.destroy(), self.stream_specific_url(url)])
+                stream_btn = tb.Button(btn_frame, text="Stream", width=12, command=lambda: [dialog.destroy(), self.stream_specific_url(url)])
                 stream_btn.pack(side="left", padx=8)
-                download_btn = ttk.Button(btn_frame, text="Download", width=12, command=lambda: [dialog.destroy(), self.download_specific_url(url)])
+                download_btn = tb.Button(btn_frame, text="Download", width=12, command=lambda: [dialog.destroy(), self.download_specific_url(url)])
                 download_btn.pack(side="left", padx=8)
                 stream_btn.focus_set()
             except Exception:
@@ -429,56 +559,162 @@ class JoshWBrowser(tb.Window):
             daemon=True
         ).start()
 
-    def on_toggle_animation_setting(self):
-        if not self.stream_random_animation_enabled.get():
-            if self.stream_random_anim_id:
-                try:
-                    self.after_cancel(self.stream_random_anim_id)
-                except Exception:
-                    pass
-                self.stream_random_anim_id = None
-            if hasattr(self, "stream_random_btn") and str(self.stream_random_btn["state"]) == "normal":
-                self.stream_random_btn.configure(bg="#f0f0f0")
+    def rebuild_stream_random_button(self):
+        has_files = any(not e.get("directory") for e in (self.domain_full_entries if self.domain_full_entries else self.current_entries))
+        is_enabled = has_files or self.stream_random_all_indexes_var.get()
+        state_str = "normal" if is_enabled else "disabled"
+
+        if self.stream_random_anim_id:
+            try:
+                self.after_cancel(self.stream_random_anim_id)
+            except Exception:
+                pass
+            self.stream_random_anim_id = None
+
+        if hasattr(self, "stream_random_btn") and self.stream_random_btn.winfo_exists():
+            self.stream_random_btn.destroy()
+
+        if self.stream_random_animation_enabled.get():
+            current_color = self.fade_colors[self.fade_index] if is_enabled else "#f0f0f0"
+            self.stream_random_btn = tk.Button(
+                self.button_frame,
+                text="Stream Random!",
+                command=self.stream_random_file,
+                state=state_str,
+                bg=current_color,
+                fg="#000000" if is_enabled else "#555555",
+                activebackground=current_color,
+                activeforeground="#000000" if is_enabled else "#555555",
+                disabledforeground="#555555",
+                relief="raised",
+                font=("Arial", 9)
+            )
         else:
-            if hasattr(self, "stream_random_btn") and str(self.stream_random_btn["state"]) == "normal":
-                if not self.stream_random_anim_id:
-                    self.animate_stream_random_button()
+            self.stream_random_btn = tb.Button(
+                self.button_frame,
+                text="Stream Random!",
+                command=self.stream_random_file,
+                state=state_str
+            )
+
+        if hasattr(self, "stream_random_all_indexes_chk") and self.stream_random_all_indexes_chk.winfo_exists():
+            self.stream_random_btn.pack(side="left", padx=2, before=self.stream_random_all_indexes_chk)
+        else:
+            self.stream_random_btn.pack(side="left", padx=2)
+
+        if self.stream_random_animation_enabled.get() and is_enabled:
+            self.animate_stream_random_button()
+
+    def on_toggle_animation_setting(self):
+        self.rebuild_stream_random_button()
 
     def animate_stream_random_button(self):
         if not hasattr(self, "stream_random_btn") or not self.stream_random_btn.winfo_exists():
             return
         
-        if str(self.stream_random_btn["state"]) == "normal" and self.stream_random_animation_enabled.get():
-            color = self.fade_colors[self.fade_index]
+        if (isinstance(self.stream_random_btn, tk.Button) and 
+            str(self.stream_random_btn["state"]) in ("normal", "active") and 
+            self.stream_random_animation_enabled.get()):
+            
+            if not hasattr(self, "fade_substep"):
+                self.fade_substep = 0
+
+            num_colors = len(self.fade_colors)
+            c1 = self.fade_colors[self.fade_index]
+            c2 = self.fade_colors[(self.fade_index + 1) % num_colors]
+            
+            total_steps = 15  # Number of frames between each main color
+            t = self.fade_substep / total_steps
+            
             try:
-                self.stream_random_btn.configure(bg=color)
+                # Interpolate R, G, B components
+                r1, g1, b1 = int(c1[1:3], 16), int(c1[3:5], 16), int(c1[5:7], 16)
+                r2, g2, b2 = int(c2[1:3], 16), int(c2[3:5], 16), int(c2[5:7], 16)
+                
+                r = int(r1 + (r2 - r1) * t)
+                g = int(g1 + (g2 - g1) * t)
+                b = int(b1 + (b2 - b1) * t)
+                
+                color = f"#{r:02x}{g:02x}{b:02x}"
+                
+                self.stream_random_btn.configure(
+                    bg=color,
+                    activebackground=color,
+                    fg="#000000",
+                    activeforeground="#000000"
+                )
             except Exception:
                 pass
-            self.fade_index = (self.fade_index + 1) % len(self.fade_colors)
-            self.stream_random_anim_id = self.after(450, self.animate_stream_random_button)
+
+            self.fade_substep += 1
+            if self.fade_substep >= total_steps:
+                self.fade_substep = 0
+                self.fade_index = (self.fade_index + 1) % num_colors
+
+            # 35ms delay * 15 steps gives a smooth ~500ms transition per color phase
+            self.stream_random_anim_id = self.after(35, self.animate_stream_random_button)
         else:
             self.stream_random_anim_id = None
 
     def update_stream_random_state(self, enable):
-        if not hasattr(self, "stream_random_btn"):
+        if not hasattr(self, "stream_random_btn") or not self.stream_random_btn.winfo_exists():
             return
         
-        if enable or self.stream_random_all_indexes_var.get():
-            self.stream_random_btn.configure(state="normal")
-            if self.stream_random_animation_enabled.get() and not self.stream_random_anim_id:
-                self.animate_stream_random_button()
+        is_active = enable or self.stream_random_all_indexes_var.get()
+        
+        if isinstance(self.stream_random_btn, tk.Button):
+            if is_active:
+                self.stream_random_btn.configure(
+                    state="normal",
+                    fg="#000000",
+                    activeforeground="#000000"
+                )
+                if self.stream_random_animation_enabled.get() and not self.stream_random_anim_id:
+                    self.animate_stream_random_button()
+            else:
+                self.stream_random_btn.configure(
+                    state="disabled", 
+                    bg="#f0f0f0",
+                    activebackground="#f0f0f0",
+                    fg="#555555",
+                    activeforeground="#555555"
+                )
+                if self.stream_random_anim_id:
+                    try:
+                        self.after_cancel(self.stream_random_anim_id)
+                    except Exception:
+                        pass
+                    self.stream_random_anim_id = None
         else:
-            self.stream_random_btn.configure(state="disabled", bg="#f0f0f0")
+            self.stream_random_btn.configure(state="normal" if is_active else "disabled")
             if self.stream_random_anim_id:
                 try:
                     self.after_cancel(self.stream_random_anim_id)
                 except Exception:
                     pass
-                self.stream_random_anim_id = None
+                self.stream_random_anim_id = None   
     
     def stream_random_file(self):
         if self.stream_random_all_indexes_var.get():
             source_pool = self.load_all_index_entries()
+            excluded = set(getattr(self, "excluded_stream_domains", []))
+            if excluded:
+                valid_domains = {d: url for d, url in DOMAINS.items() if url}
+                def entry_is_allowed(entry):
+                    entry_url = entry.get("url", "")
+                    entry_dom = entry.get("domain", "").lower()
+                    for ex_domain in excluded:
+                        ex_url = valid_domains.get(ex_domain, "")
+                        if ex_url and entry_url.startswith(ex_url):
+                            return False
+                        if entry_dom and entry_dom == ex_domain.lower():
+                            return False
+                        if ex_url:
+                            parsed_ex = urllib.parse.urlparse(ex_url)
+                            if parsed_ex.netloc and entry_dom and entry_dom in parsed_ex.netloc.lower():
+                                return False
+                    return True
+                source_pool = [e for e in source_pool if entry_is_allowed(e)]
         else:
             source_pool = self.domain_full_entries if self.domain_full_entries else self.current_entries
 
@@ -500,17 +736,17 @@ class JoshWBrowser(tb.Window):
         except Exception:
             pass
 
-        content_frame = ttk.Frame(rand_win, padding=15)
+        content_frame = tb.Frame(rand_win, padding=15)
         content_frame.pack(fill="both", expand=True)
         content_frame.columnconfigure(0, weight=1)
 
-        text_label = ttk.Label(content_frame, text="Rolling the dice...", font=("Arial", 11, "bold"), justify="center", anchor="center")
+        text_label = tb.Label(content_frame, text="Rolling the dice...", font=("Arial", 11, "bold"), justify="center", anchor="center")
         text_label.grid(row=0, column=0, pady=(5, 10), sticky="ew")
 
-        img_label = ttk.Label(content_frame, anchor="center")
+        img_label = tb.Label(content_frame, anchor="center")
         img_label.grid(row=1, column=0, pady=(5, 5))
 
-        bottom_frame = ttk.Frame(rand_win, padding=10)
+        bottom_frame = tb.Frame(rand_win, padding=10)
 
         from PIL import Image, ImageTk, ImageDraw
         dice_size = 64
@@ -579,10 +815,32 @@ class JoshWBrowser(tb.Window):
                 filename = chosen["name"]
                 size_str = format_size(chosen.get("size", 0) or 0)
                 
+                domain_str = ""
+                if self.stream_random_all_indexes_var.get():
+                    domain = None
+                    chosen_url = chosen.get("url", "")
+                    if chosen_url:
+                        for d_name, d_url in DOMAINS.items():
+                            if d_url and chosen_url.startswith(d_url):
+                                domain = d_name
+                                break
+                    if not domain:
+                        domain = chosen.get("domain") or self.domain_combo.get() or "Unknown Domain"
+                    domain_str = f"{domain} - "
+
+                try:
+                    temp_dir = get_temp_directory()
+                    check_dir = temp_dir if os.path.exists(temp_dir) else os.path.dirname(temp_dir)
+                    free_bytes = shutil.disk_usage(check_dir).free
+                    hdd_space = format_size(free_bytes)
+                except Exception:
+                    hdd_space = "unknown space"
+
                 final_text = (
-                    f"You rolled and you got... {filename}! it is {size_str}.\n\n"
-                    f"Do you want to stream it? It will download to the temp folder "
-                    f"and unzip there, so make sure you have enough space before accepting!"
+                    f"You rolled and you got... {domain_str}{filename}! it is {size_str}.\n\n"
+                    f"You have {hdd_space} remaining, do you want to stream it? It will "
+                    f"download to the temp folder at {os.path.dirname(temp_dir)}/temp_extracted and "
+                    f"unzip there, so make sure you have enough space before accepting!"
                 )
                 text_label.configure(
                     text=final_text,
@@ -601,13 +859,13 @@ class JoshWBrowser(tb.Window):
         def on_cancel():
             rand_win.destroy()
 
-        ok_btn = ttk.Button(bottom_frame, text="OK", command=on_accept, width=10)
+        ok_btn = tb.Button(bottom_frame, text="OK", command=on_accept, width=10)
         ok_btn.pack(side="left")
 
-        cancel_btn = ttk.Button(bottom_frame, text="Cancel", command=on_cancel, width=10)
+        cancel_btn = tb.Button(bottom_frame, text="Cancel", command=on_cancel, width=10)
         cancel_btn.pack(side="right")
 
-        roll_again_btn = ttk.Button(bottom_frame, text="Roll Again!", command=pick_and_spin, width=12)
+        roll_again_btn = tb.Button(bottom_frame, text="Roll Again!", command=pick_and_spin, width=12)
         roll_again_btn.pack(side="left", expand=True)
 
         pick_and_spin()
@@ -715,22 +973,28 @@ class JoshWBrowser(tb.Window):
         PremadeIndexProgressWindow(self)
 
     def __init__(self, *args, **kwargs):
-        # Check if settings.json exists before loading settings or doing setup
         settings_path = os.path.join(get_cache_directory(), "settings.json")
-        self.is_first_run = not os.path.isfile(settings_path)
+        is_first_run = not os.path.isfile(settings_path)
 
-        # 1. Fetch saved theme settings first
-        self._initial_settings = self.load_settings()
-        self.saved_theme = self._initial_settings.get("theme", "cosmo")
+        # Load initial settings into local variables before super().__init__
+        initial_settings = self.read_settings_file()
+        saved_theme = initial_settings.get("theme", "cosmo")
 
-        # 2. Call super().__init__ EXACTLY ONCE with the saved theme
-        super().__init__(themename=self.saved_theme, *args, **kwargs)
+        # Initialize the parent Tkinter/ttkbootstrap window FIRST
+        super().__init__(themename=saved_theme, *args, **kwargs)
+
+        # Now safe to attach attributes to self
+        self.is_first_run = is_first_run
+        self._initial_settings = initial_settings
+        self.saved_theme = saved_theme
+        self.excluded_stream_domains = self._initial_settings.get("excluded_stream_domains", [])
+        saved_keep_open = self._initial_settings.get("keep_download_window_open", True)
+        self.keep_download_window_open = tk.BooleanVar(value=saved_keep_open)
 
         self.title("JoshW Archive Browser")
         self.geometry("1280x760")
         self.minsize(850, 560)
 
-        # Platform-specific initialization of helper scripts
         if sys.platform != "win32":
             try:
                 sh_path = os.path.join(get_cache_directory(), "xmi2mid.sh")
@@ -821,8 +1085,6 @@ class JoshWBrowser(tb.Window):
             self.path_7z = tk.StringVar(value="/bin/7z")
             self.path_mpv = tk.StringVar(value="/bin/mpv")
 
-        self.keep_download_window_open = tk.BooleanVar(value=True)
-
         self.search_text = tk.StringVar()
         self.search_all_indexes_var = tk.BooleanVar(value=False)
         self.stream_random_all_indexes_var = tk.BooleanVar(value=False)
@@ -848,7 +1110,6 @@ class JoshWBrowser(tb.Window):
                 ).start(),
             )
 
-        # 3. Schedule first_start via self.after so the main window is rendered first
         self.after(200, self.first_start)
 
     def read_settings_file(self):
@@ -866,13 +1127,10 @@ class JoshWBrowser(tb.Window):
         """Runs setup prompts sequentially if settings.json was not present on startup."""
         if self.is_first_run:
             def continue_setup():
-                # Open premade index progress window AFTER dependency prompt action
                 PremadeIndexProgressWindow(self)
-                # Write settings.json AFTER both steps finish
                 self.save_settings()
                 self.is_first_run = False
 
-            # Pass continue_setup as the callback
             install_dependencies_prompt(self, is_first_start=True, on_complete=continue_setup)
 
     def on_window_close(self, callback=None):
@@ -895,41 +1153,96 @@ class JoshWBrowser(tb.Window):
         if callback:
             return callback()
 
+    def rebuild_stream_random_button(self):
+        has_files = any(not e.get("directory") for e in (self.domain_full_entries if self.domain_full_entries else self.current_entries))
+        is_enabled = has_files or self.stream_random_all_indexes_var.get()
+        state_str = "normal" if is_enabled else "disabled"
+
+        if self.stream_random_anim_id:
+            try:
+                self.after_cancel(self.stream_random_anim_id)
+            except Exception:
+                pass
+            self.stream_random_anim_id = None
+
+        if hasattr(self, "stream_random_btn") and self.stream_random_btn.winfo_exists():
+            self.stream_random_btn.destroy()
+
+        if self.stream_random_animation_enabled.get():
+            current_color = self.fade_colors[self.fade_index] if is_enabled else "#f0f0f0"
+            self.stream_random_btn = tk.Button(
+                self.button_frame,
+                text="Stream Random!",
+                command=self.stream_random_file,
+                state=state_str,
+                bg=current_color,
+                fg="#000000" if is_enabled else "#555555",
+                activebackground=current_color,
+                activeforeground="#000000" if is_enabled else "#555555",
+                disabledforeground="#555555",
+                relief="raised",
+                font=("Arial", 9)
+            )
+        else:
+            self.stream_random_btn = tb.Button(
+                self.button_frame,
+                text="Stream Random!",
+                command=self.stream_random_file,
+                state=state_str
+            )
+
+        if hasattr(self, "stream_random_all_indexes_chk") and self.stream_random_all_indexes_chk.winfo_exists():
+            self.stream_random_btn.pack(side="left", padx=2, before=self.stream_random_all_indexes_chk)
+        else:
+            self.stream_random_btn.pack(side="left", padx=2)
+
+        if self.stream_random_animation_enabled.get() and is_enabled:
+            self.animate_stream_random_button()
+
     def build_gui(self):
-        archive_frame = ttk.Frame(self, padding=8)
+        archive_frame = tb.Frame(self, padding=8)
         archive_frame.pack(fill="x")
 
         help_btn = tk.Button(archive_frame, text="help!", bg="blue", fg="yellow", activebackground="blue", activeforeground="yellow", font=("Arial", 9, "bold"), command=self.show_help)
         help_btn.pack(side="right", padx=2)
 
-        ttk.Label(archive_frame, text="Archive:").pack(side="left")
+        tb.Label(archive_frame, text="Archive:").pack(side="left")
         self.domain_combo = tb.Combobox(archive_frame, state="readonly", width=22, values=list(DOMAINS.keys()))
         self.domain_combo.pack(side="left", padx=5)
         self.domain_combo.current(0)
 
-        ttk.Button(archive_frame, text="Open", command=self.open_archive).pack(side="left", padx=2)
+        tb.Button(archive_frame, text="Open", command=self.open_archive).pack(side="left", padx=2)
         
-        load_music_btn = ttk.Button(archive_frame, text="Load Music...", command=lambda: self.load_local_music(is_default=True))
+        load_music_btn = tb.Button(archive_frame, text="Load Music...", command=lambda: self.load_local_music(is_default=True))
         load_music_btn.pack(side="left", padx=2)
         ToolTip(load_music_btn, "click to find and play locally stored music with the built in player")
 
-        ttk.Button(archive_frame, text="Index Current", command=self.index_current_domain).pack(side="left", padx=2)
-        ttk.Button(archive_frame, text="Index All", command=self.index_all_domains).pack(side="left", padx=2)
+        tb.Button(archive_frame, text="Index Current", command=self.index_current_domain).pack(side="left", padx=2)
+        tb.Button(archive_frame, text="Index All", command=self.index_all_domains).pack(side="left", padx=2)
 
-        self.auto_index_btn = ttk.Button(archive_frame, text="Auto Indexing On", command=self.toggle_auto_indexing)
+        self.auto_index_btn = tb.Button(archive_frame, text="Auto Indexing On", command=self.toggle_auto_indexing)
         self.auto_index_btn.pack(side="left", padx=4)
 
-        options_menu_btn = ttk.Menubutton(archive_frame, text="Options")
+        options_menu_btn = tb.Menubutton(archive_frame, text="Options")
         options_menu_btn.pack(side="left", padx=4)
         
         self.options_dropdown = tk.Menu(options_menu_btn, tearoff=0)
-        self.options_dropdown.add_checkbutton(label="Keep Download Window Open After Completion", variable=self.keep_download_window_open)
+        self.options_dropdown.add_checkbutton(
+            label="Keep Download Window Open After Completion",
+            variable=self.keep_download_window_open,
+            command=self.save_settings
+        )
         
         self.stream_random_animation_enabled = tk.BooleanVar(value=True)
         self.options_dropdown.add_checkbutton(
             label="Stream Random Button Animation", 
             variable=self.stream_random_animation_enabled, 
             command=self.on_toggle_animation_setting
+        )
+
+        self.options_dropdown.add_command(
+            label="Choose Random Stream Domains...", 
+            command=self.open_choose_random_domains_window
         )
 
         self.options_dropdown.add_command(label="Set Default Load Music Folder...", command=self.set_default_load_music_dir)
@@ -969,49 +1282,49 @@ class JoshWBrowser(tb.Window):
 
         self.progress_bar = DummyProgressBar()
 
-        path_frame = ttk.Frame(self, padding=(8, 0, 8, 8))
+        path_frame = tb.Frame(self, padding=(8, 0, 8, 8))
         path_frame.pack(fill="x")
 
-        ttk.Button(path_frame, text="<", width=3, command=lambda: self.navigate_history(-1)).pack(side="left", padx=(0, 2))
-        ttk.Button(path_frame, text=">", width=3, command=lambda: self.navigate_history(1)).pack(side="left", padx=(0, 6))
-        ttk.Label(path_frame, text="Remote path:").pack(side="left")
-        self.path_label = ttk.Label(path_frame, text="", anchor="w")
+        tb.Button(path_frame, text="<", width=3, command=lambda: self.navigate_history(-1)).pack(side="left", padx=(0, 2))
+        tb.Button(path_frame, text=">", width=3, command=lambda: self.navigate_history(1)).pack(side="left", padx=(0, 6))
+        tb.Label(path_frame, text="Remote path:").pack(side="left")
+        self.path_label = tb.Label(path_frame, text="", anchor="w")
         self.path_label.pack(side="left", fill="x", expand=True, padx=6)
-        ttk.Button(path_frame, text="Up", command=self.go_up).pack(side="right")
+        tb.Button(path_frame, text="Up", command=self.go_up).pack(side="right")
 
-        info_search_frame = ttk.Frame(self, padding=(8, 0, 8, 2))
+        info_search_frame = tb.Frame(self, padding=(8, 0, 8, 2))
         info_search_frame.pack(fill="x", padx=2)
 
-        ttk.Label(info_search_frame, text="Double click or hit Enter on a file to stream or download it. Right click to favorite or unfavorite!", font=("Arial", 9, "italic")).pack(side="left")
+        tb.Label(info_search_frame, text="Double click or hit Enter on a file to stream or download it. Right click to favorite or unfavorite!", font=("Arial", 9, "italic")).pack(side="left")
 
-        clear_search_btn = ttk.Button(info_search_frame, text="Clear", command=self.clear_search_history)
+        clear_search_btn = tb.Button(info_search_frame, text="Clear", command=self.clear_search_history)
         clear_search_btn.pack(side="right", padx=2)
         ToolTip(clear_search_btn, "Click to clear search history")
 
-        self.search_combo = ttk.Combobox(info_search_frame, textvariable=self.search_text, width=18, values=self.load_search_history())
+        self.search_combo = tb.Combobox(info_search_frame, textvariable=self.search_text, width=18, values=self.load_search_history())
         self.search_combo.pack(side="right", padx=4)
         self.search_combo.bind("<KeyRelease>", lambda event: self.apply_filter())
         self.search_combo.bind("<<ComboboxSelected>>", lambda event: self.on_search_selected())
         self.search_combo.bind("<Return>", lambda event: self.on_search_submitted())
-        ttk.Checkbutton(
+        tb.Checkbutton(
             info_search_frame,
             text="Search all indexes",
             variable=self.search_all_indexes_var,
             command=self.on_search_scope_changed
         ).pack(side="right", padx=4)
 
-        ttk.Label(info_search_frame, text="Search:").pack(side="right", padx=(4, 2))
+        tb.Label(info_search_frame, text="Search:").pack(side="right", padx=(4, 2))
 
-        tree_container = ttk.Frame(self, padding=(8, 0, 8, 8))
+        tree_container = tb.Frame(self, padding=(8, 0, 8, 8))
         tree_container.pack(fill="both", expand=True)
 
-        self.notebook = ttk.Notebook(tree_container)
+        self.notebook = tb.Notebook(tree_container)
         self.notebook.pack(fill="both", expand=True)
 
-        browse_frame = ttk.Frame(self.notebook)
+        browse_frame = tb.Frame(self.notebook)
         self.notebook.add(browse_frame, text="Browse")
 
-        self.tree = ttk.Treeview(browse_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
+        self.tree = tb.Treeview(browse_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
         self.tree.heading("favorite", text="★")
         self.tree.heading("type", text="Type", command=lambda: self.sort_by_column("type"))
         self.tree.heading("name", text="Name ▲", command=lambda: self.sort_by_column("name"))
@@ -1029,7 +1342,7 @@ class JoshWBrowser(tb.Window):
         self.tree.column("url", width=520)
         self.tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "url")
 
-        browse_scrollbar = ttk.Scrollbar(browse_frame, orient="vertical", command=self.tree.yview)
+        browse_scrollbar = tb.Scrollbar(browse_frame, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscrollcommand=browse_scrollbar.set)
         self.tree.pack(side="left", fill="both", expand=True)
         browse_scrollbar.pack(side="right", fill="y")
@@ -1038,10 +1351,10 @@ class JoshWBrowser(tb.Window):
         self.tree.bind("<Return>", self.double_click_entry)
         self.tree.bind("<Button-3>", self.on_browse_right_click)
 
-        favorites_frame = ttk.Frame(self.notebook)
+        favorites_frame = tb.Frame(self.notebook)
         self.notebook.add(favorites_frame, text="Favorites")
 
-        self.fav_tree = ttk.Treeview(favorites_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
+        self.fav_tree = tb.Treeview(favorites_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
         self.fav_tree.heading("favorite", text="★")
         self.fav_tree.heading("type", text="Type", command=lambda: self.sort_favorites_by_column("type"))
         self.fav_tree.heading("name", text="Name ▲", command=lambda: self.sort_favorites_by_column("name"))
@@ -1059,7 +1372,7 @@ class JoshWBrowser(tb.Window):
         self.fav_tree.column("url", width=520)
         self.fav_tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "domain", "url")
 
-        fav_scrollbar = ttk.Scrollbar(favorites_frame, orient="vertical", command=self.fav_tree.yview)
+        fav_scrollbar = tb.Scrollbar(favorites_frame, orient="vertical", command=self.fav_tree.yview)
         self.fav_tree.configure(yscrollcommand=fav_scrollbar.set)
         self.fav_tree.pack(side="left", fill="both", expand=True)
         fav_scrollbar.pack(side="right", fill="y")
@@ -1068,54 +1381,38 @@ class JoshWBrowser(tb.Window):
         self.fav_tree.bind("<Return>", self.double_click_favorite)
         self.fav_tree.bind("<Button-3>", self.on_fav_right_click)
 
-        destination_frame = ttk.Frame(self, padding=8)
+        destination_frame = tb.Frame(self, padding=8)
         destination_frame.pack(fill="x")
-        ttk.Checkbutton(destination_frame, text="Set Default Download Location:", variable=self.use_default_dest, command=self.save_settings).pack(side="left")
+        tb.Checkbutton(destination_frame, text="Set Default Download Location:", variable=self.use_default_dest, command=self.save_settings).pack(side="left")
         
-        self.destination_combo = ttk.Combobox(destination_frame, textvariable=self.destination, values=self.load_destination_history())
+        self.destination_combo = tb.Combobox(destination_frame, textvariable=self.destination, values=self.load_destination_history())
         self.destination_combo.pack(side="left", fill="x", expand=True, padx=6)
-        ttk.Button(destination_frame, text="Browse...", command=self.choose_destination).pack(side="left")
-        ttk.Button(destination_frame, text="Clear Dest History", command=self.clear_destination_history).pack(side="left", padx=(4, 0))
+        tb.Button(destination_frame, text="Browse...", command=self.choose_destination).pack(side="left")
+        tb.Button(destination_frame, text="Clear Dest History", command=self.clear_destination_history).pack(side="left", padx=(4, 0))
 
-        button_frame = ttk.Frame(self, padding=(8, 0, 8, 8))
-        button_frame.pack(fill="x")
-        ttk.Button(button_frame, text="Download Selected File(s)", command=self.download_selected).pack(side="left")
-        ttk.Button(button_frame, text="Download Every File Here", command=self.download_current_directory).pack(side="left", padx=6)
-        ttk.Button(button_frame, text="Stop", command=self.stop_operations).pack(side="left", padx=6)
-        
-        self.stream_random_btn = tk.Button(
-            button_frame, 
-            text="Stream Random!", 
-            command=self.stream_random_file, 
-            state="disabled",
-            bg="#f0f0f0",
-            fg="#000000",
-            activebackground="#e0f2fe",
-            activeforeground="#000000",
-            disabledforeground="#555555",
-            relief="raised",
-            font=("Arial", 9)
-        )
-        
-        ttk.Checkbutton(
-            button_frame,
+        self.button_frame = tb.Frame(self, padding=(8, 0, 8, 8))
+        self.button_frame.pack(fill="x")
+        tb.Button(self.button_frame, text="Download Selected File(s)", command=self.download_selected).pack(side="left")
+        tb.Button(self.button_frame, text="Download Every File Here", command=self.download_current_directory).pack(side="left", padx=6)
+        tb.Button(self.button_frame, text="Stop", command=self.stop_operations).pack(side="left", padx=6)
+
+        self.stream_random_all_indexes_chk = tb.Checkbutton(
+            self.button_frame,
             text="in all indexes!",
             variable=self.stream_random_all_indexes_var,
             command=lambda: self.update_stream_random_state(any(not e.get("directory") for e in (self.domain_full_entries if self.domain_full_entries else self.current_entries)))
-        ).pack(side="left", padx=(6, 2))
-        
-        self.stream_random_btn.config(foreground="#000000")
-        self.stream_random_btn.pack(side="left", padx=2)
-        
+        )
+        self.stream_random_all_indexes_chk.pack(side="left", padx=5)
+
         self.stream_random_anim_id = None
         self.fade_colors = [
-            "#e0f2fe", "#e8f0fe", "#ede9fe", "#f3e8ff", 
-            "#fae8ff", "#fce7f3", "#fee2e2", "#fef3c7", 
-            "#fef9c3", "#ecfccb", "#d1fae5", "#ccfbf1", "#cffafe",
             "#38bdf8", "#818cf8", "#c084fc", "#f472b6", 
             "#fb7185", "#34d399", "#fbbf24", "#60a5fa", 
             "#a78bfa", "#4ade80"
         ]
+        self.fade_index = 0
+
+        self.rebuild_stream_random_button()
         self.fade_index = 0
 
         initial_theme_lower = self.saved_theme.lower()
@@ -1129,7 +1426,7 @@ class JoshWBrowser(tb.Window):
         self.fav_tree.bind("<Motion>", self.on_fav_motion)
         self.fav_tree.bind("<Leave>", self.on_fav_leave)
 
-        ttk.Label(button_frame, textvariable=self.status_text).pack(side="right")
+        tb.Label(self.button_frame, textvariable=self.status_text).pack(side="right")
 
     def load_local_music(self, is_default=False):
         initial_dir = self.default_load_music_dir.get() if is_default else self._last_loaded_music_dir
@@ -1157,13 +1454,13 @@ class JoshWBrowser(tb.Window):
         help_win.geometry("640x580")
         help_win.transient(self)
         
-        frame = ttk.Frame(help_win, padding=12)
+        frame = tb.Frame(help_win, padding=12)
         frame.pack(fill="both", expand=True)
 
         text_widget = tk.Text(frame, wrap="word", font=("Arial", 10))
         text_widget.pack(side="left", fill="both", expand=True)
 
-        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=text_widget.yview)
+        scrollbar = tb.Scrollbar(frame, orient="vertical", command=text_widget.yview)
         scrollbar.pack(side="right", fill="y")
         text_widget.configure(yscrollcommand=scrollbar.set)
 
@@ -1473,7 +1770,9 @@ class JoshWBrowser(tb.Window):
             "default_destination": self.destination.get(),
             "use_default_dest": self.use_default_dest.get(),
             "destination_history": self.load_destination_history(),
-            "default_load_music_dir": self.default_load_music_dir.get()
+            "default_load_music_dir": self.default_load_music_dir.get(),
+            "excluded_stream_domains": getattr(self, "excluded_stream_domains", []),
+            "keep_download_window_open": self.keep_download_window_open.get()
         })
         try:
             with open(self.get_settings_path(), "w", encoding="utf-8") as f:
@@ -1521,12 +1820,27 @@ class JoshWBrowser(tb.Window):
 
     def open_archive(self):
         selected_name = self.domain_combo.get()
-        selected_url = DOMAINS[selected_name]
+        selected_url = DOMAINS.get(selected_name, "")
+        
+        # Do nothing if a category header or empty selection was picked
+        if not selected_url:
+            return
+
         self.search_text.set("")
         self.load_or_check_cache(selected_name, selected_url)
         self.nav_history = []
         self.nav_history_index = -1
         self.load_directory(selected_name, selected_url, is_root=True)
+
+    def index_current_domain(self):
+        selected_name = self.domain_combo.get()
+        selected_url = DOMAINS.get(selected_name, "")
+        
+        # Do nothing if a category header or empty selection was picked
+        if not selected_url:
+            return
+
+        self.start_domain_background_scraper(selected_name, selected_url, get_cache_path(selected_name))
 
     def load_or_check_cache(self, domain_name, root_url):
         cache_path = get_cache_path(domain_name)
@@ -1817,6 +2131,8 @@ class JoshWBrowser(tb.Window):
                 urllib.parse.unquote(entry["url"])
             ))
 
+        autofit_treeview_columns(self.tree)
+
     def double_click_entry(self, event=None):
         selection = self.tree.selection()
         if not selection:
@@ -1842,8 +2158,8 @@ class JoshWBrowser(tb.Window):
                 pass
 
             filename = entry["name"]
-            ttk.Label(dialog, text=f"Choose action for:\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
-            btn_frame = ttk.Frame(dialog)
+            tb.Label(dialog, text=f"Choose action for:\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
+            btn_frame = tb.Frame(dialog)
             btn_frame.pack(pady=5)
 
             stream_btn = ttk.Button(btn_frame, text="Stream", width=12, command=lambda: [dialog.destroy(), self.download_and_open_temp()])
@@ -2010,7 +2326,7 @@ class JoshWBrowser(tb.Window):
             self.messages.put(("open_file_browser", extract_dir))
 
     def open_file_browser(self, folder_path):
-        ExtractedFilesBrowserWindow(self, folder_path)
+        ExtractedFilesBrowserWindow(self, folder_path, keep_open=self.keep_download_window_open.get())
 
     def go_up(self):
         if not self.current_url:

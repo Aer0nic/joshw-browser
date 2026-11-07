@@ -71,6 +71,105 @@ class GSFPlayerWindow(tk.Toplevel):
         s = int(seconds)
         return f"{s // 3600:02d}:{(s % 3600) // 60:02d}:{s % 60:02d}"
 
+    def parse_psf_tags(self, file_path):
+        """Reads TAGpsf metadata block directly from .gsf/.minigsf files."""
+        tags = {}
+        try:
+            if not os.path.exists(file_path):
+                return tags
+            with open(file_path, "rb") as f:
+                content = f.read()
+            tag_pos = content.rfind(b"TAGpsf")
+            if tag_pos != -1:
+                tag_bytes = content[tag_pos + 6:]
+                tag_text = tag_bytes.decode("utf-8", errors="ignore")
+                for line in tag_text.splitlines():
+                    line = line.strip()
+                    if "=" in line:
+                        k, v = line.split("=", 1)
+                        tags[k.strip().lower()] = v.strip()
+        except Exception:
+            pass
+        return tags
+
+    def parse_time_string(self, val):
+        """Converts MM:SS, HH:MM:SS, ms, or raw seconds strings into floating point seconds."""
+        if not val:
+            return None
+        try:
+            val_str = str(val).strip()
+            # Extract raw string value prior to parenthesis annotations
+            clean_str = val_str.split("(")[0].split("+")[0].strip().replace(",", ".")
+            parts = clean_str.split(":")
+            if len(parts) == 3:
+                return float(parts[0]) * 3600 + float(parts[1]) * 60 + float(parts[2])
+            elif len(parts) == 2:
+                return float(parts[0]) * 60 + float(parts[1])
+            elif len(parts) == 1:
+                secs = float(parts[0])
+                if secs > 10000:
+                    secs /= 1000.0
+                return secs
+        except Exception:
+            pass
+        return None
+
+    def load_track_metadata(self, file_path):
+        """Pre-fetches PSF tags and sets precise track duration."""
+        tags = self.parse_psf_tags(file_path)
+        if "_lib" in tags:
+            lib_file = os.path.join(os.path.dirname(file_path), tags["_lib"])
+            lib_tags = self.parse_psf_tags(lib_file)
+            for k, v in lib_tags.items():
+                if k not in tags:
+                    tags[k] = v
+
+        filename = os.path.basename(file_path)
+        title = tags.get("title", "UNKNOWN")
+        artist = tags.get("artist", "UNKNOWN")
+        game = tags.get("game", "UNKNOWN")
+        year = tags.get("year", "UNKNOWN")
+        copyright_tag = tags.get("copyright", "UNKNOWN")
+        gsfby = tags.get("gsfby", "UNKNOWN")
+        tagger = tags.get("tagger", "UNKNOWN")
+        comment = tags.get("comment", "UNKNOWN")
+        length_str = tags.get("length") or tags.get("_length") or "UNKNOWN"
+        fade_str = tags.get("fade") or tags.get("_fade") or ""
+
+        raw_base_sec = self.parse_time_string(length_str) or 180.0
+        fade_sec = self.parse_time_string(fade_str) or 0.0
+
+        if self.loop_forever_var.get():
+            self.total_duration_seconds = 0.0
+        else:
+            try:
+                loop_count = int(self.loop_count_var.get())
+            except Exception:
+                loop_count = 1
+            multiplier = (1 + loop_count) if self.loop_enabled_var.get() else 1
+            self.total_duration_seconds = (raw_base_sec * multiplier) + fade_sec
+
+        if self.winfo_exists():
+            if self.loop_forever_var.get():
+                self.duration_var.set("Duration: forever")
+            else:
+                self.duration_var.set(f"Duration: {self.format_time(self.total_duration_seconds)}")
+            
+            disp_length = f"{length_str} (+{fade_sec:.1f}s fade)" if fade_sec > 0 else length_str
+            formatted_text = (
+                f"Filename: {filename}\n"
+                f"Title: {title}\n"
+                f"Artist: {artist}\n"
+                f"Game: {game}\n"
+                f"Year: {year}\n"
+                f"Copyright: {copyright_tag}\n"
+                f"GSF By: {gsfby}\n"
+                f"Tagger: {tagger}\n"
+                f"Comment: {comment}\n"
+                f"Length: {disp_length}"
+            )
+            self.update_textbox(formatted_text)
+
     def get_dynamic_hover_color(self):
         try:
             if hasattr(self, "parent") and self.parent and hasattr(self.parent, "style"):
@@ -116,7 +215,7 @@ class GSFPlayerWindow(tk.Toplevel):
         filename = os.path.basename(self.audio_file)
         self.title(f"playgsf Controller - {filename}")
         self.geometry("480x640")
-        self.minsize(440, 520)
+        self.minsize(520, 520)
         self.transient(self.parent)
 
         padding = tb.Frame(self, padding=12)
@@ -166,7 +265,7 @@ class GSFPlayerWindow(tk.Toplevel):
         vol_frame = tb.Frame(padding)
         vol_frame.pack(fill="x", pady=(0, 8))
         tb.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
-        self.volume_slider = tb.Scale(vol_frame, from_=0, to=150, orient="horizontal", command=self.on_volume_slide)
+        self.volume_slider = tb.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide)
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
 
@@ -186,7 +285,7 @@ class GSFPlayerWindow(tk.Toplevel):
         list_frame = tb.LabelFrame(padding, text="Playlist Files", padding=6)
         list_frame.pack(fill="x", pady=(0, 8))
 
-        self.playlist_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False, height=4)
+        self.playlist_listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False, height=4)
         self.playlist_listbox.pack(side="left", fill="both", expand=True)
         list_scrollbar = tb.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
         list_scrollbar.pack(side="right", fill="y")
@@ -196,7 +295,6 @@ class GSFPlayerWindow(tk.Toplevel):
         self.playlist_listbox.bind("<Leave>", self.on_listbox_leave)
         self.populate_playlist_listbox()
 
-        # Main Control Buttons Row
         controls = tb.Frame(padding)
         controls.pack(pady=4)
 
@@ -206,14 +304,13 @@ class GSFPlayerWindow(tk.Toplevel):
         tb.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=3, padx=2)
         tb.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=4, padx=2)
 
-        # Bottom Sub-Row: Loop settings on left, Random in center, Loop forever on right
         bottom_sub_frame = tb.Frame(padding)
         bottom_sub_frame.pack(fill="x", pady=(6, 0))
 
         left_loop_frame = tb.Frame(bottom_sub_frame)
         left_loop_frame.pack(side="left")
-        tk.Checkbutton(left_loop_frame, variable=self.loop_enabled_var).pack(side="left", padx=(0, 2))
-        tk.Spinbox(left_loop_frame, from_=1, to=99, width=3, textvariable=self.loop_count_var).pack(side="left")
+        tb.Checkbutton(left_loop_frame, variable=self.loop_enabled_var, command=self.on_loop_controls_changed).pack(side="left", padx=(0, 2))
+        tb.Spinbox(left_loop_frame, from_=1, to=99, width=3, textvariable=self.loop_count_var, command=self.on_loop_controls_changed).pack(side="left")
 
         center_rand_frame = tb.Frame(bottom_sub_frame)
         center_rand_frame.pack(side="left", expand=True)
@@ -221,15 +318,50 @@ class GSFPlayerWindow(tk.Toplevel):
 
         right_loop_frame = tb.Frame(bottom_sub_frame)
         right_loop_frame.pack(side="right")
-        tb.Checkbutton(right_loop_frame, text="Loop forever", variable=self.loop_forever_var).pack(side="right")
+        tb.Checkbutton(right_loop_frame, text="Loop forever", variable=self.loop_forever_var, command=self.on_loop_forever_toggled).pack(side="right")
+
+    def on_loop_controls_changed(self):
+        if self.loop_enabled_var.get() and self.loop_forever_var.get():
+            self.loop_forever_var.set(False)
+        self.start_playgsf(preserve_time=False)
+
+    def on_loop_forever_toggled(self):
+        if self.loop_forever_var.get() and self.loop_enabled_var.get():
+            self.loop_enabled_var.set(False)
+        self.start_playgsf(preserve_time=False)
 
     def on_volume_slide(self, val):
-        # Calls set_player_volume which updates settings.json and syncs across all players
         set_player_volume(float(val), source_player=self)
 
     def apply_live_volume(self):
-        # Called instantly when volume changes locally or globally — zero track interruption!
-        pass
+        """Applies volume dynamically to playgsf audio sink input via pactl."""
+        vol = self.volume_var.get()
+        self.volume_label_var.set(f"Volume: {vol}%")
+        if getattr(self, "gsf_proc", None) and self.gsf_proc.poll() is None:
+            pid = self.gsf_proc.pid
+            threading.Thread(target=self._set_process_volume, args=(pid, vol), daemon=True).start()
+
+    def _set_process_volume(self, pid, volume_pct):
+        vol_str = f"{int(volume_pct)}%"
+        try:
+            out = subprocess.check_output(["pactl", "list", "sink-inputs"], text=True, stderr=subprocess.DEVNULL)
+            current_input = None
+            for line in out.splitlines():
+                line_str = line.strip()
+                if line_str.startswith("Sink Input #"):
+                    current_input = line_str.split("#")[1]
+                elif "application.process.id =" in line_str and current_input:
+                    proc_id = line_str.split("=")[1].strip().strip('"')
+                    if proc_id == str(pid):
+                        subprocess.run(["pactl", "set-sink-input-volume", current_input, vol_str], stderr=subprocess.DEVNULL)
+                        return
+        except Exception:
+            pass
+
+        try:
+            subprocess.run(["amixer", "-q", "sset", "Master", vol_str], stderr=subprocess.DEVNULL)
+        except Exception:
+            pass
 
     def start_timer_thread(self):
         def timer_loop():
@@ -237,15 +369,40 @@ class GSFPlayerWindow(tk.Toplevel):
                 if self.status_var.get() == "Playing" and not self.is_scrubbing:
                     self.current_position_seconds += 1.0
                     self.position_var.set(f"Position: {self.format_time(self.current_position_seconds)}")
-                    if self.total_duration_seconds > 0:
+                    
+                    if self.loop_forever_var.get():
+                        self.seek_pct_var.set("0%")
+                        if self.winfo_exists():
+                            self.after(0, lambda: self.progress_bar_widget.update_progress(self.current_position_seconds, 0.0))
+                    elif self.total_duration_seconds > 0:
                         pct = int((self.current_position_seconds / self.total_duration_seconds) * 100)
                         self.seek_pct_var.set(f"{pct}%")
-                    if self.winfo_exists():
-                        self.after(0, lambda: self.progress_bar_widget.update_progress(self.current_position_seconds, self.total_duration_seconds))
+                        if self.winfo_exists():
+                            self.after(0, lambda: self.progress_bar_widget.update_progress(self.current_position_seconds, self.total_duration_seconds))
+                        if self.current_position_seconds >= self.total_duration_seconds:
+                            if self.winfo_exists():
+                                self.after(0, self.handle_track_completion)
                 time.sleep(1.0)
         threading.Thread(target=timer_loop, daemon=True).start()
 
+    def handle_track_completion(self):
+        if self.status_var.get() != "Playing":
+            return
+        if self.loop_forever_var.get():
+            return
+            
+        next_index = get_next_track_index(self.current_index, len(self.playlist), False)
+        if next_index is None:
+            self.stop_current_playback()
+            self.status_var.set("Stopped")
+        else:
+            self.current_index = next_index
+            self.loops_completed = 0
+            self.start_playgsf(preserve_time=False)
+
     def seek_to_position(self, target_time):
+        if self.loop_forever_var.get():
+            return
         target_time = max(0.0, min(target_time, self.total_duration_seconds))
         self.current_position_seconds = target_time
         self.position_var.set(f"Position: {self.format_time(self.current_position_seconds)}")
@@ -320,12 +477,22 @@ class GSFPlayerWindow(tk.Toplevel):
         playgsf_bin = str(get_playgsf_path())
         self.audio_file = self.playlist[self.current_index]
 
+        # Read PSF tags and compute precise base + fade duration
+        self.load_track_metadata(self.audio_file)
+
         env = os.environ.copy()
         env["SDL_VIDEODRIVER"] = "dummy"
 
         cmd_args = [playgsf_bin]
+        
+        if self.loop_forever_var.get():
+            cmd_args.append("-e")
+        elif self.total_duration_seconds > 0:
+            cmd_args.extend(["-t", str(int(round(self.total_duration_seconds * 1000)))])
+
         if self.current_position_seconds > 0:
             cmd_args.append(f"-b{int(round(self.current_position_seconds * 1000))}")
+
         cmd_args.append(self.audio_file)
 
         try:
@@ -344,12 +511,12 @@ class GSFPlayerWindow(tk.Toplevel):
             
             filename = os.path.basename(self.audio_file)
             
-            # Update window title to the currently playing GSF track
             self.title(f"playgsf Controller - {filename}")
             if hasattr(self, "title_label") and self.winfo_exists():
                 self.title_label.configure(text=f"Now Playing:\n{filename}")
                 
             threading.Thread(target=self.read_gsf_output, args=(self.gsf_proc,), daemon=True).start()
+            self.after(300, self.apply_live_volume)
         except Exception as e:
             messagebox.showerror("playgsf Error", f"Could not launch playgsf:\n\n{e}")
 
@@ -357,15 +524,26 @@ class GSFPlayerWindow(tk.Toplevel):
         if not proc or not proc.stdout:
             return
         
+        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+
         info = {
             "Filename": os.path.basename(self.audio_file),
-            "Channels": "UNKNOWN", "Sample rate": "UNKNOWN", "Title": "UNKNOWN",
-            "Artist": "UNKNOWN", "Game": "UNKNOWN", "Year": "UNKNOWN",
-            "Copyright": "UNKNOWN", "GSF By": "UNKNOWN", "Tagger": "UNKNOWN",
-            "Fade": "UNKNOWN", "Length": "UNKNOWN", "Time": "00:00", "GBA Cpu": "UNKNOWN"
+            "Title": "UNKNOWN",
+            "Artist": "UNKNOWN",
+            "Game": "UNKNOWN",
+            "Year": "UNKNOWN",
+            "Copyright": "UNKNOWN",
+            "GSF By": "UNKNOWN",
+            "Tagger": "UNKNOWN",
+            "Comment": "UNKNOWN",
+            "Channels": "UNKNOWN",
+            "Sample rate": "UNKNOWN",
+            "Length": "UNKNOWN",
+            "Fade": "UNKNOWN"
         }
 
-        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+        raw_base_sec = None
+        fade_sec = 0.0
 
         try:
             while proc.poll() is None:
@@ -376,58 +554,60 @@ class GSFPlayerWindow(tk.Toplevel):
                 line_str = clean_line.strip().replace(" [0m", "")
                 if not line_str:
                     continue
-                
+
                 if ":" in line_str:
                     parts = line_str.split(":", 1)
-                    key, val = parts[0].strip().lower(), parts[1].strip()
-                    if "length" in key:
-                        info["Length"] = val
-                        try:
-                            sub_parts = val.split(":")
-                            if len(sub_parts) == 2:
-                                self.total_duration_seconds = int(sub_parts[0]) * 60 + float(sub_parts[1])
-                                if self.winfo_exists():
-                                    self.after(0, lambda: self.duration_var.set(f"Duration: {self.format_time(self.total_duration_seconds)}"))
-                        except Exception:
-                            pass
-                    elif "title" in key: info["Title"] = val
-                    elif "artist" in key: info["Artist"] = val
-                    elif "game" in key: info["Game"] = val
+                    key_raw = parts[0].strip().lower()
+                    val = parts[1].strip()
 
-                formatted_text = f"Filename: {info['Filename']}\nTitle: {info['Title']}\nArtist: {info['Artist']}\nLength: {info['Length']}"
-                if self.winfo_exists():
-                    self.after(0, lambda t=formatted_text: self.update_textbox(t))
+                    if "filename" in key_raw: info["Filename"] = val
+                    elif "title" in key_raw: info["Title"] = val
+                    elif "artist" in key_raw: info["Artist"] = val
+                    elif "game" in key_raw: info["Game"] = val
+                    elif "year" in key_raw: info["Year"] = val
+                    elif "copyright" in key_raw: info["Copyright"] = val
+                    elif "gsf by" in key_raw or "gsfby" in key_raw: info["GSF By"] = val
+                    elif "tagger" in key_raw: info["Tagger"] = val
+                    elif "comment" in key_raw: info["Comment"] = val
+                    elif "channels" in key_raw: info["Channels"] = val
+                    elif "sample rate" in key_raw: info["Sample rate"] = val
+                    elif "length" in key_raw:
+                        info["Length"] = val
+                        parsed_len = self.parse_time_string(val)
+                        if parsed_len:
+                            raw_base_sec = parsed_len
+                    elif "fade" in key_raw:
+                        info["Fade"] = val
+                        parsed_fade = self.parse_time_string(val)
+                        if parsed_fade:
+                            fade_sec = parsed_fade
+
+                    if raw_base_sec is not None and not self.loop_forever_var.get():
+                        try:
+                            loop_count = int(self.loop_count_var.get())
+                        except Exception:
+                            loop_count = 1
+                        multiplier = (1 + loop_count) if self.loop_enabled_var.get() else 1
+                        self.total_duration_seconds = (raw_base_sec * multiplier) + fade_sec
+
+                        if self.winfo_exists():
+                            self.after(0, lambda: self.duration_var.set(f"Duration: {self.format_time(self.total_duration_seconds)}"))
+
+                    lines_to_show = []
+                    for k, v in info.items():
+                        if v != "UNKNOWN" or k in ["Filename", "Title", "Artist", "Game", "Length"]:
+                            lines_to_show.append(f"{k}: {v}")
+                    formatted_text = "\n".join(lines_to_show)
+
+                    if self.winfo_exists():
+                        self.after(0, lambda t=formatted_text: self.update_textbox(t))
         except Exception:
             pass
 
         return_code = proc.wait()
         if self.winfo_exists() and self.gsf_proc == proc:
-            if return_code == 0 and self.status_var.get() == "Playing":
-                should_loop = False
-                if self.loop_forever_var.get():
-                    should_loop = True
-                elif self.loop_enabled_var.get():
-                    try:
-                        max_loops = int(self.loop_count_var.get())
-                    except Exception:
-                        max_loops = 1
-                    if self.loops_completed < max_loops - 1:
-                        self.loops_completed += 1
-                        should_loop = True
-                    else:
-                        self.loops_completed = 0
-
-                if should_loop:
-                    self.after(0, lambda: self.start_playgsf(preserve_time=False))
-                else:
-                    next_index = get_next_track_index(self.current_index, len(self.playlist), False)
-                    if next_index is None:
-                        self.gsf_proc = None
-                        self.status_var.set("Stopped")
-                    else:
-                        self.current_index = next_index
-                        self.loops_completed = 0
-                        self.after(0, lambda: self.start_playgsf(preserve_time=False))
+            if return_code == 0 and self.status_var.get() == "Playing" and not self.loop_forever_var.get():
+                self.after(0, self.handle_track_completion)
 
     def toggle_play_pause(self):
         if not self.gsf_proc or self.status_var.get() == "Stopped":

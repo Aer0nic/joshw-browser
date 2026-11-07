@@ -304,8 +304,16 @@ class InstallDependenciesWorker:
             script_lines = []
 
             # 1. Base packages installation dynamically configured
-            script_lines.append(self.update_cmd)
-            script_lines.append(f"{self.install_cmd} {' '.join(self.pkgs)}")
+            script_lines.append("read -p \"Skip package manager update/install and proceed to dependency builds? (y/n): \" skip_pm")
+            script_lines.append("case \"$skip_pm\" in")
+            script_lines.append("    [yY]*)")
+            script_lines.append("        echo 'Skipping package installation...'")
+            script_lines.append("        ;;")
+            script_lines.append("    *)")
+            script_lines.append(f"        {self.update_cmd}")
+            script_lines.append(f"        {self.install_cmd} {' '.join(self.pkgs)}")
+            script_lines.append("        ;;")
+            script_lines.append("esac")
 
             # 2. Lazyusf build
             lazyusf_bin = cache_dir / "lazyusf"
@@ -366,18 +374,31 @@ class InstallDependenciesWorker:
             if playgsf_needs_seek_patch:
                 playgsf_patch = resource_path("patches/playgsf-start-offset.patch")
                 staged_playgsf_patch = temp_build_dir / "playgsf-start-offset.patch"
-                if playgsf_patch.exists():
+                
+                has_patch = playgsf_patch.exists()
+                if has_patch:
                     shutil.copy2(playgsf_patch, staged_playgsf_patch)
-                    script_lines.extend([
-                        f"cd \"{cache_dir}\"",
-                        "git clone https://github.com/yshui/playgsf.git playgsfbuild",
-                        f"cd playgsfbuild && git apply --unidiff-zero \"{staged_playgsf_patch}\" && ./configure || exit 1",
-                        "make || true",
-                        "g++ -fPIC -no-pie gsf.o VBA/GBA.o VBA/Globals.o VBA/Sound.o VBA/Util.o VBA/bios.o VBA/memgzio.o VBA/snd_interp.o VBA/unzip.o linuxmain.o VBA/psftag.o libresample/src/filterkit.o libresample/src/resample.o libresample/src/resamplesubs.o -lz -lao -lSDL2 -o playgsf",
-                        f"mv playgsf \"{cache_dir}/\" && cd ..",
-                        "rm -rf playgsfbuild",
-                        f"chmod +x \"{playgsf_bin}\""
-                    ])
+
+                script_lines.extend([
+                    f"cd \"{cache_dir}\"",
+                    "rm -rf playgsfbuild",
+                    "git clone https://github.com/yshui/playgsf.git playgsfbuild",
+                    "cd playgsfbuild"
+                ])
+
+                if has_patch:
+                    script_lines.append(f"git apply --unidiff-zero \"{staged_playgsf_patch}\" || echo 'Warning: PlayGSF patch application skipped or failed, continuing standard build...'")
+
+                script_lines.extend([
+                    "./configure || exit 1",
+                    "make clean",
+                    "make || true",
+                    "g++ -fPIC -fpermissive -no-pie gsf.o VBA/GBA.o VBA/Globals.o VBA/Sound.o VBA/Util.o VBA/bios.o VBA/memgzio.o VBA/snd_interp.o VBA/unzip.o linuxmain.o VBA/psftag.o libresample/src/filterkit.o libresample/src/resample.o libresample/src/resamplesubs.o -o playgsf -lao -lSDL2 -lz -lm -lpthread || exit 1",
+                    f"if [ -f playgsf ]; then cp playgsf \"{playgsf_bin}\"; elif [ -f src/playgsf ]; then cp src/playgsf \"{playgsf_bin}\"; else exit 1; fi",
+                    "cd ..",
+                    "rm -rf playgsfbuild",
+                    f"chmod +x \"{playgsf_bin}\""
+                ])
 
             # 5. 2sfPlay build
             twosf_play_bin = cache_dir / "2sfPlay"
@@ -584,7 +605,7 @@ class InstallDependenciesWorker:
                 self.parent.after(0, lambda err=e: messagebox.showerror("Installation Error", f"An error occurred during dependency installation:\n\n{err}"))
 
 
-class IndexAllWindow(tk.Toplevel):
+class IndexAllWindow(tb.Toplevel):
     def __init__(self, parent, domains):
         super().__init__(parent)
         self.parent = parent
@@ -620,17 +641,17 @@ class IndexAllWindow(tk.Toplevel):
         return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
     def build_ui(self):
-        main_frame = ttk.Frame(self, padding=10)
+        main_frame = tb.Frame(self, padding=10)
         main_frame.pack(fill="both", expand=True)
 
-        ttk.Label(main_frame, text="Indexing all domains sequentially...", font=("Arial", 10, "bold")).pack(anchor="w", pady=(0, 8))
+        tb.Label(main_frame, text="Indexing all domains sequentially...", font=("Arial", 10, "bold")).pack(anchor="w", pady=(0, 8))
 
-        container = ttk.Frame(main_frame)
+        container = tb.Frame(main_frame)
         container.pack(fill="both", expand=True, pady=(0, 10))
 
-        canvas = tk.Canvas(container, highlightthickness=0)
-        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
-        scrollable_frame = ttk.Frame(canvas)
+        canvas = tb.Canvas(container, highlightthickness=0)
+        scrollbar = tb.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scrollable_frame = tb.Frame(canvas)
 
         scrollable_frame.bind(
             "<Configure>",
@@ -643,23 +664,23 @@ class IndexAllWindow(tk.Toplevel):
         scrollbar.pack(side="right", fill="y")
 
         for domain_name in self.domains.keys():
-            row_frame = ttk.Frame(scrollable_frame, padding=(2, 4))
+            row_frame = tb.Frame(scrollable_frame, padding=(2, 4))
             row_frame.pack(fill="x", expand=True)
 
-            lbl = ttk.Label(row_frame, text=domain_name, font=("Arial", 9), width=24, anchor="w")
+            lbl = tb.Label(row_frame, text=domain_name, font=("Arial", 9), width=24, anchor="w")
             lbl.pack(side="left", padx=(0, 6))
 
-            pbar_container = tk.Frame(row_frame, width=160, height=18)
+            pbar_container = tb.Frame(row_frame, width=160, height=18)
             pbar_container.pack_propagate(False)
             pbar_container.pack(side="left", padx=6)
 
-            pbar = ttk.Progressbar(pbar_container, orient="horizontal", mode="determinate", maximum=100)
+            pbar = tb.Progressbar(pbar_container, orient="horizontal", mode="determinate", maximum=100)
             pbar.pack(fill="both", expand=True)
 
-            pct_lbl = tk.Label(pbar_container, text="0%", font=("Arial", 8, "bold"), bg="white", fg="black")
+            pct_lbl = tb.Label(pbar_container, text="0%", font=("Arial", 8, "bold"), bg="white", fg="black")
             pct_lbl.place(relx=0.5, rely=0.5, anchor="center")
 
-            time_lbl = ttk.Label(row_frame, text="00:00:00", font=("Arial", 9), width=10, anchor="e")
+            time_lbl = tb.Label(row_frame, text="00:00:00", font=("Arial", 9), width=10, anchor="e")
             time_lbl.pack(side="right", padx=(6, 0))
 
             self.domain_rows[domain_name] = {
@@ -672,11 +693,11 @@ class IndexAllWindow(tk.Toplevel):
                 "completed": False
             }
 
-        bottom_frame = ttk.Frame(main_frame)
+        bottom_frame = tb.Frame(main_frame)
         bottom_frame.pack(fill="x", pady=(4, 0))
 
         self.total_time_var = tk.StringVar(value="Total Elapsed: 00:00:00")
-        total_time_lbl = ttk.Label(bottom_frame, textvariable=self.total_time_var, font=("Arial", 9, "bold"))
+        total_time_lbl = tb.Label(bottom_frame, textvariable=self.total_time_var, font=("Arial", 9, "bold"))
         total_time_lbl.pack(side="right")
 
     def update_timers(self):
@@ -748,7 +769,7 @@ class DownloadProgressWindow(tb.Toplevel):
     def __init__(self, parent, title="Downloading..."):
         super().__init__(parent)
         self.title(title)
-        self.geometry("460x140")
+        self.geometry("500x140")
         self.resizable(False, False)
         self.transient(parent)
         self.is_cancelled = False
@@ -764,30 +785,30 @@ class DownloadProgressWindow(tb.Toplevel):
         self.mode = "downloading"
 
         self.file_label_text = tk.StringVar(value="Preparing download...")
-        ttk.Label(self, textvariable=self.file_label_text, font=("Arial", 9)).pack(pady=(10, 5))
+        tb.Label(self, textvariable=self.file_label_text, font=("Arial", 9)).pack(pady=(10, 5))
         
         pbar_container = tk.Frame(self, width=420, height=20)
         pbar_container.pack_propagate(False)
         pbar_container.pack(pady=2)
 
-        self.pbar = ttk.Progressbar(pbar_container, orient="horizontal", mode="determinate", maximum=100)
+        self.pbar = tb.Progressbar(pbar_container, orient="horizontal", mode="determinate", maximum=100)
         self.pbar.pack(fill="both", expand=True)
 
         self.pct_label = tk.Label(pbar_container, text="0%", font=("Arial", 8, "bold"), bg="white", fg="black")
         self.pct_label.place(relx=0.5, rely=0.5, anchor="center")
 
-        bottom_frame = ttk.Frame(self)
+        bottom_frame = tb.Frame(self)
         bottom_frame.pack(fill="x", padx=15, pady=(5, 10))
 
         self.data_info_var = tk.StringVar(value="0 / 0 bytes")
-        self.data_lbl = ttk.Label(bottom_frame, textvariable=self.data_info_var, font=("Arial", 8), width=18, anchor="w")
+        self.data_lbl = tb.Label(bottom_frame, textvariable=self.data_info_var, font=("Arial", 8), width=18, anchor="w")
         self.data_lbl.pack(side="left")
 
-        self.cancel_btn = ttk.Button(bottom_frame, text="Cancel", command=self.cancel, width=10)
+        self.cancel_btn = tb.Button(bottom_frame, text="Cancel", command=self.cancel, width=10)
         self.cancel_btn.pack(side="left", expand=True)
 
         self.time_info_var = tk.StringVar(value="Elapsed: 00:00:00 | ETA: 00:00:00")
-        self.time_lbl = ttk.Label(bottom_frame, textvariable=self.time_info_var, font=("Arial", 8), width=24, anchor="e")
+        self.time_lbl = tb.Label(bottom_frame, textvariable=self.time_info_var, font=("Arial", 8), width=24, anchor="e")
         self.time_lbl.pack(side="right")
 
     def format_size_1000(self, bytes_val):

@@ -819,7 +819,7 @@ class GMEPlayerWindow(tk.Toplevel):
         self.update_listbox_selection()
         self.update_track_label_display()
 
-        vol_gain = max(0, min(150, self.volume_var.get())) / 100.0
+        vol_gain = max(0, min(100, self.volume_var.get())) / 100.0
         
         try:
             loop_cnt = int(self.loop_count_var.get())
