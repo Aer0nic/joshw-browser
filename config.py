@@ -55,6 +55,7 @@ DOMAINS = {
     "Nintendo Wii": "http://wii.joshw.info/",
     "Nintendo Wii U": "http://wiiu.joshw.info/",
     "SNES music archives": "http://spc.joshw.info/",
+    "Switch": "https://switch.joshw.info/",
 
     "----------- SEGA -----------": "",
     "Dreamcast": "http://dsf.joshw.info/",

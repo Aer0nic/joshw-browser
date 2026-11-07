@@ -677,10 +677,10 @@ class IndexAllWindow(tb.Toplevel):
             pbar = tb.Progressbar(pbar_container, orient="horizontal", mode="determinate", maximum=100)
             pbar.pack(fill="both", expand=True)
 
-            pct_lbl = tb.Label(pbar_container, text="0%", font=("Arial", 8, "bold"), bg="white", fg="black")
+            pct_lbl = tk.Label(pbar_container, text="0%", font=("Arial", 8, "bold"), bg="white", fg="black")
             pct_lbl.place(relx=0.5, rely=0.5, anchor="center")
 
-            time_lbl = tb.Label(row_frame, text="00:00:00", font=("Arial", 9), width=10, anchor="e")
+            time_lbl = tk.Label(row_frame, text="00:00:00", font=("Arial", 9), width=10, anchor="e")
             time_lbl.pack(side="right", padx=(6, 0))
 
             self.domain_rows[domain_name] = {
