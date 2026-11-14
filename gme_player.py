@@ -12,6 +12,7 @@ import signal
 import json
 import tkinter as tk
 import ttkbootstrap as tb
+from platform_support import SoundDeviceSink, find_tool, IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
 from player_launcher import attach_settings_sync, parse_player_args
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox, filedialog
@@ -80,13 +81,19 @@ def get_gme():
         return _gme_lib
 
     system = platform.system()
+    lib = None
     if system == "Windows":
-        names = ["gme.dll", "libgme.dll"]
+        names = ["libgme.dll", "gme.dll"]
+        bundled = find_tool("libgme")  # assets/libraries/windows/gme/libgme.dll
+        if bundled:
+            try:
+                lib = ctypes.CDLL(bundled)
+            except OSError as e:
+                print(f"[GME] Could not load bundled {bundled}: {e}")
     else:
         names = ["libgme.so.0", "libgme.so"]
 
-    lib = None
-    for name in names:
+    for name in ([] if lib is not None else names):
         try:
             lib = ctypes.CDLL(name)
             break
@@ -307,8 +314,7 @@ class GMEAudioWorker:
         self._pause_event.clear()
         if self.proc and self.proc.poll() is None:
             try:
-                if hasattr(os, "kill") and hasattr(signal, "SIGSTOP"):
-                    os.kill(self.proc.pid, signal.SIGSTOP)
+                suspend_process(self.proc)
             except Exception:
                 pass
 
@@ -316,8 +322,7 @@ class GMEAudioWorker:
         self._pause_event.set()
         if self.proc and self.proc.poll() is None:
             try:
-                if hasattr(os, "kill") and hasattr(signal, "SIGCONT"):
-                    os.kill(self.proc.pid, signal.SIGCONT)
+                resume_process(self.proc)
             except Exception:
                 pass
 
@@ -363,15 +368,19 @@ class GMEAudioWorker:
                 ]
 
                 try:
-                    self.proc = subprocess.Popen(
-                        cmd,
-                        stdin=subprocess.PIPE,
-                        stdout=subprocess.DEVNULL,
-                        stderr=subprocess.DEVNULL
-                    )
-                    threading.Thread(target=self._resolve_and_apply_volume, args=(self.volume,), daemon=True).start()
+                    if IS_WINDOWS:
+                        # No aplay on Windows: play through sounddevice instead
+                        self.proc = SoundDeviceSink(sample_rate=sample_rate, channels=2)
+                    else:
+                        self.proc = subprocess.Popen(
+                            cmd,
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
+                        )
+                        threading.Thread(target=self._resolve_and_apply_volume, args=(self.volume,), daemon=True).start()
                 except Exception as e:
-                    self.ui_queue.put(("error", f"Could not launch audio output process (aplay): {e}"))
+                    self.ui_queue.put(("error", f"Could not open audio output: {e}"))
                     return
 
                 base_length_ms = ctx.base_length_ms

@@ -1,0 +1,2 @@
+https://github.com/libsidplayfp/sidplayfp/releases/tag/v3.2.2
+sidplayfp-3.2.2-ucrt64.zip

@@ -9,6 +9,7 @@ import array
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale, load_saved_font_size
+from platform_support import PcmPipeProcess, IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
 from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox
 from config import resource_path
@@ -342,6 +343,8 @@ class GSFPlayerWindow(tb.Window):
         vol = self.volume_var.get()
         self.volume_label_var.set(f"Volume: {vol}%")
         if getattr(self, "gsf_proc", None) and self.gsf_proc.poll() is None:
+            if set_process_volume(self.gsf_proc, int(vol) / 100.0):
+                return  # Windows / in-process playback
             pid = self.gsf_proc.pid
             threading.Thread(target=self._set_process_volume, args=(pid, vol), daemon=True).start()
 
@@ -500,14 +503,23 @@ class GSFPlayerWindow(tb.Window):
         cmd_args.append(self.audio_file)
 
         try:
-            self.gsf_proc = subprocess.Popen(
-                cmd_args,
-                env=env,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1
-            )
+            if IS_WINDOWS:
+                # gsfdec.exe: same options as playgsf, WAV on stdout, track
+                # info on stderr (forwarded so read_gsf_output parses it as usual)
+                self.gsf_proc = PcmPipeProcess(
+                    cmd_args, wav=True, forward_stderr=True,
+                    start_offset=self.current_position_seconds if preserve_time else 0.0,
+                    volume=max(0, min(150, int(self.volume_var.get()))) / 100.0,
+                )
+            else:
+                self.gsf_proc = subprocess.Popen(
+                    cmd_args,
+                    env=env,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1
+                )
             self.is_paused = False
             self.status_var.set("Playing")
             self.update_track_label()
@@ -619,11 +631,11 @@ class GSFPlayerWindow(tb.Window):
             return
         try:
             if self.is_paused:
-                os.kill(self.gsf_proc.pid, signal.SIGCONT)
+                resume_process(self.gsf_proc)
                 self.is_paused = False
                 self.status_var.set("Playing")
             else:
-                os.kill(self.gsf_proc.pid, signal.SIGSTOP)
+                suspend_process(self.gsf_proc)
                 self.is_paused = True
                 self.status_var.set("Paused")
         except Exception:

@@ -68,6 +68,44 @@ To browse and search game music collections instantly without needing to scrape 
 
 * **Catalog Updates:** Re-fetch premade indexes anytime to stay up-to-date with newly added game dumps on `joshw.info`.
 
+## 🪟 Windows
+
+`joshw-browser` also runs on Windows 10/11 (64-bit), from the source files or as a PyInstaller build. Nothing needs compiling and no admin rights are required.
+
+### Running from source
+
+Double-click **`run.bat`**. It installs Python through `winget` if it is missing, creates a local `.venv`, installs `requirements.txt` and starts the app without a console window.
+
+### Running the PyInstaller build
+
+```bat
+python tools\fetch_windows_deps.py mpv
+pyinstaller main.spec
+```
+
+This produces `dist\joshw-browser.exe`. The first command downloads mpv, which is kept out of git because it is over 100 MB, so that it is bundled too.
+
+### Playback backends on Windows
+
+The Windows backends are bundled in `assets/libraries/windows/`. Each one runs hidden, and the app's player windows provide the UI:
+
+| Formats | Linux backend | Windows backend |
+|---|---|---|
+| VGMStream formats (BRSTM, DSP, WEM, …) | vgmstream123 | `vgmstream-cli.exe` (official build) |
+| VGZ (arcade) | vgmplay | `VGMPlay.exe` (official build) |
+| SID | sidplayfp | `sidplayfp.exe` (official build) |
+| MIDI / RMF | playbae | `playbae.exe` (official NeoBAE build) |
+| NSF, SPC, GBS, VGM, … | libgme + aplay | `libgme.dll` (cross-compiled) + sounddevice |
+| GSF | playgsf | `gsfdec.exe` (playgsf core, built from `tools/windows_decoders`) |
+| 2SF | 2sfPlay | `2sfdec.exe` (vio2sf core, built from `tools/windows_decoders`) |
+| USF | lazyusf | `usfdec.exe` (lazyusf2 core, built from `tools/windows_decoders`) |
+| MP3, OGG, FLAC, modules, … | mpv | `mpv.exe` (downloaded on first use if not bundled) |
+| 7z extraction | 7z | `7za.exe` (official build) |
+
+**Install Dependencies** on Windows only downloads the pieces that aren't bundled: mpv, the FluidR3 MIDI soundfont, and the C64 ROMs that sidplayfp uses (saved to `%APPDATA%\sidplayfp`).
+
+To update the bundled backends, run `python tools/fetch_windows_deps.py` on a Linux machine with `mingw-w64`, `cmake` and `7z` installed, then commit the result. The pinned versions are listed at the top of that script.
+
 ## Minimum Required Files to Run
 
 If running directly from source, the application requires only a minimalist file structure:

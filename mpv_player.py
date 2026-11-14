@@ -9,6 +9,7 @@ import random
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale, load_saved_font_size
+from platform_support import IS_WINDOWS, NamedPipeSocket, hidden_popen_kwargs, mpv_ipc_path
 from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox, filedialog
 
@@ -36,7 +37,7 @@ class MPVPlayerWindow(tb.Window):
         self.mpv = None
         self.sock = None
         self.m3u_path = None
-        self.socket_path = os.path.join(tempfile.gettempdir(), f"mpv-python-{os.getpid()}-{threading.get_ident()}.sock")
+        self.socket_path = mpv_ipc_path(f"{os.getpid()}-{threading.get_ident()}")
         self.is_scrubbing = False
         self.is_sliding_volume = False
         self.raw_duration_seconds = 180.0
@@ -384,7 +385,7 @@ class MPVPlayerWindow(tb.Window):
             self.sock = None
 
         try:
-            if os.path.exists(self.socket_path):
+            if not IS_WINDOWS and os.path.exists(self.socket_path):
                 os.unlink(self.socket_path)
         except Exception:
             pass
@@ -412,13 +413,22 @@ class MPVPlayerWindow(tb.Window):
         cmd.append(self.audio_file)
 
         try:
-            self.mpv = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            self.mpv = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **hidden_popen_kwargs())
         except Exception as e:
             messagebox.showerror("mpv Error", f"Could not launch mpv process:\n\n{e}")
             return
 
         for _ in range(200):
-            if os.path.exists(self.socket_path):
+            if IS_WINDOWS:
+                # Named pipes can't be os.path.exists()-checked reliably; just try
+                try:
+                    pipe = NamedPipeSocket()
+                    pipe.connect(self.socket_path)
+                    self.sock = pipe
+                    break
+                except OSError:
+                    pass
+            elif os.path.exists(self.socket_path):
                 try:
                     self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
                     self.sock.connect(self.socket_path)
@@ -593,7 +603,7 @@ class MPVPlayerWindow(tb.Window):
             pass
         self.stop()
         try:
-            if os.path.exists(self.socket_path):
+            if not IS_WINDOWS and os.path.exists(self.socket_path):
                 os.unlink(self.socket_path)
         except Exception:
             pass

@@ -1,0 +1,2 @@
+https://github.com/vgmstream/vgmstream/releases/tag/r2168
+vgmstream-win64.zip

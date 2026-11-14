@@ -99,11 +99,28 @@ def resource_path(relative_path: str) -> Path:
     return app_dir / relative_path
 
 
+# Linux backend name -> logical Windows tool (platform_support.WINDOWS_TOOLS)
+WINDOWS_ALIASES = {
+    "vgmstream123": "vgmstream-cli",
+    "2sfPlay": "2sfdec",
+    "playgsf": "gsfdec",
+    "lazyusf": "usfdec",
+}
+
+
 def get_binary_path(binary_name: str) -> Path:
     """
     Finds helper binary across PyInstaller bundle, repo root, ~/.config, or PATH.
     Ensures execution permissions (+x) are granted if extracted inside PyInstaller.
+    On Windows, Linux tool names map to the bundled Windows equivalents
+    (see platform_support.WINDOWS_TOOLS / WINDOWS_ALIASES).
     """
+    if sys.platform == "win32":
+        from platform_support import find_tool
+        win_name = WINDOWS_ALIASES.get(binary_name, binary_name)
+        found = find_tool(win_name)
+        return Path(found) if found else Path(win_name + ".exe")
+
     bundled_bin = resource_path(f"bin/{binary_name}")
     if not bundled_bin.exists():
         bundled_bin = resource_path(binary_name)

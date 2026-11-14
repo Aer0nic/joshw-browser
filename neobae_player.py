@@ -10,6 +10,7 @@ import json
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale, load_saved_font_size
+from platform_support import IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
 from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox, filedialog
 
@@ -28,7 +29,7 @@ def get_available_soundfonts():
     valid_exts = {".hsb", ".zsb", ".sf2", ".sf3", ".dls"}
     
     # Check ~/.config/joshw/
-    sf_dir = os.path.expanduser("~/.config/joshw")
+    sf_dir = get_cache_directory()
     if os.path.isdir(sf_dir):
         try:
             for f in os.listdir(sf_dir):
@@ -61,7 +62,7 @@ def get_available_soundfonts():
     return sorted(list(sf_files))
 
 def get_saved_soundfont():
-    settings_path = os.path.expanduser("~/.config/joshw/settings.json")
+    settings_path = os.path.join(get_cache_directory(), "settings.json")
     try:
         if os.path.exists(settings_path):
             with open(settings_path, "r") as f:
@@ -72,7 +73,7 @@ def get_saved_soundfont():
     return "FluidR3_GM.sf2"
 
 def save_soundfont_setting(sf_name):
-    settings_path = os.path.expanduser("~/.config/joshw/settings.json")
+    settings_path = os.path.join(get_cache_directory(), "settings.json")
     try:
         os.makedirs(os.path.dirname(settings_path), exist_ok=True)
         data = {}
@@ -394,6 +395,9 @@ class PlayBAEPlayerWindow(tb.Window):
         self.apply_live_volume()
 
     def apply_live_volume(self):
+        if IS_WINDOWS:
+            set_process_volume(self.proc, max(0, min(150, int(self.volume_var.get()))) / 100.0)
+            return
         if not self.playbae_wpctl_id and self.proc:
             threading.Thread(target=self._resolve_and_apply_volume, daemon=True).start()
             return
@@ -412,6 +416,9 @@ class PlayBAEPlayerWindow(tb.Window):
                 threading.Thread(target=self._resolve_and_apply_volume, daemon=True).start()
 
     def _resolve_and_apply_volume(self):
+        if IS_WINDOWS:
+            set_process_volume(self.proc, max(0, min(150, float(self.volume_var.get()))) / 100.0)
+            return
         awk_cmd = "wpctl status | awk '/Streams:/ {in_streams=1; next} in_streams && /playbae/ {sub(/\\.$/, \"\", $1); print $1; exit} in_streams && /^[^[:space:]]/ {exit}'"
         for _ in range(25):
             if not self.proc or self.proc.poll() is not None:
@@ -498,7 +505,7 @@ class PlayBAEPlayerWindow(tb.Window):
         if ext in soundfont_supported:
             selected_sf = self.soundfont_var.get() if hasattr(self, "soundfont_var") else get_saved_soundfont()
             if selected_sf and selected_sf != "(None)":
-                sf_path1 = os.path.expanduser(f"~/.config/joshw/{selected_sf}")
+                sf_path1 = os.path.join(get_cache_directory(), selected_sf)
                 sf_path2 = os.path.join(get_cache_directory(), selected_sf)
                 sf_path3 = str(resource_path(f"soundfonts/{selected_sf}"))
                 if os.path.exists(sf_path1):
@@ -519,7 +526,7 @@ class PlayBAEPlayerWindow(tb.Window):
             cmd.extend(["-l", str(num)])
 
         try:
-            self.proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            self.proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **hidden_popen_kwargs())
             threading.Thread(target=self._resolve_and_apply_volume, daemon=True).start()
         except Exception as e:
             messagebox.showerror("playbae Error", f"Could not launch playbae process:\n\n{e}")
@@ -577,13 +584,11 @@ class PlayBAEPlayerWindow(tb.Window):
             return
         try:
             if self.is_paused:
-                if hasattr(os, "kill") and hasattr(signal, "SIGCONT"):
-                    os.kill(self.proc.pid, signal.SIGCONT)
+                resume_process(self.proc)
                 self.is_paused = False
                 self.status_var.set("Playing")
             else:
-                if hasattr(os, "kill") and hasattr(signal, "SIGSTOP"):
-                    os.kill(self.proc.pid, signal.SIGSTOP)
+                suspend_process(self.proc)
                 self.is_paused = True
                 self.status_var.set("Paused")
         except Exception:

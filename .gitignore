@@ -33,3 +33,7 @@ vgmrips.net scraper userscript
 xmi2mid.sh
 
 
+
+# mpv.exe is >100 MB (GitHub limit): fetched by tools/fetch_windows_deps.py for
+# PyInstaller builds, or downloaded at runtime by windows_setup.py
+assets/libraries/windows/mpv/

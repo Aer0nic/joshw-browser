@@ -11,11 +11,27 @@ import shutil
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale
+from platform_support import PcmPipeProcess, IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
 from player_launcher import attach_settings_sync, parse_player_args
 from PIL import Image, ImageTk
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
 from config import get_cache_directory, resource_path, get_binary_path, is_emulated_file
+
+
+_PRINTABLE_RUN = re.compile(rb"[\x20-\x7e\t]{4,}")
+
+
+def strings_grep(file_path, pattern):
+    """Pure-Python `strings -a FILE | grep -Ei PATTERN` (works on Windows too)."""
+    try:
+        data = Path(file_path).read_bytes()
+    except OSError:
+        return ""
+    rx = re.compile(pattern, re.IGNORECASE)
+    lines = (m.group().decode("ascii", "replace") for m in _PRINTABLE_RUN.finditer(data))
+    return "\n".join(line for line in lines if rx.search(line))
+
 
 def get_shared_settings_path():
     cache_dir = Path(get_cache_directory())
@@ -409,6 +425,8 @@ class USFPlayerWindow(tb.Window):
         self.volume_label_var.set(f"Volume: {int(vol)}%")
         save_shared_volume(vol)
 
+        if set_process_volume(getattr(self, "process", None), vol / 100.0):
+            return  # Windows / in-process playback
         if self.lazyusf_wpctl_id:
             try:
                 subprocess.run(
@@ -438,16 +456,13 @@ class USFPlayerWindow(tb.Window):
             file_p = Path(file_path)
             parent_dir = file_p.parent
 
-            cmd = f'strings -a "{file_path}" | grep -Ei "length|fade"'
-            res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, timeout=1.0)
-            if res.stdout:
-                output = res.stdout
+            output = strings_grep(file_path, "length|fade")
 
             if ("length=" not in output.lower() or "fade=" not in output.lower()) and parent_dir.exists():
                 for usf_file in parent_dir.glob("*.usf"):
-                    sub_res = subprocess.run(f'strings -a "{usf_file}" | grep -Ei "length|fade"', shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, timeout=1.0)
-                    if sub_res.stdout:
-                        output += "\n" + sub_res.stdout
+                    sub_out = strings_grep(usf_file, "length|fade")
+                    if sub_out:
+                        output += "\n" + sub_out
 
             if output:
                 for line in output.splitlines():
@@ -487,15 +502,12 @@ class USFPlayerWindow(tb.Window):
 
     def has_length_tag_in_file(self, file_path):
         try:
-            cmd = f'strings -a "{file_path}" | grep -Ei length'
-            res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, timeout=1.0)
-            if res.stdout and "length=" in res.stdout.lower():
+            if "length=" in strings_grep(file_path, "length").lower():
                 return True
             parent_dir = Path(file_path).parent
             if parent_dir.exists():
                 for usf_file in parent_dir.glob("*.miniusf"):
-                    sub_res = subprocess.run(f'strings -a "{usf_file}" | grep -Ei length', shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, timeout=1.0)
-                    if sub_res.stdout and "length=" in sub_res.stdout.lower():
+                    if "length=" in strings_grep(usf_file, "length").lower():
                         return True
         except Exception:
             pass
@@ -560,6 +572,9 @@ class USFPlayerWindow(tb.Window):
         self.playback_thread.start()
 
     def _resolve_wpctl_stream_id(self):
+        if IS_WINDOWS:
+            set_process_volume(self.process, max(0, min(150, float(self.volume_var.get()))) / 100.0)
+            return
         awk_cmd = "wpctl status | awk '/Streams:/ {in_streams=1; next} in_streams && /libao\\[lazyusf\\]/ {sub(/\\.$/, \"\", $1); print $1; exit} in_streams && /^[^[:space:]]/ {exit}'"
         
         for _ in range(30):
@@ -602,13 +617,21 @@ class USFPlayerWindow(tb.Window):
         cmd.append(str(file_path))
 
         try:
-            proc = subprocess.Popen(
-                cmd, 
-                stdout=subprocess.PIPE, 
-                stderr=subprocess.DEVNULL, 
-                text=True, 
-                bufsize=1
-            )
+            if IS_WINDOWS:
+                # usfdec.exe (lazyusf2) writes WAV to stdout; emit lazyusf's
+                # "elapsed minutes" lines so the loop below works unchanged
+                proc = PcmPipeProcess(
+                    cmd, wav=True, progress_line=lambda pos, total: f"{pos / 60.0:.7f}",
+                    volume=max(0.0, min(150.0, float(self.volume_var.get()))) / 100.0,
+                )
+            else:
+                proc = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
+                    text=True,
+                    bufsize=1
+                )
             
             if session_id != self.playback_session_id:
                 try:
@@ -679,20 +702,14 @@ class USFPlayerWindow(tb.Window):
 
         if not self.is_paused:
             try:
-                if sys.platform == "win32":
-                    subprocess.run(["powershell", "-Command", f"Suspend-Process -Id {self.process.pid}"], capture_output=True)
-                else:
-                    self.process.send_signal(signal.SIGSTOP)
+                suspend_process(self.process)
                 self.is_paused = True
                 self.status_var.set("Paused")
             except Exception as e:
                 print(f"[USFPlayer] Error pausing process: {e}")
         else:
             try:
-                if sys.platform == "win32":
-                    subprocess.run(["powershell", "-Command", f"Resume-Process -Id {self.process.pid}"], capture_output=True)
-                else:
-                    self.process.send_signal(signal.SIGCONT)
+                resume_process(self.process)
                 self.is_paused = False
                 self.status_var.set("Playing")
             except Exception as e:

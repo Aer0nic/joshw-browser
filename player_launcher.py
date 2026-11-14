@@ -59,6 +59,52 @@ def player_script_for(audio_file):
 # ---------------------------------------------------------------------------
 # Launching (browser / player side)
 # ---------------------------------------------------------------------------
+# script -> (module, window class) for running a player inside a frozen app
+PLAYER_CLASSES = {
+    "arcade_player.py": ("arcade_player", "ArcadePlayerWindow"),
+    "neobae_player.py": ("neobae_player", "PlayBAEPlayerWindow"),
+    "vgmstream_player.py": ("vgmstream_player", "VGMStreamPlayerWindow"),
+    "sid_player.py": ("sid_player", "SIDPlayerWindow"),
+    "usf_player.py": ("usf_player", "USFPlayerWindow"),
+    "gsf_player.py": ("gsf_player", "GSFPlayerWindow"),
+    "twosf_player.py": ("twosf_player", "TwoSFPlayerWindow"),
+    "psf_player.py": ("psf_player", "PSFPlayerWindow"),
+    "gme_player.py": ("gme_player", "GMEPlayerWindow"),
+    "mpv_player.py": ("mpv_player", "MPVPlayerWindow"),
+}
+
+
+def _player_command(script):
+    """Command prefix that starts a player script as its own process.
+
+    * PyInstaller build: the app executable re-launched with --player <script>
+      (the .py files are not shipped separately; main.py dispatches).
+    * Loose files on Windows: pythonw.exe so no console window appears.
+    * Loose files on Linux: the current interpreter.
+    """
+    if getattr(sys, "frozen", False):
+        return [sys.executable, "--player", script]
+    python = sys.executable
+    if sys.platform == "win32":
+        pythonw = os.path.join(os.path.dirname(python), "pythonw.exe")
+        if os.path.exists(pythonw):
+            python = pythonw
+    return [python, str(resource_path(script))]
+
+
+def run_player_from_main(argv):
+    """Entry point used by main.py for `--player <script> <args...>`."""
+    script = argv[0] if argv else ""
+    if script not in PLAYER_CLASSES:
+        print(f"Unknown player: {script}")
+        sys.exit(2)
+    module_name, class_name = PLAYER_CLASSES[script]
+    import importlib
+    window_cls = getattr(importlib.import_module(module_name), class_name)
+    sys.argv = [script] + list(argv[1:])
+    run_player(window_cls)
+
+
 def launch_player(audio_file, playlist=None, start_index=None, script=None):
     """Start the right player for audio_file as an independent process.
 
@@ -66,7 +112,7 @@ def launch_player(audio_file, playlist=None, start_index=None, script=None):
     be long (and PSF playlists hold dicts rather than plain paths).
     """
     script = script or player_script_for(audio_file)
-    cmd = [sys.executable, str(resource_path(script)), str(audio_file)]
+    cmd = _player_command(script) + [str(audio_file)]
 
     if playlist:
         fd, playlist_path = tempfile.mkstemp(prefix="player_playlist_", suffix=".json",
@@ -77,9 +123,9 @@ def launch_player(audio_file, playlist=None, start_index=None, script=None):
     elif start_index is not None:
         cmd += ["--start-index", str(int(start_index))]
 
-    # start_new_session: closing the browser doesn't take the player down with it
-    kwargs = {"start_new_session": True} if os.name == "posix" else {}
-    return subprocess.Popen(cmd, **kwargs)
+    # Detached: closing the browser doesn't take the player down with it
+    from platform_support import detached_popen_kwargs
+    return subprocess.Popen(cmd, **detached_popen_kwargs())
 
 
 # ---------------------------------------------------------------------------

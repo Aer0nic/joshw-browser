@@ -12,6 +12,7 @@ import urllib.request
 import tkinter as tk
 import tkinter.font as tkfont
 import ttkbootstrap as tb
+from platform_support import IS_WINDOWS, find_tool, hidden_popen_kwargs, open_path
 from player_launcher import launch_player, player_script_for, write_theme_preview, clear_theme_preview
 from ttkbootstrap.constants import *
 from tkinter import ttk, filedialog, messagebox
@@ -1184,7 +1185,18 @@ class JoshWBrowser(tb.Window):
             daemon=True
         ).start()    
     
+    # Dependency key -> bundled Windows tool (platform_support.WINDOWS_TOOLS)
+    WINDOWS_DEPENDENCIES = {
+        "lazyusf": "usfdec", "vgmstream": "vgmstream-cli", "sidplayfp": "sidplayfp",
+        "playgsf": "gsfdec", "2sfplay": "2sfdec", "vgmplay": "vgmplay",
+        "neobae_player": "playbae", "playbae": "playbae", "aosdk": "aosdk",
+        "psfplay": "aosdk", "mpv": "mpv", "7z": "7z", "libgme": "libgme",
+    }
+
     def check_dependency_status(self, dep_name):
+        if IS_WINDOWS:
+            tool = self.WINDOWS_DEPENDENCIES.get(dep_name)
+            return bool(tool and find_tool(tool))
         cache_dir = get_cache_directory()
         if dep_name == "lazyusf":
             return (
@@ -1250,8 +1262,16 @@ class JoshWBrowser(tb.Window):
         ]
         cache_dir = Path(get_cache_directory())
 
+        if IS_WINDOWS:
+            deps.append(("mpv", "mpv", "mpv"))
+            deps.append(("7-Zip", "7z", "7z"))
+            deps.append(("Game Music Emu (libgme)", "libgme", "libgme"))
+
         for display_name, key, bin_name in deps:
-            is_installed = (cache_dir / bin_name).exists() or shutil.which(bin_name)
+            if IS_WINDOWS:
+                is_installed = self.check_dependency_status(key)
+            else:
+                is_installed = (cache_dir / bin_name).exists() or shutil.which(bin_name)
             if is_installed:
                 self.deps_menu.add_command(
                     label=f"✓ {display_name} (Installed)", 
@@ -1392,8 +1412,9 @@ class JoshWBrowser(tb.Window):
         self._last_loaded_music_dir = saved_load_dir
 
         if sys.platform == "win32":
-            self.path_7z = tk.StringVar(value="7z.exe")
-            self.path_mpv = tk.StringVar(value="mpv.exe")
+            # Bundled copies in assets/libraries/windows, else whatever is on PATH
+            self.path_7z = tk.StringVar(value=find_tool("7z") or "7z.exe")
+            self.path_mpv = tk.StringVar(value=find_tool("mpv") or "mpv.exe")
         else:
             self.path_7z = tk.StringVar(value="/bin/7z")
             self.path_mpv = tk.StringVar(value="/bin/mpv")
@@ -2225,6 +2246,11 @@ class JoshWBrowser(tb.Window):
             if not vgm_bin or (not shutil.which(vgm_bin) and not os.path.exists(vgm_bin)):
                 messagebox.showerror("vgmstream123 Not Found", "vgmstream123 not found!")
                 return
+        if script == "mpv_player.py" and IS_WINDOWS:
+            from windows_setup import ensure_mpv_interactive
+            if not ensure_mpv_interactive(self):
+                return
+            self.path_mpv.set(find_tool("mpv") or self.path_mpv.get())
         if script == "mpv_player.py":
             mpv_path = self.path_mpv.get().strip() or "mpv"
             if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
@@ -2838,7 +2864,7 @@ class JoshWBrowser(tb.Window):
                     if progress_win.winfo_exists():
                         self.messages.put(("update_extraction_progress", progress_win, filename, current, total))
                 
-                subprocess.run([self.path_7z.get().strip() or "7z", "x", output_path, f"-o{extract_dir}", "-y"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                subprocess.run([self.path_7z.get().strip() or "7z", "x", output_path, f"-o{extract_dir}", "-y"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **hidden_popen_kwargs())
                 extracted = True
             except Exception as e:
                 self.messages.put(("error", f"Failed to extract with 7-Zip:\n\n{e}"))

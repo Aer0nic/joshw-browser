@@ -8,9 +8,14 @@ if getattr(sys, 'frozen', False):
         os.environ['SSL_CERT_FILE'] = bundled_cert
         os.environ['REQUESTS_CA_BUNDLE'] = bundled_cert
 
-from browser import JoshWBrowser
 
 
 if __name__ == "__main__":
-    app = JoshWBrowser()
-    app.mainloop()
+    if len(sys.argv) > 1 and sys.argv[1] == "--player":
+        # A player launched from the browser in a PyInstaller build
+        from player_launcher import run_player_from_main
+        run_player_from_main(sys.argv[2:])
+    else:
+        from browser import JoshWBrowser
+        app = JoshWBrowser()
+        app.mainloop()

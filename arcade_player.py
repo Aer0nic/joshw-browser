@@ -11,6 +11,7 @@ import re
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale
+from platform_support import IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
 from player_launcher import attach_settings_sync, run_player
 from tkinter import ttk, messagebox, filedialog
 
@@ -348,6 +349,9 @@ class ArcadePlayerWindow(tb.Window):
         self.apply_live_volume()
 
     def apply_live_volume(self):
+        if IS_WINDOWS:
+            set_process_volume(self.proc, max(0, min(150, int(self.volume_var.get()))) / 100.0)
+            return
         if not self.arcade_wpctl_id and self.proc:
             threading.Thread(target=self._resolve_and_apply_volume, daemon=True).start()
             return
@@ -366,6 +370,9 @@ class ArcadePlayerWindow(tb.Window):
                 threading.Thread(target=self._resolve_and_apply_volume, daemon=True).start()
 
     def _resolve_and_apply_volume(self):
+        if IS_WINDOWS:
+            set_process_volume(self.proc, max(0, min(150, float(self.volume_var.get()))) / 100.0)
+            return
         awk_cmd = "wpctl status | awk '/Streams:/ {in_streams=1; next} in_streams && /vgmplay/ {sub(/\\.$/, \"\", $1); print $1; exit} in_streams && /^[^[:space:]]/ {exit}'"
         for _ in range(25):
             if not self.proc or self.proc.poll() is not None:
@@ -492,7 +499,8 @@ class ArcadePlayerWindow(tb.Window):
         cmd = [vgmplay_bin, self.audio_file]
 
         try:
-            self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+            self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1,
+                                         cwd=os.path.dirname(vgmplay_bin) or None, **hidden_popen_kwargs())
             threading.Thread(target=self._read_vgmplay_stdout, args=(self.proc,), daemon=True).start()
             threading.Thread(target=self._resolve_and_apply_volume, daemon=True).start()
         except Exception as e:
@@ -531,13 +539,11 @@ class ArcadePlayerWindow(tb.Window):
             return
         try:
             if self.is_paused:
-                if hasattr(os, "kill") and hasattr(signal, "SIGCONT"):
-                    os.kill(self.proc.pid, signal.SIGCONT)
+                resume_process(self.proc)
                 self.is_paused = False
                 self.status_var.set("Playing")
             else:
-                if hasattr(os, "kill") and hasattr(signal, "SIGSTOP"):
-                    os.kill(self.proc.pid, signal.SIGSTOP)
+                suspend_process(self.proc)
                 self.is_paused = True
                 self.status_var.set("Paused")
         except Exception:

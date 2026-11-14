@@ -8,6 +8,7 @@ import time
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale, load_saved_font_size
+from platform_support import IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
 from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox
 from config import resource_path, get_binary_path
@@ -187,6 +188,8 @@ class SIDPlayerWindow(tb.Window):
             return
 
         vol_percent = int(self.volume_var.get())
+        if set_process_volume(self.sid_proc, vol_percent / 100.0):
+            return  # Windows mixer
         pid = self.sid_proc.pid
 
         # Attempt volume adjustment using standard Linux process volume tools (pactl / pamixer / wpctl)
@@ -310,6 +313,7 @@ class SIDPlayerWindow(tb.Window):
         try:
             self.sid_proc = subprocess.Popen(
                 cmd_args,
+                **hidden_popen_kwargs(),
                 env=env,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
@@ -402,11 +406,11 @@ class SIDPlayerWindow(tb.Window):
             return
         try:
             if self.is_paused:
-                os.kill(self.sid_proc.pid, signal.SIGCONT)
+                resume_process(self.sid_proc)
                 self.is_paused = False
                 self.status_var.set("Playing")
             else:
-                os.kill(self.sid_proc.pid, signal.SIGSTOP)
+                suspend_process(self.sid_proc)
                 self.is_paused = True
                 self.status_var.set("Paused")
         except Exception:

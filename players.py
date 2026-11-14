@@ -1,4 +1,5 @@
 import array
+import sys
 import json
 import os
 import queue
@@ -529,6 +530,13 @@ class ExtractedFilesBrowserWindow(tb.Toplevel):
             return
 
         if ext == ".xmi":
+            if sys.platform == "win32":
+                messagebox.showinfo(
+                    "XMI Not Supported on Windows",
+                    "Converting .xmi files needs WildMIDI and a bash shell, which are Linux-only.\n\n"
+                    "Look for .mid versions of this music instead."
+                )
+                return
             folder = os.path.dirname(full_path)
             sh_path = os.path.join(get_cache_directory(), "xmi2mid.sh")
             
@@ -637,6 +645,7 @@ echo "Conversion succeeded; XMI originals deleted."
     def browse_extracted_folder(self):
         try:
             if os.path.exists(self.folder_path):
-                subprocess.Popen(["xdg-open", self.folder_path])
+                from platform_support import open_path
+                open_path(self.folder_path)
         except Exception as e:
             messagebox.showerror("Error", f"Could not open folder:\n\n{e}")

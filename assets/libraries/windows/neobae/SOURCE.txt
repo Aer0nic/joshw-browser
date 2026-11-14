@@ -1,0 +1,2 @@
+https://github.com/zefie/NeoBAE/releases/tag/zefie-release-2026.11.05.2
+neobae-suite_windows_x86_64_zefie-release-2026.11.05.2.zip

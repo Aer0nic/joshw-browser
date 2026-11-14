@@ -9,6 +9,7 @@ import random
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale, load_saved_font_size
+from platform_support import IS_WINDOWS, PcmPipeProcess, format_hms, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
 from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox
 from config import is_emulated_file, resource_path
@@ -120,7 +121,7 @@ class VGMStreamPlayerWindow(tb.Window):
         if vgm_bin and (shutil.which(str(vgm_bin)) or os.path.exists(str(vgm_bin))):
             try:
                 cmd = [str(vgm_bin), "-m", self.audio_file]
-                result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=5)
+                result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=5, **hidden_popen_kwargs())
                 for line in result.stdout.splitlines():
                     if "subsongs:" in line.lower() or "tracks:" in line.lower():
                         m = re.search(r'(\d+)', line)
@@ -301,6 +302,8 @@ class VGMStreamPlayerWindow(tb.Window):
         set_player_volume(float(value), source_player=self)
 
     def apply_live_volume(self):
+        if set_process_volume(self.vgmstream_proc, max(0, min(150, int(self.volume_var.get()))) / 100.0):
+            return  # Windows / in-process playback
         if not self.pactl_stream_id and self.vgmstream_proc:
             self.pactl_stream_id = self.find_sink_input_id(self.vgmstream_proc.pid)
         
@@ -384,6 +387,10 @@ class VGMStreamPlayerWindow(tb.Window):
             messagebox.showerror("vgmstream123 Not Found", "vgmstream123 binary not found!")
             return
 
+        if IS_WINDOWS:
+            self._start_vgmstream_windows(vgm_bin, start_time)
+            return
+
         cmd = [str(vgm_bin), "-m"]
         if self.loop_forever_var.get():
             cmd.append("-c")
@@ -421,6 +428,71 @@ class VGMStreamPlayerWindow(tb.Window):
             threading.Thread(target=self.read_output, daemon=True).start()
         except Exception as e:
             messagebox.showerror("vgmstream123 Error", f"Could not launch vgmstream123:\n\n{e}")
+
+    def _vgmstream_metadata(self, vgm_bin):
+        """(sample_rate, play_seconds) from `vgmstream-cli -m`, cached per file+subsong."""
+        key = (self.audio_file, self.current_chapter if self.total_chapters > 1 else 0)
+        cache = getattr(self, "_meta_cache", {})
+        if key in cache:
+            return cache[key]
+        rate, seconds = 44100, None
+        try:
+            cmd = [str(vgm_bin), "-m"]
+            if self.total_chapters > 1:
+                cmd += ["-s", str(self.current_chapter + 1)]
+            cmd.append(self.audio_file)
+            out = subprocess.run(cmd, capture_output=True, text=True, timeout=10,
+                                 **hidden_popen_kwargs()).stdout
+            m = re.search(r"sample rate:\s*(\d+)", out, re.IGNORECASE)
+            if m:
+                rate = int(m.group(1))
+            m = re.search(r"play duration:\s*(\d+)\s*samples", out, re.IGNORECASE)
+            if m:
+                seconds = int(m.group(1)) / float(rate)
+        except Exception as e:
+            print(f"[vgmstream] metadata failed: {e}")
+        cache[key] = (rate, seconds)
+        self._meta_cache = cache
+        return rate, seconds
+
+    def _start_vgmstream_windows(self, vgm_bin, start_time):
+        """Windows: vgmstream-cli decodes a WAV stream to stdout; PcmPipeProcess
+        plays it and prints 'Time: x of y' lines like vgmstream123 does."""
+        rate, play_seconds = self._vgmstream_metadata(vgm_bin)
+        cmd = [str(vgm_bin), "-p", "-D", "2"]
+        if self.loop_forever_var.get():
+            cmd.append("-c")
+        elif self.loop_chk_var.get():
+            cmd += ["-l", str(self.loop_count_var.get())]
+            play_seconds = None  # length changes with the loop count; read it from the WAV header
+        else:
+            cmd += ["-l", "1"]
+            play_seconds = None
+        if self.total_chapters > 1:
+            cmd += ["-s", str(self.current_chapter + 1)]
+        if start_time > 0:
+            cmd += ["-k", str(int(start_time * rate))]
+        cmd.append(self.audio_file)
+
+        def progress(pos, total):
+            total = total if total else 0.0
+            return f"Time: {format_hms(pos)} of {format_hms(total)}"
+
+        if hasattr(self, "metadata_text") and self.winfo_exists():
+            self.metadata_text.config(state="normal")
+            self.metadata_text.delete("1.0", tk.END)
+            self.metadata_text.config(state="disabled")
+        try:
+            self.vgmstream_proc = PcmPipeProcess(
+                cmd, progress_line=progress, wav=True, start_offset=start_time,
+                total_seconds=None if self.loop_forever_var.get() else play_seconds,
+                volume=max(0, min(150, int(self.volume_var.get()))) / 100.0,
+            )
+            self.is_paused = False
+            self.status_var.set("Playing")
+            threading.Thread(target=self.read_output, daemon=True).start()
+        except Exception as e:
+            messagebox.showerror("vgmstream Error", f"Could not launch vgmstream-cli:\n\n{e}")
 
     def read_output(self):
         proc = self.vgmstream_proc
@@ -519,11 +591,11 @@ class VGMStreamPlayerWindow(tb.Window):
             return
         try:
             if self.is_paused:
-                os.kill(self.vgmstream_proc.pid, signal.SIGCONT)
+                resume_process(self.vgmstream_proc)
                 self.is_paused = False
                 self.status_var.set("Playing")
             else:
-                os.kill(self.vgmstream_proc.pid, signal.SIGSTOP)
+                suspend_process(self.vgmstream_proc)
                 self.is_paused = True
                 self.status_var.set("Paused")
         except Exception:

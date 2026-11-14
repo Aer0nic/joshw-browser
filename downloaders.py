@@ -135,7 +135,8 @@ def check_and_download_sid_firmware():
     """Silently checks and downloads kernel and basic firmware files on startup if missing."""
     try:
         if sys.platform == "win32":
-            sidplayfp_dir = Path(config.get_cache_directory()) / "sidplayfp"
+            # sidplayfp.exe looks for kernal/basic ROMs in %APPDATA%\\sidplayfp
+            sidplayfp_dir = Path(os.environ.get("APPDATA", os.path.expanduser("~"))) / "sidplayfp"
         else:
             sidplayfp_dir = Path(os.path.expanduser("~/.local/share/sidplayfp"))
             
@@ -254,16 +255,26 @@ def install_dependencies_prompt(parent, is_first_start=False, on_complete=None):
     pkg_str = " ".join(pkgs)
 
     if sys.platform == "win32":
+        # Windows: playback tools are bundled; only download what isn't (no admin, no terminal)
+        from windows_setup import WindowsSetupWindow, missing_items
+        items = missing_items()
         msg = (
-            "Automatic dependency building via apt/CMake scripts is designed for Linux environments.\n\n"
-            "On Windows, please ensure external CLI binaries like vgmstream123, mpv, and 7-Zip are available in your system PATH or project directory."
+            "Most playback components are bundled with the program.\n\n"
+            + ("The following will be downloaded into your Documents\\joshw folder:\n\n  • "
+               + "\n  • ".join(items) + "\n\n" if items else "")
+            + "C64 ROM files for SID playback will also be fetched if missing.\n\n"
+            "Click OK to continue."
         )
+
+        def start_windows_setup():
+            WindowsSetupWindow(parent, on_complete=on_complete)
+
         if is_first_start:
-            FirstStartInstallDialog(parent, msg, lambda: [on_complete() if on_complete else None])
-        else:
-            messagebox.showinfo("Windows Dependencies", msg)
-            if on_complete:
-                on_complete()
+            FirstStartInstallDialog(parent, msg, start_windows_setup)
+        elif messagebox.askokcancel("Install Dependencies", msg):
+            start_windows_setup()
+        elif on_complete:
+            on_complete()
         return
 
     prompt_body = (

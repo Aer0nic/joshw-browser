@@ -7,6 +7,7 @@ import time
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale, load_saved_font_size
+from platform_support import PcmPipeProcess, IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
 from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox
 from config import is_emulated_file, resource_path
@@ -225,6 +226,8 @@ class TwoSFPlayerWindow(tb.Window):
             return
 
         vol_percent = int(self.volume_var.get())
+        if set_process_volume(self.proc, vol_percent / 100.0):
+            return  # Windows / in-process playback
         pid = self.proc.pid
 
         try:
@@ -299,14 +302,27 @@ class TwoSFPlayerWindow(tb.Window):
         cmd_args.append(self.audio_file)
 
         try:
-            self.proc = subprocess.Popen(
-                cmd_args,
-                env=env,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1
-            )
+            if IS_WINDOWS:
+                # 2sfdec.exe writes WAV to stdout; play it in-process and emit
+                # the same "Remaining: Xs / Ys" lines the Linux 2sfPlay prints
+                def progress(pos, total):
+                    if not total:
+                        return None
+                    return f"Remaining: {max(0, int(total - pos))}s / {int(total)}s"
+                self.proc = PcmPipeProcess(
+                    cmd_args, progress_line=progress, wav=True,
+                    start_offset=self.current_position_seconds,
+                    volume=max(0, min(150, int(self.volume_var.get()))) / 100.0,
+                )
+            else:
+                self.proc = subprocess.Popen(
+                    cmd_args,
+                    env=env,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1
+                )
             self.is_paused = False
             self.status_var.set("Playing")
             self.track_var.set(f"Track: {self.current_index + 1} / {len(self.playlist)}")
@@ -349,11 +365,11 @@ class TwoSFPlayerWindow(tb.Window):
             return
         try:
             if self.is_paused:
-                os.kill(self.proc.pid, signal.SIGCONT)
+                resume_process(self.proc)
                 self.is_paused = False
                 self.status_var.set("Playing")
             else:
-                os.kill(self.proc.pid, signal.SIGSTOP)
+                suspend_process(self.proc)
                 self.is_paused = True
                 self.status_var.set("Paused")
         except Exception:

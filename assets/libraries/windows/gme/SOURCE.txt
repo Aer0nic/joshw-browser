@@ -1,0 +1,1 @@
+Cross-compiled with mingw-w64 from https://github.com/libgme/game-music-emu/releases/download/0.6.5/libgme-0.6.5-src.tar.gz
