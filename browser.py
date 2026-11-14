@@ -250,6 +250,30 @@ class ToolTip:
             tw.destroy()
 
 
+
+def _windows_in_menu_mode():
+    """True while a native menu of this (GUI) thread is open (Windows only)."""
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class GUITHREADINFO(ctypes.Structure):
+            _fields_ = [("cbSize", wintypes.DWORD), ("flags", wintypes.DWORD),
+                        ("hwndActive", wintypes.HWND), ("hwndFocus", wintypes.HWND),
+                        ("hwndCapture", wintypes.HWND), ("hwndMenuOwner", wintypes.HWND),
+                        ("hwndMoveSize", wintypes.HWND), ("hwndCaret", wintypes.HWND),
+                        ("rcCaret", wintypes.RECT)]
+
+        info = GUITHREADINFO()
+        info.cbSize = ctypes.sizeof(GUITHREADINFO)
+        tid = ctypes.windll.kernel32.GetCurrentThreadId()
+        if not ctypes.windll.user32.GetGUIThreadInfo(tid, ctypes.byref(info)):
+            return False
+        GUI_INMENUMODE, GUI_POPUPMENUMODE = 0x4, 0x10
+        return bool(info.flags & (GUI_INMENUMODE | GUI_POPUPMENUMODE)) or bool(info.hwndMenuOwner)
+    except Exception:
+        return False
+
 class JoshWBrowser(tb.Window):
     
     COLUMN_FLOOR_WIDTHS = {"favorite": 30, "type": 60, "name": 200, "date": 60,
@@ -415,6 +439,25 @@ class JoshWBrowser(tb.Window):
             self._cancel_theme_preview_revert()
             self._apply_theme(label)
             write_theme_preview(label)  # standalone player processes follow along
+            if IS_WINDOWS:
+                self._start_windows_menu_watch()
+
+    def _start_windows_menu_watch(self):
+        """Windows menus are native Win32 menus: Tk never sees them unmap, so
+        poll the thread's menu-mode flag to notice the menu closing."""
+        if getattr(self, "_menu_watch_job", None):
+            return
+        self._menu_watch_job = self.after(150, self._windows_menu_watch_tick)
+
+    def _windows_menu_watch_tick(self):
+        self._menu_watch_job = None
+        if _windows_in_menu_mode():
+            self._menu_watch_job = self.after(150, self._windows_menu_watch_tick)
+            return
+        # Menu closed. Same delayed revert as <Unmap>: a click's change_theme
+        # (posted as WM_COMMAND after the menu closes) cancels it.
+        self._cancel_theme_preview_revert()
+        self._theme_revert_job = self.after(150, self._end_theme_preview)
 
     def _on_theme_menu_unmap(self, event):
         """Themes menu closed: revert to the saved theme unless one was chosen."""
@@ -1256,7 +1299,7 @@ class JoshWBrowser(tb.Window):
             ("SIDPlayFP", "sidplayfp", "sidplayfp"),
             ("PlayGSF", "playgsf", "playgsf"),
             ("2sfPlay", "2sfplay", "2sfPlay"),
-            ("AOSDK (PSF/PSF2)", "psfplay", "libaosdk.so"),
+            ("AOSDK (PSF/PSF2)", "psfplay", "aosdk.dll" if IS_WINDOWS else "libaosdk.so"),
             ("Arcade Player (vgmplay)", "vgmplay", "vgmplay"),
             ("NeoBAE (playbae)", "playbae", "playbae")
         ]

@@ -88,13 +88,13 @@ def find_aosdk_lib() -> str:
     bundled_lib_bin = resource_path("lib/libaosdk.so")
 
     if sys.platform == "win32":
-        # Windows build: assets/libraries/windows/aosdk/aosdk.dll (or user folder)
+        # Windows build: assets/libraries/windows/decoders/aosdk.dll (or user folder)
         from platform_support import find_tool
         win_lib = find_tool("aosdk")
         if win_lib:
             return win_lib
         raise FileNotFoundError(
-            "Could not find 'aosdk.dll' (assets/libraries/windows/aosdk/). "
+            "Could not find 'aosdk.dll' (assets/libraries/windows/decoders/). "
             "PSF playback on Windows needs the AOSDK DLL."
         )
 

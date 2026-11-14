@@ -20,6 +20,7 @@ tools/fetch_windows_deps.py for where each one comes from.
 import ctypes
 import io
 import os
+import queue
 import shutil
 import signal
 import struct
@@ -45,7 +46,7 @@ WINDOWS_TOOLS = {
     "mpv":           ("mpv", "mpv.exe"),
     "7z":            ("7zip", "7za.exe"),
     "libgme":        ("gme", "libgme.dll"),
-    "aosdk":         ("aosdk", "aosdk.dll"),
+    "aosdk":         ("decoders", "aosdk.dll"),
     "2sfdec":        ("decoders", "2sfdec.exe"),
     "gsfdec":        ("decoders", "gsfdec.exe"),
     "usfdec":        ("decoders", "usfdec.exe"),
@@ -460,64 +461,135 @@ class SoundDeviceSink:
     """Stands in for an `aplay -t raw -f S16_LE` process on Windows.
 
     Players that stream raw PCM into aplay's stdin can write into .stdin of
-    this object instead; audio goes out through sounddevice. Pause is handled
-    by the caller (it simply stops writing), volume by the caller's own gain.
+    this object instead; audio goes out through sounddevice.
+
+    Only the sink's own thread ever touches the PortAudio stream. On Windows,
+    stopping/closing a stream from one thread while another is blocked in
+    write() crashes the process, so writers just hand chunks over through a
+    small queue. While paused (or starved) the device is fed silence, like
+    PcmPipeProcess does.
     """
+
+    _EOF = object()
+    BLOCK_FRAMES = 2048
 
     class _Writer:
         def __init__(self, sink):
             self._sink = sink
 
         def write(self, data):
-            if self._sink._stream is None:
-                raise BrokenPipeError("sink closed")
-            self._sink._stream.write(data)
-            return len(data)
+            sink = self._sink
+            while True:
+                if sink._aborted.is_set() or sink._closing:
+                    raise BrokenPipeError("sink closed")
+                try:
+                    sink._queue.put(bytes(data), timeout=0.1)
+                    return len(data)
+                except queue.Full:
+                    continue
 
         def flush(self):
             pass
 
         def close(self):
-            self._sink._close()
+            self._sink._close(drain=True)
 
     def __init__(self, sample_rate=44100, channels=2):
-        import sounddevice as sd
-        self._stream = sd.RawOutputStream(samplerate=sample_rate, channels=channels, dtype="int16")
-        self._stream.start()
+        self.sample_rate = sample_rate
+        self.channels = channels
+        self._queue = queue.Queue(maxsize=4)
+        self._aborted = threading.Event()
+        self._paused = threading.Event()
+        self._closing = False
+        self._started = threading.Event()
+        self._error = None
         self.stdin = self._Writer(self)
         self.pid = os.getpid()
         self.returncode = None
+        self._thread = threading.Thread(target=self._run, daemon=True)
+        self._thread.start()
+        self._started.wait(5)
+        if self._error is not None:
+            raise self._error
 
-    def _close(self, drain=True):
-        if self._stream is not None:
+    def _run(self):
+        stream = None
+        try:
+            import sounddevice as sd
+            stream = sd.RawOutputStream(samplerate=self.sample_rate, channels=self.channels,
+                                        dtype="int16", blocksize=self.BLOCK_FRAMES)
+            stream.start()
+        except Exception as e:
+            self._error = e
+            self._started.set()
+            self.returncode = 1
+            return
+        self._started.set()
+        silence = bytes(self.BLOCK_FRAMES * 2 * self.channels)
+        try:
+            while not self._aborted.is_set():
+                if self._paused.is_set():
+                    stream.write(silence)
+                    continue
+                try:
+                    data = self._queue.get(timeout=0.02)
+                except queue.Empty:
+                    if self._closing:
+                        break
+                    stream.write(silence)  # starved: keep the device fed
+                    continue
+                if data is self._EOF:
+                    break
+                stream.write(data)
+        except Exception:
+            pass
+        finally:
             try:
-                if drain:
-                    self._stream.stop()
-                self._stream.close()
+                if self._aborted.is_set():
+                    stream.abort()
+                else:
+                    stream.stop()  # let the tail of the buffer play out
+                stream.close()
             except Exception:
                 pass
-            self._stream = None
-        if self.returncode is None:
-            self.returncode = 0
+            if self.returncode is None:
+                self.returncode = 0
+
+    def _close(self, drain=True):
+        if not drain:
+            self._aborted.set()
+            self._paused.clear()
+            return
+        if self._closing:
+            return
+        self._closing = True
+        self._paused.clear()
+        try:
+            self._queue.put(self._EOF, timeout=1)
+        except queue.Full:
+            pass
 
     def poll(self):
         return self.returncode
 
     def wait(self, timeout=None):
-        self._close()
+        self._close(drain=True)
+        self._thread.join(timeout)
+        if self._thread.is_alive():
+            raise subprocess.TimeoutExpired("SoundDeviceSink", timeout)
         return self.returncode
 
     def terminate(self):
         self._close(drain=False)
+        self._thread.join(2)
 
     kill = terminate
 
-    # pause/resume are no-ops: the writer just stops feeding audio
     def pause(self):
-        pass
+        self._paused.set()
 
     def resume(self):
-        pass
+        self._paused.clear()
 
 
 def mpv_ipc_path(tag):

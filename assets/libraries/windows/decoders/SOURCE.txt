@@ -1,3 +1,4 @@
 2sfdec: https://github.com/yshui/2sftowav.git @ 9e3124f + tools/windows_decoders/2sfdec.c
 gsfdec: https://github.com/yshui/playgsf.git @ ad37147 + tools/windows_decoders/gsfdec.cpp
 usfdec: https://github.com/derselbst/lazyusf2.git @ 00d19c9 + https://github.com/kode54/psflib.git @ 6cb3515 + tools/windows_decoders/usfdec.c
+aosdk.dll: https://github.com/DeaDBeeF-Player/deadbeef.git @ 47de75b641e92f800166a2a5fb0d1a78bd86a502 (plugins/psf/aosdk, AOSDK 1.4.8: BSD-3-Clause; PEOpS SPU: GPL-2.0+) + tools/windows_decoders/aosdk_wrapper.c

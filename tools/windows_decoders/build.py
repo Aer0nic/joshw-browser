@@ -3,7 +3,7 @@
 Build the small format decoders used on Windows (they write WAV to stdout;
 the app plays it via platform_support.PcmPipeProcess).
 
-  python tools/windows_decoders/build.py <output_dir> [--native]
+  python tools/windows_decoders/build.py <output_dir> [--native] [name ...]
 
 --native builds Linux binaries with the host compiler instead (for testing
 the decoders on a Linux machine). Default target: Windows x64 via mingw-w64.
@@ -15,6 +15,10 @@ Decoders:
               source: github.com/yshui/playgsf (pinned commit below)
   usfdec.exe  Nintendo 64 (.usf/.miniusf)  core: lazyusf2 (mupen64plus) + psflib
               source: github.com/derselbst/lazyusf2 (pinned commit below)
+  aosdk.dll   PlayStation 1/2 (.psf/.minipsf/.psf2) - loaded by psf_ctypes.py
+              core: Audio Overload SDK 1.4.8 PSF/PSF2 engines (PEOpS SPU)
+              source: github.com/DeaDBeeF-Player/deadbeef plugins/psf/aosdk
+              (pinned commit below) + tools/windows_decoders/aosdk_wrapper.c
 """
 import os
 import shutil
@@ -32,6 +36,13 @@ USF_REPO = "https://github.com/derselbst/lazyusf2.git"
 USF_COMMIT = "00d19c9"
 PSFLIB_REPO = "https://github.com/kode54/psflib.git"
 PSFLIB_COMMIT = "6cb3515"  # same psflib revision 2sftowav uses
+AOSDK_REPO = "https://github.com/DeaDBeeF-Player/deadbeef.git"
+AOSDK_COMMIT = "47de75b641e92f800166a2a5fb0d1a78bd86a502"
+# PSF + PSF2 engines only (the Saturn/Dreamcast/QSound engines aren't used);
+# adsr/dma/registers/reverb are #included by spu.c / spu2.c
+AOSDK_SOURCES = """corlett.c eng_psf/eng_psf.c eng_psf/eng_psf2.c eng_psf/psx.c
+eng_psf/psx_hw.c eng_psf/peops/spu.c eng_psf/peops2/spu2.c eng_psf/peops2/dma2.c
+eng_psf/peops2/registers2.c""".split()
 
 # lazyusf2 Makefile OBJS, minus the x86 recompiler (interpreter build: portable)
 USF_SOURCES = """ai/ai_controller api/callbacks debugger/dbg_decoder main/main main/rom
@@ -144,14 +155,50 @@ def build_usfdec(work, out_dir, native):
     return exe
 
 
+def build_aosdk(work, out_dir, native):
+    cc, _cxx, link_flags = compilers(native)
+    src = work / "deadbeef"
+    # Only plugins/psf is needed out of the whole DeaDBeeF tree
+    run(["git", "clone", "--filter=blob:none", "--no-checkout", AOSDK_REPO, src])
+    run(["git", "sparse-checkout", "set", "--no-cone", "plugins/psf/"], cwd=src)
+    run(["git", "checkout", AOSDK_COMMIT], cwd=src)
+    ao = src / "plugins" / "psf" / "aosdk"
+    flags = ["-O2", "-DHAS_PSXCPU=1", "-I", ao, "-I", ao / "eng_psf", "-w",
+             "-fno-strict-aliasing"]
+    if native:
+        flags.append("-fPIC")
+    objs = []
+    for rel in AOSDK_SOURCES:
+        o = work / ("ao_" + rel.replace("/", "_").replace(".c", ".o"))
+        run([cc, "-c", *flags, "-o", o, ao / rel])
+        objs.append(o)
+    main_o = work / "aosdk_wrapper.o"
+    run([cc, "-c", *flags, "-o", main_o, HERE / "aosdk_wrapper.c"])
+    if native:
+        lib = out_dir / "libaosdk.so"
+        run([cc, "-shared", "-o", lib, main_o, *objs, "-lz", "-lm"])
+    else:
+        lib = out_dir / "aosdk.dll"
+        # zlib/libgcc linked in statically: the DLL only needs system DLLs
+        run([cc, "-shared", "-o", lib, main_o, *objs, "-Wl,-Bstatic", "-lz",
+             "-static-libgcc", "-s", "-Wl,--exclude-libs,ALL"])
+    return lib
+
+
+BUILDERS = {"2sfdec": "build_2sfdec", "gsfdec": "build_gsfdec", "usfdec": "build_usfdec",
+            "aosdk": "build_aosdk"}
+
+
 def main(argv):
     if not argv:
         sys.exit(__doc__)
     out_dir = Path(argv[0]).resolve()
     native = "--native" in argv
+    only = [a for a in argv[1:] if not a.startswith("--")]  # e.g. "aosdk gsfdec"
+    builders = [globals()[BUILDERS[n]] for n in (only or BUILDERS)]
     out_dir.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="joshw_decoders_") as tmp:
-        for builder in (build_2sfdec, build_gsfdec, build_usfdec):
+        for builder in builders:
             work = Path(tmp) / builder.__name__
             work.mkdir()
             print(f"[build] built {builder(work, out_dir, native)}")
@@ -159,6 +206,8 @@ def main(argv):
         f"2sfdec: {TWOSF_REPO} @ {TWOSF_COMMIT} + tools/windows_decoders/2sfdec.c\n"
         f"gsfdec: {GSF_REPO} @ {GSF_COMMIT} + tools/windows_decoders/gsfdec.cpp\n"
         f"usfdec: {USF_REPO} @ {USF_COMMIT} + {PSFLIB_REPO} @ {PSFLIB_COMMIT} + tools/windows_decoders/usfdec.c\n"
+        f"aosdk.dll: {AOSDK_REPO} @ {AOSDK_COMMIT} (plugins/psf/aosdk, AOSDK 1.4.8: BSD-3-Clause;"
+        f" PEOpS SPU: GPL-2.0+) + tools/windows_decoders/aosdk_wrapper.c\n"
     )
 
 

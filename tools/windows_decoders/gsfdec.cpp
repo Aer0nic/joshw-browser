@@ -18,9 +18,14 @@
 #include <csignal>
 #include <string>
 #include <unistd.h>
-#ifdef _WIN32
 #include <fcntl.h>
+#ifdef _WIN32
+#include <direct.h>
 #include <io.h>
+#define chdir _chdir
+#define dup _dup
+#define dup2 _dup2
+#define fileno _fileno
 #endif
 
 extern "C" {
@@ -55,6 +60,7 @@ static int start_time_ms = 0;
 static volatile int g_playing = 0;
 static volatile int g_must_exit = 0;
 static int g_header_written = 0;
+static FILE *g_wav = NULL;  // the real stdout; fd 1 itself is pointed at stderr
 
 extern "C" int LengthFromString(const char *timestring);
 extern "C" int VolumeFromString(const char *volumestring);
@@ -74,7 +80,7 @@ static void write_wav_header() {
     put_u32(h + 28, (uint32_t)(sndSamplesPerSec * sndNumChannels * 2));
     put_u16(h + 32, (uint16_t)(sndNumChannels * 2)); put_u16(h + 34, 16);
     memcpy(h + 36, "data", 4); put_u32(h + 40, 0xFFFFFFFFu);
-    fwrite(h, 1, sizeof h, stdout);
+    fwrite(h, 1, sizeof h, g_wav);
     g_header_written = 1;
 }
 
@@ -82,7 +88,7 @@ extern "C" void writeSound(void) {
     int ret = soundBufferLen;
     if (!g_header_written) write_wav_header();
     if (seek_needed < 0 || decode_pos_ms >= seek_needed) {
-        if (fwrite(soundFinalWave, 1, ret, stdout) != (size_t)ret) {
+        if (fwrite(soundFinalWave, 1, ret, g_wav) != (size_t)ret) {
             g_must_exit = 1;  // reader went away
             g_playing = 0;
         }
@@ -96,9 +102,17 @@ extern "C" void signal_handler(int) { g_playing = 0; g_must_exit = 1; }
 static void info(const char *key, const char *value) { fprintf(stderr, "%s: %s\n", key, value); }
 
 int main(int argc, char **argv) {
+    // The VBA core printf()s diagnostics ("Failed to load", ...) to stdout,
+    // which is the WAV stream here. Keep a private handle on the real stdout
+    // for audio and send everything else written to fd 1 to stderr.
+    fflush(stdout);
+    int wav_fd = dup(fileno(stdout));
+    dup2(fileno(stderr), fileno(stdout));
 #ifdef _WIN32
-    _setmode(_fileno(stdout), _O_BINARY);
+    _setmode(wav_fd, _O_BINARY);
 #endif
+    g_wav = fdopen(wav_fd, "wb");
+    if (!g_wav) { fprintf(stderr, "Could not open output\n"); return 1; }
     char length_str[256], fade_str[256], tmp_str[256];
     int r;
     while ((r = getopt(argc, argv, "b:chlsrieqW:L:t:")) >= 0) {
@@ -120,7 +134,24 @@ int main(int argc, char **argv) {
     if (optind >= argc) { fprintf(stderr, "No file specified\n"); return 1; }
     signal(SIGINT, signal_handler);
 
+    // playgsf (built with -DLINUX) finds "_lib" files by splitting the path on
+    // '/' only, and copies paths into 260-byte buffers. Load from inside the
+    // track's folder with the bare file name: the libs are then found as
+    // "./<lib>" no matter which separators or how long the real path is.
     const char *file = argv[optind];
+    {
+        const char *s1 = strrchr(file, '/'), *s2 = strrchr(file, '\\');
+        const char *sep = s1 > s2 ? s1 : s2;
+        if (sep) {
+            std::string dir(file, (size_t)(sep - file));
+            if (dir.empty() || (dir.size() == 2 && dir[1] == ':')) dir += '/';  // "/" or "C:"
+            if (chdir(dir.c_str()) != 0) {
+                fprintf(stderr, "Could not enter folder %s\n", dir.c_str());
+                return 1;
+            }
+            file = sep + 1;
+        }
+    }
     decode_pos_ms = 0;
     seek_needed = start_time_ms > 0 ? start_time_ms : -1;
     if (!GSFRun((char *)file)) { fprintf(stderr, "Could not load %s\n", file); return 1; }
@@ -156,7 +187,7 @@ int main(int argc, char **argv) {
     fflush(stderr);
 
     while (g_playing && !g_must_exit) EmulationLoop();
-    fflush(stdout);
+    fflush(g_wav);
     free(tag);
     return 0;
 }

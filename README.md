@@ -99,6 +99,7 @@ The Windows backends are bundled in `assets/libraries/windows/`. Each one runs h
 | GSF | playgsf | `gsfdec.exe` (playgsf core, built from `tools/windows_decoders`) |
 | 2SF | 2sfPlay | `2sfdec.exe` (vio2sf core, built from `tools/windows_decoders`) |
 | USF | lazyusf | `usfdec.exe` (lazyusf2 core, built from `tools/windows_decoders`) |
+| PSF / PSF2 | libaosdk.so | `aosdk.dll` (Audio Overload SDK engines, built from `tools/windows_decoders`) |
 | MP3, OGG, FLAC, modules, … | mpv | `mpv.exe` (downloaded on first use if not bundled) |
 | 7z extraction | 7z | `7za.exe` (official build) |
 

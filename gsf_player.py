@@ -85,9 +85,12 @@ class GSFPlayerWindow(tb.Window):
                 return tags
             with open(file_path, "rb") as f:
                 content = f.read()
-            tag_pos = content.rfind(b"TAGpsf")
+            # PSF-family tags follow the "[TAG]" marker (some tools write "TAGpsf")
+            tag_pos, marker_len = content.rfind(b"[TAG]"), 5
+            if tag_pos == -1:
+                tag_pos, marker_len = content.rfind(b"TAGpsf"), 6
             if tag_pos != -1:
-                tag_bytes = content[tag_pos + 6:]
+                tag_bytes = content[tag_pos + marker_len:]
                 tag_text = tag_bytes.decode("utf-8", errors="ignore")
                 for line in tag_text.splitlines():
                     line = line.strip()
