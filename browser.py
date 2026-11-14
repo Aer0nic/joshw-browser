@@ -251,6 +251,18 @@ class ToolTip:
 
 
 
+def _ttkb_tk_builder_class():
+    """ttkbootstrap's tk-widget style builder (module moved in 2.x)."""
+    try:
+        from ttkbootstrap.style.builders_tk import StyleBuilderTK  # 2.x
+    except ImportError:
+        try:
+            from ttkbootstrap.style import StyleBuilderTK  # 1.x
+        except ImportError:
+            return None
+    return StyleBuilderTK if hasattr(StyleBuilderTK, "update_menu_style") else None
+
+
 def _windows_in_menu_mode():
     """True while a native menu of this (GUI) thread is open (Windows only)."""
     try:
@@ -406,6 +418,7 @@ class JoshWBrowser(tb.Window):
         self.saved_theme = theme_name
         self._cancel_theme_preview_revert()
         self._apply_theme(theme_name)
+        self._restyle_menus_if_stale()
 
         try:
             settings = self.load_settings() or {}
@@ -437,7 +450,7 @@ class JoshWBrowser(tb.Window):
             return  # no active entry
         if label and label in self.style.theme_names():
             self._cancel_theme_preview_revert()
-            self._apply_theme(label)
+            self._apply_theme(label, preview=True)
             write_theme_preview(label)  # standalone player processes follow along
             if IS_WINDOWS:
                 self._start_windows_menu_watch()
@@ -481,14 +494,56 @@ class JoshWBrowser(tb.Window):
         clear_theme_preview()
         if getattr(self, "_applied_theme", None) != self.saved_theme:
             self._apply_theme(self.saved_theme)
+        self._restyle_menus_if_stale()
 
-    def _apply_theme(self, theme_name):
-        """Apply a theme's visuals without saving it to settings."""
+    def _restyle_menus_if_stale(self):
+        """Bring menus up to date after a Windows preview skipped them."""
+        if not getattr(self, "_menus_stale", False):
+            return
+        self._menus_stale = False
+        try:
+            from ttkbootstrap.style.bootstyle import Bootstyle  # ttkbootstrap 2.x
+        except ImportError:
+            from ttkbootstrap.style import Bootstyle  # 1.x
+        stack = [self]
+        while stack:
+            w = stack.pop()
+            if isinstance(w, tk.Menu):
+                try:
+                    Bootstyle.update_tk_widget_style(w)
+                except Exception:
+                    pass
+            try:
+                stack.extend(w.winfo_children())
+            except Exception:
+                pass
+
+    def _apply_theme(self, theme_name, preview=False):
+        """Apply a theme's visuals without saving it to settings.
+
+        preview=True (hovering in the Themes menu) on Windows leaves tk.Menu
+        widgets alone: Windows menus are native, and reconfiguring one makes
+        Tk rebuild it, which closes the menu being hovered. The menus are
+        restyled once the menu has closed (_restyle_menus_if_stale).
+        """
         if getattr(self, "_applied_theme", None) == theme_name:
             return
         self._applied_theme = theme_name
+        skip_menus = preview and IS_WINDOWS
         try:
-            self.style.theme_use(theme_name)
+            builder_cls = _ttkb_tk_builder_class() if skip_menus else None
+            if builder_cls is not None:
+                StyleBuilderTK = builder_cls
+                original = StyleBuilderTK.update_menu_style
+                StyleBuilderTK.update_menu_style = lambda builder, widget: None
+                try:
+                    self.style.theme_use(theme_name)
+                finally:
+                    StyleBuilderTK.update_menu_style = original
+                self._menus_stale = True
+            else:
+                self.style.theme_use(theme_name)
+                self._menus_stale = False
         except Exception as e:
             print(f"Could not apply theme: {e}")
 
