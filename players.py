@@ -398,11 +398,8 @@ class ExtractedFilesBrowserWindow(tb.Toplevel):
 
     def get_dynamic_hover_color(self):
         try:
-            # Check parent window theme if available
-            if hasattr(self.parent, "style") and self.parent.style:
-                theme_name = self.parent.style.theme_use().lower()
-                if "dark" in theme_name:
-                    return "#2a3b4c"
+            if "dark" in tb.Style().theme_use().lower():
+                return "#2a3b4c"
         except Exception:
             pass
         return "#e8f0fe"
@@ -524,8 +521,8 @@ class ExtractedFilesBrowserWindow(tb.Toplevel):
             if handler and hasattr(handler, "play_audio_file"):
                 handler.play_audio_file(full_path, playlist=playbae_files, start_index=file_idx)
             else:
-                from neobae_player import PlayBAEPlayerWindow
-                PlayBAEPlayerWindow(self.parent, full_path, playlist=playbae_files, start_index=file_idx)
+                from player_launcher import launch_player
+                launch_player(full_path, playlist=playbae_files, start_index=file_idx)
 
             if not self.keep_open:
                 self.destroy()
@@ -589,8 +586,8 @@ echo "Conversion succeeded; XMI originals deleted."
                 target_mid = f"{os.path.splitext(full_path)[0]}.mid"
                 start_idx = mid_files.index(target_mid) if target_mid in mid_files else 0
                 
-                from neobae_player import PlayBAEPlayerWindow
-                PlayBAEPlayerWindow(self.parent, mid_files[start_idx], playlist=mid_files, start_index=start_idx)
+                from player_launcher import launch_player
+                launch_player(mid_files[start_idx], playlist=mid_files, start_index=start_idx)
                 if not self.keep_open:
                     self.destroy()
                 return
@@ -614,10 +611,11 @@ echo "Conversion succeeded; XMI originals deleted."
 
         if handler and hasattr(handler, "play_audio_file"):
             handler.play_audio_file(full_path, playlist=all_files, start_index=file_idx)
-            if not self.keep_open:
-                self.destroy()
         else:
-            messagebox.showerror("Error", f"No handler available to play: {os.path.basename(full_path)}")
+            from player_launcher import launch_player
+            launch_player(full_path, playlist=all_files, start_index=file_idx)
+        if not self.keep_open:
+            self.destroy()
 
     def open_file_picker(self):
         initial_dir = self.folder_path if os.path.isdir(self.folder_path) else os.path.expanduser("~")
@@ -632,6 +630,9 @@ echo "Conversion succeeded; XMI originals deleted."
                 handler = getattr(handler, "parent", None)
             if handler and hasattr(handler, "play_audio_file"):
                 handler.play_audio_file(file_path)
+            else:
+                from player_launcher import launch_player
+                launch_player(file_path)
 
     def browse_extracted_folder(self):
         try:

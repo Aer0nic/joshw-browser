@@ -7,6 +7,8 @@ import threading
 import time
 import tkinter as tk
 import ttkbootstrap as tb
+from config import apply_global_font_scale, load_saved_font_size
+from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox
 from config import resource_path, get_binary_path
 from players import (
@@ -18,9 +20,11 @@ from players import (
     get_next_track_index
 )
 
-class SIDPlayerWindow(tb.Toplevel):
-    def __init__(self, parent, audio_file, playlist=None, start_index=None):
-        super().__init__(parent)
+class SIDPlayerWindow(tb.Window):
+    def __init__(self, parent=None, audio_file=None, playlist=None, start_index=None):
+        # Standalone root window (own process), themed from settings.json
+        super().__init__(themename=load_saved_theme())
+        apply_global_font_scale(load_saved_font_size())
         self.parent = parent
         self.audio_file = audio_file
         self.sid_proc = None
@@ -52,6 +56,7 @@ class SIDPlayerWindow(tb.Toplevel):
             pass
 
         self.protocol("WM_DELETE_WINDOW", self.close)
+        attach_settings_sync(self, on_font_changed=apply_global_font_scale)
         
         self.start_sidplay()
         self.start_timer_thread()
@@ -69,8 +74,8 @@ class SIDPlayerWindow(tb.Toplevel):
 
     def get_dynamic_hover_color(self):
         try:
-            if hasattr(self, "parent") and self.parent and hasattr(self.parent, "style"):
-                theme_name = self.parent.style.theme_use().lower()
+            if hasattr(self, "style"):
+                theme_name = self.style.theme_use().lower()
                 if "dark" in theme_name:
                     return "#2a3b4c"
         except Exception:
@@ -95,7 +100,6 @@ class SIDPlayerWindow(tb.Toplevel):
         self.title(f"sidplayfp Controller - {filename}")
         self.geometry("560x610")
         self.minsize(520, 540)
-        self.transient(self.parent)
 
         padding = tb.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
@@ -103,7 +107,7 @@ class SIDPlayerWindow(tb.Toplevel):
         browse_frame = tb.Frame(padding)
         browse_frame.pack(side="top", anchor="w", pady=(0, 6))
 
-        browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn = tb.Button(browse_frame, text="📁", width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="top", anchor="w")
 
         tb.Label(padding, text=f"Now Playing (SID):\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=520).pack(pady=(0, 6))
@@ -424,3 +428,7 @@ class SIDPlayerWindow(tb.Toplevel):
             self.destroy()
         except Exception:
             pass
+
+
+if __name__ == "__main__":
+    run_player(SIDPlayerWindow)

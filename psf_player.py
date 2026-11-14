@@ -5,8 +5,10 @@ import threading
 import time
 import tkinter as tk
 import ttkbootstrap as tb
+from config import apply_global_font_scale, load_saved_font_size
+from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 import random
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
 from config import resource_path
 from players import (
     get_saved_player_volume,
@@ -156,13 +158,15 @@ class PSFAudioWorker:
                 self.ui_queue.put(("status", "Stopped"))
 
 
-class PSFPlayerWindow(tk.Toplevel):
-    def __init__(self, parent, audio_file, playlist=None, start_index=0, **kwargs):
-        super().__init__(parent)
+class PSFPlayerWindow(tb.Window):
+    def __init__(self, parent=None, audio_file=None, playlist=None, start_index=0, **kwargs):
+        # Standalone root window (own process), themed from settings.json
+        super().__init__(themename=load_saved_theme())
+        apply_global_font_scale(load_saved_font_size())
         self.parent = parent
         self.audio_file = audio_file
         self.playlist = playlist or [{"file": audio_file, "title": os.path.basename(audio_file), "track_index": 0}]
-        self.current_index = start_index if 0 <= start_index < len(self.playlist) else 0
+        self.current_index = start_index if start_index is not None and 0 <= start_index < len(self.playlist) else 0
         
         self.worker = None
         self.is_paused = False
@@ -194,6 +198,7 @@ class PSFPlayerWindow(tk.Toplevel):
             pass
 
         self.protocol("WM_DELETE_WINDOW", self.close)
+        attach_settings_sync(self, on_font_changed=apply_global_font_scale)
         self.start_queue_polling()
 
         if self.playlist:
@@ -240,7 +245,6 @@ class PSFPlayerWindow(tk.Toplevel):
         self.title(f"PSF Player - {filename}")
         self.geometry("520x600")
         self.minsize(500, 500)
-        self.transient(self.parent)
 
         padding = tb.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
@@ -248,7 +252,7 @@ class PSFPlayerWindow(tk.Toplevel):
         browse_frame = tb.Frame(padding)
         browse_frame.pack(side="top", anchor="w", pady=(0, 6))
 
-        browse_btn = tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn = tb.Button(browse_frame, text="📁", width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="top", anchor="w")
 
         self.title_label = tb.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=480, justify="center")
@@ -325,8 +329,8 @@ class PSFPlayerWindow(tk.Toplevel):
 
     def get_dynamic_hover_color(self):
         try:
-            if hasattr(self, "parent") and self.parent and hasattr(self.parent, "style"):
-                theme_name = self.parent.style.theme_use().lower()
+            if hasattr(self, "style"):
+                theme_name = self.style.theme_use().lower()
                 if "dark" in theme_name:
                     return "#2a3b4c"
         except Exception:
@@ -497,3 +501,7 @@ class PSFPlayerWindow(tk.Toplevel):
             self.destroy()
         except Exception:
             pass
+
+
+if __name__ == "__main__":
+    run_player(PSFPlayerWindow)

@@ -9,11 +9,17 @@ import threading
 import tempfile
 import urllib.request
 import zipfile
+import json
 import tkinter as tk
 from tkinter import ttk, messagebox
 import ttkbootstrap as tb
 import config
-from config import resource_path
+from config import resource_path, get_cache_path
+import queue
+from concurrent.futures import ThreadPoolExecutor
+from index_updater import update_domain_index
+
+EXCLUDED_FROM_INDEX_ALL = {"Arcade", "VGMusic Siterip"}
 
 class PremadeIndexProgressWindow(tb.Toplevel):
     def __init__(self, parent):
@@ -70,7 +76,7 @@ class PremadeIndexProgressWindow(tb.Toplevel):
             if temp_zip.exists():
                 temp_zip.unlink()
 
-            config_display_path = "Documents\\Joshw\\indexes" if sys.platform == "win32" else "~/.config/joshw/indexes"
+            config_display_path = r"Documents\Joshw\indexes" if sys.platform == "win32" else "~/.config/joshw/indexes"
             self.update_status(f"Installing index files to {config_display_path}...")
 
             # Locate domain_cache files inside the extracted repo structure
@@ -92,7 +98,9 @@ class PremadeIndexProgressWindow(tb.Toplevel):
                 self.finish_error(error_msg, zip_url)
 
         except Exception as e:
-            error_msg = f"An error occurred during indexing download:\n\n{e}"
+            error_msg = f"""An error occurred during indexing download:
+
+{e}"""
             self.finish_error(error_msg, zip_url)
 
     def update_status(self, text):
@@ -605,6 +613,71 @@ class InstallDependenciesWorker:
                 self.parent.after(0, lambda err=e: messagebox.showerror("Installation Error", f"An error occurred during dependency installation:\n\n{err}"))
 
 
+class NewTitlesSummaryWindow(tb.Toplevel):
+    def __init__(self, parent, new_entries_by_domain):
+        super().__init__(parent)
+        self.parent = parent
+        self.title("Index Update Summary - New Titles Added")
+        self.geometry("700x500")
+        self.minsize(550, 350)
+        self.transient(parent)
+        self.grab_set()
+
+        try:
+            icon_file = resource_path("assets/icons/app_icon.png")
+            if icon_file.exists():
+                self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
+        except Exception:
+            pass
+
+        total_new = sum(len(items) for items in new_entries_by_domain.values())
+
+        main_frame = tb.Frame(self, padding=12)
+        main_frame.pack(fill="both", expand=True)
+
+        tb.Label(
+            main_frame,
+            text=f"Index Update Complete! Found {total_new} new item(s):",
+            font=("Arial", 10, "bold")
+        ).pack(anchor="w", pady=(0, 8))
+
+        tree_frame = tb.Frame(main_frame)
+        tree_frame.pack(fill="both", expand=True, pady=(0, 10))
+
+        columns = ("domain", "name", "url")
+        self.tree = tb.Treeview(tree_frame, columns=columns, show="headings", selectmode="extended")
+        self.tree.heading("domain", text="Domain")
+        self.tree.heading("name", text="Name")
+        self.tree.heading("url", text="URL")
+
+        self.tree.column("domain", width=130, anchor="w")
+        self.tree.column("name", width=250, anchor="w")
+        self.tree.column("url", width=280, anchor="w")
+
+        scrollbar = tb.Scrollbar(tree_frame, orient="vertical", command=self.tree.yview)
+        self.tree.configure(yscrollcommand=scrollbar.set)
+
+        self.tree.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        if not new_entries_by_domain:
+            self.tree.insert("", "end", values=("All Domains", "No new files or titles found.", "-"))
+        else:
+            for domain_name, entries in new_entries_by_domain.items():
+                for entry in entries:
+                    self.tree.insert("", "end", values=(
+                        domain_name,
+                        entry.get("name", "Unknown"),
+                        entry.get("url", "")
+                    ))
+
+        btn_frame = tb.Frame(main_frame)
+        btn_frame.pack(fill="x")
+
+        close_btn = tb.Button(btn_frame, text="Close", width=12, command=self.destroy)
+        close_btn.pack(side="right")
+
+
 class IndexAllWindow(tb.Toplevel):
     def __init__(self, parent, domains):
         super().__init__(parent)
@@ -624,14 +697,19 @@ class IndexAllWindow(tb.Toplevel):
             pass
 
         self.domain_rows = {}
+        self.new_entries_discovered = {}
         self.total_start_time = time.time()
         self.is_running = True
+        self.stop_event = threading.Event()
+        self.ui_queue = queue.Queue()
+        self.updated_domains = set()
 
         self.protocol("WM_DELETE_WINDOW", self.on_close)
         self.build_ui()
 
         threading.Thread(target=self.index_all_worker, daemon=True).start()
         self.update_timers()
+        self.poll_ui_queue()
 
     def format_hms(self, seconds):
         s = int(seconds)
@@ -644,7 +722,7 @@ class IndexAllWindow(tb.Toplevel):
         main_frame = tb.Frame(self, padding=10)
         main_frame.pack(fill="both", expand=True)
 
-        tb.Label(main_frame, text="Indexing all domains sequentially...", font=("Arial", 10, "bold")).pack(anchor="w", pady=(0, 8))
+        tb.Label(main_frame, text="Checking all domains for new additions...", font=("Arial", 10, "bold")).pack(anchor="w", pady=(0, 8))
 
         container = tb.Frame(main_frame)
         container.pack(fill="both", expand=True, pady=(0, 10))
@@ -663,7 +741,11 @@ class IndexAllWindow(tb.Toplevel):
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-        for domain_name in self.domains.keys():
+        # Iterate over key/value pairs and skip empty URLs (headers/placeholders) and excluded domains
+        for domain_name, root_url in self.domains.items():
+            if not root_url or domain_name in EXCLUDED_FROM_INDEX_ALL:
+                continue
+
             row_frame = tb.Frame(scrollable_frame, padding=(2, 4))
             row_frame.pack(fill="x", expand=True)
 
@@ -714,54 +796,102 @@ class IndexAllWindow(tb.Toplevel):
 
         self.after(500, self.update_timers)
 
+    # Domains checked at the same time (each also lists folders in parallel)
+    PARALLEL_DOMAINS = 3
+
     def index_all_worker(self):
-        for domain_name, root_url in self.domains.items():
-            if not self.is_running or not self.winfo_exists():
-                break
+        """Background: check every domain for new entries, a few at a time.
 
-            row_data = self.domain_rows[domain_name]
-            row_data["start_time"] = time.time()
+        All widget updates go through self.ui_queue and are applied on the Tk
+        thread by poll_ui_queue().
+        """
+        jobs = [(name, url) for name, url in self.domains.items()
+                if url and name not in EXCLUDED_FROM_INDEX_ALL and name in self.domain_rows]
 
-            def progress_cb(scanned, discovered, total_files):
-                if not self.winfo_exists():
-                    return
-                val = min(99.0, (scanned / max(1, discovered)) * 100)
-                row_data["progress"]["value"] = val
-                pct_str = f"{int(val)}%"
-                row_data["pct_label"].configure(text=pct_str)
+        def run(domain_name, root_url):
+            if self.stop_event.is_set():
+                return
+            self.ui_queue.put(("start", domain_name, None))
+
+            def progress_cb(listed, queued):
+                self.ui_queue.put(("progress", domain_name, (listed, queued)))
 
             try:
-                all_entries = self.parent.crawl_domain_remote(
-                    domain_name, root_url, report_progress=True, progress_callback=progress_cb, incremental=True
-                )
-                if all_entries is not None and self.is_running and self.winfo_exists():
-                    self.parent.domain_full_entries = all_entries
-                    self.parent.save_cache(domain_name)
-            except Exception:
-                pass
+                status, added = update_domain_index(domain_name, root_url, progress_cb, self.stop_event)
+            except Exception as e:
+                print(f"[Index All] {domain_name}: {e}")
+                status, added = "error", []
+            if added:
+                self.new_entries_discovered[domain_name] = added
+            self.ui_queue.put(("done", domain_name, (status, len(added))))
 
-            if self.winfo_exists():
-                elapsed = time.time() - row_data["start_time"]
-                row_data["elapsed"] = elapsed
-                row_data["completed"] = True
-                row_data["progress"]["value"] = 100
-                row_data["pct_label"].configure(text="100%")
-                row_data["time_label"].configure(text=self.format_hms(elapsed))
-                row_data["label"].configure(text=f"✓ {domain_name}", foreground="green")
+        with ThreadPoolExecutor(max_workers=self.PARALLEL_DOMAINS) as pool:
+            list(pool.map(lambda job: run(*job), jobs))
 
-        if self.is_running and self.winfo_exists():
-            self.parent.after(0, self.finish_indexing)
+        self.ui_queue.put(("all_done", None, None))
+
+    def poll_ui_queue(self):
+        try:
+            if not self.winfo_exists():
+                return
+        except tk.TclError:
+            return
+        try:
+            while True:
+                kind, domain_name, payload = self.ui_queue.get_nowait()
+                if kind == "all_done":
+                    if self.is_running:
+                        self.finish_indexing()
+                    return
+                row = self.domain_rows.get(domain_name)
+                if not row:
+                    continue
+                if kind == "start":
+                    row["start_time"] = time.time()
+                    row["label"].configure(text=f"… {domain_name}")
+                elif kind == "progress":
+                    listed, queued = payload
+                    val = min(99.0, listed / max(1, queued) * 100)
+                    row["progress"]["value"] = val
+                    row["pct_label"].configure(text=f"{int(val)}%")
+                elif kind == "done":
+                    status, count = payload
+                    row["completed"] = True
+                    elapsed = time.time() - (row["start_time"] or time.time())
+                    row["time_label"].configure(text=self.format_hms(elapsed))
+                    row["progress"]["value"] = 100
+                    if status == "updated":
+                        row["pct_label"].configure(text=f"+{count} new" if count else "updated")
+                        row["label"].configure(text=f"✓ {domain_name}", foreground="green")
+                        self.updated_domains.add(domain_name)
+                    elif status == "unchanged":
+                        row["pct_label"].configure(text="no changes")
+                        row["label"].configure(text=f"– {domain_name}", foreground="gray")
+                    elif status == "error":
+                        row["progress"]["value"] = 0
+                        row["pct_label"].configure(text="error")
+                        row["label"].configure(text=f"✗ {domain_name}", foreground="red")
+        except queue.Empty:
+            pass
+        self.after(100, self.poll_ui_queue)
 
     def finish_indexing(self):
         self.is_running = False
+        new_items = self.new_entries_discovered
+        # If the browser is showing a domain that just changed, reload its index
         try:
-            messagebox.showinfo("Success", "All domains have been successfully indexed sequentially!")
-        except Exception:
-            pass
+            current = self.parent.domain_combo.get()
+            if current in self.updated_domains:
+                self.parent.load_or_check_cache(current, self.domains[current])
+        except Exception as e:
+            print(f"[Index All] Could not reload current domain: {e}")
         self.destroy()
+        if self.parent.winfo_exists():
+            NewTitlesSummaryWindow(self.parent, new_items)
 
     def on_close(self):
         self.is_running = False
+        self.stop_event.set()  # workers stop; indexes already saved stay saved
         self.destroy()
 
 

@@ -10,6 +10,8 @@ import json
 import re
 import tkinter as tk
 import ttkbootstrap as tb
+from config import apply_global_font_scale
+from player_launcher import attach_settings_sync, run_player
 from tkinter import ttk, messagebox, filedialog
 
 from config import get_cache_directory, is_emulated_file, resource_path, get_binary_path
@@ -23,9 +25,18 @@ from players import (
 )
 
 
-class ArcadePlayerWindow(tk.Toplevel):
-    def __init__(self, parent, audio_file, playlist=None, start_index=None):
-        super().__init__(parent)
+class ArcadePlayerWindow(tb.Window):
+    def __init__(self, parent=None, audio_file=None, playlist=None, start_index=None):
+        saved_volume = get_saved_player_volume()
+        initial_settings = {}
+        try:
+            with open(os.path.join(get_cache_directory(), "settings.json"), "r", encoding="utf-8") as f:
+                initial_settings = json.load(f)
+        except Exception:
+            pass
+        saved_theme = initial_settings.get("theme", "cosmo")
+
+        super().__init__(themename=saved_theme)
         self.parent = parent
         self.audio_file = audio_file
         self.proc = None
@@ -69,6 +80,7 @@ class ArcadePlayerWindow(tk.Toplevel):
             pass
 
         self.protocol("WM_DELETE_WINDOW", self.close)
+        attach_settings_sync(self, on_font_changed=apply_global_font_scale)
 
         if self.playlist:
             self.play_current_track()
@@ -157,7 +169,6 @@ class ArcadePlayerWindow(tk.Toplevel):
         self.title(f"Arcade Player - {filename}")
         self.geometry("520x580")
         self.minsize(460, 500)
-        self.transient(self.parent)
 
         padding = tb.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
@@ -165,7 +176,7 @@ class ArcadePlayerWindow(tk.Toplevel):
         top_header_frame = tb.Frame(padding)
         top_header_frame.pack(side="top", fill="x", pady=(0, 6))
 
-        browse_btn = tk.Button(top_header_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn = tb.Button(top_header_frame, text="📁", width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="left", anchor="w")
 
         self.title_label = tb.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=440, justify="center")
@@ -211,7 +222,7 @@ class ArcadePlayerWindow(tk.Toplevel):
         list_frame = tb.LabelFrame(padding, text="Playlist Files", padding=6)
         list_frame.pack(fill="both", expand=True, pady=(0, 10))
 
-        self.playlist_listbox = tk.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
+        self.playlist_listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
         self.playlist_listbox.pack(side="left", fill="both", expand=True)
         scrollbar = tb.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
         scrollbar.pack(side="right", fill="y")
@@ -585,3 +596,6 @@ class ArcadePlayerWindow(tk.Toplevel):
             pass
 
 ArcadePlayer = ArcadePlayerWindow
+
+if __name__ == "__main__":
+    run_player(ArcadePlayerWindow)

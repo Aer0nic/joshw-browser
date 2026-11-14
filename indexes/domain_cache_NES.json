@@ -2169,6 +2169,14 @@
       "size": 12556
     },
     {
+      "name": "Choujin Sentai - Jetman",
+      "raw_name": "Choujin Sentai - Jetman (1991-12-21)(Natsume)(Angel)[NES][old].7z",
+      "date": "1991-12-21",
+      "url": "http://nsf.joshw.info/c/Choujin%20Sentai%20-%20Jetman%20(1991-12-21)(Natsume)(Angel)%5bNES%5d%5bold%5d.7z",
+      "directory": false,
+      "size": 12556
+    },
+    {
       "name": "Chris Evert & Ivan Lendl in Top Player's Tennis [World Super Tennis] [Four Players' Tennis]",
       "raw_name": "Chris Evert & Ivan Lendl in Top Player's Tennis [World Super Tennis] [Four Players' Tennis] (1989-10-13)(Home Data)(Asmik)[NES].7z",
       "date": "1989-10-13",
@@ -6537,6 +6545,14 @@
       "size": 4847
     },
     {
+      "name": "Kyouryuu Sentai Juuranger",
+      "raw_name": "Kyouryuu Sentai Juuranger (1992-11-06)(-)(Angel)[NES][old].7z",
+      "date": "1992-11-06",
+      "url": "http://nsf.joshw.info/k/Kyouryuu%20Sentai%20Juuranger%20(1992-11-06)(-)(Angel)%5bNES%5d%5bold%5d.7z",
+      "directory": false,
+      "size": 4847
+    },
+    {
       "name": "Kyuukyoku Harikiri Koushien",
       "raw_name": "Kyuukyoku Harikiri Koushien (1992-03-19)(-)(Taito)[NES].7z",
       "date": "1992-03-19",
@@ -7561,6 +7577,14 @@
       "size": 3928
     },
     {
+      "name": "Milon's Secret Castle [Meikyuu Kumikyoku - Milon no Daibouken]",
+      "raw_name": "Milon's Secret Castle [Meikyuu Kumikyoku - Milon no Daibouken] (1986-11-13)(Hudson)[NES][old].7z",
+      "date": "1986-11-13",
+      "url": "http://nsf.joshw.info/m/Milon's%20Secret%20Castle%20%5bMeikyuu%20Kumikyoku%20-%20Milon%20no%20Daibouken%5d%20(1986-11-13)(Hudson)%5bNES%5d%5bold%5d.7z",
+      "directory": false,
+      "size": 3928
+    },
+    {
       "name": "Mindseeker",
       "raw_name": "Mindseeker (1989-04-18)(-)(Namco)[NES].7z",
       "date": "1989-04-18",
@@ -7573,6 +7597,14 @@
       "raw_name": "Minelvaton Saga - Ragon no Fukkatsu (1987-10-23)(Random House)(Taito)[NES].7z",
       "date": "1987-10-23",
       "url": "http://nsf.joshw.info/m/Minelvaton%20Saga%20-%20Ragon%20no%20Fukkatsu%20(1987-10-23)(Random%20House)(Taito)%5bNES%5d.7z",
+      "directory": false,
+      "size": 8554
+    },
+    {
+      "name": "Minelvaton Saga - Ragon no Fukkatsu",
+      "raw_name": "Minelvaton Saga - Ragon no Fukkatsu (1987-10-23)(Random House)(Taito)[NES][old].7z",
+      "date": "1987-10-23",
+      "url": "http://nsf.joshw.info/m/Minelvaton%20Saga%20-%20Ragon%20no%20Fukkatsu%20(1987-10-23)(Random%20House)(Taito)%5bNES%5d%5bold%5d.7z",
       "directory": false,
       "size": 8554
     },
@@ -7757,6 +7789,14 @@
       "raw_name": "Moon Crystal (1992-08-28)(-)(Hect)[NES].7z",
       "date": "1992-08-28",
       "url": "http://nsf.joshw.info/m/Moon%20Crystal%20(1992-08-28)(-)(Hect)%5bNES%5d.7z",
+      "directory": false,
+      "size": 10508
+    },
+    {
+      "name": "Moon Crystal",
+      "raw_name": "Moon Crystal (1992-08-28)(-)(Hect)[NES][old].7z",
+      "date": "1992-08-28",
+      "url": "http://nsf.joshw.info/m/Moon%20Crystal%20(1992-08-28)(-)(Hect)%5bNES%5d%5bold%5d.7z",
       "directory": false,
       "size": 10508
     },
@@ -8817,10 +8857,26 @@
       "size": 21830
     },
     {
+      "name": "Power Blade 2 [Captain Saver]",
+      "raw_name": "Power Blade 2 [Captain Saver] (1992-09-29)(Natsume)(Taito)[NES][old].7z",
+      "date": "1992-09-29",
+      "url": "http://nsf.joshw.info/p/Power%20Blade%202%20%5bCaptain%20Saver%5d%20(1992-09-29)(Natsume)(Taito)%5bNES%5d%5bold%5d.7z",
+      "directory": false,
+      "size": 21830
+    },
+    {
       "name": "Power Blade 2 JP [Captain Saver]",
       "raw_name": "Power Blade 2 JP [Captain Saver] (1992-09-29)(Natsume)(Taito)[NES].7z",
       "date": "1992-09-29",
       "url": "http://nsf.joshw.info/p/Power%20Blade%202%20JP%20%5bCaptain%20Saver%5d%20(1992-09-29)(Natsume)(Taito)%5bNES%5d.7z",
+      "directory": false,
+      "size": 10933
+    },
+    {
+      "name": "Power Blade 2 JP [Captain Saver]",
+      "raw_name": "Power Blade 2 JP [Captain Saver] (1992-09-29)(Natsume)(Taito)[NES][old].7z",
+      "date": "1992-09-29",
+      "url": "http://nsf.joshw.info/p/Power%20Blade%202%20JP%20%5bCaptain%20Saver%5d%20(1992-09-29)(Natsume)(Taito)%5bNES%5d%5bold%5d.7z",
       "directory": false,
       "size": 10933
     },
@@ -8833,10 +8889,26 @@
       "size": 16413
     },
     {
+      "name": "Power Blade [Power Blazer]",
+      "raw_name": "Power Blade [Power Blazer] (1990-04-20)(Natsume)(Taito)[NES][old].7z",
+      "date": "1990-04-20",
+      "url": "http://nsf.joshw.info/p/Power%20Blade%20%5bPower%20Blazer%5d%20(1990-04-20)(Natsume)(Taito)%5bNES%5d%5bold%5d.7z",
+      "directory": false,
+      "size": 16413
+    },
+    {
       "name": "Power Blade [Power Blazer] JP",
       "raw_name": "Power Blade [Power Blazer] JP (1990-04-20)(Natsume)(Taito)[NES].7z",
       "date": "1990-04-20",
       "url": "http://nsf.joshw.info/p/Power%20Blade%20%5bPower%20Blazer%5d%20JP%20(1990-04-20)(Natsume)(Taito)%5bNES%5d.7z",
+      "directory": false,
+      "size": 11115
+    },
+    {
+      "name": "Power Blade [Power Blazer] JP",
+      "raw_name": "Power Blade [Power Blazer] JP (1990-04-20)(Natsume)(Taito)[NES][old].7z",
+      "date": "1990-04-20",
+      "url": "http://nsf.joshw.info/p/Power%20Blade%20%5bPower%20Blazer%5d%20JP%20(1990-04-20)(Natsume)(Taito)%5bNES%5d%5bold%5d.7z",
       "directory": false,
       "size": 11115
     },
@@ -10057,10 +10129,26 @@
       "size": 8555
     },
     {
+      "name": "Shatterhand [Tokkyuu Shirei - Solbrain]",
+      "raw_name": "Shatterhand [Tokkyuu Shirei - Solbrain] (1991-10-26)(Natsume)(Angel)[NES][old].7z",
+      "date": "1991-10-26",
+      "url": "http://nsf.joshw.info/s/Shatterhand%20%5bTokkyuu%20Shirei%20-%20Solbrain%5d%20(1991-10-26)(Natsume)(Angel)%5bNES%5d%5bold%5d.7z",
+      "directory": false,
+      "size": 8555
+    },
+    {
       "name": "Shatterhand JP [Tokkyuu Shirei - Solbrain]",
       "raw_name": "Shatterhand JP [Tokkyuu Shirei - Solbrain] (1991-10-26)(Natsume)(Angel)[NES].7z",
       "date": "1991-10-26",
       "url": "http://nsf.joshw.info/s/Shatterhand%20JP%20%5bTokkyuu%20Shirei%20-%20Solbrain%5d%20(1991-10-26)(Natsume)(Angel)%5bNES%5d.7z",
+      "directory": false,
+      "size": 10213
+    },
+    {
+      "name": "Shatterhand JP [Tokkyuu Shirei - Solbrain]",
+      "raw_name": "Shatterhand JP [Tokkyuu Shirei - Solbrain] (1991-10-26)(Natsume)(Angel)[NES][old].7z",
+      "date": "1991-10-26",
+      "url": "http://nsf.joshw.info/s/Shatterhand%20JP%20%5bTokkyuu%20Shirei%20-%20Solbrain%5d%20(1991-10-26)(Natsume)(Angel)%5bNES%5d%5bold%5d.7z",
       "directory": false,
       "size": 10213
     },
@@ -10229,6 +10317,14 @@
       "raw_name": "Silva Saga (1992-07-24)(-)(Seta)[NES].7z",
       "date": "1992-07-24",
       "url": "http://nsf.joshw.info/s/Silva%20Saga%20(1992-07-24)(-)(Seta)%5bNES%5d.7z",
+      "directory": false,
+      "size": 18718
+    },
+    {
+      "name": "Silva Saga",
+      "raw_name": "Silva Saga (1992-07-24)(-)(Seta)[NES][old].7z",
+      "date": "1992-07-24",
+      "url": "http://nsf.joshw.info/s/Silva%20Saga%20(1992-07-24)(-)(Seta)%5bNES%5d%5bold%5d.7z",
       "directory": false,
       "size": 18718
     },
@@ -15762,38 +15858,39 @@
     }
   ],
   "dir_sizes": {
-    "https://vgmrips.net/packs/system/": 1293134046
+    "http://nsf.joshw.info/": 18027456,
+    "http://nsf.joshw.info/m/": 1405736
   },
   "scanned_dirs": [
-    "http://nsf.joshw.info/u/",
-    "http://nsf.joshw.info/i/",
-    "http://nsf.joshw.info/d/",
-    "http://nsf.joshw.info/h/",
-    "http://nsf.joshw.info/q/",
-    "http://nsf.joshw.info/zzz_unlicensed/",
-    "http://nsf.joshw.info/r/",
-    "http://nsf.joshw.info/n/",
-    "http://nsf.joshw.info/s/",
-    "http://nsf.joshw.info/e/",
-    "http://nsf.joshw.info/0-9/",
-    "http://nsf.joshw.info/l/",
-    "http://nsf.joshw.info/y/",
-    "http://nsf.joshw.info/t/",
-    "http://nsf.joshw.info/o/",
     "http://nsf.joshw.info/f/",
-    "http://nsf.joshw.info/w/",
-    "http://nsf.joshw.info/z/",
-    "http://nsf.joshw.info/g/",
-    "http://nsf.joshw.info/c/",
-    "http://nsf.joshw.info/v/",
-    "http://nsf.joshw.info/",
-    "http://nsf.joshw.info/a/",
-    "http://nsf.joshw.info/k/",
-    "http://nsf.joshw.info/b/",
-    "http://nsf.joshw.info/zzz_prototypes/",
-    "http://nsf.joshw.info/m/",
+    "http://nsf.joshw.info/h/",
+    "http://nsf.joshw.info/i/",
+    "http://nsf.joshw.info/n/",
+    "http://nsf.joshw.info/q/",
+    "http://nsf.joshw.info/r/",
     "http://nsf.joshw.info/p/",
+    "http://nsf.joshw.info/u/",
+    "http://nsf.joshw.info/s/",
+    "http://nsf.joshw.info/c/",
+    "http://nsf.joshw.info/w/",
+    "http://nsf.joshw.info/y/",
+    "http://nsf.joshw.info/a/",
+    "http://nsf.joshw.info/j/",
+    "http://nsf.joshw.info/",
+    "http://nsf.joshw.info/zzz_prototypes/",
+    "http://nsf.joshw.info/o/",
+    "http://nsf.joshw.info/b/",
+    "http://nsf.joshw.info/zzz_unlicensed/",
+    "http://nsf.joshw.info/0-9/",
+    "http://nsf.joshw.info/t/",
     "http://nsf.joshw.info/x/",
-    "http://nsf.joshw.info/j/"
+    "http://nsf.joshw.info/k/",
+    "http://nsf.joshw.info/m/",
+    "http://nsf.joshw.info/v/",
+    "http://nsf.joshw.info/l/",
+    "http://nsf.joshw.info/z/",
+    "http://nsf.joshw.info/e/",
+    "http://nsf.joshw.info/d/",
+    "http://nsf.joshw.info/g/"
   ]
 }

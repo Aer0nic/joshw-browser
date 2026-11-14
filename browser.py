@@ -12,55 +12,191 @@ import urllib.request
 import tkinter as tk
 import tkinter.font as tkfont
 import ttkbootstrap as tb
+from player_launcher import launch_player, player_script_for, write_theme_preview, clear_theme_preview
 from ttkbootstrap.constants import *
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
 from collections import defaultdict
-from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, format_size, resource_path
+from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, format_size, resource_path, apply_global_font_scale
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
 from players import ExtractedFilesBrowserWindow, get_vgmstream_path
-from downloaders import DownloadProgressWindow, IndexAllWindow, PremadeIndexProgressWindow, install_dependencies_prompt, check_and_download_sid_firmware
+from index_updater import update_domain_index
+from downloaders import EXCLUDED_FROM_INDEX_ALL, DownloadProgressWindow, IndexAllWindow, PremadeIndexProgressWindow, install_dependencies_prompt, check_and_download_sid_firmware
 
 
-def autofit_treeview_columns(tree, padding=24, min_widths=None):
+class ColumnAutoSizer:
+    """Keeps a Treeview's columns wide enough to show all of their text.
+
+    * Every column's width AND minwidth become the widest text in it (heading
+      or any cell) plus spacing, so Tk can never squeeze it and cut text off.
+    * Grows live: the tree's insert/set/item methods are wrapped so any new or
+      changed cell text widens its column right away (only the new text is
+      measured, so large listings stay fast).
+    * A full re-measure happens when the tree is cleared and refilled, and on
+      font-size changes via refit().
     """
-    Automatically calculates and sets column widths in a ttk.Treeview widget
-    based on the widest text entry (headers + all rows) in each visible column.
-    """
-    if not tree or not tree.winfo_exists():
-        return
 
-    try:
-        font_style = tree.cget("font")
-        font = tkfont.Font(font=font_style) if font_style else tkfont.Font(family="Arial", size=9)
-    except Exception:
-        font = tkfont.Font(family="Arial", size=9)
+    BASE_FONT_SIZE = 10
 
-    columns = tree.cget("columns")
-    if not columns:
-        return
+    def __init__(self, tree, base_widths=None):
+        self.tree = tree
+        self.base_widths = dict(base_widths or {})
+        self.widths = {}
+        self._measure_cache = {}
+        self._pending = None
+        self._fonts = {}
+        self._load_fonts()
+        self._wrap_tree_methods()
+        self.refit()
 
-    disp_cols = tree.cget("displaycolumns")
-    min_widths = min_widths or {}
+    # --- fonts / spacing -------------------------------------------------
+    def _style_font(self, style_name, fallback):
+        try:
+            spec = ttk.Style().lookup(style_name, "font")
+            if spec:
+                return tkfont.Font(font=spec)
+        except Exception:
+            pass
+        return tkfont.nametofont(fallback)
 
-    for col in columns:
-        if disp_cols != "#all" and col not in disp_cols:
-            continue
+    def _load_fonts(self):
+        self.cell_font = self._style_font("Treeview", "TkDefaultFont")
+        self.heading_font = self._style_font("Treeview.Heading", "TkHeadingFont")
+        self._fonts = {}
+        self._measure_cache = {}
 
-        header_text = str(tree.heading(col, "text") or "")
-        max_w = font.measure(header_text)
+    def _tag_font(self, tags):
+        """Font of the first tag that sets one (e.g. bold separator rows)."""
+        for tag in tags or ():
+            if tag in self._fonts:
+                if self._fonts[tag] is not None:
+                    return self._fonts[tag]
+                continue
+            font = None
+            try:
+                spec = self.tree.tag_configure(tag, "font")
+                if spec:
+                    font = tkfont.Font(font=spec)
+            except Exception:
+                pass
+            self._fonts[tag] = font
+            if font is not None:
+                return font
+        return self.cell_font
 
-        for item in tree.get_children():
-            cell_val = str(tree.set(item, col) or "")
-            if cell_val:
-                for line in cell_val.splitlines():
-                    w = font.measure(line)
-                    if w > max_w:
-                        max_w = w
+    def spacing(self):
+        # Gap on each side of the text, scaled with the font
+        return max(12, self.cell_font.measure("0") * 2)
 
-        col_min = min_widths.get(col, 40)
-        target_width = max(max_w + padding, col_min)
-        tree.column(col, width=target_width)
+    def _measure(self, text, font):
+        key = (text, str(font))
+        w = self._measure_cache.get(key)
+        if w is None:
+            w = max((font.measure(line) for line in text.splitlines()), default=0)
+            self._measure_cache[key] = w
+        return w
+
+    # --- tracking --------------------------------------------------------
+    def _note(self, col, text, font=None):
+        if text in ("", None):
+            return
+        w = self._measure(str(text), font or self.cell_font)
+        if w > self.widths.get(col, 0):
+            self.widths[col] = w
+            self._schedule_apply()
+
+    def _note_values(self, values, tags=()):
+        if not values:
+            return
+        if isinstance(values, str):
+            values = self.tree.tk.splitlist(values)
+        font = self._tag_font(tags)
+        for col, val in zip(self.tree["columns"], values):
+            self._note(col, val, font)
+
+    def _reset_to_headings(self):
+        self.widths = {}
+        for col in self.tree["columns"]:
+            text = str(self.tree.heading(col, "text") or "")
+            # Room for a sort arrow so the header doesn't jump when sorted
+            self.widths[col] = self._measure(text + " ▲", self.heading_font)
+
+    def _wrap_tree_methods(self):
+        tree = self.tree
+        orig_insert, orig_set, orig_item, orig_delete = tree.insert, tree.set, tree.item, tree.delete
+
+        def insert(parent, index, iid=None, **kw):
+            result = orig_insert(parent, index, iid=iid, **kw)
+            self._note_values(kw.get("values"), kw.get("tags") or ())
+            return result
+
+        def set_(item, column=None, value=None):
+            result = orig_set(item, column, value)
+            if column is not None and value is not None:
+                self._note(column, value, self._tag_font(orig_item(item, "tags")))
+            return result
+
+        def item(item_id, option=None, **kw):
+            result = orig_item(item_id, option, **kw)
+            if "values" in kw or "tags" in kw:
+                self._note_values(orig_item(item_id, "values"), orig_item(item_id, "tags"))
+            return result
+
+        def delete(*items):
+            result = orig_delete(*items)
+            if not tree.get_children():
+                # Emptied: let columns shrink back when the new content arrives
+                self._reset_to_headings()
+                self._schedule_apply()
+            return result
+
+        tree.insert, tree.set, tree.item, tree.delete = insert, set_, item, delete
+
+    # --- applying --------------------------------------------------------
+    def _schedule_apply(self):
+        if self._pending is None:
+            try:
+                self._pending = self.tree.after_idle(self._apply)
+            except Exception:
+                self._pending = None
+
+    def _apply(self):
+        self._pending = None
+        if not self.tree.winfo_exists():
+            return
+        pad = self.spacing() * 2
+        scale = self.cell_font.actual("size") / self.BASE_FONT_SIZE if self.cell_font.actual("size") > 0 else 1
+        for col in self.tree["columns"]:
+            floor = int(self.base_widths.get(col, 30) * max(1.0, scale))
+            target = max(self.widths.get(col, 0) + pad, floor)
+            if int(self.tree.column(col, "minwidth")) != target or int(self.tree.column(col, "width")) < target:
+                self.tree.column(col, width=target, minwidth=target)
+
+    def refit_if_font_changed(self):
+        old = (self.cell_font.actual(), self.heading_font.actual())
+        cell = self._style_font("Treeview", "TkDefaultFont")
+        head = self._style_font("Treeview.Heading", "TkHeadingFont")
+        if (cell.actual(), head.actual()) != old:
+            self.refit()
+        else:
+            self._schedule_apply()
+
+    def refit(self):
+        """Re-measure everything (e.g. after a font-size change)."""
+        self._load_fonts()
+        self._reset_to_headings()
+        for item_id in self.tree.get_children():
+            self._note_values(self.tree.item(item_id, "values"), self.tree.item(item_id, "tags"))
+        self._schedule_apply()
+
+
+def autofit_treeview_columns(tree, padding=None, min_widths=None):
+    """Re-measure a tree's columns (kept for existing callers)."""
+    sizer = getattr(tree, "_column_sizer", None)
+    if sizer is None:
+        tree._column_sizer = ColumnAutoSizer(tree, min_widths)
+    else:
+        sizer.refit()
 
 
 class ToolTip:
@@ -114,6 +250,45 @@ class ToolTip:
 
 
 class JoshWBrowser(tb.Window):
+    
+    COLUMN_FLOOR_WIDTHS = {"favorite": 30, "type": 60, "name": 200, "date": 60,
+                           "size": 60, "domain": 60, "url": 200}
+
+    def _setup_tree_scrolling_and_sizing(self, frame, tree):
+        """Vertical + horizontal scrollbars and live column auto-sizing."""
+        y_scroll = tb.Scrollbar(frame, orient="vertical", command=tree.yview)
+        x_scroll = tb.Scrollbar(frame, orient="horizontal", command=tree.xview)
+        tree.configure(yscrollcommand=y_scroll.set, xscrollcommand=x_scroll.set)
+        tree.grid(row=0, column=0, sticky="nsew")
+        y_scroll.grid(row=0, column=1, sticky="ns")
+        x_scroll.grid(row=1, column=0, sticky="ew")
+        frame.grid_rowconfigure(0, weight=1)
+        frame.grid_columnconfigure(0, weight=1)
+        tree._column_sizer = ColumnAutoSizer(tree, self.COLUMN_FLOOR_WIDTHS)
+
+    def _apply_tree_row_height(self):
+        """Row height follows the font so rows never overlap vertically."""
+        try:
+            spec = self.style.lookup("Treeview", "font") or "TkDefaultFont"
+            linespace = tkfont.Font(font=spec).metrics("linespace")
+            self.style.configure("Treeview", rowheight=int(linespace * 1.4) + 2)
+        except Exception as e:
+            print(f"Could not set Treeview row height: {e}")
+
+    def change_font_size(self, new_size):
+        self.font_size.set(new_size)
+        apply_global_font_scale(new_size)
+        self.save_settings()
+
+        self._apply_tree_row_height()
+        self._configure_fav_separator_tags()
+        # Recalculate Treeview column widths for new font dimensions
+        if hasattr(self, "tree") and self.tree.winfo_exists():
+            autofit_treeview_columns(self.tree)
+        if hasattr(self, "fav_tree") and self.fav_tree.winfo_exists():
+            autofit_treeview_columns(self.fav_tree)
+        if hasattr(self, "shuffle_tree") and self.shuffle_tree.winfo_exists():
+            autofit_treeview_columns(self.shuffle_tree)
     
     def open_choose_random_domains_window(self):
         win = tb.Toplevel(self)
@@ -202,11 +377,10 @@ class JoshWBrowser(tb.Window):
             self.last_valid_domain = selected
     
     def change_theme(self, theme_name):
+        """Apply a theme and persist it to settings.json."""
         self.saved_theme = theme_name
-        try:
-            self.style.theme_use(theme_name)
-        except Exception as e:
-            print(f"Could not apply theme: {e}")
+        self._cancel_theme_preview_revert()
+        self._apply_theme(theme_name)
 
         try:
             settings = self.load_settings() or {}
@@ -216,6 +390,63 @@ class JoshWBrowser(tb.Window):
                 json.dump(settings, f, ensure_ascii=False, indent=2)
         except Exception as e:
             print(f"Could not save theme to settings: {e}")
+        # Clear only after saving so players go straight to the new saved theme
+        clear_theme_preview()
+
+    # --- Theme hover preview -------------------------------------------------
+    def _is_theme_menu_event(self, event):
+        # Menus in a menubar are Tk clones, so match on the explicit widget name
+        return "theme_menu" in str(event.widget)
+
+    def _on_theme_menu_select(self, menu_path):
+        """Temporarily apply the theme under the cursor in the Themes menu.
+
+        Receives the raw Tcl path (%W) of the menu clone. Tkinter's event.widget
+        maps the clone back to the original menu, which has no active entry.
+        """
+        if "theme_menu" not in str(menu_path):
+            return
+        try:
+            label = self.tk.call(menu_path, "entrycget", "active", "-label")
+        except tk.TclError:
+            return  # no active entry
+        if label and label in self.style.theme_names():
+            self._cancel_theme_preview_revert()
+            self._apply_theme(label)
+            write_theme_preview(label)  # standalone player processes follow along
+
+    def _on_theme_menu_unmap(self, event):
+        """Themes menu closed: revert to the saved theme unless one was chosen."""
+        if not self._is_theme_menu_event(event):
+            return
+        self._cancel_theme_preview_revert()
+        # Delay so a click's command (change_theme) runs before we decide to revert
+        self._theme_revert_job = self.after(150, self._end_theme_preview)
+
+    def _cancel_theme_preview_revert(self):
+        job = getattr(self, "_theme_revert_job", None)
+        if job:
+            try:
+                self.after_cancel(job)
+            except Exception:
+                pass
+        self._theme_revert_job = None
+
+    def _end_theme_preview(self):
+        self._theme_revert_job = None
+        clear_theme_preview()
+        if getattr(self, "_applied_theme", None) != self.saved_theme:
+            self._apply_theme(self.saved_theme)
+
+    def _apply_theme(self, theme_name):
+        """Apply a theme's visuals without saving it to settings."""
+        if getattr(self, "_applied_theme", None) == theme_name:
+            return
+        self._applied_theme = theme_name
+        try:
+            self.style.theme_use(theme_name)
+        except Exception as e:
+            print(f"Could not apply theme: {e}")
 
         theme_lower = theme_name.lower()
         hover_color = "#2a3b4c" if "dark" in theme_lower else "#e8f0fe"
@@ -274,6 +505,28 @@ class JoshWBrowser(tb.Window):
         if hasattr(self, "tree") and hasattr(self, "fav_tree"):
             self.tree.tag_configure("hover", background=hover_color)
             self.fav_tree.tag_configure("hover", background=hover_color)
+            if hasattr(self, "shuffle_tree"):
+                self.shuffle_tree.tag_configure("hover", background=hover_color)
+            self._configure_fav_separator_tags()
+            # A theme switch rebuilds styles: restore row height, re-check widths
+            self._apply_tree_row_height()
+            for t in (self.tree, self.fav_tree, getattr(self, "shuffle_tree", None)):
+                sizer = getattr(t, "_column_sizer", None) if t is not None else None
+                if sizer:
+                    sizer.refit_if_font_changed()
+
+    def _configure_fav_separator_tags(self):
+        """Colour the favourites spacer/separator rows for the current theme."""
+        if not hasattr(self, "fav_tree"):
+            return
+        theme_lower = (getattr(self, "_applied_theme", None) or self.saved_theme).lower()
+        border_color = "#666666" if "dark" in theme_lower else "#999999"
+        self.fav_tree.tag_configure("space_row", background=self.style.lookup("Treeview", "background") or "#ffffff")
+        try:
+            sep_size = int(self.font_size.get())
+        except Exception:
+            sep_size = 10
+        self.fav_tree.tag_configure("separator_row", foreground=border_color, font=("Arial", sep_size, "bold"))
     
     def on_tree_motion(self, event):
         tree = self.tree
@@ -320,6 +573,32 @@ class JoshWBrowser(tb.Window):
             if "hover" in current_tags:
                 current_tags.remove("hover")
                 self.fav_tree.item(item, tags=current_tags)
+
+    def on_shuffle_motion(self, event):
+        if not hasattr(self, "shuffle_tree"):
+            return
+        tree = self.shuffle_tree
+        item_id = tree.identify_row(event.y)
+        for item in tree.get_children():
+            current_tags = list(tree.item(item, "tags"))
+            if "hover" in current_tags:
+                current_tags.remove("hover")
+                tree.item(item, tags=current_tags)
+
+        if item_id:
+            current_tags = list(tree.item(item_id, "tags"))
+            if "hover" not in current_tags:
+                current_tags.append("hover")
+                tree.item(item_id, tags=current_tags)
+
+    def on_shuffle_leave(self, event):
+        if not hasattr(self, "shuffle_tree"):
+            return
+        for item in self.shuffle_tree.get_children():
+            current_tags = list(self.shuffle_tree.item(item, "tags"))
+            if "hover" in current_tags:
+                current_tags.remove("hover")
+                self.shuffle_tree.item(item, tags=current_tags)
     
     def get_favorites_path(self):
         return os.path.join(get_cache_directory(), "favorites.json")
@@ -353,12 +632,35 @@ class JoshWBrowser(tb.Window):
         if existing:
             favorites = [f for f in favorites if f.get("url") != url]
         else:
-            if not entry.get("domain"):
-                entry["domain"] = self.domain_combo.get()
+            # Map raw domain keys/urls to friendly platform display names
+            raw_domain = entry.get("domain") or self.domain_combo.get()
+            
+            domain_map = {
+                "gbs": "Game Boy",
+                "nsf": "NES",
+                "spc": "SNES",
+                "usf": "Nintendo 64",
+                "gsf": "Game Boy Advance",
+                "2sf": "Nintendo DS",
+                "3sf": "Nintendo 3DS",
+                "psf": "PlayStation",
+                "psf2": "PlayStation 2",
+                "hes": "PC Engine",
+                "wsr": "WonderSwan",
+                "kss": "MSX / Neo Geo",
+                "Switch": "Nintendo Switch",
+                "vita": "PS Vita",
+                "wii": "Wii"
+            }
+            
+            clean_domain = domain_map.get(raw_domain.lower(), raw_domain)
+            entry["domain"] = clean_domain
             favorites.append(entry)
+            
         self.save_favorites(favorites)
         self.apply_filter()
         self.refresh_favorites_tab()
+        self.update_shuffle_stars()
 
     def build_favorite_display_items(self, sorted_favs, col, asc):
         if not sorted_favs:
@@ -467,14 +769,11 @@ class JoshWBrowser(tb.Window):
                 self.fav_tree.insert("", "end", iid=item_id, values=("", "", "", "", "", "", ""), tags=("space_row",))
             elif item_data["type"] == "separator":
                 self.fav_display_mapping[item_id] = None
-                sep_text = item_data.get("text", f"┄┄┄┄┄┄┄┄ Group ┄┄┄┄┄┄┄┄")
+                sep_text = item_data.get("text", f"┄┄┄┄ Group ┄┄┄┄")
+                # Ensure all other columns receive blank strings so they don't hold residual alignment text
                 self.fav_tree.insert("", "end", iid=item_id, values=("", "", sep_text, "", "", "", ""), tags=("separator_row",))
 
-        theme_lower = self.saved_theme.lower()
-        border_color = "#666666" if "dark" in theme_lower else "#999999"
-        
-        self.fav_tree.tag_configure("space_row", background=self.style.lookup("Treeview", "background") or "#ffffff")
-        self.fav_tree.tag_configure("separator_row", foreground=border_color, font=("Arial", 9, "bold"))
+        self._configure_fav_separator_tags()
         self.fav_tree.tag_configure("group_item")
         self.fav_tree.tag_configure("group_item_last")  
 
@@ -498,6 +797,10 @@ class JoshWBrowser(tb.Window):
                 self.toggle_favorite_by_entry(entry)
 
     def double_click_favorite(self, event=None):
+        temp_dir = get_temp_directory()
+        check_dir = temp_dir if os.path.exists(temp_dir) else os.path.dirname(temp_dir)
+        hdd_space = format_size(shutil.disk_usage(check_dir).free)
+               
         selection = self.fav_tree.selection()
         if not selection:
             return
@@ -509,7 +812,7 @@ class JoshWBrowser(tb.Window):
             try:
                 dialog = tb.Toplevel(self)
                 dialog.title("File Action")
-                dialog.geometry("340x140")
+                dialog.geometry("450x140")
                 dialog.resizable(False, False)
                 dialog.transient(self)
                 try:
@@ -519,7 +822,7 @@ class JoshWBrowser(tb.Window):
                     pass
 
                 filename = entry["name"]
-                tb.Label(dialog, text=f"Choose action for:\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
+                tb.Label(dialog, text=f"Choose action for: {filename}\n\n You have {hdd_space} left in your temp directory.", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
                 btn_frame = tb.Frame(dialog)
                 btn_frame.pack(pady=5)
 
@@ -815,6 +1118,14 @@ class JoshWBrowser(tb.Window):
                 filename = chosen["name"]
                 size_str = format_size(chosen.get("size", 0) or 0)
                 
+                # Compute disk space outside the conditional check so it's always defined
+                try:
+                    temp_dir = get_temp_directory()
+                    check_dir = temp_dir if os.path.exists(temp_dir) else os.path.dirname(temp_dir)
+                    hdd_space = format_size(shutil.disk_usage(check_dir).free)
+                except Exception:
+                    hdd_space = "unknown space"
+                
                 domain_str = ""
                 if self.stream_random_all_indexes_var.get():
                     domain = None
@@ -827,14 +1138,6 @@ class JoshWBrowser(tb.Window):
                     if not domain:
                         domain = chosen.get("domain") or self.domain_combo.get() or "Unknown Domain"
                     domain_str = f"{domain} - "
-
-                try:
-                    temp_dir = get_temp_directory()
-                    check_dir = temp_dir if os.path.exists(temp_dir) else os.path.dirname(temp_dir)
-                    free_bytes = shutil.disk_usage(check_dir).free
-                    hdd_space = format_size(free_bytes)
-                except Exception:
-                    hdd_space = "unknown space"
 
                 final_text = (
                     f"You rolled and you got... {domain_str}{filename}! it is {size_str}.\n\n"
@@ -991,6 +1294,16 @@ class JoshWBrowser(tb.Window):
         saved_keep_open = self._initial_settings.get("keep_download_window_open", True)
         self.keep_download_window_open = tk.BooleanVar(value=saved_keep_open)
 
+        # Shuffle settings
+        saved_shuffle_count = self._initial_settings.get("shuffle_count", 50)
+        self.shuffle_count = tk.IntVar(value=saved_shuffle_count)
+        self.shuffle_entries = []
+
+        # Load saved font size and apply scale ON STARTUP
+        saved_font_size = self._initial_settings.get("font_size", 10)
+        self.font_size = tk.IntVar(value=saved_font_size)
+        apply_global_font_scale(saved_font_size)
+
         self.title("JoshW Archive Browser")
         self.geometry("1280x760")
         self.minsize(850, 560)
@@ -1098,6 +1411,7 @@ class JoshWBrowser(tb.Window):
 
         self.build_gui()
         self.refresh_favorites_tab()
+        clear_theme_preview()  # drop a stale hover preview from a previous session
         self.change_theme(self.saved_theme)
         self.after(100, self.process_messages)
 
@@ -1152,54 +1466,11 @@ class JoshWBrowser(tb.Window):
             sys.exit(0)
         if callback:
             return callback()
-
-    def rebuild_stream_random_button(self):
-        has_files = any(not e.get("directory") for e in (self.domain_full_entries if self.domain_full_entries else self.current_entries))
-        is_enabled = has_files or self.stream_random_all_indexes_var.get()
-        state_str = "normal" if is_enabled else "disabled"
-
-        if self.stream_random_anim_id:
-            try:
-                self.after_cancel(self.stream_random_anim_id)
-            except Exception:
-                pass
-            self.stream_random_anim_id = None
-
-        if hasattr(self, "stream_random_btn") and self.stream_random_btn.winfo_exists():
-            self.stream_random_btn.destroy()
-
-        if self.stream_random_animation_enabled.get():
-            current_color = self.fade_colors[self.fade_index] if is_enabled else "#f0f0f0"
-            self.stream_random_btn = tk.Button(
-                self.button_frame,
-                text="Stream Random!",
-                command=self.stream_random_file,
-                state=state_str,
-                bg=current_color,
-                fg="#000000" if is_enabled else "#555555",
-                activebackground=current_color,
-                activeforeground="#000000" if is_enabled else "#555555",
-                disabledforeground="#555555",
-                relief="raised",
-                font=("Arial", 9)
-            )
-        else:
-            self.stream_random_btn = tb.Button(
-                self.button_frame,
-                text="Stream Random!",
-                command=self.stream_random_file,
-                state=state_str
-            )
-
-        if hasattr(self, "stream_random_all_indexes_chk") and self.stream_random_all_indexes_chk.winfo_exists():
-            self.stream_random_btn.pack(side="left", padx=2, before=self.stream_random_all_indexes_chk)
-        else:
-            self.stream_random_btn.pack(side="left", padx=2)
-
-        if self.stream_random_animation_enabled.get() and is_enabled:
-            self.animate_stream_random_button()
-
+    
     def build_gui(self):
+        menubar = tk.Menu(self)
+        self.config(menu=menubar)
+
         archive_frame = tb.Frame(self, padding=8)
         archive_frame.pack(fill="x")
 
@@ -1217,16 +1488,14 @@ class JoshWBrowser(tb.Window):
         load_music_btn.pack(side="left", padx=2)
         ToolTip(load_music_btn, "click to find and play locally stored music with the built in player")
 
-        tb.Button(archive_frame, text="Index Current", command=self.index_current_domain).pack(side="left", padx=2)
-        tb.Button(archive_frame, text="Index All", command=self.index_all_domains).pack(side="left", padx=2)
-
-        self.auto_index_btn = tb.Button(archive_frame, text="Auto Indexing On", command=self.toggle_auto_indexing)
-        self.auto_index_btn.pack(side="left", padx=4)
-
-        options_menu_btn = tb.Menubutton(archive_frame, text="Options")
-        options_menu_btn.pack(side="left", padx=4)
+        tb.Button(archive_frame, text="Index Current", command=self.index_current_domain).pack(side="right", padx=2)
+        tb.Button(archive_frame, text="Index All", command=self.index_all_domains).pack(side="right", padx=2)
         
-        self.options_dropdown = tk.Menu(options_menu_btn, tearoff=0)
+        self.shuffle_btn = tb.Button(archive_frame, text="Shuffle", command=self.shuffle_current_domain)
+        self.shuffle_btn.pack(side="left", padx=4)
+        ToolTip(self.shuffle_btn, "Shuffle random files from current domain into the Shuffle tab")
+
+        self.options_dropdown = tk.Menu(menubar, tearoff=0)
         self.options_dropdown.add_checkbutton(
             label="Keep Download Window Open After Completion",
             variable=self.keep_download_window_open,
@@ -1253,9 +1522,25 @@ class JoshWBrowser(tb.Window):
             command=lambda: install_dependencies_prompt(self)
         )
 
+        # Shuffle Count sub-menu & dialog
+        self.shuffle_count_menu = tk.Menu(self.options_dropdown, tearoff=0)
+        for count_val in (10, 25, 50, 100, 200, 500):
+            self.shuffle_count_menu.add_radiobutton(
+                label=f"{count_val} files",
+                variable=self.shuffle_count,
+                value=count_val,
+                command=self.save_settings
+            )
+        self.shuffle_count_menu.add_separator()
+        self.shuffle_count_menu.add_command(
+            label="Custom Selection...",
+            command=self.open_shuffle_count_dialog
+        )
+        self.options_dropdown.add_cascade(label="Shuffle Amount", menu=self.shuffle_count_menu)
+        
+        # Themes sub-menu
         self.theme_var = tk.StringVar(value=self.style.theme_use())
-
-        self.theme_menu = tk.Menu(self.options_dropdown, tearoff=0)
+        self.theme_menu = tk.Menu(self.options_dropdown, tearoff=0, name="theme_menu")
         for t_name in sorted(self.style.theme_names()):
             self.theme_menu.add_radiobutton(
                 label=t_name,
@@ -1263,14 +1548,31 @@ class JoshWBrowser(tb.Window):
                 value=t_name,
                 command=lambda tn=t_name: self.change_theme(tn)
             )
+        # Live preview while hovering; revert to the saved theme if nothing is chosen
+        # Bind at the Tcl level so the handler gets the raw clone path (%W)
+        menu_select_cmd = self.register(self._on_theme_menu_select)
+        self.tk.call("bind", "Menu", "<<MenuSelect>>", f"+{menu_select_cmd} %W")
+        self.bind_class("Menu", "<Unmap>", self._on_theme_menu_unmap, add="+")
         self.options_dropdown.add_cascade(label="Themes", menu=self.theme_menu)
 
+        # Font Size sub-menu
+        self.font_menu = tk.Menu(self.options_dropdown, tearoff=0)
+        for size in (8, 9, 10, 11, 12, 14, 16):
+            self.font_menu.add_radiobutton(
+                label=f"{size} pt",
+                variable=self.font_size,
+                value=size,
+                command=lambda s=size: self.change_font_size(s)
+            )
+        self.options_dropdown.add_cascade(label="Font Size", menu=self.font_menu)
+
+        # Dependencies sub-menu
         self.deps_menu = tk.Menu(self.options_dropdown, tearoff=0)
         self.options_dropdown.add_cascade(label="Dependencies", menu=self.deps_menu)
         
         self.after(300, self.update_dependencies_submenu)
 
-        options_menu_btn["menu"] = self.options_dropdown
+        menubar.add_cascade(label="Options", menu=self.options_dropdown)
 
         class DummyProgressBar:
             def __setitem__(self, key, value):
@@ -1342,10 +1644,7 @@ class JoshWBrowser(tb.Window):
         self.tree.column("url", width=520)
         self.tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "url")
 
-        browse_scrollbar = tb.Scrollbar(browse_frame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscrollcommand=browse_scrollbar.set)
-        self.tree.pack(side="left", fill="both", expand=True)
-        browse_scrollbar.pack(side="right", fill="y")
+        self._setup_tree_scrolling_and_sizing(browse_frame, self.tree)
 
         self.tree.bind("<Double-1>", self.double_click_entry)
         self.tree.bind("<Return>", self.double_click_entry)
@@ -1372,14 +1671,38 @@ class JoshWBrowser(tb.Window):
         self.fav_tree.column("url", width=520)
         self.fav_tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "domain", "url")
 
-        fav_scrollbar = tb.Scrollbar(favorites_frame, orient="vertical", command=self.fav_tree.yview)
-        self.fav_tree.configure(yscrollcommand=fav_scrollbar.set)
-        self.fav_tree.pack(side="left", fill="both", expand=True)
-        fav_scrollbar.pack(side="right", fill="y")
+        self._setup_tree_scrolling_and_sizing(favorites_frame, self.fav_tree)
 
         self.fav_tree.bind("<Double-1>", self.double_click_favorite)
         self.fav_tree.bind("<Return>", self.double_click_favorite)
         self.fav_tree.bind("<Button-3>", self.on_fav_right_click)
+
+        self.shuffle_frame = tb.Frame(self.notebook)
+        self.notebook.add(self.shuffle_frame, text="Shuffle")
+
+        self.shuffle_tree = tb.Treeview(self.shuffle_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
+        self.shuffle_tree.heading("favorite", text="★")
+        self.shuffle_tree.heading("type", text="Type", command=lambda: self.sort_shuffle_by_column("type"))
+        self.shuffle_tree.heading("name", text="Name ▲", command=lambda: self.sort_shuffle_by_column("name"))
+        self.shuffle_tree.heading("date", text="Date", command=lambda: self.sort_shuffle_by_column("date"))
+        self.shuffle_tree.heading("size", text="Size", command=lambda: self.sort_shuffle_by_column("size"))
+        self.shuffle_tree.heading("domain", text="Domain", command=lambda: self.sort_shuffle_by_column("domain"))
+        self.shuffle_tree.heading("url", text="URL", command=lambda: self.sort_shuffle_by_column("url"))
+
+        self.shuffle_tree.column("favorite", width=40, anchor="center", stretch=False)
+        self.shuffle_tree.column("type", width=90, anchor="center", stretch=False)
+        self.shuffle_tree.column("name", width=280)
+        self.shuffle_tree.column("date", width=110, anchor="center", stretch=False)
+        self.shuffle_tree.column("size", width=100, anchor="e", stretch=False)
+        self.shuffle_tree.column("domain", width=90, anchor="center", stretch=False)
+        self.shuffle_tree.column("url", width=520)
+        self.shuffle_tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "domain", "url")
+
+        self._setup_tree_scrolling_and_sizing(self.shuffle_frame, self.shuffle_tree)
+
+        self.shuffle_tree.bind("<Double-1>", self.double_click_shuffle)
+        self.shuffle_tree.bind("<Return>", self.double_click_shuffle)
+        self.shuffle_tree.bind("<Button-3>", self.on_shuffle_right_click)
 
         destination_frame = tb.Frame(self, padding=8)
         destination_frame.pack(fill="x")
@@ -1420,11 +1743,14 @@ class JoshWBrowser(tb.Window):
         
         self.tree.tag_configure("hover", background=initial_hover_color)
         self.fav_tree.tag_configure("hover", background=initial_hover_color)
+        self.shuffle_tree.tag_configure("hover", background=initial_hover_color)
         
         self.tree.bind("<Motion>", self.on_tree_motion)
         self.tree.bind("<Leave>", self.on_tree_leave)
         self.fav_tree.bind("<Motion>", self.on_fav_motion)
         self.fav_tree.bind("<Leave>", self.on_fav_leave)
+        self.shuffle_tree.bind("<Motion>", self.on_shuffle_motion)
+        self.shuffle_tree.bind("<Leave>", self.on_shuffle_leave)
 
         tb.Label(self.button_frame, textvariable=self.status_text).pack(side="right")
 
@@ -1451,13 +1777,13 @@ class JoshWBrowser(tb.Window):
     def show_help(self):
         help_win = tk.Toplevel(self)
         help_win.title("Help - JoshW Emulated Music Browser & Player")
-        help_win.geometry("640x580")
+        help_win.geometry("900x580")
         help_win.transient(self)
         
         frame = tb.Frame(help_win, padding=12)
         frame.pack(fill="both", expand=True)
 
-        text_widget = tk.Text(frame, wrap="word", font=("Arial", 10))
+        text_widget = tb.Text(frame, wrap="word", font=("Arial", 15))
         text_widget.pack(side="left", fill="both", expand=True)
 
         scrollbar = tb.Scrollbar(frame, orient="vertical", command=text_widget.yview)
@@ -1467,42 +1793,102 @@ class JoshWBrowser(tb.Window):
         temp_path_display = "Documents\\Joshw\\temp_extracted" if sys.platform == "win32" else "~/.config/joshw/temp_extracted"
 
         help_text = (
-            "Welcome to the JoshW emulated music browser & player!\n\n"
-            "It is pretty simple to use, first, i highly recommend that you click the Options button and choose the Download Premade Indexes option. Once a domain is indexed, it will load instantly rather than having to get reloaded from the server every time.\n\n"
-            "After that finishes, you can use the dropdown and choose a domain to load. click Open to show the directory listing of that domain, and once you find a file you want, you can double click or press Enter to try and stream the files or download them directly. You may also shift click to choose multiple files to download, or use the \"Download Every File Here\" button to grab everything.\n\n"
-            "You may set a default download location and enable it by clicking the little box to the left of the textbox. Otherwise when downloading it will ask you where you want the files.\n\n"
-            "If you know the name of the file you want, log into the appropriate domain and go to the search bar. Start typing and it will filter it down instantly! If you hit enter, it will save the search in the search history, which can be seen with the dropdown arrow on the search bar. Alternatively, you can click the option next to the search bar named search all indexes to then have your search term go thru every domain at once! This will be laggy however.\n\n"
-            "Dependencies Note:\n"
-            "If you ever need to check or install dependencies, open the options menu and either install or view the installed dependencies.\n\n"
-            "Currently, the only fully supported streamable domains are the following:\n\n"
-            "PC (.7z, Various Rips)\n"
-            "FM Towns (.7z, Various Rips)\n"
-            "NES (.nsf, .nsfe)\n"
-            "SNES (.spc)\n"
-            "c64 (.sid)\n"
-            "Nintendo 64 (.usf, .miniusf)\n"
-            "GameCube (.ast, .dsp, .brstm)\n"
-            "Nintendo Wii (.brstm, .rstm, .bfsar)\n"
-            "Nintendo WiiU (.bfstm, .bfwav, .fsar)\n"
-            "SEGA CD / Mega Drive (.vgm, .vgz, .gym)\n"
-            "Saturn (.ssf)\n"
-            "Dreamcast (.dsf)\n"
-            "PC Engine (.hes)\n"
-            "Neo Geo (.kss)\n"
-            "Playstation (.psf, .minipsf)\n"
-            "Playstation 2 (.psf2, .minipsf2)\n"
-            "Xbox (.xma, .xmd)\n"
-            "Xbox 360 (.xma, .xmd)\n"
-            "3DO (.vag, .adpcm)\n"
-            "Game Boy (.gbs)\n"
-            "Game Boy Advance (.gsf, .minigsf)\n"
-            "Nintendo DS (.2sf, .mini2sf)\n"
-            "Playstation Portable (.vag, .at3)\n"
-            "Playstation Vita (.vag, .at3)\n\n"
-            "I hope to add more in the future with more updates\n\n"
-            f"All streamed songs are saved in a temporary folder within {temp_path_display} and will be deleted once the program is closed.\n\n"
-            "I hope you really enjoy this program!"
-        )
+    "Welcome to the JoshW emulated music browser & player!\n\n"
+    "========================================================================\n"
+    "                         QUICK START & WORKFLOW                         \n"
+    "========================================================================\n"
+    "1. Download Premade Indexes (Recommended First Step):\n"
+    "   Open the Options menu and click 'Download Premade Indexes'. Once a domain is\n"
+    "   indexed, it will load instantly from local data rather than fetching from\n"
+    "   the server every time.\n\n"
+    "2. Browsing & Loading Domains:\n"
+    "   Use the domain dropdown menu to choose a platform archive. Select a domain\n"
+    "   and click 'Open' to display its directory listing.\n\n"
+    "3. Playback & Downloads:\n"
+    "   • Stream / Download Single: Double-click or select a track and press Enter.\n"
+    "   • Stream Random!: Click this button to pick and stream a random track automatically\n"
+    "     from the currently active domain index (or across all indexed domains if\n"
+    "     'Search All Indexes' is enabled).\n"
+    "   • Multi-Select: Hold Shift while clicking to highlight multiple files to download.\n"
+    "   • Folder Download: Click 'Download Every File Here' to grab all files in the active view.\n\n"
+    "4. Search System:\n"
+    "   • Single Domain: Type in the search bar to filter the current list instantly.\n"
+    "   • Search History: Press Enter on a search query to save it to the history dropdown.\n"
+    "   • Search All Indexes: Check 'Search All Indexes' next to the search bar to scan\n"
+    "     across every indexed domain simultaneously (may cause slight lag on large indexes).\n\n"
+    "========================================================================\n"
+    "                         OPTIONS MENU OVERVIEW                          \n"
+    "========================================================================\n"
+    "• Download Premade Indexes:\n"
+    "  Fetches and updates local directory indexes for instant loading across domains.\n\n"
+    "• Install / View Dependencies:\n"
+    "  Opens a menu to check, install, or view required decoders and helper tools\n"
+    "  (e.g., VGMstream, lazyusf, FFmpeg/libgme, 7-Zip) needed for playback & extraction.\n\n"
+    "• Default Download Location & Checkbox:\n"
+    "  Set a default output folder for downloaded files. Toggle the checkbox to the left\n"
+    "  of the text field to automatically save downloads there without prompting.\n"
+    "  If left unchecked, you will be prompted for a save location on every download.\n\n"
+    "• Keep Download Window Open:\n"
+    "  Controls whether the download status window stays open after transfers finish.\n\n"
+    "• Theme Settings:\n"
+    "  Customizes the look and feel of the user interface.\n\n"
+    "========================================================================\n"
+    "                     SUPPORTED DOMAINS & PLATFORMS                      \n"
+    "========================================================================\n"
+    "3DO COMPANY:\n"
+    "  • 3DO (.vag, .adpcm)\n\n"
+    "BANDAI:\n"
+    "  • WonderSwan (.wsr)\n\n"
+    "COMMODORE:\n"
+    "  • c64 music archives (.sid)\n\n"
+    "FUJITSU:\n"
+    "  • FM Towns music archive (.7z)\n\n"
+    "MICROSOFT:\n"
+    "  • Xbox (.xma, .xmd)\n"
+    "  • Xbox 360 (.xma, .xmd)\n\n"
+    "NEC:\n"
+    "  • PC Engine (.hes)\n\n"
+    "NINTENDO:\n"
+    "  • Game Boy (.gbs)\n"
+    "  • Game Boy Advance (.gsf, .minigsf)\n"
+    "  • GameCube (.ast, .dsp, .brstm)\n"
+    "  • NES music archives (.nsf, .nsfe)\n"
+    "  • Nintendo 3DS (.3sf)\n"
+    "  • Nintendo 64 (.usf, .miniusf)\n"
+    "  • Nintendo DS (.2sf, .mini2sf)\n"
+    "  • Nintendo Wii (.brstm, .rstm, .bfsar)\n"
+    "  • Nintendo Wii U (.bfstm, .bfwav, .fsar)\n"
+    "  • SNES music archives (.spc)\n"
+    "  • Switch (.bfstm, .bcstm, .bfsar, .bfsars, .bfwav, .bfseq, .bfbnk, .wem, .hca, .acb, .awb, .g1l)\n\n"
+    "SEGA:\n"
+    "  • Sega CD / Mega Drive (.vgm, .vgz, .gym)\n"
+    "  • Saturn (.ssf)\n"
+    "  • Dreamcast (.dsf)\n\n"
+    "SNK:\n"
+    "  • Neo Geo (.ncd / .kss)\n\n"
+    "SONY:\n"
+    "  • PlayStation (.psf, .minipsf)\n"
+    "  • PlayStation 2 (.psf2, .minipsf2)\n"
+    "  • PlayStation 3 (.psf3)\n"
+    "  • Playstation 4 (.psf4)\n"
+    "  • Playstation 5 (.psf5)\n"
+    "  • PlayStation Portable (.vag, .at3)\n"
+    "  • PlayStation Vita (.vag, .at3)\n\n"
+    "OTHER & ASSORTED:\n"
+    "  • Arcade (VGMRips)\n"
+    "  • Hoot music archives\n"
+    "  • MSX music archives (.kss)\n"
+    "  • Other Assorted Systems (.cdi)\n"
+    "  • PC music archives (.7z, Various Rips)\n"
+    "  • S98 music archives (.s98)\n"
+    "  • VGMusic Full (.mid)\n\n"
+    "========================================================================\n"
+    "                             TEMPORARY CACHE                            \n"
+    "========================================================================\n"
+    f"All streamed songs are saved in a temporary folder within {temp_path_display}\n"
+    "and will be deleted once the program is closed.\n\n"
+    "I hope you really enjoy this program!"
+)
 
         text_widget.insert("1.0", help_text)
         text_widget.configure(state="disabled")
@@ -1573,6 +1959,221 @@ class JoshWBrowser(tb.Window):
                 arrow = " ▲" if current_asc else " ▼"
             self.fav_tree.heading(k, text=base_titles[k] + arrow)
 
+    def sort_shuffle_by_column(self, col_key):
+        if not hasattr(self, "shuffle_sort_column"):
+            self.shuffle_sort_column = "name"
+            self.shuffle_sort_ascending = True
+
+        if self.shuffle_sort_column == col_key:
+            self.shuffle_sort_ascending = not self.shuffle_sort_ascending
+        else:
+            self.shuffle_sort_column = col_key
+            self.shuffle_sort_ascending = True
+
+        self.update_shuffle_sort_headers()
+        self.populate_shuffle_tree(getattr(self, "shuffle_entries", []), resort=True)
+
+    def update_shuffle_sort_headers(self):
+        base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "domain": "Domain", "url": "URL"}
+        current_col = getattr(self, "shuffle_sort_column", "name")
+        current_asc = getattr(self, "shuffle_sort_ascending", True)
+
+        for k in base_titles:
+            arrow = ""
+            if k == current_col:
+                arrow = " ▲" if current_asc else " ▼"
+            self.shuffle_tree.heading(k, text=base_titles[k] + arrow)
+
+    def update_shuffle_stars(self):
+        if not hasattr(self, "shuffle_tree") or not hasattr(self, "shuffle_entries"):
+            return
+        favorites = self.load_favorites()
+        fav_urls = {f.get("url") for f in favorites if f.get("url")}
+        for index, entry in enumerate(self.shuffle_entries):
+            item_id = str(index)
+            if self.shuffle_tree.exists(item_id):
+                is_fav = entry.get("url") in fav_urls
+                star_symbol = "★" if is_fav else ""
+                self.shuffle_tree.set(item_id, "favorite", star_symbol)
+
+    def populate_shuffle_tree(self, entries, resort=False):
+        if not hasattr(self, "shuffle_tree"):
+            return
+        self.shuffle_tree.delete(*self.shuffle_tree.get_children())
+
+        if resort and entries:
+            orig_col = self.current_sort_column
+            orig_asc = self.current_sort_ascending
+            self.current_sort_column = getattr(self, "shuffle_sort_column", "name")
+            self.current_sort_ascending = getattr(self, "shuffle_sort_ascending", True)
+            sorted_entries = self.apply_sorting(entries)
+            self.current_sort_column = orig_col
+            self.current_sort_ascending = orig_asc
+            self.shuffle_entries = sorted_entries
+        else:
+            self.shuffle_entries = list(entries)
+
+        favorites = self.load_favorites()
+        fav_urls = {f.get("url") for f in favorites if f.get("url")}
+
+        for index, entry in enumerate(self.shuffle_entries):
+            item_id = str(index)
+            is_fav = entry.get("url") in fav_urls
+            star_symbol = "★" if is_fav else ""
+            item_size = "-" if entry.get("directory") else format_size(entry.get("size"))
+            entry_domain = entry.get("domain") or self.domain_combo.get()
+
+            self.shuffle_tree.insert("", "end", iid=item_id, values=(
+                star_symbol,
+                "File",
+                entry.get("name", ""),
+                entry.get("date", ""),
+                item_size,
+                entry_domain,
+                urllib.parse.unquote(entry.get("url", ""))
+            ))
+
+        autofit_treeview_columns(self.shuffle_tree)
+
+    def shuffle_current_domain(self):
+        selected_name = self.domain_combo.get()
+        selected_url = DOMAINS.get(selected_name, "")
+        if not selected_url:
+            return
+
+        cache_path = get_cache_path(selected_name)
+        if not self.domain_full_entries and os.path.exists(cache_path):
+            self.load_or_check_cache(selected_name, selected_url)
+
+        source_pool = self.domain_full_entries if self.domain_full_entries else self.current_entries
+        files = [e for e in source_pool if not e.get("directory") and not e.get("is_parent_nav")]
+
+        if not files:
+            messagebox.showinfo("Shuffle", f"No files available in '{selected_name}'.\nPlease open or index this domain first.")
+            return
+
+        count = self.shuffle_count.get() if hasattr(self, "shuffle_count") else 50
+        count = max(1, count)
+        import random
+        picked = random.sample(files, min(len(files), count))
+
+        for e in picked:
+            if not e.get("domain"):
+                e["domain"] = selected_name
+
+        self.populate_shuffle_tree(picked)
+        if hasattr(self, "notebook") and hasattr(self, "shuffle_frame"):
+            self.notebook.select(self.shuffle_frame)
+
+    def double_click_shuffle(self, event=None):
+        selection = self.shuffle_tree.selection()
+        if not selection:
+            return
+        item_id = selection[0]
+        try:
+            entry = self.shuffle_entries[int(item_id)]
+        except (IndexError, ValueError, AttributeError):
+            return
+        if not entry:
+            return
+
+        temp_dir = get_temp_directory()
+        check_dir = temp_dir if os.path.exists(temp_dir) else os.path.dirname(temp_dir)
+        hdd_space = format_size(shutil.disk_usage(check_dir).free)
+
+        try:
+            dialog = tb.Toplevel(self)
+            dialog.title("File Action")
+            dialog.geometry("450x140")
+            dialog.resizable(False, False)
+            dialog.transient(self)
+            try:
+                dialog.update_idletasks()
+                dialog.grab_set()
+            except Exception:
+                pass
+
+            filename = entry["name"]
+            tb.Label(dialog, text=f"Choose action for: {filename}\n\n You have {hdd_space} left in your temp directory.", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
+            btn_frame = tb.Frame(dialog)
+            btn_frame.pack(pady=5)
+
+            url = entry["url"]
+            stream_btn = tb.Button(btn_frame, text="Stream", width=12, command=lambda: [dialog.destroy(), self.stream_specific_url(url)])
+            stream_btn.pack(side="left", padx=8)
+            download_btn = tb.Button(btn_frame, text="Download", width=12, command=lambda: [dialog.destroy(), self.download_specific_url(url)])
+            download_btn.pack(side="left", padx=8)
+            stream_btn.focus_set()
+
+            def focus_stream(e):
+                stream_btn.focus_set()
+                return "break"
+
+            def focus_download(e):
+                download_btn.focus_set()
+                return "break"
+
+            dialog.bind("<Left>", focus_stream)
+            dialog.bind("<Right>", focus_download)
+            stream_btn.bind("<Left>", focus_stream)
+            stream_btn.bind("<Right>", focus_download)
+            download_btn.bind("<Left>", focus_stream)
+            download_btn.bind("<Right>", focus_download)
+        except Exception:
+            pass
+
+    def on_shuffle_right_click(self, event):
+        item_id = self.shuffle_tree.identify_row(event.y)
+        if item_id:
+            try:
+                entry = self.shuffle_entries[int(item_id)]
+                if not entry.get("directory") and not entry.get("is_parent_nav"):
+                    self.toggle_favorite_by_entry(entry)
+            except Exception:
+                pass
+
+    def open_shuffle_count_dialog(self):
+        dialog = tb.Toplevel(self)
+        dialog.title("Set Shuffle Amount")
+        dialog.geometry("340x160")
+        dialog.resizable(False, False)
+        dialog.transient(self)
+        try:
+            dialog.grab_set()
+        except Exception:
+            pass
+
+        tb.Label(
+            dialog,
+            text="Choose number of files to shuffle:",
+            font=("Arial", 10, "bold")
+        ).pack(pady=(18, 8), padx=15, anchor="w")
+
+        combo_values = ["10", "25", "50", "75", "100", "150", "200", "250", "500", "1000"]
+        combo = tb.Combobox(dialog, values=combo_values)
+        combo.pack(pady=4, padx=15, fill="x")
+        combo.set(str(self.shuffle_count.get()))
+        combo.focus_set()
+
+        def on_confirm(event=None):
+            val_str = combo.get().strip()
+            try:
+                val = int(val_str)
+                if val <= 0:
+                    raise ValueError
+                self.shuffle_count.set(val)
+                self.save_settings()
+                dialog.destroy()
+            except ValueError:
+                messagebox.showerror("Invalid Input", "Please enter a valid positive integer.")
+
+        combo.bind("<Return>", on_confirm)
+
+        btn_frame = tb.Frame(dialog)
+        btn_frame.pack(pady=(12, 10), fill="x", padx=15)
+        tb.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(side="right", padx=(4, 0))
+        tb.Button(btn_frame, text="OK", bootstyle="primary", command=on_confirm).pack(side="right")
+
     def push_nav_history(self, domain_name, url):
         if self.is_navigating_history:
             return
@@ -1598,105 +2199,48 @@ class JoshWBrowser(tb.Window):
             self.is_navigating_history = False
 
     def play_audio_file(self, audio_file, playlist=None, start_index=None):
-        ext = os.path.splitext(audio_file)[1].lower()
+        """Check the player's dependency, then launch it as a standalone process."""
+        script = player_script_for(audio_file)
 
-        if ext in (".vgz"):
-            if not self.check_dependency_status("vgmplay"):
-                messagebox.showerror("vgmplay Not Found", "vgmplay binary not found in ~/.config/joshw/ or PATH!")
-                return
-            from arcade_player import ArcadePlayerWindow
-            ArcadePlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
+        if script == "arcade_player.py" and not self.check_dependency_status("vgmplay"):
+            messagebox.showerror("vgmplay Not Found", "vgmplay binary not found!")
             return
-
-        neobae_player_extensions = {".mid", ".midi", ".kar", ".rmi", ".rmf", ".zmf", ".xmf", ".mxmf", ".mthc"}
-        if ext in neobae_player_extensions:
-            from neobae_player import PlayBAEPlayerWindow
-            PlayBAEPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
+        if script == "usf_player.py" and not self.check_dependency_status("lazyusf"):
+            messagebox.showerror("Lazyusf Not Found", "Lazyusf not found! Please install dependencies.")
             return
-        
-        vgmstream_formats = {".ast", ".dsp", ".brstm", ".rstm", ".bfsar", ".bfwav", ".adp", ".str", ".thp", ".was", ".h4m", ".vag", ".wem"}
-        if ext in vgmstream_formats:
+        if script == "gsf_player.py" and not self.check_dependency_status("playgsf"):
+            messagebox.showerror("playgsf Not Found", "playgsf not found! Please install dependencies.")
+            return
+        if script == "twosf_player.py" and not self.check_dependency_status("2sfplay"):
+            messagebox.showerror("2sfPlay Not Found", "2sfPlay not found! Please install dependencies.")
+            return
+        if script == "psf_player.py" and not self.check_dependency_status("psfplay"):
+            messagebox.showerror(
+                "AOSDK Library Not Found",
+                "libaosdk.so/DLL not found! Please ensure the playback library is built."
+            )
+            return
+        if script == "vgmstream_player.py":
             vgm_bin = get_vgmstream_path()
             if not vgm_bin or (not shutil.which(vgm_bin) and not os.path.exists(vgm_bin)):
                 messagebox.showerror("vgmstream123 Not Found", "vgmstream123 not found!")
                 return
-            from vgmstream_player import VGMStreamPlayerWindow
-            VGMStreamPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
-            return
-
-        if ext == ".sid":
-            from sid_player import SIDPlayerWindow
-            SIDPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
-            return
-
-        elif ext in (".usf", ".miniusf"):
-            if not self.check_dependency_status("lazyusf"):
-                messagebox.showerror("Lazyusf Not Found", "Lazyusf not found! Please install dependencies.")
-                return
-            from usf_player import USFPlayerWindow
-            USFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
-            return
-        
-        elif ext in (".gsf", ".minigsf"):
-            if not self.check_dependency_status("playgsf"):
-                messagebox.showerror("playgsf Not Found", "playgsf not found! Please install dependencies.")
-                return
-            from gsf_player import GSFPlayerWindow
-            GSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
-            return
-
-        elif ext in (".2sf", ".mini2sf"):
-            if not self.check_dependency_status("2sfplay"):
-                messagebox.showerror("2sfPlay Not Found", "2sfPlay not found! Please install dependencies.")
-                return
-            from twosf_player import TwoSFPlayerWindow
-            TwoSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
-            return
-
-        elif ext in (".psf", ".minipsf", ".psf2", ".minipsf2"):
-            if not self.check_dependency_status("psfplay"):
-                messagebox.showerror(
-                    "AOSDK Library Not Found",
-                    "libaosdk.so/DLL not found! Please ensure the playback library is built."
-                )
-                return
-            from psf_player import PSFPlayerWindow
-            PSFPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
-            return
-        
-        gme_native_formats = {
-            ".nsf", ".nsfe", ".spc", ".gbs", ".hes", ".kss", 
-            ".ay", ".sap", ".gym", ".vgm"
-        }
-        if ext in gme_native_formats:
-            from gme_player import GMEPlayerWindow, generate_gme_m3u_if_needed
-            playlist_target = generate_gme_m3u_if_needed(audio_file)
-            GMEPlayerWindow(self, playlist_target, playlist=None, start_index=0)
-            return
-
-        supported_extensions = {
-            ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-            ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".aifc", ".au", ".ra", ".xma", ".xmd"
-        }
-        if ext in supported_extensions or ext in (".xma", ".XMA"):
+        if script == "mpv_player.py":
             mpv_path = self.path_mpv.get().strip() or "mpv"
             if not (shutil.which(mpv_path) or os.path.exists(mpv_path)):
                 messagebox.showerror("mpv Not Found", "mpv not found!")
                 return
-            from mpv_player import MPVPlayerWindow
-            MPVPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
-            return
-        
-        vgm_bin = get_vgmstream_path()
-        if not vgm_bin or (not shutil.which(vgm_bin) and not os.path.exists(vgm_bin)):
-            messagebox.showerror("vgmstream123 Not Found", "vgmstream123 not found!")
-            return
-        from vgmstream_player import VGMStreamPlayerWindow
-        VGMStreamPlayerWindow(self, audio_file, playlist=playlist, start_index=start_index)
 
-    def toggle_auto_indexing(self):
-        self.auto_index_enabled = not self.auto_index_enabled
-        self.auto_index_btn.configure(text="Auto Indexing On" if self.auto_index_enabled else "Auto Indexing Off")
+        if script == "gme_player.py":
+            # GME builds its own subtrack playlist from a generated .m3u
+            from gme_player import generate_gme_m3u_if_needed
+            launch_player(generate_gme_m3u_if_needed(audio_file), script=script)
+            return
+
+        try:
+            launch_player(audio_file, playlist=playlist, start_index=start_index, script=script)
+        except Exception as e:
+            messagebox.showerror("Player Error", f"Could not start player:\n\n{e}")
 
     def get_search_history_path(self):
         return os.path.join(get_cache_directory(), "search_history.json")
@@ -1772,7 +2316,9 @@ class JoshWBrowser(tb.Window):
             "destination_history": self.load_destination_history(),
             "default_load_music_dir": self.default_load_music_dir.get(),
             "excluded_stream_domains": getattr(self, "excluded_stream_domains", []),
-            "keep_download_window_open": self.keep_download_window_open.get()
+            "keep_download_window_open": self.keep_download_window_open.get(),
+            "font_size": self.font_size.get(),
+            "shuffle_count": self.shuffle_count.get()
         })
         try:
             with open(self.get_settings_path(), "w", encoding="utf-8") as f:
@@ -1840,6 +2386,10 @@ class JoshWBrowser(tb.Window):
         if not selected_url:
             return
 
+        if selected_name in EXCLUDED_FROM_INDEX_ALL:
+            self.indexer_status_text.set("Indexing not supported for this domain")
+            return
+
         self.start_domain_background_scraper(selected_name, selected_url, get_cache_path(selected_name))
 
     def load_or_check_cache(self, domain_name, root_url):
@@ -1864,83 +2414,65 @@ class JoshWBrowser(tb.Window):
         cache_path = get_cache_path(domain_name)
         if not self.auto_index_enabled and not os.path.exists(cache_path):
             return
-        data = {
+        # Keep keys this method doesn't own (e.g. the updater's dir_mtimes)
+        data = {}
+        if os.path.exists(cache_path):
+            try:
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    existing = json.load(f)
+                if isinstance(existing, dict):
+                    data = existing
+            except Exception:
+                pass
+        data.update({
             "entries": self.domain_full_entries,
             "dir_sizes": self.cached_dir_sizes,
             "scanned_dirs": list(getattr(self, "cached_scanned_dirs", set()))
-        }
+        })
         try:
             with open(cache_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
         except Exception:
             pass
-
-    def index_current_domain(self):
-        selected_name = self.domain_combo.get()
-        self.start_domain_background_scraper(selected_name, DOMAINS[selected_name], get_cache_path(selected_name))
-
+    
     def index_all_domains(self):
         IndexAllWindow(self, DOMAINS)
-
-    def crawl_domain_remote(self, domain_name, root_url, report_progress=True, progress_callback=None, stop_event=None, incremental=False):
-        if stop_event is None:
-            stop_event = self.stop_event
-        all_entries, scanned_dirs = [], set()
-        cache_path = get_cache_path(domain_name)
-        if incremental and os.path.exists(cache_path):
-            try:
-                with open(cache_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    if isinstance(data, dict):
-                        all_entries = data.get("entries", [])
-                        scanned_dirs = set(data.get("scanned_dirs", []))
-            except Exception:
-                pass
-
-        seen_urls = {e["url"] for e in all_entries}
-        queue_dirs = [root_url]
-        visited_dirs = set(scanned_dirs)
-        discovered_dirs_count, scanned_dirs_count = max(1, len(scanned_dirs) or 1), len(scanned_dirs)
-
-        while queue_dirs and not stop_event.is_set():
-            current_url = urllib.parse.urljoin(root_url, queue_dirs.pop(0))
-            scanned_dirs_count += 1
-            visited_dirs.add(current_url.rstrip("/") + "/")
-            try:
-                entries = fetch_directory(current_url)
-            except Exception:
-                entries = []
-
-            for entry in entries:
-                if stop_event.is_set():
-                    break
-                if entry["url"] not in seen_urls:
-                    seen_urls.add(entry["url"])
-                    all_entries.append(entry)
-                if entry["directory"] and entry["url"] not in visited_dirs:
-                    queue_dirs.append(entry["url"])
-                    discovered_dirs_count += 1
-
-            if progress_callback:
-                progress_callback(scanned_dirs_count, discovered_dirs_count, len(all_entries))
-
-        if stop_event.is_set():
-            return None
-        self.cached_scanned_dirs = visited_dirs
-        return all_entries
 
     def start_domain_background_scraper(self, domain_name, root_url, cache_path):
         self.stop_event.clear()
         self.progress_bar["value"] = 0
-        self.indexer_status_text.set(f"Indexing {domain_name}...")
-        threading.Thread(target=self.domain_scraper_worker, args=(domain_name, root_url, cache_path), daemon=True).start()
+        self.indexer_status_text.set(f"Checking {domain_name} for new additions...")
+        threading.Thread(target=self.domain_scraper_worker, args=(domain_name, root_url), daemon=True).start()
 
-    def domain_scraper_worker(self, domain_name, root_url, cache_path):
-        all_entries = self.crawl_domain_remote(domain_name, root_url, report_progress=True, incremental=True)
-        if all_entries is not None:
-            self.domain_full_entries = all_entries
-            self.save_cache(domain_name)
-            self.messages.put(("scraper_finished", domain_name, all_entries))
+    def domain_scraper_worker(self, domain_name, root_url):
+        """Incrementally update one domain's index (same updater as Index All)."""
+        def progress_cb(listed, queued):
+            self.messages.put(("index_progress", domain_name, listed, queued))
+        try:
+            status, added = update_domain_index(domain_name, root_url, progress_cb, self.stop_event)
+        except Exception as e:
+            self.messages.put(("index_finished", domain_name, "error", str(e)))
+            return
+        self.messages.put(("index_finished", domain_name, status, len(added)))
+
+    def on_domain_index_finished(self, domain_name, status, detail):
+        self.progress_bar["value"] = 100 if status != "error" else 0
+        if status == "updated":
+            text = f"{domain_name}: added {detail} new file(s) to the index."
+            # Reload the index and refresh the view if this domain is open
+            if self.domain_combo.get() == domain_name:
+                self.load_or_check_cache(domain_name, DOMAINS[domain_name])
+                if getattr(self, "current_url", None):
+                    threading.Thread(target=self.load_directory_from_index_worker,
+                                     args=(domain_name, self.current_url), daemon=True).start()
+        elif status == "unchanged":
+            text = f"{domain_name}: index is up to date, no new additions."
+        elif status == "stopped":
+            text = f"{domain_name}: indexing stopped."
+        else:
+            text = f"{domain_name}: indexing failed ({detail})."
+        self.indexer_status_text.set(text)
+        self.status_text.set(text)
 
     def load_directory(self, domain_name, url, is_root=False):
         self.current_sort_column = "type"
@@ -2041,7 +2573,8 @@ class JoshWBrowser(tb.Window):
 
         self.path_label.configure(text=urllib.parse.unquote(url))
         self.apply_filter()
-        self.status_text.set(f"{len(self.visible_entries)} shown | Total Size: {format_size(folder_size)}")
+        temp_dir_free = format_size(shutil.disk_usage(get_temp_directory()).free)
+        self.status_text.set(f"Temp directory: {temp_dir_free} | {len(self.visible_entries)} shown | Total DL Size: {format_size(folder_size)}")
 
         has_files = any(not e.get("directory") for e in (self.domain_full_entries if self.domain_full_entries else entries))
         self.update_stream_random_state(has_files)
@@ -2134,6 +2667,10 @@ class JoshWBrowser(tb.Window):
         autofit_treeview_columns(self.tree)
 
     def double_click_entry(self, event=None):
+        temp_dir = get_temp_directory()
+        check_dir = temp_dir if os.path.exists(temp_dir) else os.path.dirname(temp_dir)
+        hdd_space = format_size(shutil.disk_usage(check_dir).free)
+        
         selection = self.tree.selection()
         if not selection:
             return
@@ -2158,7 +2695,7 @@ class JoshWBrowser(tb.Window):
                 pass
 
             filename = entry["name"]
-            tb.Label(dialog, text=f"Choose action for:\n{filename}", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
+            tb.Label(dialog, text=f"Choose action for: {filename}\n\n You have {hdd_space} left in your temp directory.", font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
             btn_frame = tb.Frame(dialog)
             btn_frame.pack(pady=5)
 
@@ -2344,6 +2881,32 @@ class JoshWBrowser(tb.Window):
 
     def get_selected_files(self):
         urls = []
+        try:
+            current_tab = self.notebook.tab(self.notebook.select(), "text")
+        except Exception:
+            current_tab = "Browse"
+
+        if current_tab == "Shuffle" and hasattr(self, "shuffle_tree"):
+            selection = self.shuffle_tree.selection()
+            for item_id in selection:
+                try:
+                    entry = self.shuffle_entries[int(item_id)]
+                    if not entry.get("directory") and not entry.get("is_parent_nav"):
+                        urls.append(entry["url"])
+                except Exception:
+                    pass
+            return urls
+        elif current_tab == "Favorites" and hasattr(self, "fav_tree"):
+            selection = self.fav_tree.selection()
+            for item_id in selection:
+                try:
+                    entry = self.fav_display_mapping.get(item_id)
+                    if entry and not entry.get("directory") and not entry.get("is_parent_nav"):
+                        urls.append(entry["url"])
+                except Exception:
+                    pass
+            return urls
+
         selection = self.tree.selection()
         for item_id in selection:
             try:
@@ -2387,26 +2950,132 @@ class JoshWBrowser(tb.Window):
         ).start()
 
     def download_current_directory(self):
-        urls = [e["url"] for e in self.current_entries if not e["directory"] and not e.get("is_parent_nav")]
+        try:
+            current_tab = self.notebook.tab(self.notebook.select(), "text")
+        except Exception:
+            current_tab = "Browse"
+
+        if current_tab == "Favorites":
+            favs = self.load_favorites()
+            entries = [e for e in favs if not e.get("directory") and not e.get("is_parent_nav")]
+        elif current_tab == "Shuffle":
+            entries = [e for e in getattr(self, "shuffle_entries", []) if not e.get("directory") and not e.get("is_parent_nav")]
+        else:
+            current_tab = "Browse"
+            source = self.current_entries if self.current_entries else self.visible_entries
+            entries = [e for e in source if not e.get("directory") and not e.get("is_parent_nav")]
+
+        urls = [e["url"] for e in entries if e.get("url")]
         if not urls:
-            messagebox.showinfo("No files", "No files found in the current directory.")
+            messagebox.showinfo("No files", f"No files found in the {current_tab} tab to download.")
             return
 
-        dest_dir = self.destination.get().strip() if self.use_default_dest.get() else ""
-        if not dest_dir or not os.path.isdir(dest_dir):
-            dest_dir = filedialog.askdirectory(title="Choose destination folder", initialdir=self.destination.get())
-            if not dest_dir:
-                return
-            self.destination.set(dest_dir)
-            self.save_destination_history(dest_dir)
+        dest_dir = self.destination.get().strip() or os.path.expanduser("~/Downloads")
+        check_dir = dest_dir if os.path.exists(dest_dir) else (os.path.dirname(dest_dir) if os.path.dirname(dest_dir) else os.path.expanduser("~"))
+        try:
+            free_bytes = shutil.disk_usage(check_dir).free
+            free_space_str = format_size(free_bytes)
+        except Exception:
+            free_bytes = 0
+            free_space_str = "Unknown"
 
-        self.stop_event.clear()
-        progress_win = DownloadProgressWindow(self, title="Downloading Directory Files...")
-        threading.Thread(
-            target=self.download_files_worker,
-            args=(urls, dest_dir, progress_win),
-            daemon=True
-        ).start()
+        total_size = sum(e.get("size", 0) for e in entries if isinstance(e.get("size"), (int, float)))
+        has_known_sizes = any(isinstance(e.get("size"), (int, float)) and e.get("size") > 0 for e in entries)
+        total_size_str = format_size(total_size) if has_known_sizes else "Unknown size"
+
+        # Open confirmation dialog window
+        dialog = tb.Toplevel(self)
+        dialog.title(f"Download Confirmation - {current_tab}")
+        dialog.geometry("540x280")
+        dialog.resizable(False, False)
+        dialog.transient(self)
+        try:
+            dialog.grab_set()
+        except Exception:
+            pass
+
+        content = tb.Frame(dialog, padding=16)
+        content.pack(fill="both", expand=True)
+
+        tb.Label(
+            content,
+            text=f"Download All Files from {current_tab}",
+            font=("Arial", 11, "bold")
+        ).pack(anchor="w", pady=(0, 10))
+
+        info_frame = tb.Frame(content)
+        info_frame.pack(fill="x", pady=2)
+
+        tb.Label(info_frame, text=f"Total Files: {len(urls)}", font=("Arial", 9)).grid(row=0, column=0, sticky="w", pady=2)
+        tb.Label(info_frame, text=f"Total File Size: {total_size_str}", font=("Arial", 9, "bold")).grid(row=1, column=0, sticky="w", pady=2)
+
+        loc_frame = tb.Frame(info_frame)
+        loc_frame.grid(row=2, column=0, sticky="ew", pady=2)
+        loc_lbl = tb.Label(loc_frame, text=f"Default Download Location: {dest_dir}", font=("Arial", 9), wraplength=430, justify="left")
+        loc_lbl.pack(side="left")
+
+        space_lbl = tb.Label(info_frame, text=f"Space Available in Location: {free_space_str}", font=("Arial", 9, "bold"))
+        space_lbl.grid(row=3, column=0, sticky="w", pady=2)
+
+        def change_location():
+            nonlocal dest_dir, free_bytes
+            chosen = filedialog.askdirectory(title="Choose destination folder", initialdir=dest_dir)
+            if chosen:
+                dest_dir = chosen
+                self.destination.set(chosen)
+                self.save_destination_history(chosen)
+                loc_lbl.configure(text=f"Default Download Location: {dest_dir}")
+                try:
+                    free_bytes = shutil.disk_usage(dest_dir).free
+                    space_lbl.configure(text=f"Space Available in Location: {format_size(free_bytes)}")
+                except Exception:
+                    pass
+
+        tb.Button(loc_frame, text="Change...", bootstyle="link", command=change_location).pack(side="left", padx=4)
+
+        if has_known_sizes and free_bytes and free_bytes < total_size:
+            tb.Label(
+                content,
+                text="⚠️ Warning: Available space may be less than total download size!",
+                font=("Arial", 9, "bold"),
+                foreground="#d9534f"
+            ).pack(anchor="w", pady=(4, 2))
+
+        tb.Label(
+            content,
+            text="Do you want to proceed with downloading all files?",
+            font=("Arial", 9, "italic")
+        ).pack(anchor="w", pady=(10, 8))
+
+        btn_frame = tb.Frame(content)
+        btn_frame.pack(fill="x", side="bottom")
+
+        def on_proceed():
+            dialog.destroy()
+            if not os.path.isdir(dest_dir):
+                try:
+                    os.makedirs(dest_dir, exist_ok=True)
+                except Exception as e:
+                    messagebox.showerror("Error", f"Could not create destination folder:\n{e}")
+                    return
+
+            self.stop_event.clear()
+            progress_win = DownloadProgressWindow(self, title=f"Downloading {current_tab} Files...")
+            threading.Thread(
+                target=self.download_files_worker,
+                args=(urls, dest_dir, progress_win),
+                daemon=True
+            ).start()
+
+        cancel_btn = tb.Button(btn_frame, text="Cancel", width=10, command=dialog.destroy)
+        cancel_btn.pack(side="right", padx=(6, 0))
+
+        proceed_btn = tb.Button(btn_frame, text="Proceed", bootstyle="primary", width=12, command=on_proceed)
+        proceed_btn.pack(side="right")
+        proceed_btn.focus_set()
+
+        dialog.bind("<Return>", lambda e: on_proceed())
+        dialog.bind("<Escape>", lambda e: dialog.destroy())
 
     def download_files_worker(self, urls, dest_dir, progress_win):
         total_files = len(urls)
@@ -2457,8 +3126,11 @@ class JoshWBrowser(tb.Window):
                     self.open_file_browser(msg[1])
                 elif msg[0] == "play_audio":
                     self.play_audio_file(msg[1])
-                elif msg[0] == "scraper_finished":
-                    self.status_text.set(f"Indexed {msg[1]} successfully.")
+                elif msg[0] == "index_progress":
+                    _, _, listed, queued = msg
+                    self.progress_bar["value"] = min(99, listed / max(1, queued) * 100)
+                elif msg[0] == "index_finished":
+                    self.on_domain_index_finished(*msg[1:])
                 elif msg[0] == "status":
                     self.status_text.set(msg[1])
                 elif msg[0] == "update_progress":

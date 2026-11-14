@@ -9,6 +9,8 @@ import signal
 import json
 import tkinter as tk
 import ttkbootstrap as tb
+from config import apply_global_font_scale, load_saved_font_size
+from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox, filedialog
 
 from config import get_cache_directory, is_emulated_file, resource_path, get_binary_path
@@ -87,9 +89,11 @@ def save_soundfont_setting(sf_name):
         pass
 
 
-class PlayBAEPlayerWindow(tk.Toplevel):
-    def __init__(self, parent, audio_file, playlist=None, start_index=None):
-        super().__init__(parent)
+class PlayBAEPlayerWindow(tb.Window):
+    def __init__(self, parent=None, audio_file=None, playlist=None, start_index=None):
+        # Standalone root window (own process), themed from settings.json
+        super().__init__(themename=load_saved_theme())
+        apply_global_font_scale(load_saved_font_size())
         self.parent = parent
         self.audio_file = audio_file
         self.proc = None
@@ -130,6 +134,7 @@ class PlayBAEPlayerWindow(tk.Toplevel):
             pass
 
         self.protocol("WM_DELETE_WINDOW", self.close)
+        attach_settings_sync(self, on_font_changed=apply_global_font_scale)
 
         if self.playlist:
             self.play_current_track()
@@ -175,8 +180,8 @@ class PlayBAEPlayerWindow(tk.Toplevel):
 
     def get_dynamic_hover_color(self):
         try:
-            if hasattr(self, "parent") and self.parent and hasattr(self.parent, "style"):
-                theme_name = self.parent.style.theme_use().lower()
+            if hasattr(self, "style"):
+                theme_name = self.style.theme_use().lower()
                 if "dark" in theme_name:
                     return "#2a3b4c"
         except Exception:
@@ -201,7 +206,6 @@ class PlayBAEPlayerWindow(tk.Toplevel):
         self.title(f"NeoBAE playbae Controller - {filename}")
         self.geometry("520x580")
         self.minsize(460, 500)
-        self.transient(self.parent)
 
         padding = tb.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
@@ -210,7 +214,7 @@ class PlayBAEPlayerWindow(tk.Toplevel):
         top_header_frame = tb.Frame(padding)
         top_header_frame.pack(side="top", fill="x", pady=(0, 6))
 
-        browse_btn = tk.Button(top_header_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked)
+        browse_btn = tb.Button(top_header_frame, text="📁", width=3, command=self.on_browse_clicked)
         browse_btn.pack(side="left", anchor="w")
 
         sf_frame = tb.Frame(top_header_frame)
@@ -349,17 +353,14 @@ class PlayBAEPlayerWindow(tk.Toplevel):
             self.play_audio_file(file_path)
 
     def play_audio_file(self, audio_file, playlist=None, start_index=None):
-        handler = self.parent
-        while handler and not hasattr(handler, "play_audio_file"):
-            handler = getattr(handler, "parent", None)
-        if handler and hasattr(handler, "play_audio_file"):
-            try:
-                _active_volume_players.discard(self)
-            except Exception:
-                pass
-            self.stop()
-            handler.play_audio_file(audio_file, playlist=playlist, start_index=start_index)
-            self.close()
+        # Hand off to the matching standalone player (a fresh process)
+        try:
+            _active_volume_players.discard(self)
+        except Exception:
+            pass
+        self.stop()
+        launch_player(audio_file, playlist=playlist, start_index=start_index)
+        self.close()
 
     def on_soundfont_changed(self, event=None):
         selected_sf = self.soundfont_var.get()
@@ -641,3 +642,7 @@ class PlayBAEPlayerWindow(tk.Toplevel):
             pass
 
 PlayBAEPlayer = PlayBAEPlayerWindow
+
+
+if __name__ == "__main__":
+    run_player(PlayBAEPlayerWindow)

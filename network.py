@@ -127,7 +127,43 @@ def get_entries_from_domain_entries(dir_url, domain_entries):
     return entries
 
 
+# Apache autoindex rows, plain or table style:
+#   <a href="X">X</a>   2021-09-16 09:18   162M
+#   <td><a href="X">X</a></td><td align="right">2003-05-10 18:09  </td>
+_LISTING_ROW_RE = re.compile(
+    r'<a\s+href="([^"]+)"[^>]*>[^<]*</a>(?:\s|</td>|<td[^>]*>)*(\d{4}-\d{2}-\d{2} \d{2}:\d{2})',
+    re.IGNORECASE,
+)
+
+
 def fetch_directory(url):
+    """List a directory, including each file's exact size (one HEAD per file)."""
+    entries, _ = fetch_directory_listing(url)
+    files = [entry for entry in entries if not entry["directory"]]
+    fill_remote_sizes(files)
+    return entries
+
+
+def fill_remote_sizes(file_entries, max_workers=8):
+    """Look up exact sizes (HEAD requests, in parallel) for the given file entries."""
+    if not file_entries:
+        return
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_map = {executor.submit(get_remote_file_size, entry["url"]): entry for entry in file_entries}
+        for future in as_completed(future_map):
+            entry = future_map[future]
+            try:
+                entry["size"] = future.result()
+            except Exception:
+                entry["size"] = None
+
+
+def fetch_directory_listing(url):
+    """Fetch one directory listing without per-file size lookups.
+
+    Returns (entries, mtimes) where mtimes maps absolute URL -> the server's
+    "Last modified" string (only for servers whose listing shows it).
+    """
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(request, timeout=30) as response:
         content_type = response.headers.get_content_type()
@@ -177,18 +213,12 @@ def fetch_directory(url):
         allowed_roots = {"DEMOS", "DOCUMENTS", "GAMES", "MUSICIANS"}
         entries = [e for e in entries if e["directory"] and e["raw_name"].rstrip("/").upper() in allowed_roots]
 
-    files = [entry for entry in entries if not entry["directory"]]
-    with ThreadPoolExecutor(max_workers=8) as executor:
-        future_map = {executor.submit(get_remote_file_size, entry["url"]): entry for entry in files}
-        for future in as_completed(future_map):
-            entry = future_map[future]
-            try:
-                entry["size"] = future.result()
-            except Exception:
-                entry["size"] = None
+    mtimes = {}
+    for href, stamp in _LISTING_ROW_RE.findall(html):
+        mtimes[urllib.parse.urljoin(url, href)] = stamp
 
     entries.sort(key=lambda entry: (not entry["directory"], entry["name"].lower()))
-    return entries
+    return entries, mtimes
 
 
 def unique_path(path):

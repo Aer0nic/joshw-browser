@@ -6,12 +6,23 @@ import random
 import threading
 import time
 import array
+import sys
+import subprocess
+import signal
+import json
 import tkinter as tk
 import ttkbootstrap as tb
-from tkinter import ttk, messagebox
+from player_launcher import attach_settings_sync, parse_player_args
+from PIL import Image, ImageTk
+from tkinter import ttk, messagebox, filedialog
 from pathlib import Path
-from config import resource_path
+from config import resource_path, get_binary_path, get_cache_directory, is_emulated_file, apply_global_font_scale, load_saved_font_size
 from players import get_saved_player_volume, register_volume_player, set_player_volume, InteractiveProgressBar, ExtractedFilesBrowserWindow
+
+def get_shared_settings_path():
+    cache_dir = Path(get_cache_directory())
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    return cache_dir / "settings.json"
 
 def generate_gme_m3u_if_needed(audio_file):
     """
@@ -219,7 +230,7 @@ class GMEContext:
 
 
 # ==========================================
-# 2. Audio Worker Thread
+# 2. Audio Worker Thread (Using System Pipe / aplay)
 # ==========================================
 
 class GMEAudioWorker:
@@ -238,6 +249,39 @@ class GMEAudioWorker:
         self._seek_target_ms = None
         self._thread = None
         self._lock = threading.Lock()
+        self.proc = None
+        self.wpctl_id = None
+
+    def _resolve_and_apply_volume(self, initial_volume):
+        """Automatically links the aplay process stream ID under PipeWire/PulseAudio."""
+        if not self.proc:
+            return
+        awk_cmd = f"wpctl status | awk '/Streams:/ {{in_streams=1; next}} in_streams && /aplay/ {{sub(/\\.$/, \"\", $1); print $1; exit}} in_streams && /^[^[:space:]]/ {{exit}}'"
+        for _ in range(25):
+            if not self.proc or self.proc.poll() is not None:
+                break
+            try:
+                res = subprocess.run(
+                    awk_cmd,
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
+                    text=True
+                )
+                if res.returncode == 0 and res.stdout:
+                    stream_id = res.stdout.strip()
+                    if stream_id.isdigit():
+                        self.wpctl_id = stream_id
+                        percent = max(0, min(150, int(initial_volume * 100)))
+                        subprocess.run(
+                            ["wpctl", "set-volume", str(stream_id), f"{percent}%"],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
+                        )
+                        return
+            except Exception:
+                pass
+            time.sleep(0.15)
 
     def start(self):
         self._thread = threading.Thread(target=self._run, daemon=True)
@@ -246,30 +290,57 @@ class GMEAudioWorker:
     def stop(self):
         self._stop_event.set()
         self._pause_event.set()
+        if self.proc:
+            try:
+                self.proc.terminate()
+                self.proc.wait(timeout=0.5)
+            except Exception:
+                try:
+                    self.proc.kill()
+                except Exception:
+                    pass
+            self.proc = None
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=1.0)
 
     def pause(self):
         self._pause_event.clear()
+        if self.proc and self.proc.poll() is None:
+            try:
+                if hasattr(os, "kill") and hasattr(signal, "SIGSTOP"):
+                    os.kill(self.proc.pid, signal.SIGSTOP)
+            except Exception:
+                pass
 
     def resume(self):
         self._pause_event.set()
+        if self.proc and self.proc.poll() is None:
+            try:
+                if hasattr(os, "kill") and hasattr(signal, "SIGCONT"):
+                    os.kill(self.proc.pid, signal.SIGCONT)
+            except Exception:
+                pass
 
     def set_volume(self, vol):
         with self._lock:
             self.volume = max(0.0, float(vol))
+        
+        if self.wpctl_id:
+            try:
+                percent = max(0, min(150, int(vol * 100)))
+                subprocess.run(
+                    ["wpctl", "set-volume", str(self.wpctl_id), f"{percent}%"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
+            except Exception:
+                self.wpctl_id = None
 
     def seek(self, position_ms):
         with self._lock:
             self._seek_target_ms = position_ms
 
     def _run(self):
-        try:
-            import sounddevice as sd
-        except Exception as e:
-            self.ui_queue.put(("error", f"Sounddevice initialization failed: {e}"))
-            return
-
         try:
             with GMEContext(self.audio_file) as ctx:
                 total_tracks = ctx.get_track_count()
@@ -282,30 +353,25 @@ class GMEAudioWorker:
                 chunk_samples = 4096
                 sample_rate = ctx.sample_rate
 
-                try:
-                    target_device = None
-                    devices = sd.query_devices()
-                    
-                    for idx, dev in enumerate(devices):
-                        if 'HyperX' in dev['name'] and dev['max_output_channels'] > 0:
-                            target_device = idx
-                            break
-                    
-                    if target_device is None:
-                        default_info = sd.query_devices(kind='output')
-                        target_device = default_info['index']
+                cmd = [
+                    "aplay",
+                    "-t", "raw",
+                    "-c", "2",
+                    "-r", str(sample_rate),
+                    "-f", "S16_LE",
+                    "-q"
+                ]
 
-                    stream = sd.RawOutputStream(
-                        samplerate=sample_rate, 
-                        channels=2, 
-                        dtype="int16", 
-                        blocksize=chunk_samples, 
-                        latency="high",
-                        device=target_device
+                try:
+                    self.proc = subprocess.Popen(
+                        cmd,
+                        stdin=subprocess.PIPE,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL
                     )
-                    stream.start()
+                    threading.Thread(target=self._resolve_and_apply_volume, args=(self.volume,), daemon=True).start()
                 except Exception as e:
-                    self.ui_queue.put(("error", f"Could not open audio stream: {e}"))
+                    self.ui_queue.put(("error", f"Could not launch audio output process (aplay): {e}"))
                     return
 
                 base_length_ms = ctx.base_length_ms
@@ -349,10 +415,17 @@ class GMEAudioWorker:
                                 total_samples_rendered = 0
                                 continue
                             else:
+                                try:
+                                    if self.proc and self.proc.stdin:
+                                        self.proc.stdin.close()
+                                    if self.proc:
+                                        self.proc.wait(timeout=0.5)
+                                except Exception:
+                                    pass
+                                
                                 self.ui_queue.put(("ended", None))
                                 break
 
-                        # If manual looping is enabled and we hit the end of a base loop before the final fade window, restart track from beginning[cite: 1]
                         if not self.loop_forever and self.loop_enabled and total_samples_rendered > 0 and total_samples_rendered % single_base_samples == 0 and total_samples_rendered < total_base_samples:
                             ctx.seek(0)
 
@@ -366,6 +439,13 @@ class GMEAudioWorker:
                         pcm_data = bytes(sub_buf)
                         if not pcm_data or not success:
                             if not self.loop_forever:
+                                try:
+                                    if self.proc and self.proc.stdin:
+                                        self.proc.stdin.close()
+                                    if self.proc:
+                                        self.proc.wait(timeout=0.5)
+                                except Exception:
+                                    pass
                                 self.ui_queue.put(("ended", None))
                                 break
                             else:
@@ -392,7 +472,13 @@ class GMEAudioWorker:
                                 arr[i] = max(-32768, min(32767, int(arr[i] * vol)))
                             pcm_data = arr.tobytes()
 
-                        stream.write(pcm_data)
+                        try:
+                            if self.proc and self.proc.stdin:
+                                self.proc.stdin.write(pcm_data)
+                                self.proc.stdin.flush()
+                        except Exception:
+                            break
+
                         total_samples_rendered += samples_to_render
 
                         curr_pos_sec = total_samples_rendered / sample_rate
@@ -404,11 +490,16 @@ class GMEAudioWorker:
                             pct = 0 if self.loop_forever else (int((curr_pos_sec / effective_duration_sec) * 100) if effective_duration_sec > 0 else 0)
                             self.ui_queue.put(("position", (curr_pos_sec, effective_duration_sec, pct)))
                 finally:
-                    try:
-                        stream.stop()
-                        stream.close()
-                    except Exception:
-                        pass
+                    if self.proc:
+                        try:
+                            if self.proc.stdin:
+                                self.proc.stdin.close()
+                            self.proc.wait(timeout=1.0)
+                        except Exception:
+                            try:
+                                self.proc.terminate()
+                            except Exception:
+                                pass
         except Exception as e:
             if not self._stop_event.is_set():
                 self.ui_queue.put(("error", f"Playback error: {e}"))
@@ -421,11 +512,62 @@ class GMEAudioWorker:
 # 3. Player UI Window
 # ==========================================
 
-class GMEPlayerWindow(tk.Toplevel):
-    def __init__(self, parent, audio_file, playlist=None, start_index=0):
-        super().__init__(parent)
+class GMEPlayerWindow(tb.Window):
+    def __init__(self, parent=None, audio_file=None, playlist=None, start_index=0):
+        # Load theme settings for standalone root window
+        initial_settings = {}
+        try:
+            settings_path = get_shared_settings_path()
+            if settings_path.exists():
+                initial_settings = json.loads(settings_path.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+        saved_theme = initial_settings.get("theme", "cosmo")
+
+        super().__init__(themename=saved_theme)
+        
+        # Load font size on startup and apply scaling
+        self.font_size = load_saved_font_size()
+        apply_global_font_scale(self.font_size)
+
+        # Track settings file modification time for live polling
+        self.settings_mtime = self.get_settings_mtime()
+
         self.parent = parent
-        self.audio_file = audio_file
+        self.playlist = []
+        self.current_index = 0
+        self.playlist_dir = ""
+
+        # Standalone playlist handling and path expansion
+        if playlist:
+            self.playlist = [os.path.abspath(p) for p in playlist]
+            self.current_index = start_index if start_index is not None and 0 <= start_index < len(self.playlist) else 0
+            if self.playlist:
+                first_clean = self.playlist[0].rsplit("#", 1)[0]
+                self.playlist_dir = os.path.dirname(first_clean)
+        elif audio_file:
+            audio_path = Path(audio_file).resolve()
+            self.playlist_dir = str(audio_path.parent)
+            resolved_audio = generate_gme_m3u_if_needed(str(audio_path))
+            if resolved_audio.endswith(".m3u"):
+                self.load_playlist_files(provided_m3u=resolved_audio)
+            else:
+                target_dir = audio_path.parent
+                gme_exts = {".nsf", ".nsfe", ".spc", ".gbs", ".hes", ".kss", ".vgm", ".vgz", ".ay", ".sap", ".gym"}
+                found_files = sorted([
+                    str(p) for p in target_dir.glob("*") 
+                    if p.is_file() and p.suffix.lower() in gme_exts
+                ])
+                if found_files and str(audio_path) in found_files:
+                    self.playlist = found_files
+                    self.current_index = found_files.index(str(audio_path))
+                else:
+                    self.playlist = [str(audio_path)]
+                    self.current_index = 0
+
+        first_entry = self.playlist[self.current_index] if self.playlist else ""
+        self.audio_file = first_entry.rsplit("#", 1)[0] if "#" in first_entry else first_entry
+
         self.worker = None
         self.is_paused = False
         self.current_position_seconds = 0.0
@@ -435,10 +577,6 @@ class GMEPlayerWindow(tk.Toplevel):
         
         self.track_index = 0
         self.total_subtracks = 1
-
-        self.playlist = []
-        self.current_index = 0
-        self.load_playlist_files(playlist, start_index)
 
         self.loop_forever_var = tk.BooleanVar(value=False)
         self.loop_enabled_var = tk.BooleanVar(value=False)
@@ -454,11 +592,13 @@ class GMEPlayerWindow(tk.Toplevel):
         self.status_var = tk.StringVar(value="Stopped")
         self.track_var = tk.StringVar(value="")
         self.seek_pct_var = tk.StringVar(value="0%")
+        self.proc = None
+        self.wpctl_id = None
 
         self.build_ui()
 
         try:
-            icon_file = resource_path("assets/icons/player_icon.png")
+            icon_file = resource_path("assets/icons/gmeicon.png")
             if icon_file.exists():
                 self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
         except Exception:
@@ -466,9 +606,49 @@ class GMEPlayerWindow(tk.Toplevel):
 
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.start_queue_polling()
+        self.start_settings_polling()
+        attach_settings_sync(self)  # theme (incl. browser hover previews)
 
         if self.playlist:
             self.play_current_track()
+
+    def get_settings_mtime(self):
+        try:
+            settings_path = get_shared_settings_path()
+            return settings_path.stat().st_mtime if settings_path.exists() else 0
+        except Exception:
+            return 0
+
+    def start_settings_polling(self):
+        def check_settings():
+            if not self.winfo_exists():
+                return
+            mtime = self.get_settings_mtime()
+            if mtime != self.settings_mtime:
+                self.settings_mtime = mtime
+                new_size = load_saved_font_size()
+                if new_size != self.font_size:
+                    self.apply_live_font_size(new_size)
+            self.after(500, check_settings)
+
+        self.after(500, check_settings)
+
+    def apply_live_font_size(self, new_size):
+        self.font_size = new_size
+        apply_global_font_scale(new_size)
+
+        fs = self.font_size
+        filename = os.path.basename(self.audio_file) if self.audio_file else "No file"
+
+        if hasattr(self, "title_label") and self.title_label.winfo_exists():
+            self.title_label.configure(font=("Arial", fs, "bold"))
+        if hasattr(self, "playlist_listbox") and self.playlist_listbox.winfo_exists():
+            self.playlist_listbox.configure(font=("Arial", fs))
+
+        base_w = max(550, int(480 * (fs / 10)))
+        base_h = max(520, int(640 * (fs / 10)))
+        self.geometry(f"{base_w}x{base_h}")
+        self.minsize(base_w, base_h)
 
     def format_time(self, seconds):
         if seconds is None or seconds < 0:
@@ -480,86 +660,42 @@ class GMEPlayerWindow(tk.Toplevel):
         ext = os.path.splitext(filepath)[1].lower()
         return ext in (".nsf", ".nsfe", ".gbs", ".hes", ".kss")
 
-    def load_playlist_files(self, provided_playlist=None, provided_index=None):
-        folder = os.path.dirname(self.audio_file)
-        abs_target = os.path.normpath(os.path.abspath(self.audio_file))
-
-        if provided_playlist:
-            self.playlist = [os.path.abspath(p) for p in provided_playlist]
-            norm_playlist = [os.path.normpath(os.path.abspath(p)) for p in self.playlist]
-            if abs_target in norm_playlist:
-                self.current_index = norm_playlist.index(abs_target)
-            elif provided_index is not None and 0 <= provided_index < len(self.playlist):
-                self.current_index = provided_index
-            else:
-                self.current_index = 0
-            return
-
-        try:
-            ext = os.path.splitext(self.audio_file)[1].lower()
-            subtrack_exts = (".nsf", ".nsfe", ".gbs", ".hes", ".kss")
-
-            if ext in subtrack_exts and not self.audio_file.lower().endswith(".m3u"):
-                stem = Path(self.audio_file).stem
-                m3u_path = os.path.join(folder, f"{stem}_tracks.m3u")
-
-                if not os.path.exists(m3u_path):
-                    try:
-                        track_count = 1
-                        with GMEContext(self.audio_file) as ctx:
-                            track_count = ctx.get_track_count()
-
-                        if track_count > 1:
-                            with open(m3u_path, "w", encoding="utf-8") as f_m3u:
-                                f_m3u.write("#EXTM3U\n")
-                                for i in range(track_count):
-                                    track_num = i + 1
-                                    f_m3u.write(f"#EXTINF:-1,Track {track_num}\n")
-                                    f_m3u.write(f"{os.path.basename(self.audio_file)}#{i}\n")
-                    except Exception:
-                        pass
-
-                if os.path.exists(m3u_path):
-                    self.audio_file = m3u_path
-
-            if self.audio_file.lower().endswith(".m3u"):
-                loaded_tracks = []
-                with open(self.audio_file, "r", encoding="utf-8", errors="ignore") as f_m3u:
+    def load_playlist_files(self, provided_playlist=None, provided_index=None, provided_m3u=None):
+        m3u_file = provided_m3u or (self.audio_file if self.audio_file.endswith(".m3u") else None)
+        
+        if m3u_file:
+            folder = os.path.dirname(m3u_file)
+            self.playlist_dir = folder
+            loaded_tracks = []
+            try:
+                with open(m3u_file, "r", encoding="utf-8", errors="ignore") as f_m3u:
                     for line in f_m3u:
                         line = line.strip()
                         if line and not line.startswith("#"):
-                            if not os.path.isabs(line):
-                                if "#" in line:
-                                    fname, t_idx = line.split("#", 1)
-                                    resolved_path = os.path.join(folder, fname) + f"#{t_idx}"
-                                else:
-                                    resolved_path = os.path.join(folder, line)
+                            if "#" in line:
+                                fname, t_idx = line.rsplit("#", 1)
+                                abs_fname = os.path.abspath(os.path.join(folder, fname))
+                                resolved_path = f"{abs_fname}#{t_idx}"
                             else:
-                                resolved_path = line
+                                resolved_path = os.path.abspath(os.path.join(folder, line))
                             loaded_tracks.append(resolved_path)
-                
-                if loaded_tracks:
-                    self.playlist = loaded_tracks
-                    self.current_index = 0
-                    return
+            except Exception:
+                pass
 
-            gme_exts = {".nsf", ".nsfe", ".spc", ".gbs", ".hes", ".kss", ".vgm", ".vgz", ".ay", ".sap", ".gym"}
-            files = sorted(os.listdir(folder))
-            self.playlist = []
-            for f in files:
-                full_p = os.path.join(folder, f)
-                if os.path.isfile(full_p) and os.path.splitext(f)[1].lower() in gme_exts:
-                    self.playlist.append(full_p)
-            
-            norm_playlist = [os.path.normpath(os.path.abspath(p)) for p in self.playlist]
-            if abs_target in norm_playlist:
-                self.current_index = norm_playlist.index(abs_target)
-            else:
-                self.playlist = [self.audio_file]
+            if loaded_tracks:
+                self.playlist = loaded_tracks
                 self.current_index = 0
-        except Exception:
-            self.playlist = [self.audio_file]
-            self.current_index = 0
+                return
+
+        if provided_playlist:
+            self.playlist = [os.path.abspath(p) for p in provided_playlist]
+            if self.playlist:
+                first_clean = self.playlist[0].rsplit("#", 1)[0]
+                self.playlist_dir = os.path.dirname(first_clean)
+            if provided_index is not None and 0 <= provided_index < len(self.playlist):
+                self.current_index = provided_index
+            else:
+                self.current_index = 0
 
     def update_track_label_display(self):
         if self.supports_subtracks(self.audio_file) and self.total_subtracks > 1:
@@ -568,20 +704,45 @@ class GMEPlayerWindow(tk.Toplevel):
             self.track_var.set(f"Track: {self.current_index + 1} / {len(self.playlist)}")
 
     def build_ui(self):
-        filename = os.path.basename(self.audio_file)
+        filename = os.path.basename(self.audio_file) if self.audio_file else "No file"
         self.title(f"GME Player - {filename}")
-        self.geometry("480x640")
-        self.minsize(550, 520)
-        self.transient(self.parent)
+        
+        base_w = max(550, int(480 * (self.font_size / 10)))
+        base_h = max(520, int(640 * (self.font_size / 10)))
+        self.geometry(f"{base_w}x{base_h}")
+        self.minsize(base_w, base_h)
+
+        fs = self.font_size
 
         padding = tb.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
 
-        browse_frame = tb.Frame(padding)
-        browse_frame.pack(side="top", anchor="w", pady=(0, 6))
-        tk.Button(browse_frame, text="📁", font=("Arial", 12), width=3, command=self.on_browse_clicked).pack(side="top", anchor="w")
+        header_frame = tb.Frame(padding)
+        header_frame.pack(side="top", fill="x", pady=(0, 6))
 
-        self.title_label = tb.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=440, justify="center")
+        browse_btn = tb.Button(header_frame, text="📁", width=3, bootstyle="outline-primary", command=self.on_browse_clicked)
+        browse_btn.pack(side="left", anchor="center", padx=(0, 8))
+
+        self.banner_canvas = tb.Canvas(header_frame, height=85, highlightthickness=0)
+        self.banner_canvas.pack(side="left", fill="x", expand=True)
+
+        try:
+            banner_path = resource_path("assets/icons/gmebanner.png")
+            if banner_path.exists():
+                self.raw_banner_img = Image.open(str(banner_path)).convert("RGBA")
+                self.banner_image_item = self.banner_canvas.create_image(0, 0, anchor="nw")
+
+                def resize_banner(event):
+                    if event.width > 1 and event.height > 1:
+                        resized_pil = self.raw_banner_img.resize((event.width, event.height), Image.Resampling.LANCZOS)
+                        self.banner_photo = ImageTk.PhotoImage(resized_pil)
+                        self.banner_canvas.itemconfig(self.banner_image_item, image=self.banner_photo)
+
+                self.banner_canvas.bind("<Configure>", resize_banner)
+        except Exception as e:
+            print(f"[USFPlayer] Could not load banner image: {e}")
+
+        self.title_label = tb.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", fs, "bold"), wraplength=440, justify="center")
         self.title_label.pack(pady=(0, 6))
 
         info_frame = tb.Frame(padding)
@@ -589,12 +750,12 @@ class GMEPlayerWindow(tk.Toplevel):
         
         status_sub = tb.Frame(info_frame)
         status_sub.pack(side="left", padx=5)
-        tb.Label(status_sub, textvariable=self.status_var, font=("Arial", 9)).pack(side="left")
-        tb.Label(status_sub, text=" (", font=("Arial", 9)).pack(side="left")
-        tb.Label(status_sub, textvariable=self.seek_pct_var, font=("Arial", 9, "bold")).pack(side="left")
-        tb.Label(status_sub, text=")", font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub, textvariable=self.status_var, font=("Arial", fs)).pack(side="left")
+        tb.Label(status_sub, text=" (", font=("Arial", fs)).pack(side="left")
+        tb.Label(status_sub, textvariable=self.seek_pct_var, font=("Arial", fs, "bold")).pack(side="left")
+        tb.Label(status_sub, text=")", font=("Arial", fs)).pack(side="left")
 
-        tb.Label(info_frame, textvariable=self.position_var, font=("Arial", 9)).pack(side="right", padx=5)
+        tb.Label(info_frame, textvariable=self.position_var, font=("Arial", fs)).pack(side="right", padx=5)
 
         progress_container = tb.Frame(padding)
         progress_container.pack(fill="x", pady=(2, 6))
@@ -609,15 +770,15 @@ class GMEPlayerWindow(tk.Toplevel):
 
         meta_frame = tb.Frame(padding)
         meta_frame.pack(fill="x", pady=(0, 8))
-        tb.Label(meta_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="left", padx=5)
-        tb.Label(meta_frame, textvariable=self.duration_var, font=("Arial", 9)).pack(side="right", padx=5)
+        tb.Label(meta_frame, textvariable=self.track_var, font=("Arial", fs, "bold")).pack(side="left", padx=5)
+        tb.Label(meta_frame, textvariable=self.duration_var, font=("Arial", fs)).pack(side="right", padx=5)
 
         style = tb.Style()
         style.configure("Thick.Horizontal.TScale", sliderthickness=50, troughrelief="flat")
 
         vol_frame = tb.Frame(padding)
         vol_frame.pack(fill="x", pady=(0, 8))
-        tb.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
+        tb.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", fs)).pack(side="left", padx=5)
         self.volume_slider = tb.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide, style="Thick.Horizontal.TScale")
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
@@ -625,7 +786,7 @@ class GMEPlayerWindow(tk.Toplevel):
         list_frame = tb.LabelFrame(padding, text="Playlist Files", padding=6)
         list_frame.pack(fill="both", expand=True, pady=(0, 10))
 
-        self.playlist_listbox = tb.Listbox(list_frame, font=("Arial", 9), selectmode="single", exportselection=False)
+        self.playlist_listbox = tb.Listbox(list_frame, font=("Arial", fs), selectmode="single", exportselection=False)
         self.playlist_listbox.pack(side="left", fill="both", expand=True)
         scrollbar = tb.Scrollbar(list_frame, orient="vertical", command=self.playlist_listbox.yview)
         scrollbar.pack(side="right", fill="y")
@@ -698,7 +859,7 @@ class GMEPlayerWindow(tk.Toplevel):
         self.playlist_listbox.delete(0, tk.END)
         for p in self.playlist:
             if "#" in p:
-                _, t_idx = p.split("#", 1)
+                _, t_idx = p.rsplit("#", 1)
                 display_label = f"Track {int(t_idx) + 1}"
             else:
                 display_label = os.path.basename(p)
@@ -707,10 +868,9 @@ class GMEPlayerWindow(tk.Toplevel):
 
     def get_dynamic_hover_color(self):
         try:
-            if hasattr(self, "parent") and self.parent and hasattr(self.parent, "style"):
-                theme_name = self.parent.style.theme_use().lower()
-                if "dark" in theme_name:
-                    return "#2a3b4c"
+            theme_name = self.style.theme_use().lower()
+            if "dark" in theme_name:
+                return "#2a3b4c"
         except Exception:
             pass
         return "#e8f0fe"
@@ -746,7 +906,6 @@ class GMEPlayerWindow(tk.Toplevel):
         idx = selection[0]
         if idx != self.current_index:
             self.current_index = idx
-            self.track_index = 0
             self.play_current_track()
 
     def start_queue_polling(self):
@@ -795,21 +954,32 @@ class GMEPlayerWindow(tk.Toplevel):
             self.worker.stop()
             self.worker = None
 
+        if not self.playlist or not (0 <= self.current_index < len(self.playlist)):
+            return
+
         raw_entry = self.playlist[self.current_index]
+
         if "#" in raw_entry:
             base_file, track_str = raw_entry.rsplit("#", 1)
-            if not os.path.isabs(base_file):
-                self.audio_file = os.path.join(os.path.dirname(self.audio_file), base_file)
+            if not os.path.isabs(base_file) and self.playlist_dir:
+                target_audio_file = os.path.join(self.playlist_dir, base_file)
             else:
-                self.audio_file = base_file
+                target_audio_file = base_file
             try:
                 self.track_index = int(track_str)
             except ValueError:
                 self.track_index = 0
         else:
-            self.audio_file = raw_entry
+            if not os.path.isabs(raw_entry) and self.playlist_dir:
+                target_audio_file = os.path.join(self.playlist_dir, raw_entry)
+            else:
+                target_audio_file = raw_entry
             self.track_index = 0
 
+        target_audio_file = os.path.abspath(target_audio_file)
+
+        # Assign the actual audio file path to self.audio_file so GMEContext gets a valid audio container
+        self.audio_file = target_audio_file
         filename = os.path.basename(self.audio_file)
         
         self.title(f"GME Player - {filename} (Track {self.track_index + 1})")
@@ -881,14 +1051,52 @@ class GMEPlayerWindow(tk.Toplevel):
 
     def on_volume_slide(self, val):
         set_player_volume(float(val), source_player=self)
+        try:
+            val_int = int(float(val))
+            self.volume_var.set(val_int)
+            self.volume_label_var.set(f"Volume: {val_int}%")
+        except Exception:
+            pass
+        self.apply_live_volume()
 
     def apply_live_volume(self):
-        vol_gain = max(0, min(150, self.volume_var.get())) / 100.0
+        vol_gain = max(0, min(100, self.volume_var.get())) / 100.0
         if self.worker:
             self.worker.set_volume(vol_gain)
 
     def on_browse_clicked(self):
-        ExtractedFilesBrowserWindow(self, os.path.dirname(self.audio_file))
+        initial_dir = os.path.dirname(self.audio_file) if self.audio_file else os.path.expanduser("~")
+        file_path = filedialog.askopenfilename(
+            title="Select GME Music File",
+            initialdir=initial_dir,
+            filetypes=[("GME Supported Files", "*.nsf *.nsfe *.spc *.gbs *.hes *.kss *.vgm *.vgz"), ("All Files", "*.*")]
+        )
+        if file_path:
+            resolved = generate_gme_m3u_if_needed(file_path)
+            self.audio_file = resolved
+            self.load_files_and_play(resolved)
+
+    def load_files_and_play(self, file_path):
+        target_dir = Path(file_path).parent
+        self.playlist_dir = str(target_dir)
+        gme_exts = {".nsf", ".nsfe", ".spc", ".gbs", ".hes", ".kss", ".vgm", ".vgz", ".ay", ".sap", ".gym"}
+        
+        if file_path.endswith(".m3u"):
+            self.load_playlist_files(provided_m3u=file_path)
+        else:
+            found_files = sorted([
+                str(p) for p in target_dir.glob("*") 
+                if p.is_file() and p.suffix.lower() in gme_exts
+            ])
+            self.playlist = found_files if found_files else [file_path]
+
+        try:
+            self.current_index = self.playlist.index(file_path)
+        except ValueError:
+            self.current_index = 0
+
+        self.populate_playlist_listbox()
+        self.play_current_track()
 
     def stop(self):
         if self.worker:
@@ -905,4 +1113,13 @@ class GMEPlayerWindow(tk.Toplevel):
         try:
             self.destroy()
         except Exception:
-            pass
+            sys.exit(0)
+
+GMEPlayer = GMEPlayerWindow
+
+if __name__ == "__main__":
+    audio_path, playlist, start_index = parse_player_args()
+    app = GMEPlayerWindow(audio_file=audio_path, playlist=playlist, start_index=start_index or 0)
+    if not audio_path:
+        app.after(100, app.on_browse_clicked)
+    app.mainloop()

@@ -1,11 +1,14 @@
 """Configuration and path helpers for JoshW Archive Browser."""
 
+import json
 import os
 import platform
 import re
 import shutil
 import stat
 import sys
+import tkinter.font as tkfont
+import ttkbootstrap as tb
 from pathlib import Path
 
 
@@ -32,10 +35,10 @@ DOMAINS = {
     "WonderSwan": "http://wsr.joshw.info/",
 
     "----------- COMMODORE -----------": "",
-    "c64 music archives": "https://hvsc.brona.dk/HVSC/C64Music/",
+    "c64": "https://hvsc.brona.dk/HVSC/C64Music/",
 
     "----------- FUJITSU -----------": "",
-    "FM Towns music archive": "http://fmtowns.joshw.info/",
+    "FM Towns": "http://fmtowns.joshw.info/",
 
     "----------- MICROSOFT -----------": "",
     "Xbox": "http://xbox.joshw.info/",
@@ -45,17 +48,17 @@ DOMAINS = {
     "PC Engine": "http://hes.joshw.info/",
 
     "----------- NINTENDO -----------": "",
-    "Game Boy": "http://gbs.joshw.info/",
+    "3DS": "http://3sf.joshw.info/",
+    "DS": "http://2sf.joshw.info/",
     "Game Boy Advance": "http://gsf.joshw.info/",
+    "Game Boy": "http://gbs.joshw.info/",
     "GameCube": "http://gcn.joshw.info/",
-    "NES music archives": "http://nsf.joshw.info/",
-    "Nintendo 3DS": "http://3sf.joshw.info/",
-    "Nintendo 64": "http://usf.joshw.info/",
-    "Nintendo DS": "http://2sf.joshw.info/",
-    "Nintendo Wii": "http://wii.joshw.info/",
-    "Nintendo Wii U": "http://wiiu.joshw.info/",
-    "SNES music archives": "http://spc.joshw.info/",
+    "N64": "http://usf.joshw.info/",
+    "NES": "http://nsf.joshw.info/",
+    "SNES": "http://spc.joshw.info/",
     "Switch": "https://switch.joshw.info/",
+    "Wii": "http://wii.joshw.info/",
+    "Wii U": "http://wiiu.joshw.info/",
 
     "----------- SEGA -----------": "",
     "Dreamcast": "http://dsf.joshw.info/",
@@ -76,12 +79,12 @@ DOMAINS = {
 
     "----------- OTHER & ASSORTED -----------": "",
     "Arcade": "https://vgmrips.net/packs/system/",
-    "Hoot music archives": "http://hoot.joshw.info/",
-    "MSX music archives": "http://kss.joshw.info/",
+    "Hoot": "http://hoot.joshw.info/",
+    "MSX": "http://kss.joshw.info/",
     "Other Assorted Systems": "https://cdi.joshw.info/",
-    "PC music archives": "http://pc.joshw.info/",
-    "S98 music archives": "http://s98.joshw.info/",
-    "VGMusic Full": "https://www.vgmusic.com/music/",
+    "PC": "http://pc.joshw.info/",
+    "S98": "http://s98.joshw.info/",
+    "VGMusic Siterip": "https://www.vgmusic.com/music/",
 }
 
 USER_AGENT = "JoshW-Archive-Browser/1.0"
@@ -101,26 +104,22 @@ def get_binary_path(binary_name: str) -> Path:
     Finds helper binary across PyInstaller bundle, repo root, ~/.config, or PATH.
     Ensures execution permissions (+x) are granted if extracted inside PyInstaller.
     """
-    # 1. Check inside PyInstaller bundle or project root (e.g., bin/binary_name or binary_name)
     bundled_bin = resource_path(f"bin/{binary_name}")
     if not bundled_bin.exists():
         bundled_bin = resource_path(binary_name)
 
     if bundled_bin.exists():
         try:
-            # Grant execution rights to temporary extracted file on Linux
             current_mode = bundled_bin.stat().st_mode
             bundled_bin.chmod(current_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
         except Exception:
             pass
         return bundled_bin
 
-    # 2. Check user's app config directory (~/.config/joshw/binary_name)
     config_bin = Path.home() / ".config" / "joshw" / binary_name
     if config_bin.exists():
         return config_bin
 
-    # 3. Fall back to system PATH lookup
     system_bin = shutil.which(binary_name)
     if system_bin:
         return Path(system_bin)
@@ -192,27 +191,46 @@ def is_emulated_file(file_path):
     """Return whether the file extension is for an emulated audio file."""
     extension = os.path.splitext(file_path)[1].lower()
     emulated_extensions = {
-        ".ay",
-        ".gbs",
-        ".gym",
-        ".hes",
-        ".kss",
-        ".nsf",
-        ".nsfe",
-        ".sap",
-        ".spc",
-        ".vgm",
-        ".vgz",
-        ".usf",
-        ".miniusf",
-        ".gsf",
-        ".minigsf",
-        ".sid",
-        ".2sf",
-        ".mini2sf",
-        ".psf",
-        ".minipsf",
-        ".psf2",
-        ".minipsf2",
+        ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe",
+        ".sap", ".spc", ".vgm", ".vgz", ".usf", ".miniusf",
+        ".gsf", ".minigsf", ".sid", ".2sf", ".mini2sf",
+        ".psf", ".minipsf", ".psf2", ".minipsf2",
     }
     return extension in emulated_extensions
+
+
+def load_saved_font_size(default_size: int = 10) -> int:
+    """Safely loads the font_size key from settings.json."""
+    settings_path = os.path.join(get_cache_directory(), "settings.json")
+    if os.path.exists(settings_path):
+        try:
+            with open(settings_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return int(data.get("font_size", default_size))
+        except Exception:
+            pass
+    return default_size
+
+
+def apply_global_font_scale(font_size: int = None):
+    """
+    Globally configures Tkinter's default named fonts and ttkbootstrap's root style.
+    If no font_size is provided, it reads the saved value from settings.json.
+    """
+    if font_size is None:
+        font_size = load_saved_font_size()
+
+    # 1. Update standard Tkinter named fonts
+    for font_name in ("TkDefaultFont", "TkTextFont", "TkHeadingFont", "TkMenuFont", "TkCaptionFont"):
+        try:
+            f = tkfont.nametofont(font_name)
+            f.configure(size=font_size)
+        except Exception:
+            pass
+
+    # 2. Update ttkbootstrap root style defaults
+    try:
+        style = tb.Style()
+        style.configure(".", font=("Arial", font_size))
+    except Exception:
+        pass

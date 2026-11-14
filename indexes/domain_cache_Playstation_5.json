@@ -183,20 +183,72 @@
       "url": "http://psf5.joshw.info/s/Star%20Wars%20-%20Galactic%20Racer%20(2026-10-06)(Fuse%20Games)(Secret%20Mode)%5bPS5%5d.7z",
       "directory": false,
       "size": 501088475
+    },
+    {
+      "name": "f",
+      "raw_name": "f",
+      "date": "",
+      "url": "http://psf5.joshw.info/f/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "y",
+      "raw_name": "y",
+      "date": "",
+      "url": "http://psf5.joshw.info/y/",
+      "directory": true,
+      "size": null
+    },
+    {
+      "name": "Final Fantasy VII Rebirth",
+      "raw_name": "Final Fantasy VII Rebirth (2024-02-29)(Square Enix Creative Business Unit I)(Square Enix)[PS5].7z",
+      "date": "2024-02-29",
+      "url": "http://psf5.joshw.info/f/Final%20Fantasy%20VII%20Rebirth%20(2024-02-29)(Square%20Enix%20Creative%20Business%20Unit%20I)(Square%20Enix)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 3509958772
+    },
+    {
+      "name": "Final Fantasy XVI",
+      "raw_name": "Final Fantasy XVI (2023-06-22)(Square Enix Creative Business Unit III)(Square Enix)[PS5].7z",
+      "date": "2023-06-22",
+      "url": "http://psf5.joshw.info/f/Final%20Fantasy%20XVI%20(2023-06-22)(Square%20Enix%20Creative%20Business%20Unit%20III)(Square%20Enix)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 967961711
+    },
+    {
+      "name": "Ys X - Proud Nordics",
+      "raw_name": "Ys X - Proud Nordics (2026-02-19)(Falcom)[PS5].7z",
+      "date": "2026-02-19",
+      "url": "http://psf5.joshw.info/y/Ys%20X%20-%20Proud%20Nordics%20(2026-02-19)(Falcom)%5bPS5%5d.7z",
+      "directory": false,
+      "size": 469034868
     }
   ],
-  "dir_sizes": {
-    "https://vgmrips.net/packs/system/": 1293134046
-  },
+  "dir_sizes": {},
   "scanned_dirs": [
     "http://psf5.joshw.info/",
-    "http://psf5.joshw.info/m/",
+    "http://psf5.joshw.info/a/",
     "http://psf5.joshw.info/d/",
-    "http://psf5.joshw.info/s/",
+    "http://psf5.joshw.info/f/",
+    "http://psf5.joshw.info/l/",
+    "http://psf5.joshw.info/m/",
+    "http://psf5.joshw.info/n/",
     "http://psf5.joshw.info/p/",
     "http://psf5.joshw.info/r/",
-    "http://psf5.joshw.info/l/",
-    "http://psf5.joshw.info/n/",
-    "http://psf5.joshw.info/a/"
-  ]
+    "http://psf5.joshw.info/s/",
+    "http://psf5.joshw.info/y/"
+  ],
+  "dir_mtimes": {
+    "http://psf5.joshw.info/a/": "2026-10-19 00:00",
+    "http://psf5.joshw.info/d/": "2025-02-08 07:50",
+    "http://psf5.joshw.info/f/": "2026-11-11 13:50",
+    "http://psf5.joshw.info/l/": "2024-01-04 10:26",
+    "http://psf5.joshw.info/m/": "2024-02-24 12:44",
+    "http://psf5.joshw.info/n/": "2025-03-30 16:53",
+    "http://psf5.joshw.info/p/": "2022-10-10 22:13",
+    "http://psf5.joshw.info/r/": "2025-09-13 04:18",
+    "http://psf5.joshw.info/s/": "2026-10-25 08:50",
+    "http://psf5.joshw.info/y/": "2026-11-04 16:26"
+  }
 }

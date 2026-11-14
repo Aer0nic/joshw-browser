@@ -10,10 +10,12 @@ import random
 import shutil
 import tkinter as tk
 import ttkbootstrap as tb
+from config import apply_global_font_scale
+from player_launcher import attach_settings_sync, parse_player_args
 from PIL import Image, ImageTk
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
-from config import get_cache_directory, resource_path, get_binary_path
+from config import get_cache_directory, resource_path, get_binary_path, is_emulated_file
 
 def get_shared_settings_path():
     cache_dir = Path(get_cache_directory())
@@ -55,7 +57,7 @@ class InteractiveProgressBar:
         self.parent = parent
         self.get_duration = get_duration_func
         
-        self.frame = ttk.Frame(parent)
+        self.frame = tb.Frame(parent)
         self.canvas = tk.Canvas(self.frame, width=length, height=18, bg="#e0e0e0", highlightthickness=1, relief="sunken")
         self.canvas.pack(fill="x", expand=True)
         
@@ -82,23 +84,39 @@ class InteractiveProgressBar:
         self.canvas.coords(self.thumb, thumb_x, 0, thumb_x + 6, 18)
 
 
-class USFPlayerWindow(tk.Toplevel):
+class USFPlayerWindow(tb.Window):
     def __init__(self, parent=None, audio_file=None, playlist=None, start_index=None, initial_index=0, **kwargs):
-        super().__init__(parent)
+        # Load theme settings for standalone root window
+        initial_settings = {}
+        try:
+            settings_path = get_shared_settings_path()
+            if settings_path.exists():
+                initial_settings = json.loads(settings_path.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+        saved_theme = initial_settings.get("theme", "cosmo")
+
+        super().__init__(themename=saved_theme)
         self.parent = parent
         
-        # Support both standard player signature (parent, audio_file, playlist, start_index)
-        # and legacy/direct USFPlayerWindow calls (playlist, initial_index)
-        if audio_file and not playlist:
-            self.playlist = [audio_file]
-            self.current_index = 0
-        elif playlist:
+        if playlist:
             self.playlist = list(playlist)
             idx = start_index if start_index is not None else initial_index
             self.current_index = idx if 0 <= idx < len(self.playlist) else 0
         elif audio_file:
-            self.playlist = [audio_file]
-            self.current_index = 0
+            audio_path = Path(audio_file).resolve()
+            target_dir = audio_path.parent
+            # Automatically find all sibling miniusf files to build the playlist
+            found_files = sorted([
+                str(p) for p in target_dir.glob("*") 
+                if p.is_file() and p.suffix.lower() == ".miniusf"
+            ])
+            if found_files and str(audio_path) in found_files:
+                self.playlist = found_files
+                self.current_index = found_files.index(str(audio_path))
+            else:
+                self.playlist = [str(audio_path)]
+                self.current_index = 0
         else:
             self.playlist = []
             self.current_index = 0
@@ -125,11 +143,13 @@ class USFPlayerWindow(tk.Toplevel):
         self.track_var = tk.StringVar()
         self.duration_var = tk.StringVar(value="03:00")
         
-        self.loop_chk_var = tk.BooleanVar(value=False)
+        is_emu = is_emulated_file(self.audio_file) if self.audio_file else False
+        self.loop_chk_var = tk.BooleanVar(value=is_emu)
         self.loop_count_var = tk.IntVar(value=1)
         self.loop_forever_var = tk.BooleanVar(value=False)
 
         self.protocol("WM_DELETE_WINDOW", self.close)
+        attach_settings_sync(self, on_font_changed=apply_global_font_scale)
 
         self.build_ui()
 
@@ -148,29 +168,20 @@ class USFPlayerWindow(tk.Toplevel):
         filename = os.path.basename(self.audio_file) if self.audio_file else "No file"
         self.title(f"USF Player - {filename}")
         self.geometry("480x620")
-        self.minsize(440, 540)
-        if self.parent:
-            try:
-                self.transient(self.parent)
-            except Exception:
-                pass
+        self.minsize(520, 540)
 
-        padding = ttk.Frame(self, padding=12)
+        padding = tb.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
 
-        # Header frame holding the browse button and banner side-by-side
-        header_frame = ttk.Frame(padding)
+        header_frame = tb.Frame(padding)
         header_frame.pack(side="top", fill="x", pady=(0, 6))
 
-        # Browse button sitting next to the banner
-        browse_btn = tb.Button(header_frame, text="📁", width=3, bootstyle="outline-primary",command=self.on_browse_clicked,)
+        browse_btn = tb.Button(header_frame, text="📁", width=3, bootstyle="outline-primary", command=self.on_browse_clicked)
         browse_btn.pack(side="left", anchor="center", padx=(0, 8))
 
-        # Canvas banner header taking up the remaining width
         self.banner_canvas = tb.Canvas(header_frame, height=85, highlightthickness=0)
         self.banner_canvas.pack(side="left", fill="x", expand=True)
 
-        # Load, stretch, and render banner image across the canvas dynamically while keeping transparency
         try:
             banner_path = resource_path("assets/icons/usfbanner.png")
             if banner_path.exists():
@@ -187,22 +198,22 @@ class USFPlayerWindow(tk.Toplevel):
         except Exception as e:
             print(f"[USFPlayer] Could not load banner image: {e}")
 
-        self.title_label = ttk.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=350, justify="center")
+        self.title_label = tb.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=350, justify="center")
         self.title_label.pack(pady=(0, 6))
 
-        info_frame = ttk.Frame(padding)
+        info_frame = tb.Frame(padding)
         info_frame.pack(fill="x", pady=(0, 4))
         
-        status_sub_frame = ttk.Frame(info_frame)
+        status_sub_frame = tb.Frame(info_frame)
         status_sub_frame.pack(side="left", padx=5)
-        ttk.Label(status_sub_frame, textvariable=self.status_var, font=("Arial", 9)).pack(side="left")
-        ttk.Label(status_sub_frame, text=" (", font=("Arial", 9)).pack(side="left")
-        ttk.Label(status_sub_frame, textvariable=self.seek_pct_var, font=("Arial", 9, "bold")).pack(side="left")
-        ttk.Label(status_sub_frame, text=")", font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub_frame, textvariable=self.status_var, font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub_frame, text=" (", font=("Arial", 9)).pack(side="left")
+        tb.Label(status_sub_frame, textvariable=self.seek_pct_var, font=("Arial", 9, "bold")).pack(side="left")
+        tb.Label(status_sub_frame, text=")", font=("Arial", 9)).pack(side="left")
 
-        ttk.Label(info_frame, textvariable=self.position_var, font=("Arial", 9)).pack(side="right", padx=5)
+        tb.Label(info_frame, textvariable=self.position_var, font=("Arial", 9)).pack(side="right", padx=5)
 
-        progress_container = ttk.Frame(padding)
+        progress_container = tb.Frame(padding)
         progress_container.pack(fill="x", pady=(2, 6))
         self.progress_bar_widget = InteractiveProgressBar(
             progress_container,
@@ -210,15 +221,15 @@ class USFPlayerWindow(tk.Toplevel):
         )
         self.progress_bar_widget.frame.pack(fill="x", expand=True)
 
-        meta_frame = ttk.Frame(padding)
+        meta_frame = tb.Frame(padding)
         meta_frame.pack(fill="x", pady=(0, 8))
-        ttk.Label(meta_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="left", padx=5)
-        ttk.Label(meta_frame, textvariable=self.duration_var, font=("Arial", 9)).pack(side="right", padx=5)
+        tb.Label(meta_frame, textvariable=self.track_var, font=("Arial", 9, "bold")).pack(side="left", padx=5)
+        tb.Label(meta_frame, textvariable=self.duration_var, font=("Arial", 9)).pack(side="right", padx=5)
 
-        vol_frame = ttk.Frame(padding)
+        vol_frame = tb.Frame(padding)
         vol_frame.pack(fill="x", pady=(0, 8))
-        ttk.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
-        self.volume_slider = ttk.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide)
+        tb.Label(vol_frame, textvariable=self.volume_label_var, font=("Arial", 9)).pack(side="left", padx=5)
+        self.volume_slider = tb.Scale(vol_frame, from_=0, to=100, orient="horizontal", command=self.on_volume_slide)
         self.volume_slider.set(self.volume_var.get())
         self.volume_slider.pack(side="right", fill="x", expand=True, padx=5)
 
@@ -237,23 +248,22 @@ class USFPlayerWindow(tk.Toplevel):
         self.playlist_listbox.bind("<<ListboxSelect>>", self.on_playlist_select)
         self.populate_playlist_listbox()
 
-       
-        controls = ttk.Frame(padding)
+        controls = tb.Frame(padding)
         controls.pack(pady=4)
 
-        ttk.Button(controls, text="Stop", width=8, command=self.stop).grid(row=0, column=0, padx=2)
-        ttk.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=1, padx=2)
-        ttk.Button(controls, text="Play/Pause", width=10, command=self.toggle_play_pause).grid(row=0, column=2, padx=2)
-        ttk.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=3, padx=2)
-        ttk.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=4, padx=2)
+        tb.Button(controls, text="Stop", width=8, command=self.stop).grid(row=0, column=0, padx=2)
+        tb.Button(controls, text="|<< Prev", width=8, command=self.prev_track).grid(row=0, column=1, padx=2)
+        tb.Button(controls, text="Play/Pause", width=10, command=self.toggle_play_pause).grid(row=0, column=2, padx=2)
+        tb.Button(controls, text="Next >>|", width=8, command=self.next_track).grid(row=0, column=3, padx=2)
+        tb.Button(controls, text="Close", width=8, command=self.close).grid(row=0, column=4, padx=2)
                 
         btn_bottom = tb.Frame(padding)
         btn_bottom.pack(pady=(6, 4), fill="x")
 
         tb.Checkbutton(
-        btn_bottom,
-        variable=self.loop_chk_var,
-        command=self.on_loop_checkbox_changed
+            btn_bottom,
+            variable=self.loop_chk_var,
+            command=self.on_loop_checkbox_changed
         ).grid(row=0, column=0, padx=(0, 2), sticky="w")
 
         tb.Spinbox(
@@ -282,7 +292,6 @@ class USFPlayerWindow(tk.Toplevel):
         btn_bottom.grid_columnconfigure(2, weight=1)
           
     def get_dynamic_hover_color(self):
-        # Fallback or detect dark theme based on window style / background
         try:
             theme_name = self.style.theme_use().lower()
             if "dark" in theme_name:
@@ -319,7 +328,6 @@ class USFPlayerWindow(tk.Toplevel):
                 pass
 
     def on_browse_clicked(self):
-        """Opens file dialog and populates playlist with strictly .miniusf files only."""
         initial_dir = os.path.expanduser("~")
         try:
             from config import load_settings
@@ -347,7 +355,6 @@ class USFPlayerWindow(tk.Toplevel):
         chosen_path = Path(chosen_file)
         target_dir = chosen_path.parent
 
-        # Strictly filter for .miniusf files only, ignoring everything else
         new_playlist = sorted([
             str(p) for p in target_dir.glob("*") 
             if p.is_file() and p.suffix.lower() == ".miniusf"
@@ -360,15 +367,12 @@ class USFPlayerWindow(tk.Toplevel):
         if str(chosen_path) in new_playlist:
             new_index = new_playlist.index(str(chosen_path))
 
-        self.stop_current_process()
-        self.destroy()
+        self.playlist = new_playlist
+        self.current_index = new_index
+        self.load_and_play_current()
 
-        try:
-            parent_app = self.master
-            new_player = USFPlayerWindow(parent=parent_app, playlist=new_playlist, initial_index=new_index)
-            new_player.focus()
-        except Exception as e:
-            print(f"Error spawning new USF player window: {e}")
+    def open_file_picker(self):
+        self.on_browse_clicked()
 
     def on_playlist_select(self, event):
         selection = self.playlist_listbox.curselection()
@@ -391,7 +395,6 @@ class USFPlayerWindow(tk.Toplevel):
             self.load_and_play_current()
 
     def on_loop_spinbox_changed(self):
-        # Dynamically recalculate visual duration on spinbox change without restarting the process
         if not self.loop_forever_var.get() and self.audio_file:
             parsed_length, parsed_fade = self.parse_length_and_fade_from_strings(self.audio_file)
             multiplier = 1 + self.loop_count_var.get() if self.loop_chk_var.get() else 1
@@ -428,7 +431,6 @@ class USFPlayerWindow(tk.Toplevel):
         return f"{m:02d}:{s:02d}"
 
     def parse_length_and_fade_from_strings(self, file_path):
-        """Extracts length and fade metadata from headers or companion files synchronously."""
         length_seconds = 180.0
         fade_seconds = 0.0
         try:
@@ -608,7 +610,6 @@ class USFPlayerWindow(tk.Toplevel):
                 bufsize=1
             )
             
-            # Guard against race conditions if session changed before Popen completed
             if session_id != self.playback_session_id:
                 try:
                     proc.terminate()
@@ -753,6 +754,13 @@ class USFPlayerWindow(tk.Toplevel):
         try:
             self.destroy()
         except Exception:
-            pass
+            sys.exit(0)
 
 USFPlayer = USFPlayerWindow
+
+if __name__ == "__main__":
+    audio_path, playlist, start_index = parse_player_args()
+    app = USFPlayerWindow(audio_file=audio_path, playlist=playlist, start_index=start_index)
+    if not audio_path:
+        app.after(100, app.open_file_picker)
+    app.mainloop()
