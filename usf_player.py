@@ -155,7 +155,7 @@ class USFPlayerWindow(tb.Window):
         
         self.status_var = tk.StringVar(value="Stopped")
         self.seek_pct_var = tk.StringVar(value="0%")
-        self.position_var = tk.StringVar(value="00:00 / 03:00")
+        self.position_var = tk.StringVar(value="00:00")
         self.track_var = tk.StringVar()
         self.duration_var = tk.StringVar(value="03:00")
         
@@ -644,9 +644,13 @@ class USFPlayerWindow(tb.Window):
             self.process = proc
             threading.Thread(target=self._resolve_wpctl_stream_id, daemon=True).start()
 
-            while self.process and self.process.poll() is None:
-                line = self.process.stdout.readline()
-                if not line:
+            # Only ever read *this* session's process. self.process is replaced
+            # when the track restarts (loop toggles, next/prev); following it
+            # would leave this old thread reading the new process with stale
+            # settings, fighting the new thread over the seek bar.
+            while session_id == self.playback_session_id and proc.poll() is None:
+                line = proc.stdout.readline()
+                if not line or session_id != self.playback_session_id:
                     break
                 
                 cleaned = line.strip()
@@ -670,6 +674,8 @@ class USFPlayerWindow(tb.Window):
                         pos_text = f"{self.format_time(current_secs)} / {'forever' if is_forever else self.format_time(dur)}"
 
                         def update_ui(p=pct, pt=pos_text, cur=current_secs, d=dur if not is_forever else 180.0):
+                            if session_id != self.playback_session_id:
+                                return  # a newer track/session owns the UI now
                             if self.winfo_exists() and self.is_playing:
                                 self.seek_pct_var.set(f"{int(p)}%")
                                 self.position_var.set(pt)
@@ -680,11 +686,13 @@ class USFPlayerWindow(tb.Window):
                     except ValueError:
                         pass
 
-            if self.process is not None:
-                try:
-                    self.process.wait()
-                except Exception:
-                    pass
+            if session_id != self.playback_session_id:
+                return  # superseded: stop_current_process already cleaned up
+
+            try:
+                proc.wait()
+            except Exception:
+                pass
 
             self.cleanup_au_file(file_path)
 
