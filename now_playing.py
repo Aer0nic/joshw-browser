@@ -193,9 +193,14 @@ class TrayIcon:
 
     Menu callbacks run on pystray's thread; anything touching Tk is handed to
     `schedule` (e.g. a function that puts work on the browser's Tk queue).
+
+    pystray's plain X11 backend (used on Linux unless PyGObject/AppIndicator
+    is installed) has no menus: it only reports left clicks. There we catch
+    the right click ourselves and call on_context_menu(x_root, y_root) via
+    `schedule`, so the browser can pop up a Tk menu at the pointer.
     """
 
-    def __init__(self, icon_path, schedule, on_show, on_now_playing, on_quit):
+    def __init__(self, icon_path, schedule, on_show, on_now_playing, on_quit, on_context_menu=None):
         import pystray
         from PIL import Image
         self._pystray = pystray
@@ -203,9 +208,7 @@ class TrayIcon:
 
         def player(cmd):
             def run(icon, item):
-                p = active_player()
-                if p:
-                    send_command(p, cmd)
+                send_player_command(cmd)
             return run
 
         def tk_call(fn):
@@ -223,10 +226,50 @@ class TrayIcon:
             pystray.MenuItem("Quit joshw-browser", tk_call(on_quit)),
         )
         self.icon = pystray.Icon("joshw-browser", image, "joshw-browser", menu)
-        self.icon.run_detached()
+
+        if not getattr(self.icon, "HAS_MENU", True) and on_context_menu is not None \
+                and hasattr(self.icon, "_on_button_press"):
+            original_press = self.icon._on_button_press
+
+            def on_button_press(event):
+                if getattr(event, "detail", None) == 3:  # right button
+                    x, y = getattr(event, "root_x", 0), getattr(event, "root_y", 0)
+                    schedule(lambda: on_context_menu(x, y))
+                else:
+                    original_press(event)
+
+            self.icon._on_button_press = on_button_press
+            handlers = getattr(self.icon, "_message_handlers", None)
+            if isinstance(handlers, dict):
+                import Xlib.X
+                handlers[Xlib.X.ButtonPress] = on_button_press
+
+        # Not run_detached(): on the X11 backend it starts the setup thread
+        # twice, one of which waits forever, keeping the process alive after
+        # quit and making stop() hang for 5 s. run() on our own daemon thread
+        # starts it once, and a daemon thread never blocks exit.
+        self.icon.SETUP_THREAD_TIMEOUT = 1.0
+        self._thread = threading.Thread(target=self._run, name="tray-icon", daemon=True)
+        self._thread.start()
+
+    def _run(self):
+        try:
+            self.icon.run()
+        except Exception as e:
+            print(f"[tray] stopped: {e}")
 
     def stop(self):
-        try:
-            self.icon.stop()
-        except Exception:
-            pass
+        """Remove the icon without blocking the caller (usually the Tk thread)."""
+        def work():
+            try:
+                self.icon.stop()
+            except Exception:
+                pass
+        threading.Thread(target=work, name="tray-stop", daemon=True).start()
+
+
+def send_player_command(cmd):
+    """Send cmd to the most recently active player (from any thread)."""
+    p = active_player()
+    if p:
+        send_command(p, cmd)

@@ -1690,6 +1690,7 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
 
         menubar.add_cascade(label="Options", menu=self.options_dropdown)
         self.build_feature_menus(menubar)
+        menubar.add_command(label="About", command=self.show_about)
 
         class DummyProgressBar:
             def __setitem__(self, key, value):
@@ -2021,6 +2022,71 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
 
         text_widget.insert("1.0", help_text)
         text_widget.configure(state="disabled")
+
+    def show_about(self):
+        """About window: what the program is, plus the LICENSE file (with clickable links)."""
+        existing = getattr(self, "_about_win", None)
+        if existing is not None and existing.winfo_exists():
+            existing.deiconify()
+            existing.lift()
+            return
+
+        about_win = tb.Toplevel(self)
+        self._about_win = about_win
+        about_win.title("About joshw-browser")
+        about_win.geometry("760x600")
+        about_win.minsize(520, 360)
+        about_win.transient(self)
+
+        outer = tb.Frame(about_win, padding=12)
+        outer.pack(fill="both", expand=True)
+
+        tb.Label(outer, text="joshw-browser", font=("Arial", 16, "bold")).pack(anchor="w")
+        tb.Label(
+            outer,
+            text="A browser and player for the video game music archives on joshw.info.\n"
+                 "Free and open source under the MIT License. Third-party projects are listed below.",
+            justify="left",
+        ).pack(anchor="w", pady=(2, 8))
+
+        text_frame = tb.Frame(outer)
+        text_frame.pack(fill="both", expand=True)
+        text_widget = tb.Text(text_frame, wrap="word", font=("Courier", 10), padx=8, pady=6)
+        scrollbar = tb.Scrollbar(text_frame, orient="vertical", command=text_widget.yview)
+        text_widget.configure(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side="right", fill="y")
+        text_widget.pack(side="left", fill="both", expand=True)
+
+        license_text = None
+        for candidate in (resource_path("LICENSE"), Path(__file__).resolve().parent / "LICENSE"):
+            try:
+                license_text = Path(candidate).read_text(encoding="utf-8")
+                break
+            except OSError:
+                continue
+        if license_text is None:
+            license_text = ("The LICENSE file could not be found.\n\n"
+                            "joshw-browser is distributed under the MIT License.")
+        text_widget.insert("1.0", license_text)
+
+        # Make every URL clickable
+        import re
+        import webbrowser
+        style_colors = getattr(self.style, "colors", None)
+        link_color = getattr(style_colors, "info", "#1e88e5") if style_colors else "#1e88e5"
+        text_widget.tag_configure("link", foreground=link_color, underline=True)
+        for i, line in enumerate(license_text.splitlines(), start=1):
+            for match in re.finditer(r"https?://[^\s)]+", line):
+                start, end = f"{i}.{match.start()}", f"{i}.{match.end()}"
+                tag = f"link{i}_{match.start()}"
+                text_widget.tag_add("link", start, end)
+                text_widget.tag_add(tag, start, end)
+                text_widget.tag_bind(tag, "<Button-1>", lambda e, u=match.group(0): webbrowser.open(u))
+        text_widget.tag_bind("link", "<Enter>", lambda e: text_widget.configure(cursor="hand2"))
+        text_widget.tag_bind("link", "<Leave>", lambda e: text_widget.configure(cursor=""))
+        text_widget.configure(state="disabled")
+
+        tb.Button(outer, text="Close", command=about_win.destroy).pack(anchor="e", pady=(10, 0))
 
     def update_sort_headers(self):
         base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "domain": "Domain", "url": "URL", "year": "Year", "developer": "Developer", "publisher": "Publisher"}
@@ -2825,6 +2891,8 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
         selection = self.tree.selection()
         if not selection:
             return
+        if self.show_multi_midi_action_dialog():
+            return
         entry = self.visible_entries[int(selection[0])]
 
         if entry["directory"]:
@@ -2882,6 +2950,160 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
                 return "break"
 
             dialog.bind("<Return>", confirm_action)
+
+    # ------------------------------------------------------------------
+    # VGMusic: several .mid files at once
+    # ------------------------------------------------------------------
+    MIDI_EXTS = (".mid", ".midi")
+
+    def selected_vgmusic_midis(self):
+        """Selected VGMusic .mid entries in the Browse tab (only when 2 or more are selected)."""
+        midis = []
+        for item_id in self.tree.selection():
+            try:
+                entry = self.visible_entries[int(item_id)]
+            except (IndexError, ValueError):
+                continue
+            if entry.get("directory") or entry.get("is_parent_nav"):
+                continue
+            url = entry.get("url", "")
+            path = urllib.parse.urlparse(url).path.lower()
+            is_vgmusic = (entry.get("domain") == "VGMusic Siterip"
+                          or url.startswith(DOMAINS.get("VGMusic Siterip", "\0")))
+            if is_vgmusic and path.endswith(self.MIDI_EXTS):
+                midis.append(entry)
+        return midis if len(midis) > 1 else []
+
+    def show_multi_midi_action_dialog(self, midis=None):
+        """Stream/Download dialog for several VGMusic .mid files. Returns True if shown."""
+        midis = midis or self.selected_vgmusic_midis()
+        if not midis:
+            return False
+        urls = [e["url"] for e in midis]
+
+        temp_dir = get_temp_directory()
+        check_dir = temp_dir if os.path.exists(temp_dir) else os.path.dirname(temp_dir)
+        hdd_space = format_size(shutil.disk_usage(check_dir).free)
+
+        dialog = tb.Toplevel(self)
+        dialog.title("File Action")
+        dialog.geometry("340x160")
+        dialog.resizable(False, False)
+        dialog.transient(self)
+        try:
+            dialog.update_idletasks()
+            dialog.grab_set()
+        except Exception:
+            pass
+
+        tb.Label(dialog, text=f"Choose action for: multiple .mid files\n({len(urls)} files selected)"
+                              f"\n\n You have {hdd_space} left in your temp directory.",
+                 font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
+        btn_frame = tb.Frame(dialog)
+        btn_frame.pack(pady=5)
+
+        def do_stream():
+            dialog.destroy()
+            self.stream_midi_playlist(urls)
+
+        def do_download():
+            dialog.destroy()
+            self.download_selected()
+
+        stream_btn = ttk.Button(btn_frame, text="Stream", width=12, command=do_stream)
+        stream_btn.pack(side="left", padx=8)
+        download_btn = ttk.Button(btn_frame, text="Download", width=12, command=do_download)
+        download_btn.pack(side="left", padx=8)
+        stream_btn.focus_set()
+
+        def focus(btn):
+            def handler(e):
+                btn.focus_set()
+                return "break"
+            return handler
+
+        for widget in (dialog, stream_btn, download_btn):
+            widget.bind("<Left>", focus(stream_btn))
+            widget.bind("<Right>", focus(download_btn))
+
+        def confirm_action(e):
+            if dialog.focus_get() == download_btn:
+                do_download()
+            else:
+                do_stream()
+            return "break"
+
+        dialog.bind("<Return>", confirm_action)
+        return True
+
+    def stream_midi_playlist(self, urls):
+        temp_dir = get_temp_directory()
+        self.stop_event.clear()
+        progress_win = DownloadProgressWindow(self, title="Downloading to Temp...")
+        threading.Thread(
+            target=self.stream_midi_playlist_worker,
+            args=(list(urls), temp_dir, progress_win),
+            daemon=True
+        ).start()
+
+    def stream_midi_playlist_worker(self, urls, temp_dir, progress_win):
+        """Download every .mid to temp (as <folder>/<file>) and open them all in NeoBAE."""
+        paths = []
+        total = len(urls)
+        for index, url in enumerate(urls, start=1):
+            parsed = urllib.parse.urlparse(url)
+            filename = safe_filename(urllib.parse.unquote(posixpath.basename(parsed.path))) or f"track{index}.mid"
+            parent = safe_filename(urllib.parse.unquote(posixpath.basename(posixpath.dirname(parsed.path.rstrip("/")))))
+            out_dir = os.path.join(temp_dir, parent) if parent else temp_dir
+            os.makedirs(out_dir, exist_ok=True)
+            output_path = os.path.join(out_dir, filename)
+
+            if not os.path.exists(output_path):
+                partial_path = output_path + ".part"
+                request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+                try:
+                    with urllib.request.urlopen(request, timeout=60) as response:
+                        total_bytes = int(response.headers.get("Content-Length", 0))
+                        downloaded_bytes, start_time = 0, time.time()
+                        with open(partial_path, "wb") as output:
+                            while True:
+                                if self.stop_event.is_set() or progress_win.is_cancelled:
+                                    output.close()
+                                    try:
+                                        os.remove(partial_path)
+                                    except OSError:
+                                        pass
+                                    self.messages.put(("close_progress", progress_win))
+                                    return
+                                chunk = response.read(64 * 1024)
+                                if not chunk:
+                                    break
+                                output.write(chunk)
+                                downloaded_bytes += len(chunk)
+                                elapsed = time.time() - start_time
+                                speed = (downloaded_bytes / elapsed) if elapsed > 0 else 0
+                                eta = ((total_bytes - downloaded_bytes) / speed) if speed > 0 and total_bytes > 0 else 0
+                                self.messages.put(("update_progress", progress_win, filename, downloaded_bytes,
+                                                   total_bytes, index, total, speed, eta))
+                    os.replace(partial_path, output_path)
+                except Exception as error:
+                    try:
+                        os.remove(partial_path)
+                    except OSError:
+                        pass
+                    print(f"[vgmusic] could not download {url}: {error}")
+                    continue
+            paths.append(output_path)
+            self.remember_stream_source(url, local_path=output_path)
+
+        self.messages.put(("close_progress", progress_win))
+        if not paths:
+            self.messages.put(("error", "None of the selected .mid files could be downloaded."))
+            return
+        if len(paths) < total:
+            self.messages.put(("error", f"{total - len(paths)} of {total} .mid files could not be downloaded;"
+                                        " the rest will play."))
+        self.messages.put(("call", lambda: self.play_audio_file(paths[0], playlist=paths, start_index=0)))
 
     def download_and_open_temp(self):
         urls = self.get_selected_files()

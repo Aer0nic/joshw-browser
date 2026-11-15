@@ -19,3 +19,9 @@ if __name__ == "__main__":
         from browser import JoshWBrowser
         app = JoshWBrowser()
         app.mainloop()
+        # The window is gone: end the process even if a library thread (tray
+        # icon, network worker) is still alive. Players are separate processes
+        # and keep running.
+        sys.stdout.flush()
+        sys.stderr.flush()
+        os._exit(0)

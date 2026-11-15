@@ -1,0 +1,246 @@
+MIT License
+
+Copyright (c) 2026 Aer0nic
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+===============================================================================
+THIRD-PARTY SOFTWARE AND CREDITS
+===============================================================================
+
+The MIT License above covers the joshw-browser source code only. joshw-browser
+relies on, downloads, builds or bundles the open-source projects below. Each
+one remains under its own license and copyright, held by its authors. Thank
+you to all of them; this program would not exist without their work.
+
+Where a binary is bundled (assets/libraries/), its source and version are
+recorded in the SOURCE.txt file next to it, and any license files shipped with
+it are kept alongside.
+
+
+-------------------------------------------------------------------------------
+Playback engines and decoders
+-------------------------------------------------------------------------------
+
+Game Music Emu (libgme)
+  NSF, SPC, GBS, HES, KSS, AY, SAP, GYM and VGM playback.
+  https://github.com/libgme/game-music-emu
+  License: LGPL-2.1-or-later
+  Windows: libgme.dll (cross-compiled, bundled). Linux: system package.
+
+Audio Overload SDK (AOSDK), via the DeaDBeeF psf plugin
+  PSF and PSF2 playback (libaosdk.so / aosdk.dll, built from
+  plugins/psf/aosdk of DeaDBeeF, plus tools/windows_decoders/aosdk_wrapper.c).
+  https://github.com/DeaDBeeF-Player/deadbeef/tree/master/plugins/psf
+  Copyright (c) 2007 R. Belmont and Richard Bannister (AOSDK);
+  Copyright (c) 2009-2014 Oleksiy Yakovenko (DeaDBeeF plugin)
+  License: AOSDK engine BSD-3-Clause; P.E.Op.S. SPU/SPU2 sound cores and the
+  DeaDBeeF plugin GPL-2.0-or-later. The built libraries are distributed under
+  GPL-2.0-or-later.
+
+lazyusf2
+  N64 USF playback (usfdec, built from tools/windows_decoders).
+  https://github.com/derselbst/lazyusf2
+  License: GPL-2.0-or-later (derived from mupen64plus)
+
+lazyusf
+  N64 USF playback on Linux (built on your machine by Install Dependencies;
+  not bundled).
+  https://github.com/derselbst/lazyusf
+  License: derived from Project64, which is freeware for personal,
+  non-commercial use only. See the source files for the full terms.
+
+psflib
+  PSF container loading for the USF and 2SF decoders.
+  https://github.com/kode54/psflib
+  Copyright (c) 2012-2015 Christopher Snowhill
+  License: MIT
+
+playgsf
+  GBA GSF playback (Linux playgsf, and gsfdec built from tools/windows_decoders).
+  https://github.com/yshui/playgsf
+  License: GPL-2.0-or-later (based on VisualBoyAdvance); includes libresample
+  (LGPL-2.1)
+
+vio2sf / 2sftowav
+  Nintendo DS 2SF playback (Linux 2sfPlay, and 2sfdec built from
+  tools/windows_decoders).
+  https://github.com/yshui/2sftowav
+  License: GPL-2.0 (DeSmuME-derived core)
+
+vgmstream
+  Streamed audio formats (BRSTM, DSP, WEM, HCA, ...).
+  https://github.com/vgmstream/vgmstream
+  License: ISC-style permissive license (see COPYING), with bundled codec
+  libraries under their own licenses.
+  Windows: vgmstream-cli.exe (official build, bundled). Linux: vgmstream123.
+
+sidplayfp / libsidplayfp
+  Commodore 64 SID playback.
+  https://github.com/libsidplayfp/sidplayfp
+  https://github.com/libsidplayfp/libsidplayfp
+  License: GPL-2.0-or-later
+  Windows: sidplayfp.exe (official build, bundled). Linux: system package.
+
+VGMPlay
+  Arcade VGZ playback.
+  https://github.com/vgmrips/vgmplay-legacy
+  License: GPL (sound cores from MAME, DOSBox, openMSX, Gens/GS, NSFPlay,
+  EMU2149/EMU2413 and others under their own licenses; see VGMPlay/licenses
+  in the repository).
+
+NeoBAE (Beatnik Audio Engine / miniBAE)
+  MIDI, RMF, XMF and other Beatnik formats (playbae).
+  https://github.com/zefie/NeoBAE
+  License: NeoBAE modifications LGPL-3.0; original Beatnik miniBAE
+  BSD-3-Clause.
+
+mpv
+  MP3, OGG, FLAC, tracker modules and other general audio.
+  https://mpv.io  /  https://github.com/mpv-player/mpv
+  Windows builds: https://github.com/shinchiro/mpv-winbuild-cmake
+  License: GPL-2.0-or-later (LGPL-2.1-or-later when built without GPL parts)
+
+WildMIDI
+  Converting .xmi files to MIDI on Linux (optional).
+  https://github.com/Mindwerks/wildmidi
+  License: library LGPL-3.0, player GPL-3.0
+
+
+-------------------------------------------------------------------------------
+Tools and libraries used by the decoders
+-------------------------------------------------------------------------------
+
+7-Zip (7za.exe)
+  Extracting .7z archives on Windows.
+  https://github.com/ip7z/7zip  /  https://www.7-zip.org
+  Copyright (c) 1999-2026 Igor Pavlov
+  License: GNU LGPL, with some code under BSD-3-Clause and BSD-2-Clause
+  (see assets/libraries/windows/7zip/License.txt)
+
+SDL2, SDL3 and SDL3_ttf
+  Audio output for the Linux decoders and NeoBAE.
+  https://github.com/libsdl-org/SDL
+  https://github.com/libsdl-org/SDL_ttf
+  License: zlib
+
+zlib
+  Decompression inside several decoders.
+  https://zlib.net
+  License: zlib
+
+libao
+  Audio output for playgsf on Linux.
+  https://xiph.org/ao/
+  License: GPL-2.0-or-later
+
+
+-------------------------------------------------------------------------------
+Python libraries
+-------------------------------------------------------------------------------
+
+Python and Tkinter (Tcl/Tk)
+  https://www.python.org  /  https://www.tcl.tk
+  License: PSF License; Tcl/Tk BSD-style license
+
+ttkbootstrap
+  Themed user interface.
+  https://github.com/israel-dryer/ttkbootstrap
+  License: MIT
+
+Pillow
+  Images, icons and box art.
+  https://github.com/python-pillow/Pillow
+  License: MIT-CMU (HPND)
+
+python-sounddevice (with PortAudio)
+  Audio output for the in-process players.
+  https://github.com/spatialaudio/python-sounddevice
+  https://www.portaudio.com
+  License: MIT
+
+Mido
+  MIDI file handling.
+  https://github.com/mido/mido
+  License: MIT
+
+NumPy
+  Fast volume and fade processing.
+  https://github.com/numpy/numpy
+  License: BSD-3-Clause
+
+python-soundfile (with libsndfile)
+  FLAC export.
+  https://github.com/bastibe/python-soundfile
+  https://github.com/libsndfile/libsndfile
+  License: BSD-3-Clause; libsndfile LGPL-2.1-or-later
+
+pystray
+  System tray icon.
+  https://github.com/moses-palmer/pystray
+  License: LGPL-3.0
+
+Jeepney
+  Media keys and desktop media controls (MPRIS over D-Bus) on Linux.
+  https://gitlab.com/takluyver/jeepney
+  License: MIT
+
+pycaw and comtypes
+  Per-player volume control on Windows.
+  https://github.com/AndreMiras/pycaw
+  https://github.com/enthought/comtypes
+  License: MIT
+
+PyInstaller
+  Building the single-file executables.
+  https://github.com/pyinstaller/pyinstaller
+  License: GPL-2.0 with a bootloader exception (applications built with it
+  may use any license).
+
+
+-------------------------------------------------------------------------------
+Data and content (downloaded at run time, not bundled)
+-------------------------------------------------------------------------------
+
+joshw.info
+  The video game music archives this program browses. All music remains
+  the property of its respective copyright holders.
+  https://joshw.info
+
+VGMusic
+  MIDI archive (VGMusic Siterip domain).
+  https://www.vgmusic.com
+
+libretro-thumbnails
+  Box art shown in the Game Info panel and Now Playing window. All images
+  remain the property of their respective copyright holders.
+  https://github.com/libretro-thumbnails/libretro-thumbnails
+  https://thumbnails.libretro.com
+
+FluidR3 GM SoundFont
+  Default MIDI soundfont.
+  https://github.com/pianobooster/fluid-soundfont
+  Copyright (c) Frank Wen
+  License: MIT
+
+Commodore 64 KERNAL and BASIC ROMs
+  Needed by sidplayfp; downloaded from zimmers.net on request. Copyright
+  Commodore and its successors.
+  https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/

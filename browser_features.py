@@ -234,6 +234,11 @@ class BrowserFeaturesMixin:
         entry = self.entry_for_tree_item(tree, item_id)
         if not entry or entry.get("is_parent_nav"):
             return
+        if tree is self.tree and item_id in tree.selection():
+            midis = self.selected_vgmusic_midis()
+            if any(m is entry for m in midis):
+                self.show_multi_midi_action_dialog(midis)
+                return
         tree.selection_set(item_id)
         menu = tk.Menu(self, tearoff=0)
         url = entry.get("url", "")
@@ -449,7 +454,8 @@ class BrowserFeaturesMixin:
             icon = resource_path("assets/icons/browser.png")
             self.tray = TrayIcon(str(icon), schedule=lambda fn: self.messages.put(("call", fn)),
                                  on_show=self._tray_show, on_now_playing=self.open_now_playing,
-                                 on_quit=self.on_window_close)
+                                 on_quit=self.on_window_close,
+                                 on_context_menu=self._tray_context_menu)
         except Exception as e:
             print(f"[tray] unavailable: {e}")
             self.tray = None
@@ -465,6 +471,28 @@ class BrowserFeaturesMixin:
         else:
             self.stop_tray()
         self.save_settings()
+
+    def _tray_context_menu(self, x_root, y_root):
+        """Right-click menu for the tray icon (Linux X11 backend has none of its own)."""
+        from now_playing import send_player_command
+
+        def player(cmd):
+            return lambda: threading.Thread(target=send_player_command, args=(cmd,), daemon=True).start()
+
+        menu = tk.Menu(self, tearoff=0)
+        menu.add_command(label="Show browser", command=self._tray_show)
+        menu.add_command(label="Now Playing...", command=self.open_now_playing)
+        menu.add_separator()
+        menu.add_command(label="Play / Pause", command=player("play_pause"))
+        menu.add_command(label="Next track", command=player("next"))
+        menu.add_command(label="Previous track", command=player("prev"))
+        menu.add_command(label="Stop", command=player("stop"))
+        menu.add_separator()
+        menu.add_command(label="Quit joshw-browser", command=self.on_window_close)
+        try:
+            menu.tk_popup(x_root, y_root)
+        finally:
+            menu.grab_release()
 
     def _tray_show(self):
         self.deiconify()
