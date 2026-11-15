@@ -66,7 +66,42 @@ To browse and search game music collections instantly without needing to scrape 
 
 * **Instant Filtering:** Search through thousands of game titles across all supported console platforms using locally cached indexes.
 
+* **Search All Indexes:** Every word you type must match (in any order), game folders included. Indexes load in the background and results are capped at 3,000 so the list stays responsive.
+
 * **Catalog Updates:** Re-fetch premade indexes anytime to stay up-to-date with newly added game dumps on `joshw.info`.
+
+* **What's New:** Whatever the last **Index Current** / **Index All** run added is shown in green. Tick **New only** to list just those.
+
+### 🎮 Game Info & Box Art
+
+* **Year / Developer / Publisher columns**, read from joshw's `Title (date)(developer)(publisher)[platform]` names, sortable like any other column.
+
+* **Game Info panel** (View menu) with the box art from [libretro-thumbnails](https://thumbnails.libretro.com/), release details and how often you've played the game. Covers are downloaded once and cached.
+
+### 🕘 History, Smart Shuffle & Right-Click Menu
+
+* **History tab:** recently played and most played tracks, with play counts. Double-click to play a track again (streamed tracks are fetched again from joshw.info).
+
+* **Smart Shuffle** (Options menu, on by default): games played in the last week are rarely picked, favourites and new additions more often.
+
+* **Right-click** a row for Favorites, Stream, Download, Game info and Copy URL.
+
+### 🎛️ Players
+
+Every format still opens in its own player window (with its own taskbar icon), and all players share a common engine (`player_core.py`) that adds:
+
+* **Now Playing window and tray icon** (View menu): see and control whatever is playing, from any player.
+
+* **Media keys:** Play/Pause, Next, Previous and Stop keys work. On Linux players also appear in the desktop's sound/media controls (MPRIS), on Windows the keys go to the player used last.
+
+* **Seeking everywhere:** USF and PSF/PSF2 can now seek too (PSF by fast silent rendering, since the emulator can't jump).
+
+* **Gapless playback** for the GME formats (NSF, SPC, GBS, VGM, ...) and PSF/PSF2.
+
+* **Right-click a track in a player's playlist** to:
+  * **Export to WAV or FLAC**, using the same emulator that plays it;
+  * **Set length / fade** for tracks with missing or wrong length tags. The setting is remembered for that track and used by playback and export;
+  * open the containing folder.
 
 ## 🪟 Windows
 
@@ -250,6 +285,14 @@ cp libaosdk.so /path/to/joshw-browser/bin/
 chmod +x /path/to/joshw-browser/bin/libaosdk.so
 rm -rf /tmp/aosdk
 
+```
+
+#### 7. WAV decoders (`gsfdec`, `2sfdec`, `usfdec`)
+
+**Install Dependencies** also builds three small decoders that write WAV to stdout (the same ones bundled for Windows). They make USF seeking, 2SF length overrides and GSF/2SF/USF export possible. To build them by hand:
+
+```
+python3 tools/windows_decoders/build.py ~/.config/joshw --native
 ```
 
 ### Step 4: Final Verification of Directory Structure

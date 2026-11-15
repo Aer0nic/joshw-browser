@@ -11,7 +11,7 @@ import re
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale
-from platform_support import IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
+from platform_support import IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process, windows_safe_path
 from player_launcher import attach_settings_sync, run_player
 from tkinter import ttk, messagebox, filedialog
 
@@ -496,7 +496,7 @@ class ArcadePlayerWindow(tb.Window):
         self.arcade_wpctl_id = None
 
         vgmplay_bin = str(get_binary_path("vgmplay"))
-        cmd = [vgmplay_bin, self.audio_file]
+        cmd = [vgmplay_bin, windows_safe_path(self.audio_file)]
 
         try:
             self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1,

@@ -202,6 +202,8 @@ def main(argv):
             work = Path(tmp) / builder.__name__
             work.mkdir()
             print(f"[build] built {builder(work, out_dir, native)}")
+    if native:
+        return  # local test/Linux builds: no SOURCE.txt next to the user's binaries
     (out_dir / "SOURCE.txt").write_text(
         f"2sfdec: {TWOSF_REPO} @ {TWOSF_COMMIT} + tools/windows_decoders/2sfdec.c\n"
         f"gsfdec: {GSF_REPO} @ {GSF_COMMIT} + tools/windows_decoders/gsfdec.cpp\n"

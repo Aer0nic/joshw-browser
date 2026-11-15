@@ -172,6 +172,82 @@ def resume_process(proc):
         return False
 
 
+try:
+    import numpy as _np
+except Exception:  # numpy is optional; fall back to the array module
+    _np = None
+
+
+def apply_gain(pcm, gain):
+    """Scale signed 16-bit little-endian PCM bytes by gain, with clipping.
+
+    Uses numpy when installed (tens of times faster than a Python loop, which
+    matters for players that do volume in-process), otherwise array.array.
+    gain may also be a sequence/array of per-frame gains (for fades), given
+    as one value per *sample frame*; channels are then inferred from length.
+    """
+    if not pcm:
+        return pcm
+    scalar = isinstance(gain, (int, float))
+    if scalar and gain == 1.0:
+        return pcm
+    usable = len(pcm) - (len(pcm) % 2)
+    if _np is not None:
+        a = _np.frombuffer(pcm[:usable], dtype="<i2").astype(_np.float32)
+        if scalar:
+            a *= gain
+        else:
+            g = _np.asarray(gain, dtype=_np.float32)
+            ch = max(1, len(a) // max(1, len(g)))
+            a *= _np.repeat(g, ch)[: len(a)]
+        return _np.clip(a, -32768, 32767).astype("<i2").tobytes()
+    samples = array("h")
+    samples.frombytes(pcm[:usable])
+    if sys.byteorder != "little":
+        samples.byteswap()
+    if scalar:
+        out = array("h", (max(-32768, min(32767, int(v * gain))) for v in samples))
+    else:
+        ch = max(1, len(samples) // max(1, len(gain)))
+        out = array("h", (max(-32768, min(32767, int(v * gain[i // ch]))) for i, v in enumerate(samples)))
+    if sys.byteorder != "little":
+        out.byteswap()
+    return out.tobytes()
+
+
+def windows_safe_path(path):
+    """A path the bundled C decoders can open on Windows.
+
+    They use narrow (ANSI) fopen, so names with characters outside the system
+    code page (e.g. Japanese on an English install) can't be opened. Return
+    the 8.3 short name in that case (all-ASCII, same file). Elsewhere, or if
+    short names are disabled on that drive, the path is returned unchanged.
+    """
+    path = str(path)
+    if not IS_WINDOWS:
+        return path
+    try:
+        path.encode("mbcs", errors="strict")
+        return path
+    except (UnicodeEncodeError, LookupError):
+        pass
+    try:
+        from ctypes import wintypes
+        get_short = ctypes.windll.kernel32.GetShortPathNameW
+        get_short.argtypes = [wintypes.LPCWSTR, wintypes.LPWSTR, wintypes.DWORD]
+        get_short.restype = wintypes.DWORD
+        size = get_short(path, None, 0)
+        if size:
+            buf = ctypes.create_unicode_buffer(size)
+            if get_short(path, buf, size):
+                short = buf.value
+                short.encode("mbcs", errors="strict")
+                return short
+    except Exception:
+        pass
+    return path
+
+
 def set_process_volume(proc, fraction):
     """Set a backend's volume (0.0-1.5).
 
@@ -279,6 +355,8 @@ class PcmPipeProcess:
         self.total_seconds = total_seconds
         self.start_offset = float(start_offset or 0.0)
         self._volume = float(volume)
+        self._fade = None
+        self._frames_played = 0
         self._paused = threading.Event()
         self._stopped = threading.Event()
         self.returncode = None
@@ -343,6 +421,13 @@ class PcmPipeProcess:
     def set_volume(self, fraction):
         with self._lock:
             self._volume = max(0.0, float(fraction))
+
+    def fade_out(self, seconds):
+        """Fade to silence over `seconds`, then end (like the decoder finishing)."""
+        with self._lock:
+            if self._fade is None:
+                self._fade = (getattr(self, "_frames_played", 0),
+                              max(1, int(float(seconds) * self.sample_rate)))
 
     # --- internals ----------------------------------------------------------
     def _emit(self, line):
@@ -411,17 +496,22 @@ class PcmPipeProcess:
                     break
                 usable = len(data) - (len(data) % frame_bytes)
                 data = data[:usable]
+                frames = usable // frame_bytes
                 with self._lock:
                     vol = self._volume
-                if vol != 1.0:
-                    samples = array("h")
-                    samples.frombytes(data)
-                    if sys.byteorder != "little":
-                        samples.byteswap()
-                    samples = array("h", (max(-32768, min(32767, int(s * vol))) for s in samples))
-                    data = samples.tobytes()
+                    fade = self._fade  # (start_frame, length_frames) or None
+                if fade is not None:
+                    start, length = fade
+                    gains = [vol * max(0.0, 1.0 - (frames_played + i - start) / float(length))
+                             for i in range(frames)]
+                    data = apply_gain(data, gains)
+                    if frames_played + frames >= start + length:
+                        break  # faded out completely: end of track
+                elif vol != 1.0:
+                    data = apply_gain(data, vol)
                 stream.write(data)
-                frames_played += usable // frame_bytes
+                frames_played += frames
+                self._frames_played = frames_played
 
                 now = time.monotonic()
                 if self._progress_line and now - last_report >= 0.2:

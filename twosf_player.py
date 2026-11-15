@@ -296,13 +296,26 @@ class TwoSFPlayerWindow(tb.Window):
         env = os.environ.copy()
         env["SDL_VIDEODRIVER"] = "dummy"
 
+        from library import get_override
+        from platform_support import find_tool, windows_safe_path
+        override = get_override(self.audio_file)
+        twosfdec = find_tool("2sfdec") if (IS_WINDOWS or override) else None
+        # 2sfdec (bundled on Windows, built natively on Linux) honours length
+        # overrides; Linux's 2sfPlay doesn't, so overrides switch to 2sfdec
+        use_pipe = IS_WINDOWS or bool(twosfdec)
+        if use_pipe and twosfdec:
+            twosf_bin = twosfdec
         cmd_args = [str(twosf_bin)]
+        if override and use_pipe:
+            cmd_args += ["--play-time", f"{override[0]:.3f}", "--fade-time", f"{override[1]:.3f}"]
+        # player_core ends the track itself when the backend can't
+        self.core_handles_overrides = bool(override and use_pipe)
         if self.current_position_seconds > 0:
             cmd_args.append(f"-b{int(round(self.current_position_seconds * 1000))}")
-        cmd_args.append(self.audio_file)
+        cmd_args.append(windows_safe_path(self.audio_file) if use_pipe else self.audio_file)
 
         try:
-            if IS_WINDOWS:
+            if use_pipe:
                 # 2sfdec.exe writes WAV to stdout; play it in-process and emit
                 # the same "Remaining: Xs / Ys" lines the Linux 2sfPlay prints
                 def progress(pos, total):

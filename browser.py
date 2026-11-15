@@ -22,6 +22,8 @@ from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_direct
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
 from players import ExtractedFilesBrowserWindow, get_vgmstream_path
 from index_updater import update_domain_index
+import library
+from browser_features import BrowserFeaturesMixin, GAME_COLUMNS, MAX_RESULTS as MAX_SEARCH_RESULTS
 from downloaders import EXCLUDED_FROM_INDEX_ALL, DownloadProgressWindow, IndexAllWindow, PremadeIndexProgressWindow, install_dependencies_prompt, check_and_download_sid_firmware
 
 
@@ -286,7 +288,7 @@ def _windows_in_menu_mode():
     except Exception:
         return False
 
-class JoshWBrowser(tb.Window):
+class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
     
     COLUMN_FLOOR_WIDTHS = {"favorite": 30, "type": 60, "name": 200, "date": 60,
                            "size": 60, "domain": 60, "url": 200}
@@ -793,6 +795,8 @@ class JoshWBrowser(tb.Window):
             elif col == "url":
                 parsed = urllib.parse.urlparse(entry.get("url", ""))
                 key = parsed.netloc or "Other"
+            elif col in GAME_COLUMNS:
+                key = self.entry_game_info(entry).get(col) or "Unknown"
             else:
                 name = entry.get("name", "").strip()
                 first_char = name[0].upper() if name else "#"
@@ -861,7 +865,7 @@ class JoshWBrowser(tb.Window):
                     item_size,
                     entry.get("domain", ""),
                     urllib.parse.unquote(entry["url"])
-                ), tags=(tag_name,))
+                ) + self.game_values(entry), tags=(tag_name,) + (("new",) if self.is_new_entry(entry) else ()))
                 
             elif item_data["type"] == "space":
                 self.fav_display_mapping[item_id] = None
@@ -879,21 +883,10 @@ class JoshWBrowser(tb.Window):
         autofit_treeview_columns(self.fav_tree)
 
     def on_browse_right_click(self, event):
-        item_id = self.tree.identify_row(event.y)
-        if item_id:
-            try:
-                entry = self.visible_entries[int(item_id)]
-                if not entry.get("directory") and not entry.get("is_parent_nav"):
-                    self.toggle_favorite_by_entry(entry)
-            except Exception:
-                pass
+        self.show_tree_context_menu(event, self.tree)
 
     def on_fav_right_click(self, event):
-        item_id = self.fav_tree.identify_row(event.y)
-        if item_id and hasattr(self, "fav_display_mapping"):
-            entry = self.fav_display_mapping.get(item_id)
-            if entry:
-                self.toggle_favorite_by_entry(entry)
+        self.show_tree_context_menu(event, self.fav_tree)
 
     def double_click_favorite(self, event=None):
         temp_dir = get_temp_directory()
@@ -1527,12 +1520,15 @@ class JoshWBrowser(tb.Window):
 
         self.messages = queue.Queue()
         self.stop_event = threading.Event()
+        self._autofit = autofit_treeview_columns
+        self.init_features()
 
         self.build_gui()
         self.refresh_favorites_tab()
         clear_theme_preview()  # drop a stale hover preview from a previous session
         self.change_theme(self.saved_theme)
         self.after(100, self.process_messages)
+        self.after(800, self.start_tray)
 
         sid_fw_dir = os.path.join(get_cache_directory(), "sid")
         if not os.path.exists(sid_fw_dir) or not os.listdir(sid_fw_dir):
@@ -1568,6 +1564,7 @@ class JoshWBrowser(tb.Window):
 
     def on_window_close(self, callback=None):
         self.stop_event.set()
+        self.stop_tray()
         if hasattr(self, "stream_random_anim_id") and self.stream_random_anim_id:
             try:
                 self.after_cancel(self.stream_random_anim_id)
@@ -1692,6 +1689,7 @@ class JoshWBrowser(tb.Window):
         self.after(300, self.update_dependencies_submenu)
 
         menubar.add_cascade(label="Options", menu=self.options_dropdown)
+        self.build_feature_menus(menubar)
 
         class DummyProgressBar:
             def __setitem__(self, key, value):
@@ -1724,9 +1722,13 @@ class JoshWBrowser(tb.Window):
 
         self.search_combo = tb.Combobox(info_search_frame, textvariable=self.search_text, width=18, values=self.load_search_history())
         self.search_combo.pack(side="right", padx=4)
-        self.search_combo.bind("<KeyRelease>", lambda event: self.apply_filter())
+        self.search_combo.bind("<KeyRelease>", self.schedule_filter)
         self.search_combo.bind("<<ComboboxSelected>>", lambda event: self.on_search_selected())
         self.search_combo.bind("<Return>", lambda event: self.on_search_submitted())
+        new_only_chk = tb.Checkbutton(info_search_frame, text="New only", variable=self.new_only_var,
+                                      command=self.apply_filter)
+        new_only_chk.pack(side="right", padx=4)
+        ToolTip(new_only_chk, "Show only what the last Index run added (highlighted in green)")
         tb.Checkbutton(
             info_search_frame,
             text="Search all indexes",
@@ -1745,7 +1747,7 @@ class JoshWBrowser(tb.Window):
         browse_frame = tb.Frame(self.notebook)
         self.notebook.add(browse_frame, text="Browse")
 
-        self.tree = tb.Treeview(browse_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
+        self.tree = tb.Treeview(browse_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url") + GAME_COLUMNS, show="headings", selectmode="extended")
         self.tree.heading("favorite", text="★")
         self.tree.heading("type", text="Type", command=lambda: self.sort_by_column("type"))
         self.tree.heading("name", text="Name ▲", command=lambda: self.sort_by_column("name"))
@@ -1761,7 +1763,8 @@ class JoshWBrowser(tb.Window):
         self.tree.column("size", width=100, anchor="center", stretch=False)
         self.tree.column("domain", width=90, anchor="center", stretch=False)
         self.tree.column("url", width=520)
-        self.tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "url")
+        self.setup_game_columns(self.tree, self.sort_by_column)
+        self.tree["displaycolumns"] = ("favorite", "type", "name", "year", "developer", "publisher", "date", "size", "url")
 
         self._setup_tree_scrolling_and_sizing(browse_frame, self.tree)
 
@@ -1772,7 +1775,7 @@ class JoshWBrowser(tb.Window):
         favorites_frame = tb.Frame(self.notebook)
         self.notebook.add(favorites_frame, text="Favorites")
 
-        self.fav_tree = tb.Treeview(favorites_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
+        self.fav_tree = tb.Treeview(favorites_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url") + GAME_COLUMNS, show="headings", selectmode="extended")
         self.fav_tree.heading("favorite", text="★")
         self.fav_tree.heading("type", text="Type", command=lambda: self.sort_favorites_by_column("type"))
         self.fav_tree.heading("name", text="Name ▲", command=lambda: self.sort_favorites_by_column("name"))
@@ -1788,7 +1791,8 @@ class JoshWBrowser(tb.Window):
         self.fav_tree.column("size", width=100, anchor="e", stretch=False)
         self.fav_tree.column("domain", width=90, anchor="center", stretch=False)
         self.fav_tree.column("url", width=520)
-        self.fav_tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "domain", "url")
+        self.setup_game_columns(self.fav_tree, self.sort_favorites_by_column)
+        self.fav_tree["displaycolumns"] = ("favorite", "type", "name", "year", "developer", "publisher", "date", "size", "domain", "url")
 
         self._setup_tree_scrolling_and_sizing(favorites_frame, self.fav_tree)
 
@@ -1799,7 +1803,7 @@ class JoshWBrowser(tb.Window):
         self.shuffle_frame = tb.Frame(self.notebook)
         self.notebook.add(self.shuffle_frame, text="Shuffle")
 
-        self.shuffle_tree = tb.Treeview(self.shuffle_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url"), show="headings", selectmode="extended")
+        self.shuffle_tree = tb.Treeview(self.shuffle_frame, columns=("favorite", "type", "name", "date", "size", "domain", "url") + GAME_COLUMNS, show="headings", selectmode="extended")
         self.shuffle_tree.heading("favorite", text="★")
         self.shuffle_tree.heading("type", text="Type", command=lambda: self.sort_shuffle_by_column("type"))
         self.shuffle_tree.heading("name", text="Name ▲", command=lambda: self.sort_shuffle_by_column("name"))
@@ -1815,13 +1819,19 @@ class JoshWBrowser(tb.Window):
         self.shuffle_tree.column("size", width=100, anchor="e", stretch=False)
         self.shuffle_tree.column("domain", width=90, anchor="center", stretch=False)
         self.shuffle_tree.column("url", width=520)
-        self.shuffle_tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "domain", "url")
+        self.setup_game_columns(self.shuffle_tree, self.sort_shuffle_by_column)
+        self.shuffle_tree["displaycolumns"] = ("favorite", "type", "name", "year", "developer", "publisher", "date", "size", "domain", "url")
 
         self._setup_tree_scrolling_and_sizing(self.shuffle_frame, self.shuffle_tree)
 
         self.shuffle_tree.bind("<Double-1>", self.double_click_shuffle)
         self.shuffle_tree.bind("<Return>", self.double_click_shuffle)
         self.shuffle_tree.bind("<Button-3>", self.on_shuffle_right_click)
+
+        self.build_history_tab()
+        self.build_info_panel(tree_container)
+        for t in (self.tree, self.fav_tree, self.shuffle_tree):
+            self.configure_new_tag(t)
 
         destination_frame = tb.Frame(self, padding=8)
         destination_frame.pack(fill="x")
@@ -2013,7 +2023,7 @@ class JoshWBrowser(tb.Window):
         text_widget.configure(state="disabled")
 
     def update_sort_headers(self):
-        base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "domain": "Domain", "url": "URL"}
+        base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "domain": "Domain", "url": "URL", "year": "Year", "developer": "Developer", "publisher": "Publisher"}
         for k in base_titles:
             arrow = ""
             if k == self.current_sort_column:
@@ -2048,6 +2058,8 @@ class JoshWBrowser(tb.Window):
                 return (1, entry.get("domain", "").lower())
             elif col == "url":
                 return (1, entry["url"].lower())
+            elif col in GAME_COLUMNS:
+                return self.game_sort_key(entry, col)
             return (1, entry["name"].lower())
 
         normal_entries.sort(key=sort_key, reverse=not asc)
@@ -2068,7 +2080,7 @@ class JoshWBrowser(tb.Window):
         self.refresh_favorites_tab()
 
     def update_favorites_sort_headers(self):
-        base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "domain": "Domain", "url": "URL"}
+        base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "domain": "Domain", "url": "URL", "year": "Year", "developer": "Developer", "publisher": "Publisher"}
         current_col = getattr(self, "fav_sort_column", "name")
         current_asc = getattr(self, "fav_sort_ascending", True)
         
@@ -2093,7 +2105,7 @@ class JoshWBrowser(tb.Window):
         self.populate_shuffle_tree(getattr(self, "shuffle_entries", []), resort=True)
 
     def update_shuffle_sort_headers(self):
-        base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "domain": "Domain", "url": "URL"}
+        base_titles = {"type": "Type", "name": "Name", "date": "Date", "size": "Size", "domain": "Domain", "url": "URL", "year": "Year", "developer": "Developer", "publisher": "Publisher"}
         current_col = getattr(self, "shuffle_sort_column", "name")
         current_asc = getattr(self, "shuffle_sort_ascending", True)
 
@@ -2150,7 +2162,7 @@ class JoshWBrowser(tb.Window):
                 item_size,
                 entry_domain,
                 urllib.parse.unquote(entry.get("url", ""))
-            ))
+            ) + self.game_values(entry), tags=("new",) if self.is_new_entry(entry) else ())
 
         autofit_treeview_columns(self.shuffle_tree)
 
@@ -2173,8 +2185,7 @@ class JoshWBrowser(tb.Window):
 
         count = self.shuffle_count.get() if hasattr(self, "shuffle_count") else 50
         count = max(1, count)
-        import random
-        picked = random.sample(files, min(len(files), count))
+        picked = self.pick_shuffle(files, count)
 
         for e in picked:
             if not e.get("domain"):
@@ -2242,14 +2253,7 @@ class JoshWBrowser(tb.Window):
             pass
 
     def on_shuffle_right_click(self, event):
-        item_id = self.shuffle_tree.identify_row(event.y)
-        if item_id:
-            try:
-                entry = self.shuffle_entries[int(item_id)]
-                if not entry.get("directory") and not entry.get("is_parent_nav"):
-                    self.toggle_favorite_by_entry(entry)
-            except Exception:
-                pass
+        self.show_tree_context_menu(event, self.shuffle_tree)
 
     def open_shuffle_count_dialog(self):
         dialog = tb.Toplevel(self)
@@ -2442,7 +2446,8 @@ class JoshWBrowser(tb.Window):
             "excluded_stream_domains": getattr(self, "excluded_stream_domains", []),
             "keep_download_window_open": self.keep_download_window_open.get(),
             "font_size": self.font_size.get(),
-            "shuffle_count": self.shuffle_count.get()
+            "shuffle_count": self.shuffle_count.get(),
+            **(self.feature_settings() if hasattr(self, "smart_shuffle_var") else {})
         })
         try:
             with open(self.get_settings_path(), "w", encoding="utf-8") as f:
@@ -2581,8 +2586,9 @@ class JoshWBrowser(tb.Window):
 
     def on_domain_index_finished(self, domain_name, status, detail):
         self.progress_bar["value"] = 100 if status != "error" else 0
+        self.reload_new_markers()
         if status == "updated":
-            text = f"{domain_name}: added {detail} new file(s) to the index."
+            text = f"{domain_name}: added {detail} new file(s) to the index (shown in green)."
             # Reload the index and refresh the view if this domain is open
             if self.domain_combo.get() == domain_name:
                 self.load_or_check_cache(domain_name, DOMAINS[domain_name])
@@ -2741,37 +2747,53 @@ class JoshWBrowser(tb.Window):
 
     def on_search_scope_changed(self):
         if self.search_all_indexes_var.get():
-            self.all_index_entries = self.load_all_index_entries()
+            if not self.all_index_entries:
+                self.load_all_indexes_async()  # filters when loaded
+                return
         else:
             self.all_index_entries = []
         self.apply_filter()
 
     def apply_filter(self):
         search = self.search_text.get().lower().strip()
+        terms = search.split()
+        new_only = self.new_only_var.get()
         self.tree.delete(*self.tree.get_children())
-        
+
         fav_urls = {f.get("url") for f in self.load_favorites()}
+        total_matches = None
 
         if self.search_all_indexes_var.get():
-            self.tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "domain", "url")
+            self.tree["displaycolumns"] = ("favorite", "type", "name", "year", "developer", "publisher", "date", "size", "domain", "url")
             source = self.all_index_entries
-            filtered = [
-                entry for entry in source
-                if search
-                and not entry.get("directory")
-                and (search in entry["name"].lower() or search in entry["url"].lower() or search in entry.get("domain", "").lower())
-            ]
+            if new_only:
+                filtered = [e for e in source if self.is_new_entry(e) and (not terms or self.match_terms(e, terms))]
+            elif terms:
+                # every word must appear (name, path or domain), in any order;
+                # game folders match too, not just files
+                filtered = [e for e in source if self.match_terms(e, terms)]
+            else:
+                filtered = []
         else:
-            self.tree["displaycolumns"] = ("favorite", "type", "name", "date", "size", "url")
-            source = self.domain_full_entries if (search and self.domain_full_entries) else self.current_entries
-            filtered = [e for e in source if not search or search in e["name"].lower() or e.get("is_parent_nav")]
+            self.tree["displaycolumns"] = ("favorite", "type", "name", "year", "developer", "publisher", "date", "size", "url")
+            if new_only:
+                source = self.domain_full_entries or self.current_entries
+                filtered = [e for e in source if self.is_new_entry(e) and not e.get("directory")
+                            and (not terms or self.match_terms(e, terms, e["name"].lower()))]
+            else:
+                source = self.domain_full_entries if (terms and self.domain_full_entries) else self.current_entries
+                filtered = [e for e in source if not terms or e.get("is_parent_nav")
+                            or self.match_terms(e, terms, e["name"].lower())]
         self.visible_entries = self.apply_sorting(filtered)
+        if len(self.visible_entries) > MAX_SEARCH_RESULTS:
+            total_matches = len(self.visible_entries)
+            self.visible_entries = self.visible_entries[:MAX_SEARCH_RESULTS]
 
         for index, entry in enumerate(self.visible_entries):
             item_id = str(index)
             is_fav = entry.get("url") in fav_urls
             star_symbol = "★" if (is_fav and not entry["directory"] and not entry.get("is_parent_nav")) else ""
-            
+
             item_size = (
                 "-"
                 if entry["directory"]
@@ -2786,9 +2808,14 @@ class JoshWBrowser(tb.Window):
                 item_size,
                 entry.get("domain", ""),
                 urllib.parse.unquote(entry["url"])
-            ))
+            ) + self.game_values(entry), tags=("new",) if self.is_new_entry(entry) else ())
 
         autofit_treeview_columns(self.tree)
+        if total_matches:
+            self.status_text.set(f"Showing the first {MAX_SEARCH_RESULTS:,} of {total_matches:,} matches - add words to narrow it down.")
+        elif terms or new_only:
+            n = len(self.visible_entries)
+            self.status_text.set(f"{n:,} match{'es' if n != 1 else ''}.")
 
     def double_click_entry(self, event=None):
         temp_dir = get_temp_directory()
@@ -2880,10 +2907,17 @@ class JoshWBrowser(tb.Window):
         compressed_exts = {".7z", ".zip", ".tar", ".gz", ".bz2"}
 
         if ext not in compressed_exts:
-            output_path = os.path.join(temp_dir, filename)
+            # Keep the remote folder name (usually the game): players build
+            # their playlist from the folder, and history/overrides/game info
+            # identify tracks as "<folder>/<file>"
+            parent = safe_filename(urllib.parse.unquote(posixpath.basename(posixpath.dirname(parsed.path.rstrip("/")))))
+            out_dir = os.path.join(temp_dir, parent) if parent else temp_dir
+            os.makedirs(out_dir, exist_ok=True)
+            output_path = os.path.join(out_dir, filename)
             if os.path.exists(output_path):
                 if progress_win.winfo_exists():
                     self.messages.put(("close_progress", progress_win))
+                self.remember_stream_source(url, local_path=output_path)
                 self.messages.put(("play_audio", output_path))
                 return
 
@@ -2912,6 +2946,7 @@ class JoshWBrowser(tb.Window):
 
             if progress_win.winfo_exists():
                 self.messages.put(("close_progress", progress_win))
+            self.remember_stream_source(url, local_path=output_path)
             self.messages.put(("play_audio", output_path))
             return
 
@@ -2921,6 +2956,7 @@ class JoshWBrowser(tb.Window):
         if os.path.exists(extract_dir) and os.path.isdir(extract_dir) and os.listdir(extract_dir):
             if progress_win.winfo_exists():
                 self.messages.put(("close_progress", progress_win))
+            self.remember_stream_source(url, extract_dir=extract_dir)
             self.messages.put(("open_file_browser", extract_dir))
             return
 
@@ -2984,6 +3020,7 @@ class JoshWBrowser(tb.Window):
 
         self.messages.put(("close_progress", progress_win))
         if extracted:
+            self.remember_stream_source(url, extract_dir=extract_dir)
             self.messages.put(("open_file_browser", extract_dir))
 
     def open_file_browser(self, folder_path):
@@ -3244,7 +3281,9 @@ class JoshWBrowser(tb.Window):
         try:
             while True:
                 msg = self.messages.get_nowait()
-                if msg[0] == "directory":
+                if msg[0] == "call":
+                    msg[1]()
+                elif msg[0] == "directory":
                     self.display_entries(msg[1], msg[2], msg[3])
                 elif msg[0] == "open_file_browser":
                     self.open_file_browser(msg[1])

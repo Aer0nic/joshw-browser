@@ -9,7 +9,7 @@ import random
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale, load_saved_font_size
-from platform_support import IS_WINDOWS, PcmPipeProcess, format_hms, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
+from platform_support import IS_WINDOWS, PcmPipeProcess, format_hms, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process, windows_safe_path
 from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox
 from config import is_emulated_file, resource_path
@@ -120,7 +120,7 @@ class VGMStreamPlayerWindow(tb.Window):
         vgm_bin = get_vgmstream_path()
         if vgm_bin and (shutil.which(str(vgm_bin)) or os.path.exists(str(vgm_bin))):
             try:
-                cmd = [str(vgm_bin), "-m", self.audio_file]
+                cmd = [str(vgm_bin), "-m", windows_safe_path(self.audio_file)]
                 result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=5, **hidden_popen_kwargs())
                 for line in result.stdout.splitlines():
                     if "subsongs:" in line.lower() or "tracks:" in line.lower():
@@ -405,7 +405,7 @@ class VGMStreamPlayerWindow(tb.Window):
         if self.total_chapters > 1:
             cmd.extend(["-s", str(self.current_chapter + 1)])
 
-        cmd.append(self.audio_file)
+        cmd.append(windows_safe_path(self.audio_file))
 
         if hasattr(self, "metadata_text") and self.winfo_exists():
             self.metadata_text.config(state="normal")
@@ -440,7 +440,7 @@ class VGMStreamPlayerWindow(tb.Window):
             cmd = [str(vgm_bin), "-m"]
             if self.total_chapters > 1:
                 cmd += ["-s", str(self.current_chapter + 1)]
-            cmd.append(self.audio_file)
+            cmd.append(windows_safe_path(self.audio_file))
             out = subprocess.run(cmd, capture_output=True, text=True, timeout=10,
                                  **hidden_popen_kwargs()).stdout
             m = re.search(r"sample rate:\s*(\d+)", out, re.IGNORECASE)
@@ -472,7 +472,7 @@ class VGMStreamPlayerWindow(tb.Window):
             cmd += ["-s", str(self.current_chapter + 1)]
         if start_time > 0:
             cmd += ["-k", str(int(start_time * rate))]
-        cmd.append(self.audio_file)
+        cmd.append(windows_safe_path(self.audio_file))
 
         def progress(pos, total):
             total = total if total else 0.0

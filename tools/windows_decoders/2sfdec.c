@@ -7,7 +7,8 @@
  * SDL it writes WAV to stdout; the app plays it with sounddevice
  * (platform_support.PcmPipeProcess), which also handles volume and pause.
  *
- * Usage: 2sfdec [-b<start_ms>] file.mini2sf > out.wav
+ * Usage: 2sfdec [-b<start_ms>] [--play-time SEC] [--fade-time SEC] file.mini2sf > out.wav
+ * --play-time / --fade-time override the length / fade tags.
  * The WAV header's data size is exact (remaining length incl. fade), so the
  * reader knows the total duration up front.
  */
@@ -44,8 +45,11 @@ int main(int argc, char **argv) {
     _setmode(_fileno(stdout), _O_BINARY);
 #endif
     long start_time_ms = 0;
+    double play_time = -1, fade_time = -1;
     const char *input_file = NULL;
     for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--play-time") == 0 && i + 1 < argc) { play_time = atof(argv[++i]); continue; }
+        if (strcmp(argv[i], "--fade-time") == 0 && i + 1 < argc) { fade_time = atof(argv[++i]); continue; }
         if (strcmp(argv[i], "--help") == 0) {
             fprintf(stderr, "Usage: %s [-b<ms>] file.2sf > out.wav\n", argv[0]);
             return 0;
@@ -72,6 +76,8 @@ int main(int argc, char **argv) {
     state_setrom(&core, state.rom, state.rom_size, 0);
     state_loadstate(&core, state.state, state.state_size);
 
+    if (play_time >= 0) state.length_ms = (long)(play_time * 1000) + (fade_time >= 0 ? (long)(fade_time * 1000) : state.fade_ms);
+    if (fade_time >= 0) state.fade_ms = (long)(fade_time * 1000);
     long nsamples = state.length_ms * 441 / 10 + 1;
     long fade_samples = state.fade_ms * 441 / 10;
     long total = nsamples;

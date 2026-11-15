@@ -10,7 +10,7 @@ import json
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale, load_saved_font_size
-from platform_support import IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
+from platform_support import IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process, windows_safe_path
 from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox, filedialog
 
@@ -517,7 +517,7 @@ class PlayBAEPlayerWindow(tb.Window):
                 else:
                     cmd.extend(["-p", sf_path1]) # Fallback path
 
-        cmd.extend(["-f", self.audio_file])
+        cmd.extend(["-f", windows_safe_path(self.audio_file)])
 
         if self.loop_forever_var.get():
             cmd.extend(["-l", "-1"])

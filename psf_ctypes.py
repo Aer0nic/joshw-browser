@@ -277,7 +277,13 @@ class AOSDKContext:
         if not os.path.exists(filepath):
             raise AOSDKOpenError(f"File not found: '{filepath}'")
 
-        path_bytes = os.path.abspath(filepath).encode("utf-8")
+        if sys.platform == "win32":
+            # aosdk.dll opens files with narrow fopen: ANSI code page, using
+            # the 8.3 short name when the path has characters outside it
+            from platform_support import windows_safe_path
+            path_bytes = windows_safe_path(os.path.abspath(filepath)).encode("mbcs", errors="replace")
+        else:
+            path_bytes = os.path.abspath(filepath).encode("utf-8")
         ret = self._binding.lib.aosdk_open(self._handle, path_bytes)
         if ret != AOSDK_OK:
             err = self.get_last_error()

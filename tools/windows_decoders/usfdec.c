@@ -7,10 +7,11 @@
  * psflib - the same pairing foobar2000/DeaDBeeF use. Based on lazyusf2's
  * test/dumpresampled.c.
  *
- * Usage: usfdec [--playback] [--forever] [-f N] [-b<ms>] file.miniusf > out.wav
+ * Usage: usfdec [--playback] [--forever] [-f N] [-b<ms>] [--play-time S] [--fade-time S] file > out.wav
  *   --playback / -f N   accepted for lazyusf compatibility (ignored)
  *   --forever           ignore the length tag and play until stopped
  *   -b<ms>              start at <ms> (rendered and discarded)
+ *   --play-time / --fade-time SEC   override the length / fade tags (as lazyusf)
  * The app turns elapsed time into lazyusf's "minutes" progress lines.
  */
 #include <stdint.h>
@@ -116,8 +117,11 @@ int main(int argc, char **argv) {
     const char *file = NULL;
     int forever = 0;
     long start_ms = 0;
+    double play_time = -1, fade_time = -1;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--forever")) forever = 1;
+        else if (!strcmp(argv[i], "--play-time") && i + 1 < argc) play_time = atof(argv[++i]);
+        else if (!strcmp(argv[i], "--fade-time") && i + 1 < argc) fade_time = atof(argv[++i]);
         else if (!strcmp(argv[i], "--playback")) { /* lazyusf compat */ }
         else if (!strcmp(argv[i], "-f") && i + 1 < argc) i++; /* fade type: compat */
         else if (!strncmp(argv[i], "-b", 2)) start_ms = strtol(argv[i] + 2, NULL, 10);
@@ -138,6 +142,8 @@ int main(int argc, char **argv) {
     usf_set_fifo_full(state, enable_fifo_full);
     usf_set_hle_audio(state, 1);
 
+    if (play_time >= 0) length_ms = (long)(play_time * 1000);
+    if (fade_time >= 0) fade_ms = (long)(fade_time * 1000);
     if (length_ms < 0) length_ms = 180000;  /* untagged: lazyusf's 3 minute default */
     if (forever) fade_ms = 0;
     long body = (long)((int64_t)length_ms * 441 / 10);

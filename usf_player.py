@@ -68,10 +68,11 @@ def save_shared_volume(vol):
 
 
 class InteractiveProgressBar:
-    """Purely visual progress bar element (non-draggable)."""
-    def __init__(self, parent, get_duration_func=None, length=380, **kwargs):
+    """Progress bar; click it to seek when seek_func is given."""
+    def __init__(self, parent, get_duration_func=None, length=380, seek_func=None, **kwargs):
         self.parent = parent
         self.get_duration = get_duration_func
+        self.seek_func = seek_func
         
         self.frame = tb.Frame(parent)
         self.canvas = tk.Canvas(self.frame, width=length, height=18, bg="#e0e0e0", highlightthickness=1, relief="sunken")
@@ -80,6 +81,15 @@ class InteractiveProgressBar:
         self.progress_rect = self.canvas.create_rectangle(0, 0, 0, 18, fill="#3a7ebf", outline="")
         self.thumb = self.canvas.create_rectangle(0, 0, 6, 18, fill="#204a87", outline="")
         self.current_pct = 0.0
+        if seek_func is not None:
+            self.canvas.configure(cursor="hand2")
+            self.canvas.bind("<ButtonRelease-1>", self._on_click)
+
+    def _on_click(self, event):
+        dur = self.get_duration() if self.get_duration else 0
+        width = max(1, self.canvas.winfo_width())
+        if dur and dur > 0:
+            self.seek_func(max(0.0, min(1.0, event.x / width)) * dur)
 
     def update_progress(self, current_seconds, duration_seconds):
         if not self.canvas.winfo_exists():
@@ -233,7 +243,8 @@ class USFPlayerWindow(tb.Window):
         progress_container.pack(fill="x", pady=(2, 6))
         self.progress_bar_widget = InteractiveProgressBar(
             progress_container,
-            get_duration_func=lambda: self.raw_duration_seconds
+            get_duration_func=lambda: self.raw_duration_seconds,
+            seek_func=self.seek_to_position
         )
         self.progress_bar_widget.frame.pack(fill="x", expand=True)
 
@@ -523,7 +534,38 @@ class USFPlayerWindow(tb.Window):
         except Exception as e:
             print(f"[USFPlayer] Error cleaning up .au file: {e}")
 
-    def load_and_play_current(self):
+    # Length/fade overrides go straight to lazyusf/usfdec (see player_core)
+    core_handles_overrides = True
+
+    def core_restart_current(self):
+        self.load_and_play_current()
+
+    def _usfdec_path(self):
+        """lazyusf2-based decoder (bundled on Windows, built natively on Linux
+        by Install Dependencies). It can start mid-track, lazyusf can't."""
+        from platform_support import find_tool
+        return find_tool("usfdec")
+
+    def seek_to_position(self, target_time):
+        if self.loop_forever_var.get() or self.raw_duration_seconds <= 0:
+            return
+        if not IS_WINDOWS and not self._usfdec_path():
+            messagebox.showinfo("Seeking unavailable",
+                                "Seeking USF needs the usfdec decoder.\n"
+                                "Run Options > Install Dependencies in the browser to build it.", parent=self)
+            return
+        target_time = max(0.0, min(float(target_time), self.raw_duration_seconds - 0.5))
+        self.load_and_play_current(start_at=target_time)
+
+    def _length_and_fade(self, file_path):
+        from library import get_override
+        override = get_override(file_path)
+        if override:
+            return override[0], override[1], True
+        length, fade = self.parse_length_and_fade_from_strings(file_path)
+        return length, fade, False
+
+    def load_and_play_current(self, start_at=0.0):
         self.stop_current_process()
 
         if not self.playlist or not (0 <= self.current_index < len(self.playlist)):
@@ -536,17 +578,18 @@ class USFPlayerWindow(tb.Window):
 
         self.populate_playlist_listbox()
 
-        self.current_position_seconds = 0.0
+        self.current_position_seconds = start_at
         self.seek_pct_var.set("0%")
-        self.progress_bar_widget.update_progress(0.0, self.raw_duration_seconds)
+        self.progress_bar_widget.update_progress(start_at, self.raw_duration_seconds)
 
-        parsed_length, parsed_fade = self.parse_length_and_fade_from_strings(self.audio_file)
-        has_explicit_length = parsed_length != 180.0 or self.has_length_tag_in_file(self.audio_file)
+        parsed_length, parsed_fade, overridden = self._length_and_fade(self.audio_file)
+        has_explicit_length = overridden or parsed_length != 180.0 or self.has_length_tag_in_file(self.audio_file)
+        self._override_args = (parsed_length, parsed_fade) if overridden else None
 
         is_forever = self.loop_forever_var.get() or not has_explicit_length
 
         if not is_forever:
-            multiplier = 1 + self.loop_count_var.get() if self.loop_chk_var.get() else 1
+            multiplier = 1 + self.loop_count_var.get() if (self.loop_chk_var.get() and not overridden) else 1
             effective_length = parsed_length * multiplier
             self.raw_duration_seconds = effective_length + parsed_fade
             formatted_dur = self.format_time(self.raw_duration_seconds)
@@ -566,7 +609,7 @@ class USFPlayerWindow(tb.Window):
 
         self.playback_thread = threading.Thread(
             target=self._playback_worker, 
-            args=(self.audio_file, is_forever, self.playback_session_id), 
+            args=(self.audio_file, is_forever, self.playback_session_id, start_at),
             daemon=True
         )
         self.playback_thread.start()
@@ -603,25 +646,43 @@ class USFPlayerWindow(tb.Window):
                 pass
             time.sleep(0.1)
 
-    def _playback_worker(self, file_path, is_forever, session_id):
-        lazyusf_bin = get_binary_path("lazyusf")
-        if not lazyusf_bin.exists() and shutil.which(str(lazyusf_bin)) is None:
-            print("[USFPlayer] lazyusf binary not found!")
-            return
-
-        cmd = [str(lazyusf_bin), "--playback"]
+    def _playback_worker(self, file_path, is_forever, session_id, start_at=0.0):
+        from platform_support import windows_safe_path
+        usfdec = self._usfdec_path()
+        # usfdec + in-process audio: always on Windows; on Linux when starting
+        # mid-track (seeking), since lazyusf can only play from the start
+        use_pipe = IS_WINDOWS or (start_at > 0 and usfdec)
+        if use_pipe:
+            if not usfdec:
+                print("[USFPlayer] usfdec not found!")
+                return
+            cmd = [usfdec, "--playback"]
+        else:
+            lazyusf_bin = get_binary_path("lazyusf")
+            if not lazyusf_bin.exists() and shutil.which(str(lazyusf_bin)) is None:
+                print("[USFPlayer] lazyusf binary not found!")
+                return
+            cmd = [str(lazyusf_bin), "--playback"]
         if is_forever:
             cmd.append("--forever")
         else:
             cmd.extend(["-f", "2"])
-        cmd.append(str(file_path))
+            override = getattr(self, "_override_args", None)
+            if override:
+                # lazyusf takes whole seconds; usfdec accepts fractions too
+                fmt = (lambda v: f"{v:.3f}") if use_pipe else (lambda v: str(int(round(v))))
+                cmd.extend(["--play-time", fmt(override[0]), "--fade-time", fmt(override[1])])
+        if use_pipe and start_at > 0:
+            cmd.append(f"-b{int(start_at * 1000)}")
+        cmd.append(windows_safe_path(file_path) if use_pipe else str(file_path))
 
         try:
-            if IS_WINDOWS:
-                # usfdec.exe (lazyusf2) writes WAV to stdout; emit lazyusf's
+            if use_pipe:
+                # usfdec (lazyusf2) writes WAV to stdout; emit lazyusf's
                 # "elapsed minutes" lines so the loop below works unchanged
                 proc = PcmPipeProcess(
                     cmd, wav=True, progress_line=lambda pos, total: f"{pos / 60.0:.7f}",
+                    start_offset=start_at,
                     volume=max(0.0, min(150.0, float(self.volume_var.get()))) / 100.0,
                 )
             else:
@@ -788,4 +849,6 @@ if __name__ == "__main__":
     app = USFPlayerWindow(audio_file=audio_path, playlist=playlist, start_index=start_index)
     if not audio_path:
         app.after(100, app.open_file_picker)
+    from player_core import attach_player_core
+    attach_player_core(app)
     app.mainloop()

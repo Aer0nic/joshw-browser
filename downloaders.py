@@ -563,6 +563,18 @@ class InstallDependenciesWorker:
                     f"chmod +x \"{playbae_bin}\""
                 ])
 
+            # 6b. lazyusf2/vio2sf/playgsf decoders that write WAV to stdout
+            #     (the same sources as the Windows build). Used for seeking
+            #     USF, length overrides on 2SF and exporting GSF/2SF/USF.
+            missing_decoders = [d for d in ("gsfdec", "2sfdec", "usfdec") if not (cache_dir / d).exists()]
+            build_script = config.resource_path("tools/windows_decoders/build.py")
+            if missing_decoders and Path(build_script).exists():
+                script_lines.append("echo 'Building WAV decoders (" + ", ".join(missing_decoders) + ")...'")
+                script_lines.append(
+                    f"python3 \"{build_script}\" \"{cache_dir}\" --native {' '.join(missing_decoders)} "
+                    "|| echo 'WARNING: decoder build failed (seeking USF / exporting GSF, 2SF, USF unavailable)'"
+                )
+
             # 7. Soundfont and Extras download
             soundfont_file = cache_dir / "FluidR3_GM.sf2"
             if not soundfont_file.exists():
@@ -891,6 +903,8 @@ class IndexAllWindow(tb.Toplevel):
         new_items = self.new_entries_discovered
         # If the browser is showing a domain that just changed, reload its index
         try:
+            if hasattr(self.parent, "reload_new_markers"):
+                self.parent.reload_new_markers()  # green "new" highlighting
             current = self.parent.domain_combo.get()
             if current in self.updated_domains:
                 self.parent.load_or_check_cache(current, self.domains[current])

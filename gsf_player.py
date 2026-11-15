@@ -24,6 +24,12 @@ from players import (
 )
 
 class GSFPlayerWindow(tb.Window):
+    # Length/fade overrides go to playgsf/gsfdec as -i -t (see player_core)
+    core_handles_overrides = True
+
+    def core_restart_current(self):
+        self.start_playgsf()
+
     def __init__(self, parent=None, audio_file=None, playlist=None, start_index=None):
         # Standalone root window (own process), themed from settings.json
         super().__init__(themename=load_saved_theme())
@@ -147,6 +153,11 @@ class GSFPlayerWindow(tb.Window):
 
         raw_base_sec = self.parse_time_string(length_str) or 180.0
         fade_sec = self.parse_time_string(fade_str) or 0.0
+        from library import get_override, format_time_text
+        self._override = get_override(file_path)
+        if self._override:
+            raw_base_sec, fade_sec = self._override
+            length_str = f"{format_time_text(raw_base_sec)} (custom)"
 
         if self.loop_forever_var.get():
             self.total_duration_seconds = 0.0
@@ -155,7 +166,7 @@ class GSFPlayerWindow(tb.Window):
                 loop_count = int(self.loop_count_var.get())
             except Exception:
                 loop_count = 1
-            multiplier = (1 + loop_count) if self.loop_enabled_var.get() else 1
+            multiplier = (1 + loop_count) if (self.loop_enabled_var.get() and not self._override) else 1
             self.total_duration_seconds = (raw_base_sec * multiplier) + fade_sec
 
         if self.winfo_exists():
@@ -498,12 +509,15 @@ class GSFPlayerWindow(tb.Window):
         if self.loop_forever_var.get():
             cmd_args.append("-e")
         elif self.total_duration_seconds > 0:
+            if getattr(self, "_override", None):
+                cmd_args.append("-i")  # ignore the length tag: play the custom length
             cmd_args.extend(["-t", str(int(round(self.total_duration_seconds * 1000)))])
 
         if self.current_position_seconds > 0:
             cmd_args.append(f"-b{int(round(self.current_position_seconds * 1000))}")
 
-        cmd_args.append(self.audio_file)
+        from platform_support import windows_safe_path
+        cmd_args.append(windows_safe_path(self.audio_file))
 
         try:
             if IS_WINDOWS:

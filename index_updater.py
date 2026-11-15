@@ -212,4 +212,9 @@ def update_domain_index(domain_name, root_url, progress_cb=None, stop_event=None
                          if _norm_dir(k) not in stale}
 
     _save_index(domain_name, data)
+    try:  # highlighted as "new" in the browser until the next index run that adds something
+        from library import record_new_entries
+        record_new_entries(domain_name, new_files)
+    except Exception as e:
+        print(f"[index] could not record new entries: {e}")
     return "updated", new_files

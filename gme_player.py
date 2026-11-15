@@ -12,7 +12,7 @@ import signal
 import json
 import tkinter as tk
 import ttkbootstrap as tb
-from platform_support import SoundDeviceSink, find_tool, IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
+from platform_support import apply_gain, SoundDeviceSink, find_tool, IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
 from player_launcher import attach_settings_sync, parse_player_args
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox, filedialog
@@ -154,7 +154,13 @@ class GMEContext:
         self.duration_ms = 180000
 
         track_ptr = ctypes.c_void_p()
-        err = get_gme().gme_open_file(file_path.encode("utf-8"), ctypes.byref(track_ptr), sample_rate)
+        if IS_WINDOWS:
+            # libgme uses narrow fopen: ANSI code page (8.3 name if needed)
+            from platform_support import windows_safe_path
+            encoded = windows_safe_path(file_path).encode("mbcs", errors="replace")
+        else:
+            encoded = file_path.encode("utf-8")
+        err = get_gme().gme_open_file(encoded, ctypes.byref(track_ptr), sample_rate)
         if err:
             raise RuntimeError(f"Failed to open GME file: {err.decode('utf-8', errors='ignore')}")
         self.emu = track_ptr
@@ -241,7 +247,9 @@ class GMEContext:
 # ==========================================
 
 class GMEAudioWorker:
-    def __init__(self, audio_file, track_index, ui_queue, volume=1.0, loop_forever=False, loop_count=1, loop_enabled=False):
+    def __init__(self, audio_file, track_index, ui_queue, volume=1.0, loop_forever=False, loop_count=1, loop_enabled=False, key=None):
+        self.key = key
+        self._next = None
         self.audio_file = audio_file
         self.track_index = track_index
         self.ui_queue = ui_queue
@@ -345,176 +353,174 @@ class GMEAudioWorker:
         with self._lock:
             self._seek_target_ms = position_ms
 
+    def queue_next(self, audio_file, track_index, key=None):
+        """Track to continue with, without a gap, when the current one ends."""
+        with self._lock:
+            self._next = (audio_file, track_index, key)
+
+    def _open_output(self, sample_rate):
+        if IS_WINDOWS:
+            # No aplay on Windows: play through sounddevice instead
+            self.proc = SoundDeviceSink(sample_rate=sample_rate, channels=2)
+        else:
+            self.proc = subprocess.Popen(
+                ["aplay", "-t", "raw", "-c", "2", "-r", str(sample_rate), "-f", "S16_LE", "-q"],
+                stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            threading.Thread(target=self._resolve_and_apply_volume, args=(self.volume,), daemon=True).start()
+
+    def _close_output(self):
+        if self.proc:
+            try:
+                if self.proc.stdin:
+                    self.proc.stdin.close()
+                self.proc.wait(timeout=1.0)
+            except Exception:
+                try:
+                    self.proc.terminate()
+                except Exception:
+                    pass
+
     def _run(self):
+        """Plays the requested track, then (gaplessly) any track handed over
+        with queue_next() on the same audio output."""
+        sample_rate = 44100
         try:
-            with GMEContext(self.audio_file) as ctx:
-                total_tracks = ctx.get_track_count()
-                ctx.load_track(self.track_index, loop_forever=self.loop_forever, loop_enabled=self.loop_enabled, loop_count=self.loop_count)
-                duration_sec = ctx.duration_ms / 1000.0 if ctx.duration_ms > 0 else 0.0
-
-                self.ui_queue.put(("opened", {"duration": duration_sec, "track_count": total_tracks}))
-                self.ui_queue.put(("status", "Playing"))
-
-                chunk_samples = 4096
-                sample_rate = ctx.sample_rate
-
-                cmd = [
-                    "aplay",
-                    "-t", "raw",
-                    "-c", "2",
-                    "-r", str(sample_rate),
-                    "-f", "S16_LE",
-                    "-q"
-                ]
-
-                try:
-                    if IS_WINDOWS:
-                        # No aplay on Windows: play through sounddevice instead
-                        self.proc = SoundDeviceSink(sample_rate=sample_rate, channels=2)
-                    else:
-                        self.proc = subprocess.Popen(
-                            cmd,
-                            stdin=subprocess.PIPE,
-                            stdout=subprocess.DEVNULL,
-                            stderr=subprocess.DEVNULL
-                        )
-                        threading.Thread(target=self._resolve_and_apply_volume, args=(self.volume,), daemon=True).start()
-                except Exception as e:
-                    self.ui_queue.put(("error", f"Could not open audio output: {e}"))
-                    return
-
-                base_length_ms = ctx.base_length_ms
-                fade_ms = ctx.fade_ms
-                default_fade_ms = 5000
-                actual_fade_ms = default_fade_ms if (fade_ms <= 0 or fade_ms == base_length_ms) else fade_ms
-
-                single_base_samples = int((base_length_ms / 1000.0) * sample_rate)
-                multiplier = (1 + self.loop_count) if self.loop_enabled else 1
-                total_base_samples = single_base_samples * multiplier
-                
-                fade_samples = int((actual_fade_ms / 1000.0) * sample_rate)
-                fade_start_sample = total_base_samples
-                max_samples = float('inf') if self.loop_forever else (total_base_samples + fade_samples)
-
-                total_samples_rendered = 0
-                loops_completed = 0
-
-                try:
-                    last_pos_time = 0.0
-                    while not self._stop_event.is_set():
-                        if not self._pause_event.is_set():
-                            time.sleep(0.05)
-                            continue
-
-                        with self._lock:
-                            if self._seek_target_ms is not None:
-                                target_ms = self._seek_target_ms
-                                self._seek_target_ms = None
-                                ctx.seek(target_ms)
-                                total_samples_rendered = int((target_ms / 1000.0) * sample_rate)
-
-                        if not self.loop_forever and total_samples_rendered >= max_samples:
-                            should_loop = False
-                            if self.loop_enabled and loops_completed < self.loop_count - 1:
-                                loops_completed += 1
-                                should_loop = True
-
-                            if should_loop:
-                                ctx.load_track(self.track_index, loop_forever=False, loop_enabled=self.loop_enabled, loop_count=self.loop_count)
-                                total_samples_rendered = 0
-                                continue
-                            else:
-                                try:
-                                    if self.proc and self.proc.stdin:
-                                        self.proc.stdin.close()
-                                    if self.proc:
-                                        self.proc.wait(timeout=0.5)
-                                except Exception:
-                                    pass
-                                
-                                self.ui_queue.put(("ended", None))
-                                break
-
-                        if not self.loop_forever and self.loop_enabled and total_samples_rendered > 0 and total_samples_rendered % single_base_samples == 0 and total_samples_rendered < total_base_samples:
-                            ctx.seek(0)
-
-                        samples_to_render = chunk_samples
-                        if not self.loop_forever:
-                            samples_to_render = min(chunk_samples, int(max_samples - total_samples_rendered))
-
-                        sub_buf = (ctypes.c_short * (samples_to_render * 2))()
-                        success = ctx.render(samples_to_render, sub_buf)
-                        
-                        pcm_data = bytes(sub_buf)
-                        if not pcm_data or not success:
-                            if not self.loop_forever:
-                                try:
-                                    if self.proc and self.proc.stdin:
-                                        self.proc.stdin.close()
-                                    if self.proc:
-                                        self.proc.wait(timeout=0.5)
-                                except Exception:
-                                    pass
-                                self.ui_queue.put(("ended", None))
-                                break
-                            else:
-                                continue
-
-                        if not self.loop_forever and total_samples_rendered >= fade_start_sample:
-                            arr = array.array("h")
-                            arr.frombytes(pcm_data)
-                            for i in range(0, len(arr), 2):
-                                current_abs = total_samples_rendered + (i // 2)
-                                fade_prog = current_abs - fade_start_sample
-                                multiplier = max(0.0, 1.0 - (fade_prog / fade_samples))
-                                arr[i] = int(arr[i] * multiplier)
-                                arr[i+1] = int(arr[i+1] * multiplier)
-                            pcm_data = arr.tobytes()
-
-                        with self._lock:
-                            vol = self.volume
-
-                        if vol != 1.0 and len(pcm_data) > 0:
-                            arr = array.array("h")
-                            arr.frombytes(pcm_data)
-                            for i in range(len(arr)):
-                                arr[i] = max(-32768, min(32767, int(arr[i] * vol)))
-                            pcm_data = arr.tobytes()
-
-                        try:
-                            if self.proc and self.proc.stdin:
-                                self.proc.stdin.write(pcm_data)
-                                self.proc.stdin.flush()
-                        except Exception:
-                            break
-
-                        total_samples_rendered += samples_to_render
-
-                        curr_pos_sec = total_samples_rendered / sample_rate
-                        effective_duration_sec = ctx.duration_ms / 1000.0 if ctx.duration_ms > 0 else 0.0
-
-                        now = time.time()
-                        if now - last_pos_time >= 0.2:
-                            last_pos_time = now
-                            pct = 0 if self.loop_forever else (int((curr_pos_sec / effective_duration_sec) * 100) if effective_duration_sec > 0 else 0)
-                            self.ui_queue.put(("position", (curr_pos_sec, effective_duration_sec, pct)))
-                finally:
-                    if self.proc:
-                        try:
-                            if self.proc.stdin:
-                                self.proc.stdin.close()
-                            self.proc.wait(timeout=1.0)
-                        except Exception:
-                            try:
-                                self.proc.terminate()
-                            except Exception:
-                                pass
+            self._open_output(sample_rate)
+        except Exception as e:
+            self.ui_queue.put(("error", f"Could not open audio output: {e}"))
+            return
+        ctx = None
+        audio_file, track_index, key = self.audio_file, self.track_index, self.key
+        try:
+            while not self._stop_event.is_set():
+                if ctx is None or ctx.file_path != audio_file:
+                    if ctx is not None:
+                        ctx.close()
+                    ctx = GMEContext(audio_file, sample_rate)
+                result = self._play_track(ctx, track_index, key)
+                if result != "ended":
+                    break
+                with self._lock:
+                    nxt, self._next = self._next, None
+                if not nxt:
+                    self.ui_queue.put(("ended", None))
+                    break
+                audio_file, track_index, key = nxt
+                self.ui_queue.put(("advanced", (audio_file, track_index)))
         except Exception as e:
             if not self._stop_event.is_set():
                 self.ui_queue.put(("error", f"Playback error: {e}"))
         finally:
+            if ctx is not None:
+                ctx.close()
+            self._close_output()
             if not self._stop_event.is_set():
                 self.ui_queue.put(("status", "Stopped"))
+
+    def _play_track(self, ctx, track_index, key):
+        """Render one track to the output. Returns "ended" or "stopped"."""
+        from library import get_override
+        total_tracks = ctx.get_track_count()
+        ctx.load_track(track_index, loop_forever=self.loop_forever, loop_enabled=self.loop_enabled,
+                       loop_count=self.loop_count)
+        sample_rate = ctx.sample_rate
+        override = None if self.loop_forever else get_override(key or f"{ctx.file_path}#{track_index}")
+
+        if override:
+            length_s, fade_s = override
+            base_length_ms, fade_ms = length_s * 1000.0, fade_s * 1000.0
+            duration_sec = length_s + fade_s
+            loop_enabled = False  # an explicit length replaces the loop settings
+        else:
+            base_length_ms, fade_ms = ctx.base_length_ms, ctx.fade_ms
+            duration_sec = ctx.duration_ms / 1000.0 if ctx.duration_ms > 0 else 0.0
+            loop_enabled = self.loop_enabled
+
+        self.ui_queue.put(("opened", {"duration": duration_sec, "track_count": total_tracks,
+                                      "file": ctx.file_path, "track_index": track_index}))
+        self.ui_queue.put(("status", "Playing"))
+
+        chunk_samples = 4096
+        if override:
+            actual_fade_ms = fade_ms
+        else:
+            actual_fade_ms = 5000 if (fade_ms <= 0 or fade_ms == base_length_ms) else fade_ms
+
+        single_base_samples = int((base_length_ms / 1000.0) * sample_rate)
+        multiplier = (1 + self.loop_count) if loop_enabled else 1
+        total_base_samples = single_base_samples * multiplier
+        fade_samples = int((actual_fade_ms / 1000.0) * sample_rate)
+        fade_start_sample = total_base_samples
+        max_samples = float("inf") if self.loop_forever else (total_base_samples + fade_samples)
+
+        total_samples_rendered = 0
+        loops_completed = 0
+        last_pos_time = 0.0
+        while not self._stop_event.is_set():
+            if not self._pause_event.is_set():
+                time.sleep(0.05)
+                continue
+
+            with self._lock:
+                if self._seek_target_ms is not None:
+                    target_ms = self._seek_target_ms
+                    self._seek_target_ms = None
+                    ctx.seek(target_ms)
+                    total_samples_rendered = int((target_ms / 1000.0) * sample_rate)
+
+            if not self.loop_forever and total_samples_rendered >= max_samples:
+                if loop_enabled and loops_completed < self.loop_count - 1:
+                    loops_completed += 1
+                    ctx.load_track(track_index, loop_forever=False, loop_enabled=loop_enabled,
+                                   loop_count=self.loop_count)
+                    total_samples_rendered = 0
+                    continue
+                return "ended"
+
+            if not self.loop_forever and loop_enabled and total_samples_rendered > 0 and \
+                    single_base_samples and total_samples_rendered % single_base_samples == 0 and \
+                    total_samples_rendered < total_base_samples:
+                ctx.seek(0)
+
+            samples_to_render = chunk_samples
+            if not self.loop_forever:
+                samples_to_render = min(chunk_samples, int(max_samples - total_samples_rendered))
+
+            sub_buf = (ctypes.c_short * (samples_to_render * 2))()
+            success = ctx.render(samples_to_render, sub_buf)
+            pcm_data = bytes(sub_buf)
+            if not pcm_data or not success:
+                if not self.loop_forever:
+                    return "ended"
+                continue
+
+            with self._lock:
+                vol = self.volume
+
+            if not self.loop_forever and total_samples_rendered + samples_to_render > fade_start_sample:
+                # Per-frame gain: fade (from fade_start_sample) times volume
+                gains = [vol * max(0.0, min(1.0, 1.0 - (total_samples_rendered + i - fade_start_sample) / float(fade_samples or 1)))
+                         for i in range(samples_to_render)]
+                pcm_data = apply_gain(pcm_data, gains)
+            elif vol != 1.0:
+                pcm_data = apply_gain(pcm_data, vol)
+
+            try:
+                if self.proc and self.proc.stdin:
+                    self.proc.stdin.write(pcm_data)
+                    self.proc.stdin.flush()
+            except Exception:
+                return "stopped"
+
+            total_samples_rendered += samples_to_render
+            curr_pos_sec = total_samples_rendered / sample_rate
+            now = time.time()
+            if now - last_pos_time >= 0.2:
+                last_pos_time = now
+                pct = 0 if self.loop_forever else (int((curr_pos_sec / duration_sec) * 100) if duration_sec > 0 else 0)
+                self.ui_queue.put(("position", (curr_pos_sec, duration_sec, pct)))
+        return "stopped"
 
 
 # ==========================================
@@ -940,6 +946,7 @@ class GMEPlayerWindow(tb.Window):
             else:
                 self.duration_var.set(f"Duration: {self.format_time(self.total_duration_seconds)}")
             self.update_track_label_display()
+            self._queue_gapless_next()
         elif m_type == "position":
             curr, tot, pct = data
             if not self.is_scrubbing:
@@ -955,8 +962,69 @@ class GMEPlayerWindow(tb.Window):
             self.status_var.set(str(data))
         elif m_type == "ended":
             self.next_track()
+        elif m_type == "advanced":
+            # The worker continued with the queued track without a gap
+            nxt = self._gapless_next_index
+            if nxt is not None:
+                self.current_index = nxt
+                self.audio_file, self.track_index, _ = self._resolve_entry(nxt)
+                self._show_current_track()
         elif m_type == "error":
             messagebox.showerror("Playback Error", str(data))
+
+    # The worker applies length/fade overrides itself (see player_core)
+    core_handles_overrides = True
+    _gapless_next_index = None
+
+    def _resolve_entry(self, index):
+        """(absolute file, subtrack index, track key) for playlist row index."""
+        raw_entry = self.playlist[index]
+        track_index = 0
+        base_file = raw_entry
+        if "#" in raw_entry:
+            base_file, track_str = raw_entry.rsplit("#", 1)
+            try:
+                track_index = int(track_str)
+            except ValueError:
+                track_index = 0
+        if not os.path.isabs(base_file) and self.playlist_dir:
+            base_file = os.path.join(self.playlist_dir, base_file)
+        base_file = os.path.abspath(base_file)
+        key = f"{base_file}#{track_index}" if "#" in raw_entry else base_file
+        return base_file, track_index, key
+
+    def core_current_track(self):
+        if self.playlist and 0 <= self.current_index < len(self.playlist):
+            return self._resolve_entry(self.current_index)[2]
+        return self.audio_file
+
+    def core_track_for_index(self, i):
+        return self._resolve_entry(i)[2] if 0 <= i < len(self.playlist) else None
+
+    def core_restart_current(self):
+        self.play_current_track()
+
+    def _queue_gapless_next(self):
+        """Hand the worker the following playlist entry so it can continue
+        without reopening the audio output."""
+        self._gapless_next_index = None
+        if not self.worker or self.loop_forever_var.get() or len(self.playlist) < 2:
+            return
+        nxt = (self.current_index + 1) % len(self.playlist)
+        try:
+            f, t, key = self._resolve_entry(nxt)
+        except Exception:
+            return
+        self._gapless_next_index = nxt
+        self.worker.queue_next(f, t, key)
+
+    def _show_current_track(self):
+        filename = os.path.basename(self.audio_file)
+        self.title(f"GME Player - {filename} (Track {self.track_index + 1})")
+        if hasattr(self, "title_label") and self.winfo_exists():
+            self.title_label.configure(text=f"Now Playing:\n{filename} [Track {self.track_index + 1}]")
+        self.update_listbox_selection()
+        self.update_track_label_display()
 
     def play_current_track(self):
         if self.worker:
@@ -1012,7 +1080,8 @@ class GMEPlayerWindow(tb.Window):
             volume=vol_gain, 
             loop_forever=self.loop_forever_var.get(),
             loop_count=loop_cnt,
-            loop_enabled=self.loop_enabled_var.get()
+            loop_enabled=self.loop_enabled_var.get(),
+            key=self._resolve_entry(self.current_index)[2]
         )
         self.worker.start()
         self.is_paused = False
@@ -1131,4 +1200,6 @@ if __name__ == "__main__":
     app = GMEPlayerWindow(audio_file=audio_path, playlist=playlist, start_index=start_index or 0)
     if not audio_path:
         app.after(100, app.on_browse_clicked)
+    from player_core import attach_player_core
+    attach_player_core(app)
     app.mainloop()

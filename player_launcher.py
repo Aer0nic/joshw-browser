@@ -179,6 +179,8 @@ def run_player(window_cls, **extra_kwargs):
         first = playlist[0]
         audio_file = first.get("file") if isinstance(first, dict) else first
     app = window_cls(None, audio_file, playlist=playlist, start_index=start_index, **extra_kwargs)
+    from player_core import attach_player_core
+    attach_player_core(app)
     app.mainloop()
 
 

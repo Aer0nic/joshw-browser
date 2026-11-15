@@ -287,6 +287,17 @@ class SIDPlayerWindow(tb.Window):
                     pass
             self.sid_proc = None
 
+    core_handles_overrides = True
+
+    def core_current_track(self):
+        return f"{self.audio_file}#{self.subtracks[self.current_subtrack_idx]}"
+
+    def core_track_for_index(self, i):
+        return f"{self.audio_file}#{self.subtracks[i]}" if 0 <= i < len(self.subtracks) else None
+
+    def core_restart_current(self):
+        self.start_sidplay()
+
     def start_sidplay(self, preserve_time=False):
         self.stop_current_playback()
         if not preserve_time:
@@ -308,7 +319,16 @@ class SIDPlayerWindow(tb.Window):
             seconds = self.current_position_seconds % 60
             cmd_args.append(f"-b{minutes}:{seconds:06.3f}")
 
-        cmd_args.append(self.audio_file)
+        # Per-track length override: sidplayfp stops itself at -t
+        from library import get_override
+        from platform_support import windows_safe_path
+        self._override = get_override(self.core_current_track())
+        if self._override:
+            total = sum(self._override)
+            cmd_args.append(f"-t{int(total // 60)}:{int(round(total % 60)):02d}")
+            self.total_duration_seconds = total
+
+        cmd_args.append(windows_safe_path(self.audio_file))
 
         try:
             self.sid_proc = subprocess.Popen(
@@ -364,7 +384,7 @@ class SIDPlayerWindow(tb.Window):
                             try:
                                 parts = song_length.split(":")
                                 if len(parts) == 2:
-                                    self.total_duration_seconds = int(parts[0]) * 60 + float(parts[1])
+                                    if not getattr(self, '_override', None): self.total_duration_seconds = int(parts[0]) * 60 + float(parts[1])
                             except Exception:
                                 pass
                         

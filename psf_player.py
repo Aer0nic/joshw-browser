@@ -10,6 +10,7 @@ from player_launcher import load_saved_theme, attach_settings_sync, launch_playe
 import random
 from tkinter import ttk, messagebox, filedialog
 from config import resource_path
+from platform_support import apply_gain
 from players import (
     get_saved_player_volume,
     register_volume_player,
@@ -19,8 +20,27 @@ from players import (
     get_next_track_index
 )
 
+SAMPLE_RATE = 44100
+
+
+def _entry_path(entry):
+    return entry.get("file") if isinstance(entry, dict) else entry
+
+
 class PSFAudioWorker:
-    def __init__(self, audio_file, ui_queue, volume=1.0):
+    """Plays PSF/PSF2 tracks through one continuous audio stream.
+
+    * gapless: when a track ends, the track queued with queue_next() starts
+      straight away on the same stream (the UI gets an "advanced" message)
+    * seeking: AOSDK can't jump, but playback is deterministic, so a seek
+      restarts the track if needed and renders silently up to the target
+      (~20x faster than real time)
+    * per-track length/fade overrides (library.get_override)
+    """
+
+    CHUNK = 4096
+
+    def __init__(self, audio_file, ui_queue, volume=1.0, start_at=0.0):
         self.audio_file = audio_file
         self.ui_queue = ui_queue
         self.volume = max(0.0, float(volume))
@@ -28,9 +48,10 @@ class PSFAudioWorker:
         self._stop_event = threading.Event()
         self._pause_event = threading.Event()
         self._pause_event.set()
-        self._seek_reset_event = threading.Event()
         self._thread = None
         self._lock = threading.Lock()
+        self._next_file = None
+        self._seek_target = start_at if start_at and start_at > 0 else None
 
     def start(self):
         self._thread = threading.Thread(target=self._run, daemon=True)
@@ -52,9 +73,19 @@ class PSFAudioWorker:
         with self._lock:
             self.volume = max(0.0, float(vol))
 
-    def reset_track(self):
-        self._seek_reset_event.set()
+    def queue_next(self, path):
+        """Track to continue with (gaplessly) when the current one ends."""
+        with self._lock:
+            self._next_file = path
 
+    def seek(self, seconds):
+        with self._lock:
+            self._seek_target = max(0.0, float(seconds))
+
+    def reset_track(self):
+        self.seek(0.0)
+
+    # ------------------------------------------------------------------
     def _run(self):
         try:
             import sounddevice as sd
@@ -65,97 +96,157 @@ class PSFAudioWorker:
             return
 
         try:
+            stream = sd.RawOutputStream(samplerate=SAMPLE_RATE, channels=2, dtype="int16",
+                                        blocksize=self.CHUNK, latency="high")
+            stream.start()
+        except Exception as e:
+            self.ui_queue.put(("error", f"Could not open audio output device: {e}"))
+            self.ui_queue.put(("status", "Device Error"))
+            return
+
+        path = self.audio_file
+        try:
             with AOSDKContext() as ctx:
-                try:
-                    ctx.open(self.audio_file)
-                except AOSDKError as e:
-                    self.ui_queue.put(("error", str(e)))
-                    self.ui_queue.put(("status", "Load Error"))
-                    return
-
-                duration = ctx.get_duration()
-                fade = ctx.get_fade()
-                tags = ctx.get_tags()
-                fmt = ctx.format_name
-
-                self.ui_queue.put(("opened", {"duration": duration, "fade": fade, "tags": tags, "format": fmt}))
-                self.ui_queue.put(("status", "Playing"))
-
-                # Increased chunk size to reduce context switching
-                chunk_size = 4096
-                sample_rate = ctx.sample_rate
-
-                try:
-                    # Added latency="high" to eliminate buffer underflows/choppiness
-                    stream = sd.RawOutputStream(
-                        samplerate=sample_rate,
-                        channels=2,
-                        dtype="int16",
-                        blocksize=chunk_size,
-                        latency="high"
-                    )
-                    stream.start()
-                except Exception as e:
-                    self.ui_queue.put(("error", f"Could not open audio output device: {e}"))
-                    self.ui_queue.put(("status", "Device Error"))
-                    return
-
-                try:
-                    last_pos_time = 0.0
-                    while not self._stop_event.is_set():
-                        if not self._pause_event.is_set():
-                            time.sleep(0.05)
-                            continue
-
-                        if self._seek_reset_event.is_set():
-                            self._seek_reset_event.clear()
-                            try:
-                                ctx.reset()
-                                self.ui_queue.put(("position", (0.0, duration, 0)))
-                            except Exception:
-                                pass
-
-                        count, pcm = ctx.render(chunk_size)
-                        if count <= 0 or ctx.is_done():
-                            self.ui_queue.put(("ended", None))
-                            break
-
-                        with self._lock:
-                            vol = self.volume
-
-                        if vol != 1.0 and len(pcm) > 0:
-                            arr = array.array("h")
-                            arr.frombytes(pcm)
-                            for i in range(len(arr)):
-                                arr[i] = max(-32768, min(32767, int(arr[i] * vol)))
-                            pcm = arr.tobytes()
-
-                        try:
-                            stream.write(pcm)
-                        except Exception:
-                            if self._stop_event.is_set():
-                                break
-                            raise
-
-                        now = time.time()
-                        if now - last_pos_time >= 0.25:
-                            last_pos_time = now
-                            curr_pos = ctx.get_position()
-                            pct = int((curr_pos / duration) * 100) if duration and duration > 0 else 0
-                            self.ui_queue.put(("position", (curr_pos, duration, pct)))
-                finally:
+                while not self._stop_event.is_set():
                     try:
-                        stream.stop()
-                        stream.close()
-                    except Exception:
-                        pass
-                    ctx.stop()
-        except Exception:
+                        track = self._open_track(ctx, path)
+                    except AOSDKError as e:
+                        self.ui_queue.put(("error", str(e)))
+                        self.ui_queue.put(("status", "Load Error"))
+                        return
+                    self.ui_queue.put(("status", "Playing"))
+                    if self._play(ctx, stream, track) != "ended":
+                        break
+                    with self._lock:
+                        nxt, self._next_file = self._next_file, None
+                    if not nxt:
+                        self.ui_queue.put(("ended", None))
+                        break
+                    path = nxt
+                    self.ui_queue.put(("advanced", path))
+                ctx.stop()
+        except Exception as e:
             if not self._stop_event.is_set():
+                self.ui_queue.put(("error", f"Playback error: {e}"))
                 self.ui_queue.put(("status", "Playback Error"))
         finally:
+            try:
+                if self._stop_event.is_set():
+                    stream.abort()
+                else:
+                    stream.stop()  # let the last buffer play out
+                stream.close()
+            except Exception:
+                pass
             if not self._stop_event.is_set():
                 self.ui_queue.put(("status", "Stopped"))
+
+    def _open_track(self, ctx, path):
+        from library import get_override
+        from platform_support import windows_safe_path
+        ctx.open(windows_safe_path(path))
+        duration = ctx.get_duration()
+        fade = ctx.get_fade()
+        override = get_override(path)
+        track = {"path": path, "override": override, "end": None, "fade_start": None, "fade_len": 1}
+        if override:
+            length, ofade = override
+            track["end"] = int((length + ofade) * SAMPLE_RATE)
+            track["fade_start"] = int(length * SAMPLE_RATE)
+            track["fade_len"] = max(1, int(ofade * SAMPLE_RATE))
+            display = length + ofade
+        else:
+            display = duration
+        track["display"] = display
+        self.ui_queue.put(("opened", {"file": path, "duration": display, "fade": fade,
+                                      "tags": ctx.get_tags(), "format": ctx.format_name,
+                                      "override": bool(override)}))
+        return track
+
+    def _post_position(self, frames, track):
+        pos = frames / float(SAMPLE_RATE)
+        dur = track["display"]
+        pct = int(pos / dur * 100) if dur and dur > 0 else 0
+        self.ui_queue.put(("position", (pos, dur, min(pct, 100))))
+
+    def _play(self, ctx, stream, track):
+        """Play the open track. Returns "ended" or "stopped"."""
+        frames = 0
+        last_post = 0.0
+        while not self._stop_event.is_set():
+            if not self._pause_event.is_set():
+                time.sleep(0.05)
+                continue
+
+            with self._lock:
+                target, self._seek_target = self._seek_target, None
+            if target is not None:
+                frames = self._seek(ctx, track, frames, int(target * SAMPLE_RATE))
+                if frames is None:
+                    return "stopped"
+                continue
+
+            n = self.CHUNK
+            if track["end"] is not None:
+                n = min(n, track["end"] - frames)
+                if n <= 0:
+                    return "ended"
+            count, pcm = ctx.render(n)
+            if count <= 0 or (track["end"] is None and ctx.is_done()):
+                return "ended"
+
+            with self._lock:
+                vol = self.volume
+            fs = track["fade_start"]
+            if fs is not None and frames + count > fs:
+                fl = track["fade_len"]
+                pcm = apply_gain(pcm, [vol * max(0.0, min(1.0, 1 - (frames + i - fs) / fl)) for i in range(count)])
+            elif vol != 1.0:
+                pcm = apply_gain(pcm, vol)
+            try:
+                stream.write(pcm)
+            except Exception:
+                if self._stop_event.is_set():
+                    return "stopped"
+                raise
+            frames += count
+
+            now = time.time()
+            if now - last_post >= 0.25:
+                last_post = now
+                self._post_position(frames, track)
+        return "stopped"
+
+    def _seek(self, ctx, track, frames, target):
+        """Render silently from the current spot (or the start) to target."""
+        if track["end"] is not None:
+            target = min(target, track["end"])
+        if target < frames:
+            # Re-open rather than reset(): older libaosdk.so builds keep
+            # counting toward the track length across a reset and stop early
+            from platform_support import windows_safe_path
+            ctx.open(windows_safe_path(track["path"]))
+            frames = 0
+        if target - frames > SAMPLE_RATE:
+            self.ui_queue.put(("status", "Seeking..."))
+        last_post = 0.0
+        while frames < target:
+            if self._stop_event.is_set():
+                return None
+            with self._lock:
+                if self._seek_target is not None:  # a newer seek: let the loop take it
+                    break
+            count, _ = ctx.render(min(16384, target - frames))
+            if count <= 0:
+                break
+            frames += count
+            now = time.time()
+            if now - last_post >= 0.25:
+                last_post = now
+                self._post_position(frames, track)
+        self._post_position(frames, track)
+        self.ui_queue.put(("status", "Playing" if self._pause_event.is_set() else "Paused"))
+        return frames
 
 
 class PSFPlayerWindow(tb.Window):
@@ -362,16 +453,24 @@ class PSFPlayerWindow(tb.Window):
             self.current_index = sel[0]
             self.play_current_track()
 
+    # The worker applies length/fade overrides itself (see player_core)
+    core_handles_overrides = True
+
     def seek_to_position(self, target_time):
-        if target_time <= 1.0:
-            self.restart_track()
-        else:
-            messagebox.showinfo("Seeking Unsupported", "PSF/PSF2 emulation does not support arbitrary scrubbing.")
-            self.progress_bar_widget.update_progress(self.current_position_seconds, self.total_duration_seconds)
+        """AOSDK can't jump, so the worker restarts the track if needed and
+        renders silently up to the target (shown as "Seeking...")."""
+        target_time = max(0.0, float(target_time))
+        if not self.worker:
+            self.play_current_track(start_at=target_time)
+            return
+        self.worker.seek(target_time)
+        self.current_position_seconds = target_time
+        self.position_var.set(f"Position: {self.format_time(target_time)}")
+        self.progress_bar_widget.update_progress(target_time, self.total_duration_seconds)
 
     def restart_track(self):
         if self.worker:
-            self.worker.reset_track()
+            self.worker.seek(0.0)
             self.current_position_seconds = 0.0
             self.position_var.set("Position: 00:00:00")
             self.seek_pct_var.set("0%")
@@ -405,6 +504,19 @@ class PSFPlayerWindow(tb.Window):
                 self.duration_var.set("Duration: Unknown")
             tag_lines = [f"{k.capitalize()}: {v}" for k, v in tags.items() if k in ("game", "title", "artist", "year")]
             self.tags_var.set(f"[{fmt}] " + " | ".join(tag_lines))
+            # Gapless: hand the worker the following track now
+            next_index = get_next_track_index(self.current_index, len(self.playlist), False)
+            if self.worker and next_index is not None and next_index != self.current_index:
+                self.worker.queue_next(_entry_path(self.playlist[next_index]))
+        elif msg_type == "advanced":
+            # The worker moved on to the queued track without a gap
+            paths = [_entry_path(e) for e in self.playlist]
+            if data in paths:
+                self.current_index = paths.index(data)
+            self._show_current_track()
+            self.current_position_seconds = 0.0
+            self.position_var.set("Position: 00:00:00")
+            self.seek_pct_var.set("0%")
         elif msg_type == "position":
             curr, tot, pct = data
             if not self.is_scrubbing:
@@ -416,25 +528,32 @@ class PSFPlayerWindow(tb.Window):
             self.status_var.set(str(data))
         elif msg_type == "ended":
             self.advance_after_end()
+        elif msg_type == "error":
+            messagebox.showerror("PSF Player", str(data), parent=self)
 
-    def play_current_track(self):
-        self.stop_current_playback()
-        self.current_position_seconds = 0.0
-        self.audio_file = self.playlist[self.current_index]
+    def _show_current_track(self):
+        self.audio_file = _entry_path(self.playlist[self.current_index])
         filename = os.path.basename(self.audio_file)
-
         self.title(f"PSF Player - {filename}")
         if hasattr(self, "title_label") and self.winfo_exists():
             self.title_label.configure(text=f"Now Playing:\n{filename}")
         self.track_var.set(f"Track: {self.current_index + 1} / {len(self.playlist)}")
+        self.update_listbox_selection()
+
+    def core_restart_current(self):
+        self.play_current_track()
+
+    def play_current_track(self, start_at=0.0):
+        self.stop_current_playback()
+        self.current_position_seconds = 0.0
+        self._show_current_track()
         self.status_var.set("Starting...")
         self.position_var.set("Position: 00:00:00")
         self.seek_pct_var.set("0%")
-        self.update_listbox_selection()
 
         vol_gain = max(0, min(150, self.volume_var.get())) / 100.0
 
-        self.worker = PSFAudioWorker(self.audio_file, self.ui_queue, vol_gain)
+        self.worker = PSFAudioWorker(self.audio_file, self.ui_queue, vol_gain, start_at=start_at)
         self.worker.start()
         self.is_paused = False
 
