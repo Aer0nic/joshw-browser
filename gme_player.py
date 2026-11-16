@@ -755,7 +755,7 @@ class GMEPlayerWindow(tb.Window):
 
                 self.banner_canvas.bind("<Configure>", resize_banner)
         except Exception as e:
-            print(f"[USFPlayer] Could not load banner image: {e}")
+            print(f"[GMEPlayer] Could not load banner image: {e}")
 
         self.title_label = tb.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", fs, "bold"), wraplength=440, justify="center")
         self.title_label.pack(pady=(0, 6))

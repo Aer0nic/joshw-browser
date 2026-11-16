@@ -10,6 +10,7 @@ import json
 import re
 import tkinter as tk
 import ttkbootstrap as tb
+from PIL import Image, ImageTk
 from config import apply_global_font_scale
 from platform_support import IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process, windows_safe_path
 from player_launcher import attach_settings_sync, run_player
@@ -174,7 +175,7 @@ class ArcadePlayerWindow(tb.Window):
         filename = os.path.basename(self.audio_file)
         self.title(f"Arcade Player - {filename}")
         self.geometry("520x580")
-        self.minsize(460, 500)
+        self.minsize(520, 580)
 
         padding = tb.Frame(self, padding=12)
         padding.pack(fill="both", expand=True)
@@ -182,8 +183,27 @@ class ArcadePlayerWindow(tb.Window):
         top_header_frame = tb.Frame(padding)
         top_header_frame.pack(side="top", fill="x", pady=(0, 6))
 
-        browse_btn = tb.Button(top_header_frame, text="📁", width=3, command=self.on_browse_clicked)
-        browse_btn.pack(side="left", anchor="w")
+        browse_btn = tb.Button(top_header_frame, text="📁", width=3, bootstyle="outline-primary", command=self.on_browse_clicked)
+        browse_btn.pack(side="left", anchor="center", padx=(0, 8))
+
+        self.banner_canvas = tb.Canvas(top_header_frame, height=85, highlightthickness=0)
+        self.banner_canvas.pack(side="left", fill="x", expand=True)
+
+        try:
+            banner_path = resource_path("assets/icons/arcadebanner.png")
+            if banner_path.exists():
+                self.raw_banner_img = Image.open(str(banner_path)).convert("RGBA")
+                self.banner_image_item = self.banner_canvas.create_image(0, 0, anchor="nw")
+
+                def resize_banner(event):
+                    if event.width > 1 and event.height > 1:
+                        resized_pil = self.raw_banner_img.resize((event.width, event.height), Image.Resampling.LANCZOS)
+                        self.banner_photo = ImageTk.PhotoImage(resized_pil)
+                        self.banner_canvas.itemconfig(self.banner_image_item, image=self.banner_photo)
+
+                self.banner_canvas.bind("<Configure>", resize_banner)
+        except Exception as e:
+            print(f"[ArcadePlayer] Could not load banner image: {e}")
 
         self.title_label = tb.Label(padding, text=f"Now Playing:\n{filename}", font=("Arial", 9, "bold"), wraplength=440, justify="center")
         self.title_label.pack(pady=(0, 6))

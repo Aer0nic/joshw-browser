@@ -68,7 +68,7 @@ class MPVPlayerWindow(tb.Window):
         self.build_ui()
 
         try:
-            icon_file = resource_path("assets/icons/player_icon.png")
+            icon_file = resource_path("assets/icons/mpvicon.png")
             if icon_file.exists():
                 self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
         except Exception:

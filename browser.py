@@ -22,6 +22,7 @@ from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_direct
 from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, remote_filename, remote_folder_name, safe_filename, unique_path
 from players import ExtractedFilesBrowserWindow, get_vgmstream_path
 from index_updater import update_domain_index
+from release_feed import find_unindexed_releases, mark_seen
 import library
 from browser_features import BrowserFeaturesMixin, GAME_COLUMNS, MAX_RESULTS as MAX_SEARCH_RESULTS
 from downloaders import EXCLUDED_FROM_INDEX_ALL, DownloadProgressWindow, IndexAllWindow, PremadeIndexProgressWindow, install_dependencies_prompt, check_and_download_sid_firmware
@@ -1550,6 +1551,48 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
             )
 
         self.after(200, self.first_start)
+        self.after(3000, self.check_release_feed)
+
+    def check_release_feed(self):
+        """On startup, look at the vgm.hcs64.com RSS feed for releases missing
+        from the local indexes and offer to run Index All."""
+        if self.is_first_run or not self.load_settings().get("check_releases_on_startup", True):
+            return
+        result = {}
+
+        def worker():
+            try:
+                result["new"] = find_unindexed_releases(EXCLUDED_FROM_INDEX_ALL)
+            except Exception as e:
+                print(f"[release feed] check failed: {e}")
+                result["new"] = {}
+
+        threading.Thread(target=worker, daemon=True).start()
+
+        def wait_for_result():
+            if "new" not in result:
+                self.after(500, wait_for_result)
+                return
+            new = result["new"]
+            if not new or not self.winfo_exists():
+                return
+            total = sum(len(items) for items in new.values())
+            lines = [f"  • {domain}: {len(items)}" for domain, items in sorted(new.items())]
+            titles = [i["title"] for items in new.values() for i in items]
+            sample = "\n".join(f"    {t}" for t in titles[:8])
+            if len(titles) > 8:
+                sample += f"\n    … and {len(titles) - 8} more"
+            if messagebox.askyesno(
+                "New Releases Available",
+                f"{total} new release(s) aren't in your indexes yet:\n\n"
+                + "\n".join(lines) + f"\n\n{sample}\n\nRun Index All now?",
+                parent=self,
+            ):
+                self.index_all_domains()
+            else:
+                mark_seen([i for items in new.values() for i in items])
+
+        wait_for_result()
 
     def read_settings_file(self):
         """Safely read settings without creating a file on disk."""
@@ -2699,7 +2742,16 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
 
     def load_directory_from_index_worker(self, domain_name, url):
         try:
-            if domain_name == "Arcade":
+            if any("parents" in e for e in self.domain_full_entries[:1]):
+                # vgmrips_arcade_indexer.py / vgmusic_indexer.py indexes: download URLs
+                # can't sit under their folder's URL (e.g. VGMusic game folders), so each
+                # entry lists the folder(s) it belongs to.
+                folder = url.rstrip("/") + "/"
+                entries = [e for e in self.domain_full_entries if folder in e.get("parents", ())]
+                total_size = self.cached_dir_sizes.get(folder)
+                if total_size is None:
+                    total_size = sum(e.get("size") or 0 for e in entries if not e.get("directory"))
+            elif domain_name == "Arcade":
                 entries = []
                 target_base = url.rstrip("/") + "/"
                 is_root = (url.rstrip("/") == DOMAINS["Arcade"].rstrip("/"))
