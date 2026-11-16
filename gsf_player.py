@@ -535,6 +535,7 @@ class GSFPlayerWindow(tb.Window):
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     text=True,
+                    errors="replace",
                     bufsize=1
                 )
             self.is_paused = False

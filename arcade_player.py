@@ -560,7 +560,7 @@ class ArcadePlayerWindow(tb.Window):
 
         try:
             # vgmplay reads VGMPlay.ini from the working directory before its own folder
-            self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1,
+            self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace", bufsize=1,
                                          cwd=ini_dir or os.path.dirname(vgmplay_bin) or None, **hidden_popen_kwargs())
             self.proc_max_loops = max_loops if ini_dir else 2
             self.proc_started_at = time.time()

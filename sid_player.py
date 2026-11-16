@@ -337,7 +337,12 @@ class SIDPlayerWindow(tb.Window):
                 env=env,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
-                text=True,
+                # sidplayfp prints UTF-8 (its info box uses box-drawing
+                # characters). Decoding that as Windows' cp1252 raised an
+                # error, the reader stopped, the pipe filled up and sidplayfp
+                # froze a few seconds in.
+                encoding="utf-8",
+                errors="replace",
                 bufsize=1
             )
             self.is_paused = False
@@ -364,11 +369,16 @@ class SIDPlayerWindow(tb.Window):
         
         title, author, released, song_length, playtime = "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "00:00"
         buffer = ""
-        try:
-            while proc.poll() is None:
+        # Keep reading until sidplayfp exits, whatever happens: if nobody
+        # drains its output, it blocks on a full pipe and the music stops.
+        while True:
+            try:
                 char = proc.stdout.read(1)
-                if not char:
-                    break
+            except Exception:
+                break  # pipe closed
+            if not char:
+                break
+            try:
                 if char == '\r' or char == '\n':
                     line = buffer.strip().replace(" [0m", "")
                     buffer = ""
@@ -400,8 +410,8 @@ class SIDPlayerWindow(tb.Window):
                             self.after(0, lambda t=formatted_text: self.update_textbox(t))
                 else:
                     buffer += char
-        except Exception:
-            pass
+            except Exception:
+                pass  # a display problem must never stop the draining
 
         return_code = proc.wait()
         if not self.winfo_exists() or self.sid_proc is not proc or self.status_var.get() != "Playing":

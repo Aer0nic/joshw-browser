@@ -413,7 +413,7 @@ class VGMStreamPlayerWindow(tb.Window):
             self.metadata_text.config(state="disabled")
 
         try:
-            self.vgmstream_proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            self.vgmstream_proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace")
             self.is_paused = False
             self.status_var.set("Playing")
             

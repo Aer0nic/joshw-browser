@@ -691,6 +691,7 @@ class USFPlayerWindow(tb.Window):
                     stdout=subprocess.PIPE,
                     stderr=subprocess.DEVNULL,
                     text=True,
+                    errors="replace",
                     bufsize=1
                 )
             

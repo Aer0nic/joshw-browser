@@ -269,16 +269,40 @@ def set_process_volume(proc, fraction):
     return True
 
 
-def apply_volume_when_ready(proc, fraction, attempts=20, delay=0.15):
-    """Windows: a process's audio session appears shortly after it starts, so
-    retry setting its volume for a few seconds (run in a background thread)."""
+# pid -> latest volume asked for while that process has no audio session yet
+_pending_volumes = {}
+_pending_lock = threading.Lock()
+
+
+def apply_volume_when_ready(proc, fraction, timeout=30.0, delay=0.2):
+    """Windows: a process only gets an audio session once it opens its audio
+    device, which can take a while (NeoBAE loads its SoundFont first, often
+    several seconds). Keep retrying in the background until the session
+    appears, always applying the most recent volume asked for. One retry
+    thread per process; later calls just update the volume it will apply."""
+    if proc is None:
+        return
+    with _pending_lock:
+        already_waiting = proc.pid in _pending_volumes
+        _pending_volumes[proc.pid] = fraction
+    if already_waiting:
+        return
+
     def worker():
-        for _ in range(attempts):
-            if proc is None or proc.poll() is not None:
-                return
-            if _set_session_volume(proc.pid, fraction):
-                return
-            time.sleep(delay)
+        deadline = time.monotonic() + timeout
+        try:
+            while time.monotonic() < deadline and proc.poll() is None:
+                with _pending_lock:
+                    target = _pending_volumes.get(proc.pid, fraction)
+                if _set_session_volume(proc.pid, target):
+                    with _pending_lock:
+                        if _pending_volumes.get(proc.pid) == target:
+                            return  # nothing newer was asked for meanwhile
+                    continue  # the slider moved while we were setting it
+                time.sleep(delay)
+        finally:
+            with _pending_lock:
+                _pending_volumes.pop(proc.pid, None)
     threading.Thread(target=worker, daemon=True).start()
 
 
