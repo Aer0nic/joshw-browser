@@ -9,7 +9,7 @@ import random
 import tkinter as tk
 import ttkbootstrap as tb
 from config import apply_global_font_scale, load_saved_font_size
-from platform_support import IS_WINDOWS, NamedPipeSocket, hidden_popen_kwargs, mpv_ipc_path
+from platform_support import HVL_EXTS, HivelyError, IS_WINDOWS, NamedPipeSocket, hidden_popen_kwargs, hvl_to_wav, mpv_ipc_path
 from player_launcher import load_saved_theme, attach_settings_sync, launch_player, run_player
 from tkinter import ttk, messagebox, filedialog
 
@@ -161,11 +161,12 @@ class MPVPlayerWindow(tb.Window):
 
         try:
             files = sorted(os.listdir(folder))
+            from player_launcher import MODULE_EXTS
             audio_exts = {
                 ".ay", ".gbs", ".gym", ".hes", ".kss", ".nsf", ".nsfe", ".sap", ".spc", ".vgm", ".vgz",
                 ".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-                ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".mid", ".midi"
-            }
+                ".mka", ".tta", ".ac3", ".dts", ".aiff", ".au", ".ra", ".mid", ".midi"
+            } | MODULE_EXTS
             for f in files:
                 full_p = os.path.join(folder, f)
                 if os.path.isfile(full_p) and os.path.splitext(f)[1].lower() in audio_exts:
@@ -409,8 +410,19 @@ class MPVPlayerWindow(tb.Window):
         if self.current_track_index is not None:
             cmd.append("--demuxer-lavf-format=libgme")
             cmd.append(f"--demuxer-lavf-o=track_index={self.current_track_index}")
-            
-        cmd.append(self.audio_file)
+
+        play_path = self.audio_file
+        if os.path.splitext(self.audio_file)[1].lower() in HVL_EXTS:
+            # AHX / HivelyTracker: FFmpeg can't decode them; play a rendered WAV
+            try:
+                self.status_var.set("Rendering...")
+                self.update_idletasks()
+                play_path = hvl_to_wav(self.audio_file)
+            except HivelyError as e:
+                self.status_var.set("Stopped")
+                messagebox.showerror("Can't play this file", str(e), parent=self)
+                return
+        cmd.append(play_path)
 
         try:
             self.mpv = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **hidden_popen_kwargs())

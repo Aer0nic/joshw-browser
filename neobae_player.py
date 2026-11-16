@@ -517,13 +517,9 @@ class PlayBAEPlayerWindow(tb.Window):
                 else:
                     cmd.extend(["-p", sf_path1]) # Fallback path
 
+        # playbae plays the file once and exits; looping and moving on to the
+        # next track are handled in _on_track_finished.
         cmd.extend(["-f", windows_safe_path(self.audio_file)])
-
-        if self.loop_forever_var.get():
-            cmd.extend(["-l", "-1"])
-        elif self.loop_chk_var.get():
-            num = self.loop_count_var.get()
-            cmd.extend(["-l", str(num)])
 
         try:
             self.proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **hidden_popen_kwargs())
@@ -531,6 +527,56 @@ class PlayBAEPlayerWindow(tb.Window):
         except Exception as e:
             messagebox.showerror("playbae Error", f"Could not launch playbae process:\n\n{e}")
             return
+        self.after(300, self._watch_process, self.proc)
+
+    def _watch_process(self, proc):
+        """Poll (on the Tk thread) until this playbae process ends by itself."""
+        if not self.winfo_exists() or proc is not self.proc:
+            return  # stopped, restarted or replaced by us
+        if proc.poll() is None:
+            self.after(300, self._watch_process, proc)
+            return
+        self._on_track_finished()
+
+    def _on_track_finished(self):
+        """The current track played to its end.
+
+        Loop forever  -> replay it from the start, until the setting changes.
+        Loop N times  -> play it N times in total, then go to the next track.
+        Otherwise     -> go to the next track (stop after the last one).
+        """
+        self.proc = None
+        if self.loop_forever_var.get():
+            self._replay_current_track(reset_position=True)
+            return
+        if self.loop_chk_var.get():
+            self.track_repeat_count += 1
+            try:
+                total_plays = max(1, int(self.loop_count_var.get()))
+            except (tk.TclError, ValueError):
+                total_plays = 1
+            if self.track_repeat_count < total_plays:
+                # Duration shows length x N, so the position keeps counting up
+                self._replay_current_track(reset_position=False)
+                return
+        if self.current_index + 1 < len(self.playlist):
+            self.current_index += 1
+            self.play_current_track()
+        else:
+            self.stop()
+            self.current_position_seconds = 0.0
+            self.position_var.set("Position: 00:00:00")
+            self.seek_pct_var.set("0%")
+            self.progress_bar_widget.update_progress(0, self.raw_duration_seconds)
+            self.status_var.set("Finished")
+
+    def _replay_current_track(self, reset_position):
+        if reset_position:
+            self.current_position_seconds = 0.0
+            self.position_var.set("Position: 00:00:00")
+        self.is_paused = False
+        self.start_playbae()
+        self.status_var.set("Playing")
 
     def play_current_track(self):
         self.track_repeat_count = 0

@@ -31,7 +31,7 @@ from array import array
 
 from config import get_binary_path, get_cache_directory, resource_path
 from library import get_override
-from platform_support import IS_WINDOWS, apply_gain, find_tool, hidden_popen_kwargs, windows_safe_path
+from platform_support import HVL_EXTS, HivelyError, IS_WINDOWS, apply_gain, find_tool, hidden_popen_kwargs, hvl_to_wav, windows_safe_path
 
 GME_EXTS = {".nsf", ".nsfe", ".spc", ".gbs", ".hes", ".kss", ".vgm", ".vgz", ".ay", ".sap", ".gym"}
 PSF_EXTS = {".psf", ".minipsf", ".psf2", ".minipsf2"}
@@ -90,6 +90,11 @@ def export_track(src, out_path, fmt="wav", progress=None, stop_event=None, subtr
             _render_neobae(src, raw_wav, override, progress, stop_event)
         elif _is_vgmstream(ext):
             _render_vgmstream(src, raw_wav, subtrack, progress, stop_event)
+        elif ext in HVL_EXTS:
+            try:
+                hvl_to_wav(src, raw_wav, max_seconds=(override[0] + override[1]) if override else None)
+            except HivelyError as e:
+                raise ExportError(str(e))
         else:
             _render_mpv(src, raw_wav, override, progress, stop_event)
         if stop_event.is_set():

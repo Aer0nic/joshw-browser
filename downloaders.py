@@ -19,7 +19,7 @@ import queue
 from concurrent.futures import ThreadPoolExecutor
 from index_updater import update_domain_index
 
-EXCLUDED_FROM_INDEX_ALL = {"Arcade", "VGMusic Siterip"}
+EXCLUDED_FROM_INDEX_ALL = {"Arcade", "VGMusic Siterip", "Chiptune"}
 
 class PremadeIndexProgressWindow(tb.Toplevel):
     def __init__(self, parent):
@@ -566,13 +566,13 @@ class InstallDependenciesWorker:
             # 6b. lazyusf2/vio2sf/playgsf decoders that write WAV to stdout
             #     (the same sources as the Windows build). Used for seeking
             #     USF, length overrides on 2SF and exporting GSF/2SF/USF.
-            missing_decoders = [d for d in ("gsfdec", "2sfdec", "usfdec") if not (cache_dir / d).exists()]
+            missing_decoders = [d for d in ("gsfdec", "2sfdec", "usfdec", "hvl2wav") if not (cache_dir / d).exists()]
             build_script = config.resource_path("tools/windows_decoders/build.py")
             if missing_decoders and Path(build_script).exists():
                 script_lines.append("echo 'Building WAV decoders (" + ", ".join(missing_decoders) + ")...'")
                 script_lines.append(
                     f"python3 \"{build_script}\" \"{cache_dir}\" --native {' '.join(missing_decoders)} "
-                    "|| echo 'WARNING: decoder build failed (seeking USF / exporting GSF, 2SF, USF unavailable)'"
+                    "|| echo 'WARNING: decoder build failed (USF seeking, GSF/2SF/USF export and AHX/HVL playback unavailable)'"
                 )
 
             # 7. Soundfont and Extras download

@@ -25,9 +25,15 @@ NEOBAE_EXTS = {".mid", ".midi", ".kar", ".rmi", ".rmf", ".zmf", ".xmf", ".mxmf",
 VGMSTREAM_EXTS = {".ast", ".dsp", ".brstm", ".rstm", ".bfsar", ".bfwav", ".adp", ".str",
                   ".thp", ".was", ".h4m", ".vag", ".wem"}
 GME_EXTS = {".nsf", ".nsfe", ".spc", ".gbs", ".hes", ".kss", ".ay", ".sap", ".gym", ".vgm"}
+# Tracker modules (Mod Archive / Chiptune domain). mpv plays them through
+# FFmpeg's libopenmpt; AHX/HivelyTracker are rendered to WAV by hvl2wav first.
+MODULE_EXTS = {".mod", ".s3m", ".xm", ".it", ".mptm", ".mo3", ".med", ".stm", ".imf", ".dsm",
+               ".669", ".amf", ".ams", ".dbm", ".dmf", ".dtm", ".far", ".gdm", ".mdl", ".mt2",
+               ".mtm", ".okt", ".plm", ".psm", ".ptm", ".stp", ".ult", ".umx", ".j2b", ".digi",
+               ".c67", ".stx", ".fmt", ".symmod", ".sfx", ".ahx", ".hvl"}
 MPV_EXTS = {".mp3", ".ogg", ".flac", ".wav", ".m4a", ".aac", ".opus", ".wma", ".ape", ".wv",
-            ".mod", ".s3m", ".xm", ".it", ".mka", ".tta", ".ac3", ".dts", ".aiff", ".aifc",
-            ".au", ".ra", ".xma", ".xmd"}
+            ".mka", ".tta", ".ac3", ".dts", ".aiff", ".aifc",
+            ".au", ".ra", ".xma", ".xmd"} | MODULE_EXTS
 
 
 def player_script_for(audio_file):

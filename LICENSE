@@ -118,6 +118,19 @@ mpv
   Windows builds: https://github.com/shinchiro/mpv-winbuild-cmake
   License: GPL-2.0-or-later (LGPL-2.1-or-later when built without GPL parts)
 
+HivelyTracker (hvl2wav)
+  AHX and HivelyTracker (.ahx, .hvl) playback and export (hvl2wav, built
+  from tools/windows_decoders).
+  https://github.com/pete-gordon/hivelytracker
+  Copyright (c) Peter Gordon (Xeron/IRIS); AHX replayer based on work by
+  Dexter/Abyss
+  License: BSD-3-Clause
+
+libopenmpt (via FFmpeg in mpv)
+  Tracker module playback (MOD, XM, IT, S3M, MPTM, MO3, MED, ...).
+  https://lib.openmpt.org
+  License: BSD-3-Clause
+
 WildMIDI
   Converting .xmi files to MIDI on Linux (optional).
   https://github.com/Mindwerks/wildmidi
@@ -227,6 +240,11 @@ joshw.info
 VGMusic
   MIDI archive (VGMusic Siterip domain).
   https://www.vgmusic.com
+
+The Mod Archive
+  Tracker modules (Chiptune domain). All modules remain the property of
+  their respective authors.
+  https://modarchive.org
 
 libretro-thumbnails
   Box art shown in the Game Info panel and Now Playing window. All images

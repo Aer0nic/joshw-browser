@@ -50,6 +50,7 @@ WINDOWS_TOOLS = {
     "2sfdec":        ("decoders", "2sfdec.exe"),
     "gsfdec":        ("decoders", "gsfdec.exe"),
     "usfdec":        ("decoders", "usfdec.exe"),
+    "hvl2wav":       ("decoders", "hvl2wav.exe"),
 }
 
 
@@ -742,3 +743,59 @@ class NamedPipeSocket:
             except Exception:
                 pass
             self._f = None
+
+
+# ---------------------------------------------------------------------------
+# AHX / HivelyTracker (.ahx, .hvl): rendered to WAV by hvl2wav, then played
+# or exported like any WAV (mpv/FFmpeg can't decode these synth formats).
+# ---------------------------------------------------------------------------
+HVL_EXTS = {".ahx", ".hvl"}
+
+
+class HivelyError(Exception):
+    pass
+
+
+def hvl_to_wav(src, out_wav=None, max_seconds=None):
+    """Render an .ahx/.hvl file to a 44.1 kHz stereo WAV and return its path.
+
+    Without out_wav the result is cached in the temp folder (keyed by the
+    file's path, size and mtime), so replaying or looping doesn't re-render.
+    max_seconds overrides the song-end detection (hvl2wav stops at the song's
+    end by itself, or after 10 minutes for songs that never end).
+    """
+    import hashlib
+    import tempfile
+    exe = find_tool("hvl2wav")
+    if not exe:
+        raise HivelyError("hvl2wav was not found. Run Options > Install Dependencies "
+                          "to build it (it plays .ahx and .hvl files).")
+    src = os.path.abspath(str(src))
+    if out_wav is None:
+        try:
+            from config import get_temp_directory
+            cache_dir = os.path.join(get_temp_directory(), ".hivelytracker")
+        except Exception:
+            cache_dir = os.path.join(tempfile.gettempdir(), "joshw_hivelytracker")
+        os.makedirs(cache_dir, exist_ok=True)
+        st = os.stat(src)
+        key = hashlib.sha1(f"{src}|{st.st_size}|{st.st_mtime_ns}|{max_seconds}".encode("utf-8")).hexdigest()[:16]
+        out_wav = os.path.join(cache_dir, key + ".wav")  # ASCII name: hvl2wav uses narrow fopen
+        if os.path.exists(out_wav) and os.path.getsize(out_wav) > 44:
+            return out_wav
+    out_wav = str(out_wav)
+    cmd = [exe]
+    if max_seconds:
+        total = max(1, int(round(float(max_seconds))))
+        cmd.append(f"-t{total // 60}:{total % 60:02d}")
+    cmd += [f"-o{windows_safe_path(os.path.dirname(os.path.abspath(out_wav)))}{os.sep}{os.path.basename(out_wav)}",
+            windows_safe_path(src)]
+    try:
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=180,
+                                **hidden_popen_kwargs())
+    except (OSError, subprocess.SubprocessError) as e:
+        raise HivelyError(f"hvl2wav failed: {e}")
+    if not os.path.exists(out_wav) or os.path.getsize(out_wav) <= 44:
+        output = result.stdout.decode("utf-8", "replace").strip().splitlines()
+        raise HivelyError("hvl2wav could not render this file" + (f": {output[-1]}" if output else "."))
+    return out_wav

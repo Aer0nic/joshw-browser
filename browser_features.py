@@ -235,9 +235,9 @@ class BrowserFeaturesMixin:
         if not entry or entry.get("is_parent_nav"):
             return
         if tree is self.tree and item_id in tree.selection():
-            midis = self.selected_vgmusic_midis()
-            if any(m is entry for m in midis):
-                self.show_multi_midi_action_dialog(midis)
+            group = self.selected_multi_stream_files()
+            if any(e is entry for e in group):
+                self.show_multi_file_action_dialog(group)
                 return
         tree.selection_set(item_id)
         menu = tk.Menu(self, tearoff=0)

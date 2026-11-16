@@ -19,6 +19,8 @@ Decoders:
               core: Audio Overload SDK 1.4.8 PSF/PSF2 engines (PEOpS SPU)
               source: github.com/DeaDBeeF-Player/deadbeef plugins/psf/aosdk
               (pinned commit below) + tools/windows_decoders/aosdk_wrapper.c
+  hvl2wav.exe AHX / HivelyTracker (.ahx/.hvl) -> WAV file  (BSD-3-Clause)
+              source: github.com/pete-gordon/hivelytracker hvl2wav/ (pinned commit below)
 """
 import os
 import shutil
@@ -38,6 +40,8 @@ PSFLIB_REPO = "https://github.com/kode54/psflib.git"
 PSFLIB_COMMIT = "6cb3515"  # same psflib revision 2sftowav uses
 AOSDK_REPO = "https://github.com/DeaDBeeF-Player/deadbeef.git"
 AOSDK_COMMIT = "47de75b641e92f800166a2a5fb0d1a78bd86a502"
+HVL_REPO = "https://github.com/pete-gordon/hivelytracker.git"
+HVL_COMMIT = "f393ca7c6416f00bcb574b334a7e8b57dcb19eb2"
 # PSF + PSF2 engines only (the Saturn/Dreamcast/QSound engines aren't used);
 # adsr/dma/registers/reverb are #included by spu.c / spu2.c
 AOSDK_SOURCES = """corlett.c eng_psf/eng_psf.c eng_psf/eng_psf2.c eng_psf/psx.c
@@ -185,8 +189,29 @@ def build_aosdk(work, out_dir, native):
     return lib
 
 
+def build_hvl2wav(work, out_dir, native):
+    cc, _cxx, link_flags = compilers(native)
+    src = work / "hivelytracker"
+    # Only hvl2wav/ (converter + replayer) is needed, not the tracker itself
+    run(["git", "clone", "--filter=blob:none", "--no-checkout", HVL_REPO, src])
+    run(["git", "sparse-checkout", "set", "--no-cone", "hvl2wav/"], cwd=src)
+    run(["git", "checkout", HVL_COMMIT], cwd=src)
+    hv = src / "hvl2wav"
+    # _BIG_ENDIAN_ only switches the WAV header writer to byte-by-byte output,
+    # which is correct on every platform (upstream's Linux makefile sets it too)
+    flags = ["-O2", "-w", "-D_BIG_ENDIAN_", "-I", hv]
+    objs = []
+    for name in ("hvl2wav.c", "replay.c"):
+        o = work / name.replace(".c", ".o")
+        run([cc, "-c", *flags, "-o", o, hv / name])
+        objs.append(o)
+    exe = out_dir / ("hvl2wav" if native else "hvl2wav.exe")
+    run([cc, "-o", exe, *objs, "-lm", *link_flags])
+    return exe
+
+
 BUILDERS = {"2sfdec": "build_2sfdec", "gsfdec": "build_gsfdec", "usfdec": "build_usfdec",
-            "aosdk": "build_aosdk"}
+            "aosdk": "build_aosdk", "hvl2wav": "build_hvl2wav"}
 
 
 def main(argv):
@@ -210,6 +235,7 @@ def main(argv):
         f"usfdec: {USF_REPO} @ {USF_COMMIT} + {PSFLIB_REPO} @ {PSFLIB_COMMIT} + tools/windows_decoders/usfdec.c\n"
         f"aosdk.dll: {AOSDK_REPO} @ {AOSDK_COMMIT} (plugins/psf/aosdk, AOSDK 1.4.8: BSD-3-Clause;"
         f" PEOpS SPU: GPL-2.0+) + tools/windows_decoders/aosdk_wrapper.c\n"
+        f"hvl2wav.exe: {HVL_REPO} @ {HVL_COMMIT} (hvl2wav/, BSD-3-Clause)\n"
     )
 
 

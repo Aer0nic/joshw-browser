@@ -28,6 +28,30 @@ def safe_filename(name):
     return cleaned.strip().rstrip(".") or "unnamed"
 
 
+def remote_filename(url, default="file"):
+    """Local file name for a remote URL.
+
+    Normally the last path segment. Index entries whose URL is a download
+    script (e.g. the Mod Archive's downloads.php?moduleid=N) carry the real
+    file name in the fragment instead: ...downloads.php?moduleid=N#song.xm.
+    The fragment is never sent to the server.
+    """
+    parsed = urllib.parse.urlparse(url)
+    name = ""
+    if parsed.fragment:
+        name = posixpath.basename(urllib.parse.unquote(parsed.fragment))
+    if not name:
+        name = urllib.parse.unquote(posixpath.basename(parsed.path))
+    return safe_filename(name) if name else default
+
+
+def remote_folder_name(url):
+    """Name of the remote folder holding url ("" for a file at the site root)."""
+    path = urllib.parse.urlparse(url).path.rstrip("/")
+    return safe_filename(urllib.parse.unquote(posixpath.basename(posixpath.dirname(path)))) \
+        if posixpath.basename(posixpath.dirname(path)) else ""
+
+
 def parse_filename_and_date(display_name):
     matches = list(DATE_PATTERN.finditer(display_name))
     if not matches:

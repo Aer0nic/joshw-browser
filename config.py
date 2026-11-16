@@ -79,6 +79,7 @@ DOMAINS = {
 
     "----------- OTHER & ASSORTED -----------": "",
     "Arcade": "https://vgmrips.net/packs/system/",
+    "Chiptune": "https://api.modarchive.org/downloads.php/",
     "Hoot": "http://hoot.joshw.info/",
     "MSX": "http://kss.joshw.info/",
     "Other Assorted Systems": "https://cdi.joshw.info/",

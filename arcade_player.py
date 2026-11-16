@@ -50,6 +50,11 @@ class ArcadePlayerWindow(tb.Window):
         self.raw_duration_seconds = 180.0
         self.current_position_seconds = 0.0
         self.has_loop = False
+        self.loop_seconds = 0.0      # length of the looped section ("Loop: Yes (mm:ss)")
+        self.fade_seconds = 5.0      # VGMPlay's fade-out after the last loop
+        self.proc_max_loops = 1      # MaxLoops the running vgmplay was started with
+        self.proc_started_at = 0.0
+        self.ini_dir = None          # per-window folder holding the generated VGMPlay.ini
 
         is_emu = is_emulated_file(self.audio_file)
         self.loop_chk_var = tk.BooleanVar(value=is_emu)
@@ -74,7 +79,7 @@ class ArcadePlayerWindow(tb.Window):
         self.build_ui()
 
         try:
-            icon_file = resource_path("assets/icons/player_icon.png")
+            icon_file = resource_path("assets/icons/arcadeicon.png")
             if icon_file.exists():
                 self.iconphoto(False, tk.PhotoImage(file=str(icon_file)))
         except Exception:
@@ -248,7 +253,7 @@ class ArcadePlayerWindow(tb.Window):
         tb.Checkbutton(
             btn_bottom,
             variable=self.loop_chk_var,
-            command=self.on_loop_settings_changed
+            command=self.on_loop_checkbox_changed
         ).grid(row=0, column=0, padx=(0, 2), sticky="w")
 
         tb.Spinbox(
@@ -327,17 +332,34 @@ class ArcadePlayerWindow(tb.Window):
     def on_loop_settings_changed(self):
         self.recalculate_duration()
 
+    def loop_count(self):
+        """How many times the loop checkbox asks for (1 when it is off)."""
+        if not self.loop_chk_var.get():
+            return 1
+        try:
+            return max(1, int(self.loop_count_var.get()))
+        except (tk.TclError, ValueError):
+            return 1
+
     def recalculate_duration(self):
         if self.loop_forever_var.get():
             self.raw_duration_seconds = self.base_duration_seconds
             self.duration_var.set("Duration: Forever")
+            return
+        if self.has_loop:
+            # VGMPlay plays the whole track once, repeats the looped section
+            # until it has looped MaxLoops times, then fades out
+            self.raw_duration_seconds = (self.base_duration_seconds
+                                         + (self.loop_count() - 1) * self.loop_seconds
+                                         + self.fade_seconds)
+            text = self.format_time(self.raw_duration_seconds)
         else:
-            multiplier = 2.0 if self.has_loop else 1.0
-            if self.loop_chk_var.get():
-                num = max(1, self.loop_count_var.get())
-                multiplier *= num
-            self.raw_duration_seconds = self.base_duration_seconds * multiplier
-            self.duration_var.set(f"Duration: {self.format_time(self.raw_duration_seconds)}")
+            # No loop point: each play is the plain track; repeats restart it
+            self.raw_duration_seconds = self.base_duration_seconds
+            text = self.format_time(self.raw_duration_seconds)
+            if self.loop_count() > 1:
+                text += f" (play {self.track_repeat_count + 1} of {self.loop_count()})"
+        self.duration_var.set(f"Duration: {text}")
 
     def on_volume_slide(self, val):
         set_player_volume(float(val), source_player=self)
@@ -428,12 +450,18 @@ class ArcadePlayerWindow(tb.Window):
                 if self.status_var.get() == "Playing" and not self.is_scrubbing:
                     self.current_position_seconds += 1.0
 
-                    if not self.loop_forever_var.get() and self.raw_duration_seconds > 0:
-                        if self.current_position_seconds >= self.raw_duration_seconds:
-                            if len(self.playlist) > 1 and self.current_index < len(self.playlist) - 1:
-                                self.after(0, self.next_track)
-                            else:
-                                self.after(0, self.stop)
+                    if self.loop_forever_var.get():
+                        # Show the position inside the loop, like VGMPlay does
+                        if (self.has_loop and self.loop_seconds > 0
+                                and self.current_position_seconds >= self.base_duration_seconds):
+                            self.current_position_seconds -= self.loop_seconds
+                    elif (self.proc_max_loops == 0 and self.raw_duration_seconds > 0
+                          and self.current_position_seconds >= self.raw_duration_seconds):
+                        # vgmplay was started to loop forever but Loop forever has
+                        # since been switched off: end the track ourselves.
+                        # (Otherwise vgmplay ends the track and _watch_process
+                        # moves on.)
+                        self.after(0, self.finish_running_track)
 
                     if self.raw_duration_seconds > 0:
                         pct = int((self.current_position_seconds / self.raw_duration_seconds) * 100)
@@ -467,10 +495,14 @@ class ArcadePlayerWindow(tb.Window):
                     self.after(0, lambda ds=display_str: self.title_label.configure(text=f"Now Playing:\n{ds}"))
                     self.after(0, lambda ds=display_str: self.title(f"Arcade Player - {ds}"))
 
-            if "Loop: Yes" in line_str:
+            m_loop = re.search(r"Loop: Yes \(([\d:.]+)\)", line_str)
+            if m_loop:
                 self.has_loop = True
+                self.loop_seconds = self.parse_leftmost_mm_ss(m_loop.group(1)) or 0.0
+                self.after(0, self.recalculate_duration)
             elif "Loop: No" in line_str:
                 self.has_loop = False
+                self.after(0, self.recalculate_duration)
 
             # Explicitly capture XX:XX:XX or XX:XX.XX directly before 'seconds'
             # Examples matched: "01:41.54 seconds", "00:01:41.54 seconds", "01:41:54 seconds"
@@ -478,7 +510,7 @@ class ArcadePlayerWindow(tb.Window):
             if m_sec:
                 time_str = m_sec.group(1)
                 parsed_tot = self.parse_leftmost_mm_ss(time_str)
-                if parsed_tot and parsed_tot > 0:
+                if parsed_tot and parsed_tot > 0 and parsed_tot != self.base_duration_seconds:
                     self.base_duration_seconds = parsed_tot
                     self.after(0, self.recalculate_duration)
 
@@ -498,14 +530,140 @@ class ArcadePlayerWindow(tb.Window):
         vgmplay_bin = str(get_binary_path("vgmplay"))
         cmd = [vgmplay_bin, windows_safe_path(self.audio_file)]
 
+        # 0 = loop forever, otherwise how many times the looped section plays
+        max_loops = 0 if self.loop_forever_var.get() else self.loop_count()
         try:
+            ini_dir = self.write_vgmplay_ini(vgmplay_bin, max_loops)
+        except OSError as e:
+            print(f"[arcade] could not write VGMPlay.ini: {e}")
+            ini_dir = None
+
+        try:
+            # vgmplay reads VGMPlay.ini from the working directory before its own folder
             self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1,
-                                         cwd=os.path.dirname(vgmplay_bin) or None, **hidden_popen_kwargs())
+                                         cwd=ini_dir or os.path.dirname(vgmplay_bin) or None, **hidden_popen_kwargs())
+            self.proc_max_loops = max_loops if ini_dir else 2
+            self.proc_started_at = time.time()
             threading.Thread(target=self._read_vgmplay_stdout, args=(self.proc,), daemon=True).start()
             threading.Thread(target=self._resolve_and_apply_volume, daemon=True).start()
+            self.after(300, self._watch_process, self.proc)
         except Exception as e:
             messagebox.showerror("vgmplay Error", f"Could not launch vgmplay process:\n\n{e}")
             return
+
+    def write_vgmplay_ini(self, vgmplay_bin, max_loops):
+        """Write a VGMPlay.ini with MaxLoops set to max_loops into this window's
+        own folder and return that folder.
+
+        Starts from the ini next to vgmplay (the bundled Windows one) when
+        there is one, so its other settings are kept.
+        """
+        base_text = ""
+        bin_dir = os.path.dirname(vgmplay_bin)
+        for name in ("VGMPlay.ini", "vgmplay.ini"):
+            candidate = os.path.join(bin_dir, name)
+            if bin_dir and os.path.isfile(candidate):
+                with open(candidate, "r", encoding="latin-1") as f:
+                    base_text = f.read()
+                break
+
+        lines = base_text.splitlines()
+        setting = f"MaxLoops = {max_loops}"
+        replaced = False
+        for i, line in enumerate(lines):
+            if re.match(r"\s*MaxLoops\s*=", line, re.IGNORECASE):
+                lines[i] = setting
+                replaced = True
+        if not replaced:
+            general = next((i for i, line in enumerate(lines)
+                            if line.strip().lower() == "[general]"), None)
+            if general is None:
+                lines[:0] = ["[General]", setting]
+            else:
+                lines.insert(general + 1, setting)
+
+        self.fade_seconds = 5.0  # VGMPlay's default FadeTime
+        for line in lines:
+            m = re.match(r"\s*FadeTime\s*=\s*(\S+)", line, re.IGNORECASE)
+            if m:
+                try:
+                    self.fade_seconds = int(m.group(1), 0) / 1000.0
+                except ValueError:
+                    pass
+
+        if not self.ini_dir or not os.path.isdir(self.ini_dir):
+            self.ini_dir = tempfile.mkdtemp(prefix="vgmplay_", dir=get_cache_directory())
+        text = "\n".join(lines) + "\n"
+        # Linux vgmplay looks for "<program name>.ini" before "VGMPlay.ini"
+        names = {"VGMPlay.ini", os.path.splitext(os.path.basename(vgmplay_bin))[0] + ".ini"}
+        for name in names:
+            with open(os.path.join(self.ini_dir, name), "w", encoding="latin-1") as f:
+                f.write(text)
+        return self.ini_dir
+
+    # ------------------------------------------------------------------
+    # End of track: loop again, or move on
+    # ------------------------------------------------------------------
+    def _watch_process(self, proc):
+        try:
+            if not self.winfo_exists():
+                return
+        except tk.TclError:
+            return
+        if proc is not self.proc:
+            return  # stopped, skipped or restarted in the meantime
+        if proc.poll() is None:
+            self.after(300, self._watch_process, proc)
+            return
+        self._on_track_finished(ran_for=time.time() - self.proc_started_at)
+
+    def finish_running_track(self):
+        """End the current track now and continue as if vgmplay had finished it."""
+        if not self.proc or self.proc.poll() is not None or self.loop_forever_var.get():
+            return
+        self.stop()
+        self._on_track_finished()
+
+    def _on_track_finished(self, ran_for=None):
+        self.proc = None
+        self.arcade_wpctl_id = None
+        if ran_for is not None and ran_for < 1.0:
+            # vgmplay quit straight away: the file could not be played.
+            # Don't restart it in a tight loop.
+            self.status_var.set("Error")
+            return
+
+        if self.loop_forever_var.get():
+            self._replay_current_track()
+            return
+        if not self.has_loop and self.loop_count() > 1:
+            # No loop point in the file, so vgmplay can't loop it: play it again
+            self.track_repeat_count += 1
+            if self.track_repeat_count < self.loop_count():
+                self._replay_current_track()
+                return
+
+        if self.current_index + 1 < len(self.playlist):
+            self.current_index += 1
+            self.play_current_track()
+        else:
+            self.stop()
+            self.current_position_seconds = 0.0
+            self.position_var.set("Position: 00:00:00")
+            self.seek_pct_var.set("0%")
+            try:
+                self.progress_bar_widget.update_progress(0.0, self.raw_duration_seconds)
+            except Exception:
+                pass
+            self.status_var.set("Finished")
+
+    def _replay_current_track(self):
+        self.current_position_seconds = 0.0
+        self.position_var.set("Position: 00:00:00")
+        self.recalculate_duration()
+        self.start_vgmplay()
+        self.is_paused = False
+        self.status_var.set("Playing")
 
     def play_current_track(self):
         self.track_repeat_count = 0
@@ -521,6 +679,8 @@ class ArcadePlayerWindow(tb.Window):
         self.current_position_seconds = 0.0
         self.base_duration_seconds = 180.0
         self.has_loop = False
+        self.loop_seconds = 0.0
+        self.is_paused = False
         self.position_var.set("Position: 00:00:00")
 
         self.recalculate_duration()
@@ -596,6 +756,9 @@ class ArcadePlayerWindow(tb.Window):
         except Exception:
             pass
         self.stop()
+        if self.ini_dir:
+            shutil.rmtree(self.ini_dir, ignore_errors=True)
+            self.ini_dir = None
         try:
             self.destroy()
         except Exception:

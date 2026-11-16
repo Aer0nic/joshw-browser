@@ -64,7 +64,7 @@ The first time the app starts, it walks you through two steps:
 ## Streaming, downloading and local files
 
 - **Stream:** double-click a file (or select it and press Enter) and choose **Stream**. It downloads to a temporary folder and opens in the matching player, with the rest of the folder as its playlist.
-- **Several MIDI files at once (VGMusic Siterip):** select multiple `.mid` files, then press Enter or right-click one of them. **Stream** downloads them all and opens them together as one playlist in the MIDI player; **Download** saves them as usual.
+- **Several files at once (VGMusic Siterip and Chiptune):** select multiple `.mid` files or tracker modules, then press Enter or right-click one of them. **Stream** downloads them all and opens them together as one playlist (VGMusic in the MIDI player, Chiptune in the mpv player), which moves on to the next track when each one ends; **Download** saves them as usual.
 - **Archives** (`.7z`, `.zip`, `.tar`, `.gz`, `.bz2`) are extracted automatically and a file browser opens on the result, so you can choose what to play.
 - **Stream Random!** picks a random track from the current archive, with a dice-roll animation (**Roll Again!** before accepting if you like). Tick **in all indexes!** to pick from every archive; **Options → Choose Random Stream Domains...** limits which archives are used.
 - **Download:** **Download Selected File(s)** (Shift/Ctrl-click to select several) or **Download Every File Here** for the whole folder. Before a folder download you see the total size, and a warning if the drive may not have enough space. **Stop** cancels.
@@ -118,7 +118,9 @@ Every player has:
 | MIDI / Beatnik | `.mid`, `.midi`, `.kar`, `.rmi`, `.rmf`, `.zmf`, `.xmf`, `.mxmf`, `.mthc` | NeoBAE `playbae`, with a choice of soundfont. On Linux, `.xmi` files are converted to MIDI first (needs WildMIDI). |
 | vgmstream | `.ast`, `.dsp`, `.brstm`, `.rstm`, `.bfsar`, `.bfwav`, `.adp`, `.str`, `.thp`, `.vag`, `.wem`, ..., and any extension not listed here | vgmstream. |
 | Arcade | `.vgz` | VGMPlay. |
-| mpv | `.mp3`, `.ogg`, `.flac`, `.wav`, `.m4a`, `.opus`, `.mod`, `.s3m`, `.xm`, `.it`, `.xma`, ... | mpv. |
+| mpv | `.mp3`, `.ogg`, `.flac`, `.wav`, `.m4a`, `.opus`, `.xma`, ... | mpv. |
+| mpv (tracker modules) | `.mod`, `.xm`, `.it`, `.s3m`, `.mptm`, `.mo3`, `.med`, `.stm`, `.imf`, `.dsm`, `.669`, `.mtm`, `.okt`, `.ult`, ... | mpv with libopenmpt. |
+| mpv (AHX / HivelyTracker) | `.ahx`, `.hvl` | Rendered to WAV by `hvl2wav` (a second or so), then played by mpv. |
 
 ## Now Playing, tray icon and media keys
 
@@ -170,9 +172,11 @@ Right-click a track in a player's playlist for:
 | Sony | PlayStation (`.psf`), PlayStation 2 (`.psf2`), PlayStation 3, 4 and 5, PSP, Vita |
 | Sega | Sega CD / Mega Drive (`.vgm`, `.vgz`, `.gym`), Saturn (`.ssf`), Dreamcast (`.dsf`) |
 | Microsoft | Xbox, Xbox 360 (`.xma`, `.xmd`) |
-| Others | 3DO, WonderSwan (`.wsr`), PC Engine (`.hes`), Neo Geo, FM Towns, MSX (`.kss`), C64 (`.sid`), Arcade (VGMRips `.vgz`), Hoot, PC, S98, VGMusic (`.mid`), Other Assorted Systems |
+| Others | 3DO, WonderSwan (`.wsr`), PC Engine (`.hes`), Neo Geo, FM Towns, MSX (`.kss`), C64 (`.sid`), Arcade (VGMRips `.vgz`), Chiptune (The Mod Archive: `.xm`, `.mod`, `.it`, `.s3m`, `.mptm`, `.ahx`, ...), Hoot, PC, S98, VGMusic (`.mid`), Other Assorted Systems |
 
 Some archives contain formats that don't have a player here yet (such as `.3sf`, `.ssf` and `.dsf`). You can still browse, search and download them.
+
+The **Chiptune** archive is a premade index of tracker modules from [The Mod Archive](https://modarchive.org). It can't be updated with Index Current / Index All, because the Mod Archive isn't a plain folder listing.
 
 ## Windows
 
@@ -205,6 +209,7 @@ The Windows backends are bundled in `assets/libraries/windows/`. Each runs hidde
 | GSF | playgsf | `gsfdec.exe` (playgsf core, built from `tools/windows_decoders`) |
 | 2SF | 2sfPlay | `2sfdec.exe` (vio2sf core, built from `tools/windows_decoders`) |
 | USF | lazyusf | `usfdec.exe` (lazyusf2 core, built from `tools/windows_decoders`) |
+| AHX / HVL | hvl2wav | `hvl2wav.exe` (HivelyTracker replayer, built from `tools/windows_decoders`) |
 | PSF / PSF2 | libaosdk.so | `aosdk.dll` (Audio Overload SDK, built from `tools/windows_decoders`) |
 | MP3, OGG, FLAC, modules, ... | mpv | `mpv.exe` (downloaded on first use if not bundled) |
 | 7z extraction | 7z | `7za.exe` (official build) |
@@ -231,6 +236,7 @@ To update the bundled backends, run `python tools/fetch_windows_deps.py` on a Li
    | `vgmplay` | [vgmrips/vgmplay-legacy](https://github.com/vgmrips/vgmplay-legacy) | |
    | `playbae` | [zefie/NeoBAE](https://github.com/zefie/NeoBAE) | Also builds and installs SDL3 and SDL3_ttf. |
    | `gsfdec`, `2sfdec`, `usfdec` | `tools/windows_decoders/` | Small WAV-to-stdout decoders, the same ones bundled for Windows. Needed for USF seeking, 2SF length overrides and GSF/2SF/USF export. |
+   | `hvl2wav` | [pete-gordon/hivelytracker](https://github.com/pete-gordon/hivelytracker) | AHX/HivelyTracker renderer, needed for `.ahx` and `.hvl` files. |
 
 3. Downloads the FluidR3 GM soundfont for MIDI and the C64 ROMs for sidplayfp.
 
@@ -239,7 +245,7 @@ The PSF engine (`libaosdk.so`) is already in `assets/libraries/`, so it needs no
 To build by hand, install the packages above and follow `InstallDependenciesWorker.run_installation()` in `downloaders.py`. The decoders in `tools/windows_decoders/` build with:
 
 ```sh
-python3 tools/windows_decoders/build.py ~/.config/joshw --native gsfdec 2sfdec usfdec
+python3 tools/windows_decoders/build.py ~/.config/joshw --native gsfdec 2sfdec usfdec hvl2wav
 python3 tools/windows_decoders/build.py assets/libraries --native aosdk   # rebuild libaosdk.so
 ```
 

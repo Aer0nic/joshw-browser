@@ -13,13 +13,13 @@ import tkinter as tk
 import tkinter.font as tkfont
 import ttkbootstrap as tb
 from platform_support import IS_WINDOWS, find_tool, hidden_popen_kwargs, open_path
-from player_launcher import launch_player, player_script_for, write_theme_preview, clear_theme_preview
+from player_launcher import MODULE_EXTS, launch_player, player_script_for, write_theme_preview, clear_theme_preview
 from ttkbootstrap.constants import *
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
 from collections import defaultdict
 from config import DOMAINS, get_cache_directory, get_cache_path, get_temp_directory, USER_AGENT, format_size, resource_path, apply_global_font_scale
-from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, safe_filename, unique_path
+from network import fetch_directory, get_entries_from_domain_entries, get_size_from_domain_entries, remote_filename, remote_folder_name, safe_filename, unique_path
 from players import ExtractedFilesBrowserWindow, get_vgmstream_path
 from index_updater import update_domain_index
 import library
@@ -251,6 +251,16 @@ class ToolTip:
         if tw:
             tw.destroy()
 
+
+
+def _query_site_folder(url):
+    """Temp folder for a streamed file that has no remote folder (e.g. the Mod
+    Archive's downloads.php?moduleid=N): the name of the domain it belongs to,
+    so files streamed from it end up together and form the player's playlist."""
+    for name, root in DOMAINS.items():
+        if root and url.startswith(root):
+            return safe_filename(name)
+    return ""
 
 
 def _ttkb_tk_builder_class():
@@ -2891,7 +2901,7 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
         selection = self.tree.selection()
         if not selection:
             return
-        if self.show_multi_midi_action_dialog():
+        if self.show_multi_file_action_dialog():
             return
         entry = self.visible_entries[int(selection[0])]
 
@@ -2952,34 +2962,54 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
             dialog.bind("<Return>", confirm_action)
 
     # ------------------------------------------------------------------
-    # VGMusic: several .mid files at once
+    # Several files at once, streamed as one playlist
+    # (VGMusic .mid files -> NeoBAE, Chiptune modules -> mpv)
     # ------------------------------------------------------------------
     MIDI_EXTS = (".mid", ".midi")
+    # domain -> (extensions that can be queued together, label for the dialog)
+    MULTI_STREAM_DOMAINS = {
+        "VGMusic Siterip": (MIDI_EXTS, ".mid files"),
+        "Chiptune": (tuple(sorted(MODULE_EXTS)), "chiptune files"),
+    }
 
-    def selected_vgmusic_midis(self):
-        """Selected VGMusic .mid entries in the Browse tab (only when 2 or more are selected)."""
-        midis = []
+    def _multi_stream_domain(self, entry):
+        """The MULTI_STREAM_DOMAINS key this file entry can be queued under, or None."""
+        if entry.get("directory") or entry.get("is_parent_nav"):
+            return None
+        url = entry.get("url", "")
+        path = urllib.parse.urlparse(url).path.lower()
+        for domain, (exts, _label) in self.MULTI_STREAM_DOMAINS.items():
+            root = DOMAINS.get(domain) or "\0"
+            if (entry.get("domain") == domain or url.startswith(root)) and path.endswith(exts):
+                return domain
+        return None
+
+    def selected_multi_stream_files(self):
+        """Selected Browse-tab entries that can be streamed together as a playlist.
+
+        Only when 2 or more such files from the same domain are selected;
+        otherwise an empty list (the normal single-file dialog is used).
+        """
+        by_domain = {}
         for item_id in self.tree.selection():
             try:
                 entry = self.visible_entries[int(item_id)]
             except (IndexError, ValueError):
                 continue
-            if entry.get("directory") or entry.get("is_parent_nav"):
-                continue
-            url = entry.get("url", "")
-            path = urllib.parse.urlparse(url).path.lower()
-            is_vgmusic = (entry.get("domain") == "VGMusic Siterip"
-                          or url.startswith(DOMAINS.get("VGMusic Siterip", "\0")))
-            if is_vgmusic and path.endswith(self.MIDI_EXTS):
-                midis.append(entry)
-        return midis if len(midis) > 1 else []
+            domain = self._multi_stream_domain(entry)
+            if domain:
+                by_domain.setdefault(domain, []).append(entry)
+        groups = [entries for entries in by_domain.values() if len(entries) > 1]
+        return groups[0] if len(groups) == 1 else []
 
-    def show_multi_midi_action_dialog(self, midis=None):
-        """Stream/Download dialog for several VGMusic .mid files. Returns True if shown."""
-        midis = midis or self.selected_vgmusic_midis()
-        if not midis:
+    def show_multi_file_action_dialog(self, entries=None):
+        """Stream/Download dialog for several selected files. Returns True if shown."""
+        entries = entries or self.selected_multi_stream_files()
+        if not entries:
             return False
-        urls = [e["url"] for e in midis]
+        urls = [e["url"] for e in entries]
+        domain = self._multi_stream_domain(entries[0])
+        label = self.MULTI_STREAM_DOMAINS[domain][1]
 
         temp_dir = get_temp_directory()
         check_dir = temp_dir if os.path.exists(temp_dir) else os.path.dirname(temp_dir)
@@ -2996,7 +3026,7 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
         except Exception:
             pass
 
-        tb.Label(dialog, text=f"Choose action for: multiple .mid files\n({len(urls)} files selected)"
+        tb.Label(dialog, text=f"Choose action for: multiple {label}\n({len(urls)} files selected)"
                               f"\n\n You have {hdd_space} left in your temp directory.",
                  font=("Arial", 9, "bold"), justify="center", wraplength=310).pack(pady=(15, 10))
         btn_frame = tb.Frame(dialog)
@@ -3004,7 +3034,7 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
 
         def do_stream():
             dialog.destroy()
-            self.stream_midi_playlist(urls)
+            self.stream_playlist(urls, label)
 
         def do_download():
             dialog.destroy()
@@ -3036,24 +3066,24 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
         dialog.bind("<Return>", confirm_action)
         return True
 
-    def stream_midi_playlist(self, urls):
+    def stream_playlist(self, urls, label="files"):
         temp_dir = get_temp_directory()
         self.stop_event.clear()
         progress_win = DownloadProgressWindow(self, title="Downloading to Temp...")
         threading.Thread(
-            target=self.stream_midi_playlist_worker,
-            args=(list(urls), temp_dir, progress_win),
+            target=self.stream_playlist_worker,
+            args=(list(urls), temp_dir, progress_win, label),
             daemon=True
         ).start()
 
-    def stream_midi_playlist_worker(self, urls, temp_dir, progress_win):
-        """Download every .mid to temp (as <folder>/<file>) and open them all in NeoBAE."""
+    def stream_playlist_worker(self, urls, temp_dir, progress_win, label="files"):
+        """Download every file to temp (as <folder>/<file>) and open them all in one
+        player as a playlist (NeoBAE for .mid, mpv for chiptunes)."""
         paths = []
         total = len(urls)
         for index, url in enumerate(urls, start=1):
-            parsed = urllib.parse.urlparse(url)
-            filename = safe_filename(urllib.parse.unquote(posixpath.basename(parsed.path))) or f"track{index}.mid"
-            parent = safe_filename(urllib.parse.unquote(posixpath.basename(posixpath.dirname(parsed.path.rstrip("/")))))
+            filename = remote_filename(url, default=f"track{index}")
+            parent = remote_folder_name(url) or _query_site_folder(url)
             out_dir = os.path.join(temp_dir, parent) if parent else temp_dir
             os.makedirs(out_dir, exist_ok=True)
             output_path = os.path.join(out_dir, filename)
@@ -3091,17 +3121,17 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
                         os.remove(partial_path)
                     except OSError:
                         pass
-                    print(f"[vgmusic] could not download {url}: {error}")
+                    print(f"[playlist] could not download {url}: {error}")
                     continue
             paths.append(output_path)
             self.remember_stream_source(url, local_path=output_path)
 
         self.messages.put(("close_progress", progress_win))
         if not paths:
-            self.messages.put(("error", "None of the selected .mid files could be downloaded."))
+            self.messages.put(("error", f"None of the selected {label} could be downloaded."))
             return
         if len(paths) < total:
-            self.messages.put(("error", f"{total - len(paths)} of {total} .mid files could not be downloaded;"
+            self.messages.put(("error", f"{total - len(paths)} of {total} {label} could not be downloaded;"
                                         " the rest will play."))
         self.messages.put(("call", lambda: self.play_audio_file(paths[0], playlist=paths, start_index=0)))
 
@@ -3124,7 +3154,7 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
 
     def download_and_open_temp_worker(self, url, temp_dir, progress_win):
         parsed = urllib.parse.urlparse(url)
-        filename = safe_filename(urllib.parse.unquote(posixpath.basename(parsed.path))) or "archive_file"
+        filename = remote_filename(url, default="archive_file")
         ext = os.path.splitext(filename)[1].lower()
         compressed_exts = {".7z", ".zip", ".tar", ".gz", ".bz2"}
 
@@ -3132,7 +3162,7 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
             # Keep the remote folder name (usually the game): players build
             # their playlist from the folder, and history/overrides/game info
             # identify tracks as "<folder>/<file>"
-            parent = safe_filename(urllib.parse.unquote(posixpath.basename(posixpath.dirname(parsed.path.rstrip("/")))))
+            parent = remote_folder_name(url) or _query_site_folder(url)
             out_dir = os.path.join(temp_dir, parent) if parent else temp_dir
             os.makedirs(out_dir, exist_ok=True)
             output_path = os.path.join(out_dir, filename)
@@ -3465,8 +3495,7 @@ class JoshWBrowser(BrowserFeaturesMixin, tb.Window):
         for idx, url in enumerate(urls, start=1):
             if self.stop_event.is_set() or (progress_win.winfo_exists() and progress_win.is_cancelled):
                 break
-            parsed = urllib.parse.urlparse(url)
-            filename = safe_filename(urllib.parse.unquote(posixpath.basename(parsed.path))) or "file"
+            filename = remote_filename(url)
             output_path = unique_path(os.path.join(dest_dir, filename))
 
             request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
