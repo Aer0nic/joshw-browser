@@ -10,6 +10,7 @@ import sys
 import subprocess
 import signal
 import json
+import re
 import tkinter as tk
 import ttkbootstrap as tb
 from platform_support import apply_gain, SoundDeviceSink, find_tool, IS_WINDOWS, hidden_popen_kwargs, resume_process, set_process_volume, suspend_process
@@ -19,6 +20,21 @@ from tkinter import ttk, messagebox, filedialog
 from pathlib import Path
 from config import resource_path, get_binary_path, get_cache_directory, is_emulated_file, apply_global_font_scale, load_saved_font_size
 from players import get_saved_player_volume, register_volume_player, set_player_volume, InteractiveProgressBar, ExtractedFilesBrowserWindow
+
+_SUBTRACK_RE = re.compile(r"^(.*)#(\d+)$")
+
+
+def split_subtrack(entry):
+    """Split a playlist entry "<file>#<n>" into (file, n).
+
+    Only a trailing "#<digits>" is a subtrack number, so file names that
+    contain "#" themselves (e.g. "Theme #1.spc") are left whole: (entry, None).
+    """
+    match = _SUBTRACK_RE.match(entry)
+    if match:
+        return match.group(1), int(match.group(2))
+    return entry, None
+
 
 def get_shared_settings_path():
     cache_dir = Path(get_cache_directory())
@@ -558,7 +574,7 @@ class GMEPlayerWindow(tb.Window):
             self.playlist = [os.path.abspath(p) for p in playlist]
             self.current_index = start_index if start_index is not None and 0 <= start_index < len(self.playlist) else 0
             if self.playlist:
-                first_clean = self.playlist[0].rsplit("#", 1)[0]
+                first_clean = split_subtrack(self.playlist[0])[0]
                 self.playlist_dir = os.path.dirname(first_clean)
         elif audio_file:
             audio_path = Path(audio_file).resolve()
@@ -581,7 +597,7 @@ class GMEPlayerWindow(tb.Window):
                     self.current_index = 0
 
         first_entry = self.playlist[self.current_index] if self.playlist else ""
-        self.audio_file = first_entry.rsplit("#", 1)[0] if "#" in first_entry else first_entry
+        self.audio_file = split_subtrack(first_entry)[0]
 
         self.worker = None
         self.is_paused = False
@@ -687,8 +703,8 @@ class GMEPlayerWindow(tb.Window):
                     for line in f_m3u:
                         line = line.strip()
                         if line and not line.startswith("#"):
-                            if "#" in line:
-                                fname, t_idx = line.rsplit("#", 1)
+                            fname, t_idx = split_subtrack(line)
+                            if t_idx is not None:
                                 abs_fname = os.path.abspath(os.path.join(folder, fname))
                                 resolved_path = f"{abs_fname}#{t_idx}"
                             else:
@@ -705,7 +721,7 @@ class GMEPlayerWindow(tb.Window):
         if provided_playlist:
             self.playlist = [os.path.abspath(p) for p in provided_playlist]
             if self.playlist:
-                first_clean = self.playlist[0].rsplit("#", 1)[0]
+                first_clean = split_subtrack(self.playlist[0])[0]
                 self.playlist_dir = os.path.dirname(first_clean)
             if provided_index is not None and 0 <= provided_index < len(self.playlist):
                 self.current_index = provided_index
@@ -873,9 +889,9 @@ class GMEPlayerWindow(tb.Window):
             return
         self.playlist_listbox.delete(0, tk.END)
         for p in self.playlist:
-            if "#" in p:
-                _, t_idx = p.rsplit("#", 1)
-                display_label = f"Track {int(t_idx) + 1}"
+            _, t_idx = split_subtrack(p)
+            if t_idx is not None:
+                display_label = f"Track {t_idx + 1}"
             else:
                 display_label = os.path.basename(p)
             self.playlist_listbox.insert(tk.END, display_label)
@@ -979,18 +995,12 @@ class GMEPlayerWindow(tb.Window):
     def _resolve_entry(self, index):
         """(absolute file, subtrack index, track key) for playlist row index."""
         raw_entry = self.playlist[index]
-        track_index = 0
-        base_file = raw_entry
-        if "#" in raw_entry:
-            base_file, track_str = raw_entry.rsplit("#", 1)
-            try:
-                track_index = int(track_str)
-            except ValueError:
-                track_index = 0
+        base_file, subtrack = split_subtrack(raw_entry)
+        track_index = subtrack or 0
         if not os.path.isabs(base_file) and self.playlist_dir:
             base_file = os.path.join(self.playlist_dir, base_file)
         base_file = os.path.abspath(base_file)
-        key = f"{base_file}#{track_index}" if "#" in raw_entry else base_file
+        key = f"{base_file}#{track_index}" if subtrack is not None else base_file
         return base_file, track_index, key
 
     def core_current_track(self):
@@ -1036,16 +1046,13 @@ class GMEPlayerWindow(tb.Window):
 
         raw_entry = self.playlist[self.current_index]
 
-        if "#" in raw_entry:
-            base_file, track_str = raw_entry.rsplit("#", 1)
+        base_file, subtrack = split_subtrack(raw_entry)
+        if subtrack is not None:
             if not os.path.isabs(base_file) and self.playlist_dir:
                 target_audio_file = os.path.join(self.playlist_dir, base_file)
             else:
                 target_audio_file = base_file
-            try:
-                self.track_index = int(track_str)
-            except ValueError:
-                self.track_index = 0
+            self.track_index = subtrack
         else:
             if not os.path.isabs(raw_entry) and self.playlist_dir:
                 target_audio_file = os.path.join(self.playlist_dir, raw_entry)
